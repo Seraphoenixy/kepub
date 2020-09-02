@@ -1,3 +1,5 @@
+#include <wait.h>
+
 #include <cctype>
 #include <cstddef>
 #include <cstdint>
