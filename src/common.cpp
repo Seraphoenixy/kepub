@@ -9,7 +9,12 @@
 #include <boost/program_options/variables_map.hpp>
 #include <fmt/ostream.h>
 #include <unicode/translit.h>
+#include <unicode/unistr.h>
 #include <unicode/utypes.h>
+
+namespace {
+
+inline std::unique_ptr<icu::Transliterator> trans;
 
 std::string num_to_str(std::int32_t i) {
   if (i <= 0 || i >= 1000) {
@@ -25,10 +30,61 @@ std::string num_to_str(std::int32_t i) {
   }
 }
 
-void do_create_directory(const std::string &dir) {
+void create_directory(const std::string &dir) {
   if (!std::filesystem::create_directory(dir)) {
     error("can not create directory: {}", dir);
   }
+}
+
+void custom_trans(icu::UnicodeString &str) {
+  str.findAndReplace("妳", "你");
+  str.findAndReplace("壊", "坏");
+  str.findAndReplace("拚", "拼");
+  str.findAndReplace("噁", "恶");
+  str.findAndReplace("歳", "岁");
+  str.findAndReplace("経", "经");
+  str.findAndReplace("験", "验");
+  str.findAndReplace("険", "险");
+  str.findAndReplace("撃", "击");
+  str.findAndReplace("錬", "炼");
+  str.findAndReplace("隷", "隶");
+  str.findAndReplace("毎", "每");
+  str.findAndReplace("捩", "折");
+  str.findAndReplace("殻", "壳");
+  str.findAndReplace("牠", "它");
+  str.findAndReplace("矇", "蒙");
+  str.findAndReplace("髮", "发");
+}
+
+} // namespace
+
+void init_trans() {
+  if (!trans) {
+    UErrorCode status{U_ZERO_ERROR};
+    trans = std::unique_ptr<icu::Transliterator>(
+        icu::Transliterator::createInstance("Hant-Hans", UTRANS_FORWARD,
+                                            status));
+
+    if (U_FAILURE(status)) {
+      error("error: {}", u_errorName(status));
+    }
+  }
+}
+
+std::string trans_str(const std::string &str) {
+  icu::UnicodeString icu_str{str.c_str()};
+  icu_str.trim();
+
+  trans->transliterate(icu_str);
+  custom_trans(icu_str);
+
+  std::string temp;
+  return icu_str.toUTF8String(temp);
+}
+
+std::string get_chapter_filename(const std::string &book_name,
+                                 std::int32_t count) {
+  return book_name + "/OEBPS/Text/" + "chapter" + num_to_str(count) + ".xhtml";
 }
 
 void check_file_is_open(const std::ifstream &file,
@@ -45,7 +101,90 @@ void check_file_is_open(const std::ofstream &file,
   }
 }
 
-void create_directory(const std::string &book_name) {
+std::string chapter_file_begin(const std::string &title) {
+  return "<?xml version='1.0' encoding='utf-8'?>\n"
+         "<html\n"
+         "  xmlns=\"http://www.w3.org/1999/xhtml\"\n"
+         "  xmlns:epub=\"http://www.idpf.org/2007/ops\"\n"
+         "  xml:lang=\"zh-CN\"\n"
+         ">\n"
+         "  <head>\n"
+         "    <title>" +
+         title +
+         "</title>\n"
+         "    <meta http-equiv=\"Content-Type\" content=\"text/html; "
+         "charset=utf-8\" />\n"
+         "    <link href=\"../../stylesheet.css\" rel=\"stylesheet\" "
+         "type=\"text/css\" />\n"
+         "    <link href=\"../../page_styles.css\" rel=\"stylesheet\" "
+         "type=\"text/css\" />\n"
+         "  </head>\n"
+         "  <body class=\"calibre\">\n"
+         "    <div class=\"calibre1\">\n"
+         "      <h1 class=\"color\">" +
+         title + "</h1>\n";
+}
+
+std::string chapter_file_text(const std::string &text) {
+  return "      <p class=\"calibre2\">" + text + "</p>\n";
+}
+
+const char *chapter_file_end() {
+  return "    </div>\n"
+         "  </body>\n"
+         "</html>\n";
+}
+
+std::pair<std::vector<std::string>, bool> processing_cmd(std::int32_t argc,
+                                                         char *argv[]) {
+  boost::program_options::options_description generic{"Generic options"};
+  generic.add_options()("version,v", "print version string");
+  generic.add_options()("help,h", "produce help message");
+
+  boost::program_options::options_description config{"Configuration"};
+  config.add_options()("xhtml,x", "only generate xhtml file");
+
+  boost::program_options::options_description hidden{"Hidden options"};
+  hidden.add_options()(
+      "input-file", boost::program_options::value<std::vector<std::string>>(),
+      "input file");
+
+  boost::program_options::options_description cmdline_options;
+  cmdline_options.add(generic).add(config).add(hidden);
+
+  boost::program_options::options_description visible{"Allowed options"};
+  visible.add(generic).add(config);
+
+  boost::program_options::positional_options_description p;
+  p.add("input-file", -1);
+
+  boost::program_options::variables_map vm;
+  store(boost::program_options::command_line_parser(argc, argv)
+            .options(cmdline_options)
+            .positional(p)
+            .run(),
+        vm);
+  notify(vm);
+
+  if (vm.contains("help")) {
+    fmt::print("Usage: {} [options] file...\n\n{}\n", argv[0], visible);
+    std::exit(EXIT_SUCCESS);
+  }
+
+  if (vm.contains("version")) {
+    fmt::print("{} version: {} {}\n", argv[0], __DATE__, __TIME__);
+    std::exit(EXIT_SUCCESS);
+  }
+
+  if (!vm.contains("input-file")) {
+    error("need a text file name");
+  }
+
+  return {vm["input-file"].as<std::vector<std::string>>(),
+          vm.contains("xhtml")};
+}
+
+void create_epub_directory(const std::string &book_name) {
   if (std::filesystem::exists(book_name) &&
       std::filesystem::is_directory(book_name)) {
     if (std::filesystem::remove_all(book_name) == 0) {
@@ -57,12 +196,12 @@ void create_directory(const std::string &book_name) {
     error("can not find: MStiffHei PRC Black.ttf", book_name);
   }
 
-  do_create_directory(book_name);
-  do_create_directory(book_name + "/META-INF");
-  do_create_directory(book_name + "/OEBPS");
-  do_create_directory(book_name + "/OEBPS/Images");
-  do_create_directory(book_name + "/OEBPS/Fonts");
-  do_create_directory(book_name + "/OEBPS/Text");
+  create_directory(book_name);
+  create_directory(book_name + "/META-INF");
+  create_directory(book_name + "/OEBPS");
+  create_directory(book_name + "/OEBPS/Images");
+  create_directory(book_name + "/OEBPS/Fonts");
+  create_directory(book_name + "/OEBPS/Text");
 
   if (!std::filesystem::copy_file("MStiffHei PRC Black.ttf",
                                   book_name +
@@ -294,69 +433,15 @@ void create_directory(const std::string &book_name) {
                << std::endl;
 }
 
-void custom_trans(icu::UnicodeString &str) {
-  str.findAndReplace("妳", "你");
-  str.findAndReplace("壊", "坏");
-  str.findAndReplace("拚", "拼");
-  str.findAndReplace("噁", "恶");
-  str.findAndReplace("歳", "岁");
-  str.findAndReplace("経", "经");
-  str.findAndReplace("験", "验");
-  str.findAndReplace("険", "险");
-  str.findAndReplace("撃", "击");
-  str.findAndReplace("錬", "炼");
-  str.findAndReplace("隷", "隶");
-  str.findAndReplace("毎", "每");
-  str.findAndReplace("捩", "折");
-  str.findAndReplace("殻", "壳");
-  str.findAndReplace("牠", "它");
-  str.findAndReplace("矇", "蒙");
-  str.findAndReplace("髮", "发");
-}
+void generate_xhtml(const std::string &book_name,
+                    const std::vector<std::string> &texts) {
+  std::string filename{book_name + ".xhtml"};
+  std::ofstream xhtml{filename};
+  check_file_is_open(xhtml, filename);
 
-std::pair<std::string, std::vector<std::string>>
-read_file(const std::string &filename) {
-  if (std::filesystem::path{filename}.filename().extension().string() !=
-      ".txt") {
-    error("must be a txt file: {}", filename);
+  for (const auto &line : texts) {
+    xhtml << "<p class=\"calibre2\">" << line << "</p>\n";
   }
-
-  std::ifstream ifs{filename};
-  check_file_is_open(ifs, filename);
-
-  UErrorCode status{U_ZERO_ERROR};
-  std::unique_ptr<icu::Transliterator> trans{
-      icu::Transliterator::createInstance("Hant-Hans", UTRANS_FORWARD, status)};
-  if (U_FAILURE(status)) {
-    error("error: {}", u_errorName(status));
-  }
-
-  std::vector<std::string> texts;
-  std::string line;
-
-  while (std::getline(ifs, line)) {
-    icu::UnicodeString icu_str{line.c_str()};
-    icu_str.trim();
-
-    if (!icu_str.isEmpty()) {
-      trans->transliterate(icu_str);
-      custom_trans(icu_str);
-
-      std::string str;
-      texts.push_back(icu_str.toUTF8String(str));
-    }
-  }
-
-  icu::UnicodeString book_name_icu{
-      std::filesystem::path{filename}.filename().stem().string().c_str()};
-  book_name_icu.trim();
-  trans->transliterate(book_name_icu);
-  custom_trans(book_name_icu);
-
-  std::string book_name;
-  book_name_icu.toUTF8String(book_name);
-
-  return {book_name, texts};
 }
 
 void generate_content_opf(const std::string &book_name,
@@ -489,103 +574,4 @@ void generate_toc_ncx(const std::string &book_name,
   ofs << "  </navMap>\n"
          "</ncx>"
       << std::endl;
-}
-
-std::pair<std::vector<std::string>, bool> processing_cmd(std::int32_t argc,
-                                                         char *argv[]) {
-  boost::program_options::options_description generic{"Generic options"};
-  generic.add_options()("version,v", "print version string");
-  generic.add_options()("help,h", "produce help message");
-
-  boost::program_options::options_description config{"Configuration"};
-  config.add_options()("xhtml,x", "only generate xhtml file");
-
-  boost::program_options::options_description hidden{"Hidden options"};
-  hidden.add_options()(
-      "input-file", boost::program_options::value<std::vector<std::string>>(),
-      "input file");
-
-  boost::program_options::options_description cmdline_options;
-  cmdline_options.add(generic).add(config).add(hidden);
-
-  boost::program_options::options_description visible{"Allowed options"};
-  visible.add(generic).add(config);
-
-  boost::program_options::positional_options_description p;
-  p.add("input-file", -1);
-
-  boost::program_options::variables_map vm;
-  store(boost::program_options::command_line_parser(argc, argv)
-            .options(cmdline_options)
-            .positional(p)
-            .run(),
-        vm);
-  notify(vm);
-
-  if (vm.contains("help")) {
-    fmt::print("Usage: {} [options] file...\n\n{}\n", argv[0], visible);
-    std::exit(EXIT_SUCCESS);
-  }
-
-  if (vm.contains("version")) {
-    fmt::print("{} version: {} {}\n", argv[0], __DATE__, __TIME__);
-    std::exit(EXIT_SUCCESS);
-  }
-
-  if (!vm.contains("input-file")) {
-    error("need a text file name");
-  }
-
-  return {vm["input-file"].as<std::vector<std::string>>(),
-          vm.contains("xhtml")};
-}
-
-std::string chapter_file_string(const std::string &title) {
-  return "<?xml version='1.0' encoding='utf-8'?>\n"
-         "<html\n"
-         "  xmlns=\"http://www.w3.org/1999/xhtml\"\n"
-         "  xmlns:epub=\"http://www.idpf.org/2007/ops\"\n"
-         "  xml:lang=\"zh-CN\"\n"
-         ">\n"
-         "  <head>\n"
-         "    <title>" +
-         title +
-         "</title>\n"
-         "    <meta http-equiv=\"Content-Type\" content=\"text/html; "
-         "charset=utf-8\" />\n"
-         "    <link href=\"../../stylesheet.css\" rel=\"stylesheet\" "
-         "type=\"text/css\" />\n"
-         "    <link href=\"../../page_styles.css\" rel=\"stylesheet\" "
-         "type=\"text/css\" />\n"
-         "  </head>\n"
-         "  <body class=\"calibre\">\n"
-         "    <div class=\"calibre1\">\n"
-         "      <h1 class=\"color\">" +
-         title + "</h1>\n";
-}
-
-std::string chapter_file_string_text(const std::string &text) {
-  return "      <p class=\"calibre2\">" + text + "</p>\n";
-}
-
-const char *chapter_file_string_end() {
-  return "    </div>\n"
-         "  </body>\n"
-         "</html>\n";
-}
-
-void generate_xhtml(const std::string &book_name,
-                    const std::vector<std::string> &texts) {
-  std::string filename{book_name + ".xhtml"};
-  std::ofstream xhtml{filename};
-  check_file_is_open(xhtml, filename);
-
-  for (const auto &line : texts) {
-    xhtml << "<p class=\"calibre2\">" << line << "</p>\n";
-  }
-}
-
-std::string get_chapter_filename(const std::string &book_name,
-                                 std::int32_t count) {
-  return book_name + "/OEBPS/Text/" + "chapter" + num_to_str(count) + ".xhtml";
 }
