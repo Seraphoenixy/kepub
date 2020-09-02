@@ -39,7 +39,8 @@ const char *chapter_file_end();
 std::pair<std::vector<std::string>, bool> processing_cmd(std::int32_t argc,
                                                          char *argv[]);
 
-void create_epub_directory(const std::string &book_name);
+void create_epub_directory(const std::string &book_name,
+                           const std::vector<std::string> &description = {});
 
 void generate_xhtml(const std::string &book_name,
                     const std::vector<std::string> &texts);

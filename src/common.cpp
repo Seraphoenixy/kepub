@@ -184,7 +184,8 @@ std::pair<std::vector<std::string>, bool> processing_cmd(std::int32_t argc,
           vm.contains("xhtml")};
 }
 
-void create_epub_directory(const std::string &book_name) {
+void create_epub_directory(const std::string &book_name,
+                           const std::vector<std::string> &description) {
   if (std::filesystem::exists(book_name) &&
       std::filesystem::is_directory(book_name)) {
     if (std::filesystem::remove_all(book_name) == 0) {
@@ -426,8 +427,13 @@ void create_epub_directory(const std::string &book_name) {
                   "  </head>\n"
                   "  <body class=\"calibre\">\n"
                   "    <div class=\"calibre1\">\n"
-                  "      <h1 class=\"color\">简介</h1>\n"
-                  "    </div>\n"
+                  "      <h1 class=\"color\">简介</h1>\n";
+
+  for (const auto &item : description) {
+    introduction << chapter_file_text(item);
+  }
+
+  introduction << "    </div>\n"
                   "  </body>\n"
                   "</html>"
                << std::endl;

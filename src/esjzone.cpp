@@ -1,6 +1,7 @@
 #include <cctype>
 #include <cstddef>
 #include <fstream>
+#include <regex>
 #include <string>
 #include <tuple>
 #include <vector>
@@ -37,18 +38,24 @@ std::vector<std::string> get_html_file(const std::string &url) {
 }
 
 std::tuple<std::vector<std::string>, std::vector<std::string>, std::string,
-           std::string>
+           std::string, std::vector<std::string>>
 get_content(const std::string &id) {
   std::vector<std::string> urls;
   std::vector<std::string> titles;
   std::string book_name;
   std::string author;
+  std::vector<std::string> description;
 
   std::string url_prefix{"<a href=\"https://esjzone.cc/forum/" + id};
   std::string book_name_prefix{"<h2 class=\"p-t-10 text-normal\">"};
   std::string author_prefix{"<li><strong>作者:</strong> <a href=\"/tags/"};
+  std::string description_prefix{"<div class=\"description\">"};
 
-  for (const auto &item : get_html_file(get_url(id))) {
+  auto lines{get_html_file(get_url(id))};
+  auto lines_size{std::size(lines)};
+  for (std::size_t idx{}; idx < lines_size; ++idx) {
+    auto item{lines[idx]};
+
     if (item.starts_with(url_prefix)) {
       auto size{std::size(std::string{"<a href=\""})};
       auto sub_item{item.substr(size, std::size(item) - size)};
@@ -74,6 +81,29 @@ get_content(const std::string &id) {
       auto item_sub{item.substr(first)};
       auto index{item_sub.find('/')};
       author = trans_str(item_sub.substr(0, index));
+    } else if (item.starts_with(description_prefix)) {
+      auto index{item.find(description_prefix) + std::size(description_prefix)};
+      auto item_sub{item.substr(index)};
+
+      while (!item_sub.ends_with("</div>")) {
+        ++idx;
+        item_sub += lines[idx];
+      }
+
+      item_sub = item_sub.substr(0, std::size(item_sub) - 6);
+
+      std::regex re{"</p>"};
+      std::vector<std::string> temp{
+          std::sregex_token_iterator(std::begin(item_sub), std::end(item_sub),
+                                     re, -1),
+          {}};
+
+      for (const auto &s : temp) {
+        auto str{trans_str(s)};
+        if (!std::empty(str)) {
+          description.push_back(str.substr(3));
+        }
+      }
     }
   }
 
@@ -84,7 +114,7 @@ get_content(const std::string &id) {
     error("author name is empty");
   }
 
-  return {urls, titles, book_name, author};
+  return {urls, titles, book_name, author, description};
 }
 
 std::vector<std::string> get_text(const std::string &url) {
@@ -92,6 +122,11 @@ std::vector<std::string> get_text(const std::string &url) {
 
   for (const auto &item : get_html_file(url)) {
     if (item.starts_with("<p>")) {
+      // FIXME
+      if (item == "<p>") {
+        error("html text format error");
+      }
+
       auto item_sub{item.substr(3, std::size(item) - 3)};
 
       auto index{item_sub.find("</p>")};
@@ -116,7 +151,7 @@ int main(int argc, char *argv[]) {
   auto [input_file, xhtml]{processing_cmd(argc, argv)};
 
   for (const auto &item : input_file) {
-    auto [urls, titles, book_name, author]{get_content(item)};
+    auto [urls, titles, book_name, author, description]{get_content(item)};
 
     if (xhtml) {
       std::vector<std::string> texts;
@@ -131,7 +166,7 @@ int main(int argc, char *argv[]) {
 
       generate_xhtml(book_name, texts);
     } else {
-      create_epub_directory(book_name);
+      create_epub_directory(book_name, description);
 
       auto size{std::size(urls)};
       for (std::size_t index{}; index < size; ++index) {
