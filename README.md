@@ -43,7 +43,7 @@ make install
 
 The font file needs to be in the working directory
 
-- Generated from the integrated txt file in https://gitlab.com/demonovel/epub-txt/-/tree/master(introduction and packaging need to be done manually)
+- Generated from the integrated txt file in https://gitlab.com/demonovel/epub-txt/-/tree/master (introduction and packaging need to be done manually)
 
 ```bash
 demonovel xxx.txt
