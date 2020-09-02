@@ -1,16 +1,23 @@
 #include <cctype>
 #include <cstddef>
+#include <cstdint>
+#include <filesystem>
 #include <fstream>
 #include <regex>
 #include <string>
 #include <tuple>
 #include <vector>
 
+#include <boost/algorithm/string/trim.hpp>
 #include <boost/process/child.hpp>
 #include <boost/process/io.hpp>
 #include <boost/process/pipe.hpp>
 
 #include "common.h"
+
+bool command_success(std::int32_t status) {
+  return status != -1 && WIFEXITED(status) && !WEXITSTATUS(status);
+}
 
 std::string get_url(const std::string &id) {
   for (const auto &c : id) {
@@ -31,7 +38,10 @@ std::vector<std::string> get_html_file(const std::string &url) {
   std::string line;
 
   while (c.running() && std::getline(is, line)) {
-    data.push_back(line);
+    boost::trim(line);
+    if (!std::empty(line)) {
+      data.push_back(line);
+    }
   }
 
   return data;
@@ -46,17 +56,20 @@ get_content(const std::string &id) {
   std::string author;
   std::vector<std::string> description;
 
-  std::string url_prefix{"<a href=\"https://esjzone.cc/forum/" + id};
-  std::string book_name_prefix{"<h2 class=\"p-t-10 text-normal\">"};
-  std::string author_prefix{"<li><strong>作者:</strong> <a href=\"/tags/"};
-  std::string description_prefix{"<div class=\"description\">"};
+  const std::string url_prefix{"<a href=\"https://esjzone.cc/forum/" + id};
+  const std::string url_prefix2{"<a href=\"https://www.esjzone.cc/forum/" + id};
+
+  const std::string book_name_prefix{"<h2 class=\"p-t-10 text-normal\">"};
+  const std::string author_prefix{
+      "<li><strong>作者:</strong> <a href=\"/tags/"};
+  const std::string description_prefix{"<div class=\"description\">"};
 
   auto lines{get_html_file(get_url(id))};
   auto lines_size{std::size(lines)};
   for (std::size_t idx{}; idx < lines_size; ++idx) {
     auto item{lines[idx]};
 
-    if (item.starts_with(url_prefix)) {
+    if (item.starts_with(url_prefix) || item.starts_with(url_prefix2)) {
       auto size{std::size(std::string{"<a href=\""})};
       auto sub_item{item.substr(size, std::size(item) - size)};
       auto index{sub_item.find('\"')};
@@ -187,6 +200,19 @@ int main(int argc, char *argv[]) {
 
       generate_content_opf(book_name, author, size + 1);
       generate_toc_ncx(book_name, titles);
+    }
+
+    std::string cmd{"zip -q -r "};
+    cmd.append(book_name + ".epub");
+    cmd.append(" ");
+    cmd.append(book_name);
+
+    if (!command_success(std::system(cmd.c_str()))) {
+      error("zip error");
+    }
+
+    if (std::filesystem::remove_all(book_name) == 0) {
+      error("can not remove directory: {}", book_name);
     }
   }
 }
