@@ -27,8 +27,8 @@ find_package(ICU REQUIRED COMPONENTS uc i18n)
 find_package(Boost REQUIRED COMPONENTS program_options)
 
 add_library(common SHARED src/common.cpp)
-target_link_libraries(common PRIVATE ${ICU_LIBRARIES} ${Boost_LIBRARIES}
-                                     fmt::fmt-header-only)
+target_link_libraries(common ${ICU_LIBRARIES} ${Boost_LIBRARIES}
+                      fmt::fmt-header-only)
 
 add_executable(demonovel src/demonovel.cpp)
 target_link_libraries(demonovel common)
