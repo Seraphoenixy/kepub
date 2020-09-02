@@ -22,17 +22,26 @@ file(GLOB_RECURSE CMAKE_FORMAT_SOURCES CONFIGURE_DEPENDS cmake/*.cmake
 
 include_directories(include)
 
+find_package(fmt REQUIRED)
 find_package(ICU REQUIRED COMPONENTS uc i18n)
 find_package(Boost REQUIRED COMPONENTS program_options)
 
-add_executable(demonovel src/demonovel.cpp src/common.cpp)
-target_link_libraries(demonovel ${ICU_LIBRARIES} ${Boost_LIBRARIES})
+add_library(common SHARED src/common.cpp)
+target_link_libraries(common PRIVATE ${ICU_LIBRARIES} ${Boost_LIBRARIES}
+                                     fmt::fmt-header-only)
 
-add_executable(esjzone src/esjzone.cpp src/common.cpp)
-target_link_libraries(esjzone ${ICU_LIBRARIES} ${Boost_LIBRARIES})
+add_executable(demonovel src/demonovel.cpp)
+target_link_libraries(demonovel common)
 
-add_executable(masiro src/masiro.cpp src/common.cpp)
-target_link_libraries(masiro ${ICU_LIBRARIES} ${Boost_LIBRARIES})
+add_executable(esjzone src/esjzone.cpp)
+target_link_libraries(esjzone common)
+
+add_executable(masiro src/masiro.cpp)
+target_link_libraries(masiro common)
+
+add_dependencies(demonovel common)
+add_dependencies(esjzone common)
+add_dependencies(masiro common)
 
 if((CMAKE_BUILD_TYPE MATCHES "Debug") OR (CMAKE_BUILD_TYPE MATCHES
                                           "RelWithDebInfo"))
