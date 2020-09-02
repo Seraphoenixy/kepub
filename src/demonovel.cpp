@@ -1,4 +1,5 @@
 #include <cstddef>
+#include <cstdint>
 #include <filesystem>
 #include <fstream>
 #include <string>
@@ -48,6 +49,7 @@ int main(int argc, char *argv[]) {
 
       std::vector<std::string> titles;
       auto size{std::size(texts)};
+      std::int32_t count{1};
       for (std::size_t index{}; index < size; ++index) {
         if (texts[index].starts_with("－－－－－－－－－－－－－－－BEGIN")) {
           index += 2;
@@ -55,7 +57,9 @@ int main(int argc, char *argv[]) {
           titles.push_back(title);
           index += 2;
 
-          auto filename{get_chapter_filename(book_name, index + 1)};
+          auto filename{get_chapter_filename(book_name, count)};
+          ++count;
+
           std::ofstream ofs{filename};
           check_file_is_open(ofs, filename);
 
@@ -71,7 +75,7 @@ int main(int argc, char *argv[]) {
         }
       }
 
-      generate_content_opf(book_name, texts[1], size + 1);
+      generate_content_opf(book_name, texts[1], count);
       generate_toc_ncx(book_name, titles);
     }
   }

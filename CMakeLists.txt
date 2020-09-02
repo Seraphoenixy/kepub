@@ -31,7 +31,7 @@ find_package(Boost REQUIRED COMPONENTS program_options)
 
 add_definitions(-DBOOST_ASIO_DISABLE_CONCEPTS)
 
-add_library(common SHARED src/common.cpp)
+add_library(common STATIC src/common.cpp)
 target_link_libraries(common ${ICU_LIBRARIES} ${Boost_LIBRARIES}
                       fmt::fmt-header-only)
 
