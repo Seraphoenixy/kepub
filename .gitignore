@@ -30,3 +30,11 @@
 *.exe
 *.out
 *.app
+
+# Development files
+.clangd
+build
+.idea
+cmake-build-*
+*.profraw
+compile_commands.json
