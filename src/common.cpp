@@ -316,6 +316,11 @@ void custom_trans(icu::UnicodeString &str) {
 
 std::pair<std::string, std::vector<std::string>>
 read_file(const std::string &filename) {
+  if (std::filesystem::path{filename}.filename().extension().string() !=
+      ".txt") {
+    error("must be a txt file: {}", filename);
+  }
+
   std::ifstream ifs{filename};
   check_file_is_open(ifs, filename);
 
@@ -531,14 +536,8 @@ std::pair<std::vector<std::string>, bool> processing_cmd(std::int32_t argc,
     error("need a text file name");
   }
 
-  auto input_files{vm["input-file"].as<std::vector<std::string>>()};
-  for (const auto &file : input_files) {
-    if (std::filesystem::path{file}.filename().extension().string() != ".txt") {
-      error("must be a txt file: {}", file);
-    }
-  }
-
-  return {input_files, vm.contains("xhtml")};
+  return {vm["input-file"].as<std::vector<std::string>>(),
+          vm.contains("xhtml")};
 }
 
 std::string chapter_file_string(const std::string &title) {

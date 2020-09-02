@@ -36,12 +36,8 @@ target_link_libraries(demonovel common)
 add_executable(esjzone src/esjzone.cpp)
 target_link_libraries(esjzone common)
 
-add_executable(masiro src/masiro.cpp)
-target_link_libraries(masiro common)
-
 add_dependencies(demonovel common)
 add_dependencies(esjzone common)
-add_dependencies(masiro common)
 
 if((CMAKE_BUILD_TYPE MATCHES "Debug") OR (CMAKE_BUILD_TYPE MATCHES
                                           "RelWithDebInfo"))
@@ -50,4 +46,3 @@ endif()
 
 install(TARGETS demonovel RUNTIME DESTINATION bin)
 install(TARGETS esjzone RUNTIME DESTINATION bin)
-install(TARGETS masiro RUNTIME DESTINATION bin)
