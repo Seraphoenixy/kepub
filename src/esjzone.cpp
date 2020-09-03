@@ -69,6 +69,7 @@ get_content(const std::string &id) {
   const std::string url_prefix{"<a href=\"https://esjzone.cc/forum/" + id};
   const std::string url_prefix2{"<a href=\"https://www.esjzone.cc/forum/" + id};
 
+  const std::string title_prefix{"data-title=\""};
   const std::string book_name_prefix{"<h2 class=\"p-t-10 text-normal\">"};
   const std::string author_prefix{
       "<li><strong>作者:</strong> <a href=\"/tags/"};
@@ -90,13 +91,15 @@ get_content(const std::string &id) {
       }
       urls.push_back(url);
 
-      auto first{sub_item.find("<p>") + 3};
-      auto end{sub_item.find("</p>")};
-      auto title{trans_str(sub_item.substr(first, end - first))};
+      auto first{sub_item.find(title_prefix) + std::size(title_prefix)};
+      auto end{sub_item.find('>')};
+      auto title{trans_str(sub_item.substr(first, end - first - 1))};
+      title = title.substr(0, title.find("https"));
 
       if (std::empty(title)) {
         error("title is empty");
       }
+
       titles.push_back(title);
     } else if (item.starts_with(book_name_prefix)) {
       auto first{item.find(book_name_prefix) + std::size(book_name_prefix)};
