@@ -166,6 +166,10 @@ std::vector<std::string> get_text(const std::string &url) {
 
       auto item_sub{item.substr(3, std::size(item) - 3)};
 
+      while (item_sub.starts_with("&nbsp;")) {
+        item_sub = item_sub.substr(6);
+      }
+
       auto index{item_sub.find("</p>")};
       item_sub = trans_str(item_sub.substr(0, index));
 
