@@ -1,12 +1,15 @@
+#include <unistd.h>
 #include <wait.h>
 
 #include <cctype>
+#include <chrono>
 #include <cstddef>
 #include <cstdint>
 #include <filesystem>
 #include <fstream>
 #include <regex>
 #include <string>
+#include <thread>
 #include <tuple>
 #include <vector>
 
@@ -46,6 +49,10 @@ std::vector<std::string> get_html_file(const std::string &url) {
     }
   }
 
+  if (std::empty(data)) {
+    error("html file is empty");
+  }
+
   return data;
 }
 
@@ -76,6 +83,10 @@ get_content(const std::string &id) {
       auto sub_item{item.substr(size, std::size(item) - size)};
       auto index{sub_item.find('\"')};
       auto url{sub_item.substr(0, index)};
+
+      if (std::empty(url)) {
+        error("url is empty");
+      }
       urls.push_back(url);
 
       auto first{sub_item.find("<p>") + 3};
@@ -85,7 +96,6 @@ get_content(const std::string &id) {
       if (std::empty(title)) {
         error("title is empty");
       }
-
       titles.push_back(title);
     } else if (item.starts_with(book_name_prefix)) {
       auto first{item.find(book_name_prefix) + std::size(book_name_prefix)};
@@ -122,11 +132,20 @@ get_content(const std::string &id) {
     }
   }
 
+  if (std::empty(urls)) {
+    error("urls is empty");
+  }
+  if (std::empty(titles)) {
+    error("titles is empty");
+  }
   if (std::empty(book_name)) {
     error("book name is empty");
   }
   if (std::empty(author)) {
     error("author name is empty");
+  }
+  if (std::empty(description)) {
+    error("description is empty");
   }
 
   return {urls, titles, book_name, author, description};
@@ -137,7 +156,6 @@ std::vector<std::string> get_text(const std::string &url) {
 
   for (const auto &item : get_html_file(url)) {
     if (item.starts_with("<p>")) {
-      // FIXME
       if (item == "<p>") {
         error("html text format error");
       }
@@ -155,6 +173,10 @@ std::vector<std::string> get_text(const std::string &url) {
         result.push_back(item_sub);
       }
     }
+  }
+
+  if (std::empty(result)) {
+    error("text result is empty");
   }
 
   return result;
@@ -185,36 +207,54 @@ int main(int argc, char *argv[]) {
 
       auto size{std::size(urls)};
       for (std::size_t index{}; index < size; ++index) {
-        auto title{titles[index]};
+        using namespace std::chrono_literals;
+        std::this_thread::sleep_for(10ms);
 
-        auto filename{get_chapter_filename(book_name, index + 1)};
-        std::ofstream ofs{filename};
-        check_file_is_open(ofs, filename);
+        auto pid{fork()};
+        if (pid < 0) {
+          error("fork error");
+        } else if (pid == 0) {
+          auto title{titles[index]};
 
-        ofs << chapter_file_begin(title);
+          auto filename{get_chapter_filename(book_name, index + 1)};
+          std::ofstream ofs{filename};
+          check_file_is_open(ofs, filename);
 
-        for (const auto &line : get_text(urls[index])) {
-          ofs << chapter_file_text(line);
+          ofs << chapter_file_begin(title);
+
+          for (const auto &line : get_text(urls[index])) {
+            ofs << chapter_file_text(line);
+          }
+
+          ofs << chapter_file_end() << std::flush;
+
+          return EXIT_SUCCESS;
         }
+      }
 
-        ofs << chapter_file_end();
+      std::int32_t status{};
+
+      while (waitpid(-1, &status, 0) > 0) {
+        if (!WIFEXITED(status) || WEXITSTATUS(status)) {
+          error("waitpid Error");
+        }
       }
 
       generate_content_opf(book_name, author, size + 1);
       generate_toc_ncx(book_name, titles);
-    }
 
-    std::string cmd{"zip -q -r "};
-    cmd.append(book_name + ".epub");
-    cmd.append(" ");
-    cmd.append(book_name);
+      std::string cmd{"zip -q -r "};
+      cmd.append(book_name + ".epub");
+      cmd.append(" ");
+      cmd.append(book_name);
 
-    if (!command_success(std::system(cmd.c_str()))) {
-      error("zip error");
-    }
+      if (!command_success(std::system(cmd.c_str()))) {
+        error("zip error");
+      }
 
-    if (std::filesystem::remove_all(book_name) == 0) {
-      error("can not remove directory: {}", book_name);
+      if (std::filesystem::remove_all(book_name) == 0) {
+        error("can not remove directory: {}", book_name);
+      }
     }
   }
 }

@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
             ofs << chapter_file_text(texts[index]);
           }
 
-          ofs << chapter_file_end();
+          ofs << chapter_file_end() << std::flush;
         }
       }
 

@@ -54,6 +54,7 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("牠", "它");
   str.findAndReplace("矇", "蒙");
   str.findAndReplace("髮", "发");
+  str.findAndReplace("姊", "姐");
 }
 
 } // namespace
