@@ -13,6 +13,7 @@
 #include <tuple>
 #include <vector>
 
+#include <boost/algorithm/string/replace.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/process/child.hpp>
 #include <boost/process/io.hpp>
@@ -243,10 +244,10 @@ int main(int argc, char *argv[]) {
       generate_content_opf(book_name, author, size + 1);
       generate_toc_ncx(book_name, titles);
 
-      std::string cmd{"zip -q -r "};
-      cmd.append(book_name + ".epub");
-      cmd.append(" ");
-      cmd.append(book_name);
+      auto copy{boost::replace_all_copy(book_name, " ", "\\ ")};
+      std::string cmd{"cd " + copy + " && zip -q -r "};
+      cmd.append("../" + copy + ".epub");
+      cmd.append(" *");
 
       if (!command_success(std::system(cmd.c_str()))) {
         error("zip error");
