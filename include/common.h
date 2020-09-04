@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <string>
+#include <string_view>
 #include <utility>
 #include <vector>
 
@@ -50,3 +51,6 @@ void generate_content_opf(const std::string &book_name,
 
 void generate_toc_ncx(const std::string &book_name,
                       const std::vector<std::string> &titles);
+
+std::pair<std::string, std::vector<std::string>>
+read_file(const std::string &filename);

@@ -49,6 +49,12 @@ The font file needs to be in the working directory
 demonovel xxx.txt
 ```
 
+- Generated from the integrated txt file in https://mega.nz/#F!dw4DzZhJ!RNFlsWOf-QTOZJvsMmqLlA (introduction, author, and packaging need to be done manually)
+
+```bash
+masiro xxx.txt
+```
+
 - Obtain and generate from https://esjzone.cc/
 
 ```bash

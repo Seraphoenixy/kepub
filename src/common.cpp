@@ -582,3 +582,29 @@ void generate_toc_ncx(const std::string &book_name,
          "</ncx>"
       << std::endl;
 }
+
+std::pair<std::string, std::vector<std::string>>
+read_file(const std::string &filename) {
+  if (std::filesystem::path{filename}.filename().extension().string() !=
+      ".txt") {
+    error("must be a txt file: {}", filename);
+  }
+
+  std::ifstream ifs{filename};
+  check_file_is_open(ifs, filename);
+
+  std::vector<std::string> texts;
+  std::string line;
+
+  while (std::getline(ifs, line)) {
+    auto str{trans_str(line)};
+    if (!std::empty(str)) {
+      texts.push_back(str);
+    }
+  }
+
+  auto book_name{std::filesystem::path{filename}.filename().stem().string()};
+  book_name = trans_str(book_name);
+
+  return {book_name, texts};
+}
