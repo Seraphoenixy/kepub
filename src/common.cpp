@@ -55,6 +55,20 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("矇", "蒙");
   str.findAndReplace("髮", "发");
   str.findAndReplace("姊", "姐");
+  str.findAndReplace("黒", "黑");
+  str.findAndReplace("歴", "历");
+  str.findAndReplace("様", "样");
+  str.findAndReplace("甦", "苏");
+  str.findAndReplace("牴", "抵");
+  str.findAndReplace("銀", "银");
+  str.findAndReplace("齢", "龄");
+  str.findAndReplace("祂", "他");
+  str.findAndReplace("従", "从");
+  str.findAndReplace("酔", "醉");
+  str.findAndReplace("値", "值");
+  str.findAndReplace("発", "发");
+  str.findAndReplace("続", "续");
+  str.findAndReplace("転", "转");
 }
 
 } // namespace
