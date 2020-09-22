@@ -69,6 +69,14 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("発", "发");
   str.findAndReplace("続", "续");
   str.findAndReplace("転", "转");
+  str.findAndReplace("剣", "剑");
+  str.findAndReplace("砕", "碎");
+  str.findAndReplace("鉄", "铁");
+  str.findAndReplace("甯", "宁");
+  str.findAndReplace("鬪", "斗");
+  str.findAndReplace("寛", "宽");
+  str.findAndReplace("変", "变");
+  str.findAndReplace("鳮", "鸡");
 }
 
 } // namespace
