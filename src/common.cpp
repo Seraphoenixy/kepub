@@ -77,6 +77,16 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("寛", "宽");
   str.findAndReplace("変", "变");
   str.findAndReplace("鳮", "鸡");
+  str.findAndReplace("悪", "恶");
+  str.findAndReplace("霊", "灵");
+  str.findAndReplace("戦", "战");
+  str.findAndReplace("権", "权");
+  str.findAndReplace("効", "效");
+  str.findAndReplace("応", "应");
+  str.findAndReplace("覚", "觉");
+  str.findAndReplace("観", "观");
+  str.findAndReplace("気", "气");
+  str.findAndReplace("歴", "历");
 }
 
 } // namespace
@@ -621,7 +631,12 @@ read_file(const std::string &filename) {
   while (std::getline(ifs, line)) {
     auto str{trans_str(line)};
     if (!std::empty(str)) {
-      texts.push_back(str);
+
+      if (!std::empty(texts) && texts.back().ends_with("，")) {
+        texts.back().append(str);
+      } else {
+        texts.push_back(str);
+      }
     }
   }
 
