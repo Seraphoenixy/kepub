@@ -24,7 +24,7 @@ echo "Install icu completed"
 cd cd boost_*
 sudo ./b2 --toolset=gcc-10 --with-program_options install
 cd ..
-echo "Install Boost completed"
+echo "Install boost completed"
 
 cd ..
 

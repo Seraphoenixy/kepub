@@ -80,8 +80,8 @@ foreach(FILE_PATH ${SRC})
 
   add_custom_target(
     run-${FILE_NAME} ALL
-    COMMAND ${FILE_NAME}
-    COMMAND ${FILE_NAME}-shared
+    COMMAND ${FILE_NAME} -h
+    COMMAND ${FILE_NAME}-shared -h
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     DEPENDS ${FILE_NAME}
     COMMENT "Run ${FILE_NAME}")
@@ -92,7 +92,7 @@ foreach(FILE_PATH ${SRC})
       COMMAND
         ${CMAKE_CXX_COMPILER} ${FILE_PATH} -O3 -Wall -Wextra -Wpedantic -Werror
         -o ${FILE_NAME}-pkg-config `pkg-config --libs --cflags epub`
-      COMMAND ${FILE_NAME}
+      COMMAND ${FILE_NAME} -h
       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
       COMMENT "Run ${FILE_NAME} pkg-config")
   endif()

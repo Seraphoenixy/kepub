@@ -11,18 +11,7 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 2
-
-      - run: git checkout HEAD^2
-        if: ${{ github.event_name == 'pull_request' }}
-
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v1
-        with:
-          config-file: .github/codeql/codeql_config.yml
+      - uses: actions/checkout@v2
 
       - name: Cache dependencies
         id: cache-dependencies
@@ -38,6 +27,11 @@ jobs:
       - name: Install dependencies
         if: steps.cache-dependencies.outputs.cache-hit == 'true'
         run: sudo bash ./scripts/install.sh
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v1
+        with:
+          config-file: .github/codeql/codeql_config.yml
 
       - name: Configure
         run: cmake -S . -B build
