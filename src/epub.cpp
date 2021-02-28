@@ -3,14 +3,14 @@
 #include <filesystem>
 #include <memory>
 
-#include <boost/program_options/options_description.hpp>
-#include <boost/program_options/parsers.hpp>
-#include <boost/program_options/positional_options.hpp>
-#include <boost/program_options/variables_map.hpp>
 #include <fmt/ostream.h>
 #include <unicode/translit.h>
 #include <unicode/unistr.h>
 #include <unicode/utypes.h>
+#include <boost/program_options/options_description.hpp>
+#include <boost/program_options/parsers.hpp>
+#include <boost/program_options/positional_options.hpp>
+#include <boost/program_options/variables_map.hpp>
 
 namespace {
 
@@ -87,9 +87,32 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("観", "观");
   str.findAndReplace("気", "气");
   str.findAndReplace("歴", "历");
+  str.findAndReplace("覧", "览");
+  str.findAndReplace("殭", "僵");
+  str.findAndReplace("郞", "郎");
+  str.findAndReplace("虊", "药");
+  str.findAndReplace("踼", "踢");
+  str.findAndReplace("逹", "达");
+  str.findAndReplace("鑜", "锁");
+  str.findAndReplace("髲", "发");
+  str.findAndReplace("髪", "发");
+  str.findAndReplace("実", "实");
+  str.findAndReplace("內", "内");
+  str.findAndReplace("穨", "颓");
+  str.findAndReplace("糸", "系");
+  str.findAndReplace("賍", "赃");
+  str.findAndReplace("掦", "扬");
+  str.findAndReplace("覇", "霸");
+  str.findAndReplace("姉", "姐");
+  str.findAndReplace("楽", "乐");
+  str.findAndReplace("継", "继");
+  str.findAndReplace("隠", "隐");
+  str.findAndReplace("巻", "卷");
+  str.findAndReplace("膞", "膊");
+  str.findAndReplace("髑", "骷");
 }
 
-} // namespace
+}  // namespace
 
 void init_trans() {
   if (!trans) {
@@ -237,9 +260,9 @@ void create_epub_directory(const std::string &book_name,
   create_directory(book_name + "/OEBPS/Fonts");
   create_directory(book_name + "/OEBPS/Text");
 
-  if (!std::filesystem::copy_file("MStiffHei PRC Black.ttf",
-                                  book_name +
-                                      "/OEBPS/Fonts/MStiffHei PRC Black.ttf")) {
+  if (!std::filesystem::copy_file(
+          "MStiffHei PRC Black.ttf",
+          book_name + "/OEBPS/Fonts/MStiffHei PRC Black.ttf")) {
     error("can not copy MStiffHei PRC Black.ttf");
   }
 
@@ -615,8 +638,8 @@ void generate_toc_ncx(const std::string &book_name,
       << std::endl;
 }
 
-std::pair<std::string, std::vector<std::string>>
-read_file(const std::string &filename) {
+std::pair<std::string, std::vector<std::string>> read_file(
+    const std::string &filename) {
   if (std::filesystem::path{filename}.filename().extension().string() !=
       ".txt") {
     error("must be a txt file: {}", filename);
@@ -631,7 +654,6 @@ read_file(const std::string &filename) {
   while (std::getline(ifs, line)) {
     auto str{trans_str(line)};
     if (!std::empty(str)) {
-
       if (!std::empty(texts) && texts.back().ends_with("，")) {
         texts.back().append(str);
       } else {

@@ -12,7 +12,7 @@
 #include <fmt/format.h>
 
 template <typename... Args>
-[[noreturn]] void error(std::string_view format_str, const Args &... args) {
+[[noreturn]] void error(std::string_view format_str, const Args &...args) {
   fmt::print(fmt::fg(fmt::terminal_color::red), "error: ");
   fmt::print(fmt::fg(fmt::terminal_color::red), format_str, args...);
   fmt::print("\n");
@@ -52,5 +52,5 @@ void generate_content_opf(const std::string &book_name,
 void generate_toc_ncx(const std::string &book_name,
                       const std::vector<std::string> &titles);
 
-std::pair<std::string, std::vector<std::string>>
-read_file(const std::string &filename);
+std::pair<std::string, std::vector<std::string>> read_file(
+    const std::string &filename);
