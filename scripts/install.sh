@@ -18,7 +18,7 @@ echo "Install fmt completed"
 
 cd icu/source
 sudo make install
-cd ..
+cd ../..
 echo "Install icu completed"
 
 cd cd boost_*

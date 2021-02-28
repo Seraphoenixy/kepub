@@ -24,14 +24,14 @@ Generate epub
 
 #### Build
 
-```shell
+```bash
 cmake -S . -B build
 cmake --build build --config Release
 ```
 
 #### Install
 
-```shell
+```bash
 sudo cmake --build build --config Release --target install
 ```
 
@@ -41,12 +41,12 @@ The font file needs to be in the working directory
 
 - Generated from the integrated txt file in https://gitlab.com/demonovel/epub-txt/-/tree/master (introduction and packaging need to be done manually)
 
-```shell
+```bash
 demonovel xxx.txt
 ```
 
 - Generated from the integrated txt file in https://mega.nz/#F!dw4DzZhJ!RNFlsWOf-QTOZJvsMmqLlA (introduction, author, and packaging need to be done manually)
 
-```shell
+```bash
 masiro xxx.txt
 ```
