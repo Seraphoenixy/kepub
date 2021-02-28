@@ -3,9 +3,9 @@
 [![Build](https://github.com/KaiserLancelot/epub/workflows/Build/badge.svg)](https://github.com/KaiserLancelot/epub/actions?query=workflow%3ABuild)
 [![GitHub License](https://img.shields.io/github/license/KaiserLancelot/epub)](https://raw.githubusercontent.com/KaiserLancelot/epub/master/LICENSE)
 [![996.icu](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu)
-[![GitHub Releases](https://img.shields.io/github/release/KaiserLancelot/epub)](https://github.com/KaiserLancelot/epubv/releases/latest)
-[![GitHub Downloads](https://img.shields.io/github/downloads/KaiserLancelot/epubv/total)](https://github.com/KaiserLancelot/epubv/releases)
-[![Bugs](https://img.shields.io/github/issues/KaiserLancelot/epubv/bug)](https://github.com/KaiserLancelot/epubv/issues?q=is%3Aopen+is%3Aissue+label%3Abug)
+[![GitHub Releases](https://img.shields.io/github/release/KaiserLancelot/epub)](https://github.com/KaiserLancelot/epub/releases/latest)
+[![GitHub Downloads](https://img.shields.io/github/downloads/KaiserLancelot/epub/total)](https://github.com/KaiserLancelot/epub/releases)
+[![Bugs](https://img.shields.io/github/issues/KaiserLancelot/epub/bug)](https://github.com/KaiserLancelot/epub/issues?q=is%3Aopen+is%3Aissue+label%3Abug)
 
 Generate epub
 
