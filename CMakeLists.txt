@@ -78,8 +78,8 @@ if(EPUB_BUILD_SHARED)
            "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
   target_compile_definitions(${LIBRARY}-shared PUBLIC EPUB_COMPILED_LIB)
   target_compile_features(${LIBRARY}-shared PUBLIC cxx_std_20)
-  target_link_libraries(${LIBRARY} PUBLIC fmt::fmt ${ICU_LIBRARIES}
-                                          ${Boost_LIBRARIES})
+  target_link_libraries(${LIBRARY}-shared PUBLIC fmt::fmt ${ICU_LIBRARIES}
+                                                 ${Boost_LIBRARIES})
 
   set_target_properties(
     ${LIBRARY}-shared
