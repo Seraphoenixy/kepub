@@ -20,9 +20,9 @@ include(ClangTidy)
 include(CompilerOptions)
 include(Format)
 
-find_package(Boost REQUIRED COMPONENTS program_options)
-find_package(ICU REQUIRED COMPONENTS uc i18n)
 find_package(fmt REQUIRED)
+find_package(ICU REQUIRED COMPONENTS uc i18n)
+find_package(Boost REQUIRED COMPONENTS program_options)
 
 # ---------------------------------------------------------------------------------------
 # Set variables
@@ -50,9 +50,8 @@ if(EPUB_BUILD_STATIC)
                       "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
   target_compile_definitions(${LIBRARY} PUBLIC EPUB_COMPILED_LIB)
   target_compile_features(${LIBRARY} PUBLIC cxx_std_20)
-
-  target_link_libraries(${LIBRARY} PRIVATE fmt::fmt ${Boost_LIBRARIES}
-                                           ${ICU_LIBRARIES})
+  target_link_libraries(${LIBRARY} PUBLIC fmt::fmt ${ICU_LIBRARIES}
+                                          ${Boost_LIBRARIES})
 
   set_target_properties(
     ${LIBRARY}
@@ -79,9 +78,8 @@ if(EPUB_BUILD_SHARED)
            "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
   target_compile_definitions(${LIBRARY}-shared PUBLIC EPUB_COMPILED_LIB)
   target_compile_features(${LIBRARY}-shared PUBLIC cxx_std_20)
-
-  target_link_libraries(${LIBRARY} PRIVATE fmt::fmt ${Boost_LIBRARIES}
-                                           ${ICU_LIBRARIES})
+  target_link_libraries(${LIBRARY} PUBLIC fmt::fmt ${ICU_LIBRARIES}
+                                          ${Boost_LIBRARIES})
 
   set_target_properties(
     ${LIBRARY}-shared
