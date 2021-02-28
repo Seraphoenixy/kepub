@@ -1,0 +1,10 @@
+#pragma once
+
+#define EPUB_VER_MAJOR 0
+
+#define EPUB_VER_MINOR 1
+
+#define EPUB_VER_PATCH 0
+
+#define EPUB_VERSION \
+  (EPUB_VER_MAJOR * 10000 + EPUB_VER_MINOR * 100 + EPUB_VER_PATCH)

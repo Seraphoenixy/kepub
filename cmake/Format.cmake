@@ -1,25 +1,37 @@
-find_program(CLANG_FORMAT_PATH NAMES clang-format)
+if(EPUB_FORMAT)
+  message(STATUS "Format code using clang-format and cmake-format")
 
-if(CLANG_FORMAT_PATH)
-  message(STATUS "clang-format found")
-  add_custom_target(clang_format COMMAND ${CLANG_FORMAT_PATH} -i -verbose
-                                         ${CLANG_FORMAT_SOURCES})
-  add_dependencies(demonovel clang_format)
-  add_dependencies(esjzone clang_format)
-  add_dependencies(masiro clang_format)
-else()
-  message(STATUS "clang-format not found")
-endif()
+  find_program(CLANG_FORMAT_EXECUTABLE clang-format)
+  find_program(CMAKE_FORMAT_EXECUTABLE cmake-format)
 
-find_program(CMAKE_FORMAT_PATH NAMES cmake-format)
+  if(NOT CLANG_FORMAT_EXECUTABLE)
+    message(FATAL_ERROR "Can not find clang-format")
+  endif()
 
-if(CMAKE_FORMAT_PATH)
-  message(STATUS "cmake-format found")
-  add_custom_target(cmake_format COMMAND ${CMAKE_FORMAT_PATH} -i
-                                         ${CMAKE_FORMAT_SOURCES})
-  add_dependencies(demonovel cmake_format)
-  add_dependencies(esjzone cmake_format)
-  add_dependencies(masiro cmake_format)
-else()
-  message(STATUS "cmake-format not found")
+  if(NOT CMAKE_FORMAT_EXECUTABLE)
+    message(FATAL_ERROR "Can not find cmake-format")
+  endif()
+
+  file(
+    GLOB_RECURSE
+    CLANG_FORMAT_SRC
+    CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/examples/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/tool/*.cpp")
+
+  file(
+    GLOB_RECURSE
+    CMAKE_FORMAT_SRC
+    CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/*.cmake"
+    "${CMAKE_CURRENT_SOURCE_DIR}/examples/CMakeLists.txt"
+    "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt")
+
+  add_custom_target(
+    format
+    COMMAND ${CLANG_FORMAT_EXECUTABLE} -i ${CLANG_FORMAT_SRC}
+    COMMAND ${CMAKE_FORMAT_EXECUTABLE} -i ${CMAKE_FORMAT_SRC}
+    COMMENT "Start formatting code")
 endif()

@@ -32,9 +32,8 @@
 *.app
 
 # Development files
-.clangd
+.cache
 build
-.idea
 cmake-build-*
-*.profraw
 compile_commands.json
+*.profraw
