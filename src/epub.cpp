@@ -2,6 +2,7 @@
 
 #include <filesystem>
 #include <memory>
+#include <string_view>
 
 #include <fmt/ostream.h>
 #include <unicode/translit.h>
@@ -11,6 +12,9 @@
 #include <boost/program_options/parsers.hpp>
 #include <boost/program_options/positional_options.hpp>
 #include <boost/program_options/variables_map.hpp>
+
+#include "epub/font.h"
+#include "epub/version.h"
 
 namespace {
 
@@ -228,7 +232,8 @@ std::pair<std::vector<std::string>, bool> processing_cmd(std::int32_t argc,
   }
 
   if (vm.contains("version")) {
-    fmt::print("{} version: {} {}\n", argv[0], __DATE__, __TIME__);
+    fmt::print("{} version: {}.{}.{}\n", argv[0], EPUB_VER_MAJOR,
+               EPUB_VER_MINOR, EPUB_VER_PATCH);
     std::exit(EXIT_SUCCESS);
   }
 
@@ -249,10 +254,6 @@ void create_epub_directory(const std::string &book_name,
     }
   }
 
-  if (!std::filesystem::exists("MStiffHei PRC Black.ttf")) {
-    error("can not find: MStiffHei PRC Black.ttf", book_name);
-  }
-
   create_directory(book_name);
   create_directory(book_name + "/META-INF");
   create_directory(book_name + "/OEBPS");
@@ -260,11 +261,8 @@ void create_epub_directory(const std::string &book_name,
   create_directory(book_name + "/OEBPS/Fonts");
   create_directory(book_name + "/OEBPS/Text");
 
-  if (!std::filesystem::copy_file(
-          "MStiffHei PRC Black.ttf",
-          book_name + "/OEBPS/Fonts/MStiffHei PRC Black.ttf")) {
-    error("can not copy MStiffHei PRC Black.ttf");
-  }
+  std::ofstream font_ofs{book_name + "/OEBPS/Fonts/MStiffHei PRC Black.ttf"};
+  font_ofs << std::string_view(font, font_size) << std::flush;
 
   std::string filename{book_name + "/stylesheet.css"};
   std::ofstream stylesheet{filename};

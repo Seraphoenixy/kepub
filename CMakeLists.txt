@@ -8,7 +8,7 @@ epub_extract_version()
 project(
   epub
   VERSION ${EPUB_VERSION}
-  LANGUAGES CXX)
+  LANGUAGES CXX ASM)
 
 message(STATUS "Build ${PROJECT_NAME}: ${EPUB_VERSION}")
 
@@ -36,6 +36,17 @@ set(EXECUTABLE_TARGETS)
 set(LIBRARY_TARGETS)
 
 # ---------------------------------------------------------------------------------------
+# Build font
+# ---------------------------------------------------------------------------------------
+message(STATUS "Build font")
+list(APPEND LIBRARY_TARGETS font)
+
+file(GLOB_RECURSE FONT_SRC CONFIGURE_DEPENDS
+     "${CMAKE_CURRENT_SOURCE_DIR}/src/font.s")
+add_library(font STATIC ${FONT_SRC})
+target_compile_options(font PRIVATE "-Wno-unused-command-line-argument")
+
+# ---------------------------------------------------------------------------------------
 # Build static library
 # ---------------------------------------------------------------------------------------
 if(EPUB_BUILD_STATIC)
@@ -50,7 +61,7 @@ if(EPUB_BUILD_STATIC)
                       "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
   target_compile_definitions(${LIBRARY} PUBLIC EPUB_COMPILED_LIB)
   target_compile_features(${LIBRARY} PUBLIC cxx_std_20)
-  target_link_libraries(${LIBRARY} PUBLIC fmt::fmt ${ICU_LIBRARIES}
+  target_link_libraries(${LIBRARY} PUBLIC font fmt::fmt ${ICU_LIBRARIES}
                                           ${Boost_LIBRARIES})
 
   set_target_properties(
@@ -78,7 +89,7 @@ if(EPUB_BUILD_SHARED)
            "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
   target_compile_definitions(${LIBRARY}-shared PUBLIC EPUB_COMPILED_LIB)
   target_compile_features(${LIBRARY}-shared PUBLIC cxx_std_20)
-  target_link_libraries(${LIBRARY}-shared PUBLIC fmt::fmt ${ICU_LIBRARIES}
+  target_link_libraries(${LIBRARY}-shared PUBLIC font fmt::fmt ${ICU_LIBRARIES}
                                                  ${Boost_LIBRARIES})
 
   set_target_properties(
