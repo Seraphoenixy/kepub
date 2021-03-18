@@ -21,7 +21,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: dependencies
-          key: ${{ runner.os }}-dependencies-20210228
+          key: ${{ runner.os }}-dependencies-20210318
 
       - name: Build and install dependencies
         if: steps.cache-dependencies.outputs.cache-hit != 'true'
