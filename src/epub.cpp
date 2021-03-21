@@ -41,6 +41,10 @@ void create_directory(const std::string &dir) {
 }
 
 void custom_trans(icu::UnicodeString &str) {
+  str.findAndReplace("&", "&amp;");
+  str.findAndReplace("<", "&lt;");
+  str.findAndReplace(">", "&gt;");
+
   str.findAndReplace("妳", "你");
   str.findAndReplace("壊", "坏");
   str.findAndReplace("拚", "拼");
