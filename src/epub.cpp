@@ -114,6 +114,26 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("巻", "卷");
   str.findAndReplace("膞", "膊");
   str.findAndReplace("髑", "骷");
+  str.findAndReplace("劄", "札");
+  str.findAndReplace("擡", "抬");
+  str.findAndReplace("⼈", "人");
+  str.findAndReplace("⾛", "走");
+  str.findAndReplace("⼤", "大");
+  str.findAndReplace("⽤", "用");
+  str.findAndReplace("⼿", "手");
+  str.findAndReplace("⼦", "子");
+  str.findAndReplace("⽽", "而");
+  str.findAndReplace("⾄", "至");
+  str.findAndReplace("⽯", "石");
+  str.findAndReplace("⼗", "十");
+  str.findAndReplace("⽩", "白");
+  str.findAndReplace("⽗", "父");
+  str.findAndReplace("⽰", "示");
+  str.findAndReplace("⾁", "肉");
+  str.findAndReplace("⼠", "士");
+  str.findAndReplace("⽌", "止");
+  str.findAndReplace("⼀", "一");
+  str.findAndReplace("⺠", "民");
 }
 
 }  // namespace
