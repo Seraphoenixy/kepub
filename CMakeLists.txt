@@ -46,7 +46,7 @@ file(GLOB_RECURSE FONT_SRC CONFIGURE_DEPENDS
 add_library(font STATIC ${FONT_SRC})
 target_compile_options(font PRIVATE "-Wno-unused-command-line-argument")
 file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/font/MStiffHei PRC Black.ttf"
-     DESTINATION ${CMAKE_BINARY_DIR})
+     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 # ---------------------------------------------------------------------------------------
 # Build static library
