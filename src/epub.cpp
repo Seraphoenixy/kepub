@@ -138,6 +138,8 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("⽌", "止");
   str.findAndReplace("⼀", "一");
   str.findAndReplace("⺠", "民");
+  str.findAndReplace("揹", "背");
+  str.findAndReplace("镳", "镖");
 }
 
 }  // namespace
