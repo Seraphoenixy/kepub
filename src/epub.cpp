@@ -142,6 +142,8 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("镳", "镖");
   str.findAndReplace("佈", "布");
   str.findAndReplace("勐", "猛");
+  str.findAndReplace("嗳", "哎");
+  str.findAndReplace("纔", "才");
 }
 
 }  // namespace
