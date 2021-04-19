@@ -270,8 +270,8 @@ std::pair<std::vector<std::string>, bool> processing_cmd(std::int32_t argc,
   }
 
   if (vm.contains("version")) {
-    fmt::print("{} version: {}.{}.{}\n", argv[0], EPUB_VER_MAJOR,
-               EPUB_VER_MINOR, EPUB_VER_PATCH);
+    fmt::print("{} version: {}.{}.{}\n", argv[0], KEPUB_VER_MAJOR,
+               KEPUB_VER_MINOR, KEPUB_VER_PATCH);
     std::exit(EXIT_SUCCESS);
   }
 
