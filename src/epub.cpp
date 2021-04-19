@@ -146,6 +146,12 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("勐", "猛");
   str.findAndReplace("嗳", "哎");
   str.findAndReplace("纔", "才");
+  str.findAndReplace("繄", "紧");
+  str.findAndReplace("勧", "劝");
+  str.findAndReplace("鐡", "铁");
+  str.findAndReplace("犠", "牺");
+  str.findAndReplace("繊", "纤");
+  str.findAndReplace("郷", "乡");
 }
 
 }  // namespace
