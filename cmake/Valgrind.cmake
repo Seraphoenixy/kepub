@@ -12,7 +12,8 @@ if(KEPUB_VALGRIND)
     COMMAND
       ${VALGRIND_EXECUTABLE} --leak-check=full --show-leak-kinds=all
       --leak-resolution=med --track-origins=yes --vgdb=no --tool=memcheck
-      --gen-suppressions=all --error-exitcode=1 ./masiro masiro.txt
+      --gen-suppressions=all --error-exitcode=1 ./${MASIRO_EXECUTABLE}
+      masiro.txt
     WORKING_DIRECTORY ${KEPUB_BINARY_DIR}/test)
 
   add_test(
@@ -20,6 +21,7 @@ if(KEPUB_VALGRIND)
     COMMAND
       ${VALGRIND_EXECUTABLE} --leak-check=full --show-leak-kinds=all
       --leak-resolution=med --track-origins=yes --vgdb=no --tool=memcheck
-      --gen-suppressions=all --error-exitcode=1 ./demonovel demonovel.txt
+      --gen-suppressions=all --error-exitcode=1 ./${DEMONOVEL_EXECUTABLE}
+      demonovel.txt
     WORKING_DIRECTORY ${KEPUB_BINARY_DIR}/test)
 endif()

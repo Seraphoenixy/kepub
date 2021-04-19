@@ -31,7 +31,9 @@ message(STATUS "Build type: " ${CMAKE_BUILD_TYPE})
 # Set variables
 # ---------------------------------------------------------------------------------------
 set(LIBRARY lib${PROJECT_NAME})
-set(EXECUTABLE "")
+set(DEMONOVEL_EXECUTABLE demonovel)
+set(ESJZONE_EXECUTABLE esjzone)
+set(MASIRO_EXECUTABLE masiro)
 
 set(KEPUB_LIBCXX "/usr/local/lib/libc++.a")
 set(KEPUB_LIBCXXABI "/usr/local/lib/libc++abi.a")

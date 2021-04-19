@@ -29,8 +29,8 @@ if(KEPUB_BUILD_COVERAGE)
     add_custom_target(
       coverage
       COMMAND ${LCOV_EXECUTABLE} -d ${KEPUB_BINARY_DIR} -z
-      COMMAND masiro masiro.txt
-      COMMAND demonovel demonovel.txt
+      COMMAND ${MASIRO_EXECUTABLE} masiro.txt
+      COMMAND ${DEMONOVEL_EXECUTABLE} demonovel.txt
       COMMAND
         ${LCOV_EXECUTABLE} -d ${KEPUB_BINARY_DIR} --include
         '${KEPUB_SOURCE_DIR}/src/*.cpp' --include
@@ -39,7 +39,7 @@ if(KEPUB_BUILD_COVERAGE)
       COMMAND ${GENHTML_EXECUTABLE} lcov.info -o coverage -s --title
               "${PROJECT_NAME}" --legend --demangle-cpp --branch-coverage
       WORKING_DIRECTORY ${KEPUB_BINARY_DIR}/test
-      DEPENDS ${EXECUTABLE}
+      DEPENDS ${MASIRO_EXECUTABLE} ${DEMONOVEL_EXECUTABLE}
       COMMENT
         "Generate HTML report: ${KEPUB_BINARY_DIR}/test/coverage/index.html")
   else()

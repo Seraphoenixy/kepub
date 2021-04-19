@@ -5,11 +5,32 @@ include(GNUInstallDirs)
 # ---------------------------------------------------------------------------------------
 # https://stackoverflow.com/questions/30398238/cmake-rpath-not-working-could-not-find-shared-object-file
 set_target_properties(
-  ${EXECUTABLE} PROPERTIES INSTALL_RPATH "$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
-                           INSTALL_RPATH_USE_LINK_PATH TRUE)
+  ${DEMONOVEL_EXECUTABLE}
+  PROPERTIES INSTALL_RPATH "$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
+             INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+set_target_properties(
+  ${ESJZONE_EXECUTABLE}
+  PROPERTIES INSTALL_RPATH "$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
+             INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+set_target_properties(
+  ${MASIRO_EXECUTABLE}
+  PROPERTIES INSTALL_RPATH "$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
+             INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 install(
-  TARGETS ${EXECUTABLE}
+  TARGETS ${DEMONOVEL_EXECUTABLE}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+
+install(
+  TARGETS ${ESJZONE_EXECUTABLE}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+
+install(
+  TARGETS ${MASIRO_EXECUTABLE}
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
@@ -33,7 +54,7 @@ set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
 
 # https://cmake.org/cmake/help/latest/module/InstallRequiredSystemLibraries.html
 set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS
-    "/usr/local/lib/libicuuc.so.69;/usr/local/lib/libicui18n.so.69;/usr/local/lib/libicudata.so.69"
+    "/usr/local/lib/libicuuc.so.69.1;/usr/local/lib/libicui18n.so.69.1;/usr/local/lib/libicudata.so.69.1"
 )
 include(InstallRequiredSystemLibraries)
 
