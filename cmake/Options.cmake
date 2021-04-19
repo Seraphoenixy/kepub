@@ -1,20 +1,19 @@
-if(NOT DEFINED EPUB_MASTER_PROJECT)
-  if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-    set(EPUB_MASTER_PROJECT ON)
-  else()
-    set(EPUB_MASTER_PROJECT OFF)
-  endif()
-endif()
+option(KEPUB_BUILD_TEST "Build test" OFF)
 
-option(EPUB_BUILD_STATIC "Build static library" ON)
-option(EPUB_BUILD_SHARED "Build shared library" ON)
+option(KEPUB_FORMAT "Format code using clang-format and cmake-format" OFF)
+option(KEPUB_CLANG_TIDY "Analyze code with clang-tidy" OFF)
 
-option(EPUB_BUILD_ALL
-       "Build all executable, tests, benchmarks, documentations and coverage"
-       OFF)
-option(EPUB_BUILD_EXECUTABLE "Build executable" ${EPUB_MASTER_PROJECT})
+option(KEPUB_USE_LIBCXX "Use libc++" OFF)
 
-option(EPUB_FORMAT "Format code using clang-format and cmake-format" OFF)
-option(EPUB_CLANG_TIDY "Analyze code with clang-tidy" OFF)
+include(CMakeDependentOption)
+cmake_dependent_option(KEPUB_BUILD_COVERAGE "Build with coverage information"
+                       OFF "BUILD_TESTING;KEPUB_BUILD_TEST" OFF)
+cmake_dependent_option(KEPUB_VALGRIND "Execute test with valgrind" OFF
+                       "BUILD_TESTING;KEPUB_BUILD_TEST" OFF)
 
-option(EPUB_INSTALL "Generate the install target" ${EPUB_MASTER_PROJECT})
+set(KEPUB_SANITIZER
+    ""
+    CACHE
+      STRING
+      "Build with a sanitizer. Options are: Address, Thread, Memory, Undefined and AddressUndefined"
+)

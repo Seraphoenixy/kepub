@@ -13,8 +13,10 @@
 #include <boost/program_options/positional_options.hpp>
 #include <boost/program_options/variables_map.hpp>
 
-#include "epub/font.h"
 #include "epub/version.h"
+
+extern char font[];
+extern int font_size;
 
 namespace {
 
@@ -292,7 +294,9 @@ void create_epub_directory(const std::string &book_name,
   create_directory(book_name + "/OEBPS/Text");
 
   std::ofstream font_ofs{book_name + "/OEBPS/Fonts/MStiffHei PRC Black.ttf"};
-  font_ofs << std::string_view(font, font_size) << std::flush;
+  font_ofs << std::string_view(font,
+                               static_cast<std::string::size_type>(font_size))
+           << std::flush;
 
   std::string filename{book_name + "/stylesheet.css"};
   std::ofstream stylesheet{filename};

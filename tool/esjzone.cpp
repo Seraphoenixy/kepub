@@ -224,7 +224,8 @@ int main(int argc, char *argv[]) {
         } else if (pid == 0) {
           auto title{titles[index]};
 
-          auto filename{get_chapter_filename(book_name, index + 1)};
+          auto filename{get_chapter_filename(
+              book_name, static_cast<std::int32_t>(index) + 1)};
           std::ofstream ofs{filename};
           check_file_is_open(ofs, filename);
 
@@ -248,7 +249,8 @@ int main(int argc, char *argv[]) {
         }
       }
 
-      generate_content_opf(book_name, author, size + 1);
+      generate_content_opf(book_name, author,
+                           static_cast<std::int32_t>(size) + 1);
       generate_toc_ncx(book_name, titles);
     }
   }

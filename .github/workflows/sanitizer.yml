@@ -1,0 +1,136 @@
+name: Sanitizer
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "0 0 1 * *"
+
+jobs:
+  address-undefined:
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        compiler:
+          - { cc: "gcc", cxx: "g++" }
+          - { cc: "clang", cxx: "clang++" }
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache dependencies
+        id: cache-dependencies
+        uses: actions/cache@v2
+        with:
+          path: dependencies
+          key: address-undefined-sanitizer-dependencies-20210420
+
+      - name: Install dependencies
+        run: sudo bash script/build.sh
+
+      - name: Configure
+        run: |
+          cmake -G Ninja -S . -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+          -DKEPUB_BUILD_TEST=ON -DKEPUB_SANITIZER=AddressUndefined
+        env:
+          CC: ${{ matrix.compiler.cc }}
+          CXX: ${{ matrix.compiler.cxx }}
+
+      - name: Build
+        run: cmake --build build --config RelWithDebInfo -j"$(nproc)"
+
+      - name: Run executable
+        run: masiro -v
+
+      - name: Test
+        run: cd build ; ctest -C RelWithDebInfo -j"$(nproc)" --output-on-failure
+        env:
+          # https://clang.llvm.org/docs/AddressSanitizer.html
+          ASAN_OPTIONS: detect_stack_use_after_return=1
+          # # https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html
+          UBSAN_OPTIONS: print_stacktrace=1
+
+  memory:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache dependencies
+        id: cache-dependencies
+        uses: actions/cache@v2
+        with:
+          path: dependencies
+          key: memory-sanitizer-dependencies-memory-20210420
+
+      - name: Install dependencies
+        run: sudo bash script/build.sh -m
+
+      - name: Configure
+        run: |
+          cmake -G Ninja -S . -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+          -DKEPUB_BUILD_TEST=ON -DKEPUB_SANITIZER=Memory -DKEPUB_USE_LIBCXX=ON
+        env:
+          CC: clang
+          CXX: clang++
+
+      - name: Build
+        run: cmake --build build --config RelWithDebInfo -j"$(nproc)"
+
+      - name: Run executable
+        run: masiro -v
+
+      - name: Test
+        run: cd build ; ctest -C RelWithDebInfo -j"$(nproc)" --output-on-failure
+        env:
+          # https://clang.llvm.org/docs/MemorySanitizer.html
+          MSAN_OPTIONS: poison_in_dtor=1
+
+      - name: Archive when it fails
+        uses: actions/upload-artifact@v2
+        if: ${{ failure() }}
+        with:
+          name: memory
+          path: build
+          if-no-files-found: error
+
+  thread:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache dependencies
+        id: cache-dependencies
+        uses: actions/cache@v2
+        with:
+          path: dependencies
+          key: thread-sanitizer-dependencies-thread-20210420
+
+      - name: Install dependencies
+        run: sudo bash script/build.sh -t
+
+      - name: Configure
+        run: |
+          cmake -G Ninja -S . -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+          -DKEPUB_BUILD_TEST=ON -DKEPUB_SANITIZER=Thread -DKEPUB_USE_LIBCXX=ON
+        env:
+          CC: clang
+          CXX: clang++
+
+      - name: Build
+        run: cmake --build build --config RelWithDebInfo -j"$(nproc)"
+
+      - name: Run executable
+        run: masiro -v
+
+      - name: Test
+        run: cd build ; ctest -C RelWithDebInfo -j"$(nproc)" --output-on-failure
+
+      - name: Archive when it fails
+        uses: actions/upload-artifact@v2
+        if: ${{ failure() }}
+        with:
+          name: thread
+          path: build
+          if-no-files-found: error

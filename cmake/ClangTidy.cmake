@@ -1,4 +1,4 @@
-if(EPUB_CLANG_TIDY)
+if(KEPUB_CLANG_TIDY)
   message(STATUS "Analyze code with clang-tidy")
 
   find_program(CLANG_TIDY_EXECUTABLE clang-tidy)

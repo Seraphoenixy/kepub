@@ -1,0 +1,43 @@
+name: Valgrind
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "0 0 1 * *"
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        compiler:
+          - { cc: "gcc", cxx: "g++" }
+          - { cc: "clang", cxx: "clang++" }
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache dependencies
+        id: cache-dependencies
+        uses: actions/cache@v2
+        with:
+          path: dependencies
+          key: valgrind-dependencies-20210420
+
+      - name: Install dependencies
+        run: sudo bash script/build.sh
+
+      - name: Configure
+        run: |
+          cmake -G Ninja -S . -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+          -DKEPUB_BUILD_TEST=ON -DKEPUB_VALGRIND=ON
+        env:
+          CC: ${{ matrix.compiler.cc }}
+          CXX: ${{ matrix.compiler.cxx }}
+
+      - name: Build
+        run: cmake --build build --config RelWithDebInfo -j"$(nproc)"
+
+      - name: Test
+        run: cd build ; ctest -C RelWithDebInfo -j"$(nproc)" --output-on-failure

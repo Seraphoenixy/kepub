@@ -1,3 +1,8 @@
 {
-  "cmake.configureArgs": ["-DEPUB_FORMAT=ON"]
+  "cmake.configureArgs": [
+    "-DKEPUB_BUILD_TEST=ON",
+    "-DKEPUB_FORMAT=ON",
+    "-DKEPUB_BUILD_COVERAGE=ON",
+    "-DKEPUB_SANITIZER=AddressUndefined"
+  ]
 }
