@@ -1,4 +1,4 @@
-#include "epub/epub.h"
+#include "epub.h"
 
 #include <filesystem>
 #include <memory>
@@ -13,7 +13,7 @@
 #include <boost/program_options/positional_options.hpp>
 #include <boost/program_options/variables_map.hpp>
 
-#include "epub/version.h"
+#include "version.h"
 
 extern char font[];
 extern int font_size;

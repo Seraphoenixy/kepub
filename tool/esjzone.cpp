@@ -19,7 +19,7 @@
 #include <boost/process/io.hpp>
 #include <boost/process/pipe.hpp>
 
-#include "epub/epub.h"
+#include "epub.h"
 
 bool command_success(std::int32_t status) {
   return status != -1 && WIFEXITED(status) && !WEXITSTATUS(status);

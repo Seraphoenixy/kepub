@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "epub/epub.h"
+#include "epub.h"
 
 int main(int argc, char *argv[]) {
   init_trans();
