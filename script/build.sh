@@ -34,11 +34,11 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
   cd dependencies
 
   if $thread; then
-    kepub install fmt boost icu -i -t
+    kpkg install fmt boost icu -i -t
   elif $memory; then
-    kepub install fmt boost icu -i -m
+    kpkg install fmt boost icu -i -m
   else
-    kepub install lcov fmt boost icu -i
+    kpkg install lcov fmt boost icu -i
   fi
 
   sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 400
