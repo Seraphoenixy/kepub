@@ -12,18 +12,8 @@ add_test(
   WORKING_DIRECTORY ${KEPUB_BINARY_DIR}/test)
 
 add_test(
-  NAME masiro-xhtml-test
-  COMMAND masiro masiro.txt -x
-  WORKING_DIRECTORY ${KEPUB_BINARY_DIR}/test)
-
-add_test(
   NAME demonovel-test
   COMMAND demonovel demonovel.txt
-  WORKING_DIRECTORY ${KEPUB_BINARY_DIR}/test)
-
-add_test(
-  NAME demonovel-xhtml-test
-  COMMAND demonovel demonovel.txt -x
   WORKING_DIRECTORY ${KEPUB_BINARY_DIR}/test)
 
 include(Coverage)

@@ -30,9 +30,7 @@ if(KEPUB_BUILD_COVERAGE)
       coverage
       COMMAND ${LCOV_EXECUTABLE} -d ${KEPUB_BINARY_DIR} -z
       COMMAND masiro masiro.txt
-      COMMAND masiro masiro.txt -x
       COMMAND demonovel demonovel.txt
-      COMMAND demonovel demonovel.txt -x
       COMMAND
         ${LCOV_EXECUTABLE} -d ${KEPUB_BINARY_DIR} --include
         '${KEPUB_SOURCE_DIR}/src/*.cpp' --include

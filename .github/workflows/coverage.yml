@@ -36,7 +36,6 @@ jobs:
 
       # https://github.com/coverallsapp/github-action
       - name: Coveralls
-        if: ${{ matrix.compiler.cxx == 'g++' }}
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}

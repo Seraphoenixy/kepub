@@ -16,26 +16,10 @@ if(KEPUB_VALGRIND)
     WORKING_DIRECTORY ${KEPUB_BINARY_DIR}/test)
 
   add_test(
-    NAME masiro-xhtml-valgrind
-    COMMAND
-      ${VALGRIND_EXECUTABLE} --leak-check=full --show-leak-kinds=all
-      --leak-resolution=med --track-origins=yes --vgdb=no --tool=memcheck
-      --gen-suppressions=all --error-exitcode=1 ./masiro masiro.txt -x
-    WORKING_DIRECTORY ${KEPUB_BINARY_DIR}/test)
-
-  add_test(
     NAME demonovel-valgrind
     COMMAND
       ${VALGRIND_EXECUTABLE} --leak-check=full --show-leak-kinds=all
       --leak-resolution=med --track-origins=yes --vgdb=no --tool=memcheck
       --gen-suppressions=all --error-exitcode=1 ./demonovel demonovel.txt
-    WORKING_DIRECTORY ${KEPUB_BINARY_DIR}/test)
-
-  add_test(
-    NAME demonovel-xhtml-valgrind
-    COMMAND
-      ${VALGRIND_EXECUTABLE} --leak-check=full --show-leak-kinds=all
-      --leak-resolution=med --track-origins=yes --vgdb=no --tool=memcheck
-      --gen-suppressions=all --error-exitcode=1 ./demonovel demonovel.txt -x
     WORKING_DIRECTORY ${KEPUB_BINARY_DIR}/test)
 endif()
