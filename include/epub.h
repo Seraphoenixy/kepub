@@ -1,28 +1,10 @@
 #pragma once
 
 #include <cstdint>
-#include <cstdlib>
 #include <fstream>
 #include <string>
-#include <string_view>
 #include <utility>
 #include <vector>
-
-#include <fmt/color.h>
-#include <fmt/format.h>
-
-template <typename... Args>
-[[noreturn]] void error(std::string_view format_str, const Args &...args) {
-  fmt::print(fmt::fg(fmt::terminal_color::red), "error: ");
-  fmt::print(fmt::fg(fmt::terminal_color::red), format_str, args...);
-  fmt::print("\n");
-
-  std::exit(EXIT_FAILURE);
-}
-
-void init_trans();
-
-std::string trans_str(const std::string &str);
 
 std::string get_chapter_filename(const std::string &book_name,
                                  std::int32_t count);

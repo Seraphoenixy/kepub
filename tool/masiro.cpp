@@ -5,10 +5,9 @@
 #include <vector>
 
 #include "epub.h"
+#include "trans.h"
 
 int main(int argc, char *argv[]) {
-  init_trans();
-
   auto [input_file, xhtml]{processing_cmd(argc, argv)};
 
   for (const auto &item : input_file) {
@@ -49,4 +48,6 @@ int main(int argc, char *argv[]) {
       generate_toc_ncx(book_name, titles);
     }
   }
+
+  clean_up();
 }

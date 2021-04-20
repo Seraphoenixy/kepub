@@ -20,6 +20,8 @@
 #include <boost/process/pipe.hpp>
 
 #include "epub.h"
+#include "error.h"
+#include "trans.h"
 
 bool command_success(std::int32_t status) {
   return status != -1 && WIFEXITED(status) && !WEXITSTATUS(status);
@@ -60,6 +62,8 @@ std::vector<std::string> get_html_file(const std::string &url) {
 std::tuple<std::vector<std::string>, std::vector<std::string>, std::string,
            std::string, std::vector<std::string>>
 get_content(const std::string &id) {
+  Trans trans;
+
   std::vector<std::string> urls;
   std::vector<std::string> titles;
   std::string book_name;
@@ -93,7 +97,7 @@ get_content(const std::string &id) {
 
       auto first{sub_item.find(title_prefix) + std::size(title_prefix)};
       auto end{sub_item.find('>')};
-      auto title{trans_str(sub_item.substr(first, end - first - 1))};
+      auto title{trans.trans_str(sub_item.substr(first, end - first - 1))};
       title = title.substr(0, title.find("https"));
 
       if (std::empty(title)) {
@@ -104,12 +108,12 @@ get_content(const std::string &id) {
     } else if (item.starts_with(book_name_prefix)) {
       auto first{item.find(book_name_prefix) + std::size(book_name_prefix)};
       auto end{item.find("</h2>")};
-      book_name = trans_str(item.substr(first, end - first));
+      book_name = trans.trans_str(item.substr(first, end - first));
     } else if (item.starts_with(author_prefix)) {
       auto first{item.find(author_prefix) + std::size(author_prefix)};
       auto item_sub{item.substr(first)};
       auto index{item_sub.find('/')};
-      author = trans_str(item_sub.substr(0, index));
+      author = trans.trans_str(item_sub.substr(0, index));
     } else if (item.starts_with(description_prefix)) {
       auto index{item.find(description_prefix) + std::size(description_prefix)};
       auto item_sub{item.substr(index)};
@@ -128,7 +132,7 @@ get_content(const std::string &id) {
           {}};
 
       for (const auto &s : temp) {
-        auto str{trans_str(s)};
+        auto str{trans.trans_str(s)};
         if (!std::empty(str)) {
           description.push_back(str.substr(3));
         }
@@ -157,6 +161,7 @@ get_content(const std::string &id) {
 
 std::vector<std::string> get_text(const std::string &url) {
   std::vector<std::string> result;
+  Trans trans;
 
   for (const auto &item : get_html_file(url)) {
     if (item.starts_with("<p>")) {
@@ -171,7 +176,7 @@ std::vector<std::string> get_text(const std::string &url) {
       }
 
       auto index{item_sub.find("</p>")};
-      item_sub = trans_str(item_sub.substr(0, index));
+      item_sub = trans.trans_str(item_sub.substr(0, index));
 
       if (item_sub == "<br>") {
         continue;
@@ -191,8 +196,6 @@ std::vector<std::string> get_text(const std::string &url) {
 }
 
 int main(int argc, char *argv[]) {
-  init_trans();
-
   auto [input_file, xhtml]{processing_cmd(argc, argv)};
 
   for (const auto &item : input_file) {
@@ -254,4 +257,6 @@ int main(int argc, char *argv[]) {
       generate_toc_ncx(book_name, titles);
     }
   }
+
+  clean_up();
 }
