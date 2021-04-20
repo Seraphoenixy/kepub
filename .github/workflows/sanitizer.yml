@@ -40,7 +40,7 @@ jobs:
         run: cmake --build build --config RelWithDebInfo -j"$(nproc)"
 
       - name: Run executable
-        run: cd build/tool ; masiro -v
+        run: cd build/tool ; ./masiro -v
 
       - name: Test
         run: cd build ; ctest -C RelWithDebInfo -j"$(nproc)" --output-on-failure
@@ -78,7 +78,7 @@ jobs:
         run: cmake --build build --config RelWithDebInfo -j"$(nproc)"
 
       - name: Run executable
-        run: cd build/tool ; masiro -v
+        run: cd build/tool ; ./masiro -v
 
       - name: Test
         run: cd build ; ctest -C RelWithDebInfo -j"$(nproc)" --output-on-failure
@@ -122,7 +122,7 @@ jobs:
         run: cmake --build build --config RelWithDebInfo -j"$(nproc)"
 
       - name: Run executable
-        run: cd build/tool ; masiro -v
+        run: cd build/tool ; ./masiro -v
 
       - name: Test
         run: cd build ; ctest -C RelWithDebInfo -j"$(nproc)" --output-on-failure
