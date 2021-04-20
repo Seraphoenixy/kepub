@@ -1,20 +1,20 @@
-file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/masiro.txt"
-     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/masiro-txt.txt"
+     DESTINATION ${KEPUB_BINARY_DIR}/tool)
 
-file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/demonovel.txt"
-     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/demonovel-txt.txt"
+     DESTINATION ${KEPUB_BINARY_DIR}/tool)
 
 enable_testing()
 
 add_test(
   NAME masiro-test
-  COMMAND masiro masiro.txt
-  WORKING_DIRECTORY ${KEPUB_BINARY_DIR}/test)
+  COMMAND masiro masiro-txt.txt
+  WORKING_DIRECTORY ${KEPUB_BINARY_DIR}/tool)
 
 add_test(
   NAME demonovel-test
-  COMMAND demonovel demonovel.txt
-  WORKING_DIRECTORY ${KEPUB_BINARY_DIR}/test)
+  COMMAND demonovel demonovel-txt.txt
+  WORKING_DIRECTORY ${KEPUB_BINARY_DIR}/tool)
 
 include(Coverage)
 include(Valgrind)

@@ -29,8 +29,8 @@ if(KEPUB_BUILD_COVERAGE)
     add_custom_target(
       coverage
       COMMAND ${LCOV_EXECUTABLE} -d ${KEPUB_BINARY_DIR} -z
-      COMMAND ${MASIRO_EXECUTABLE} masiro.txt
-      COMMAND ${DEMONOVEL_EXECUTABLE} demonovel.txt
+      COMMAND ${MASIRO_EXECUTABLE} masiro-txt.txt
+      COMMAND ${DEMONOVEL_EXECUTABLE} demonovel-txt.txt
       COMMAND
         ${LCOV_EXECUTABLE} -d ${KEPUB_BINARY_DIR} --include
         '${KEPUB_SOURCE_DIR}/src/*.cpp' --include
@@ -38,10 +38,10 @@ if(KEPUB_BUILD_COVERAGE)
         lcov.info --rc lcov_branch_coverage=1
       COMMAND ${GENHTML_EXECUTABLE} lcov.info -o coverage -s --title
               "${PROJECT_NAME}" --legend --demangle-cpp --branch-coverage
-      WORKING_DIRECTORY ${KEPUB_BINARY_DIR}/test
+      WORKING_DIRECTORY ${KEPUB_BINARY_DIR}/tool
       DEPENDS ${MASIRO_EXECUTABLE} ${DEMONOVEL_EXECUTABLE}
       COMMENT
-        "Generate HTML report: ${KEPUB_BINARY_DIR}/test/coverage/index.html")
+        "Generate HTML report: ${KEPUB_BINARY_DIR}/tool/coverage/index.html")
   else()
     message(FATAL_ERROR "Does not support llvm-cov")
   endif()
