@@ -1,5 +1,6 @@
 #include "trans.h"
 
+#include <unicode/schriter.h>
 #include <unicode/uclean.h>
 #include <unicode/unistr.h>
 #include <unicode/utypes.h>
@@ -9,9 +10,17 @@
 namespace {
 
 void custom_trans(icu::UnicodeString &str) {
-  str.findAndReplace("&", "&amp;");
   str.findAndReplace("<", "&lt;");
   str.findAndReplace(">", "&gt;");
+  str.findAndReplace("&", "&amp;");
+  str.findAndReplace("\"", "&quot;");
+  str.findAndReplace("'", "&apos;");
+  str.findAndReplace("¢", "&cent;");
+  str.findAndReplace("£", "&pound;");
+  str.findAndReplace("¥", "&yen;");
+  str.findAndReplace("€", "&euro;");
+  str.findAndReplace("©", "&copy;");
+  str.findAndReplace("®", "&reg;");
 
   str.findAndReplace("妳", "你");
   str.findAndReplace("壊", "坏");
@@ -62,7 +71,6 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("覚", "觉");
   str.findAndReplace("観", "观");
   str.findAndReplace("気", "气");
-  str.findAndReplace("歴", "历");
   str.findAndReplace("覧", "览");
   str.findAndReplace("殭", "僵");
   str.findAndReplace("郞", "郎");
@@ -118,6 +126,36 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("犠", "牺");
   str.findAndReplace("繊", "纤");
   str.findAndReplace("郷", "乡");
+  str.findAndReplace("亊", "事");
+  str.findAndReplace("騒", "骚");
+  str.findAndReplace("聡", "聪");
+  str.findAndReplace("遅", "迟");
+  str.findAndReplace("唖", "哑");
+  str.findAndReplace("獣", "兽");
+  str.findAndReplace("読", "读");
+  str.findAndReplace("囙", "因");
+  str.findAndReplace("寘", "置");
+  str.findAndReplace("対", "对");
+  str.findAndReplace("処", "处");
+  str.findAndReplace("団", "团");
+  str.findAndReplace("祢", "你");
+  str.findAndReplace("閙", "闹");
+  str.findAndReplace("谘", "咨");
+  str.findAndReplace("摀", "捂");
+  str.findAndReplace("類", "类");
+  str.findAndReplace("諷", "讽");
+}
+
+UChar32 get_first_uchar32(const std::string &str) {
+  icu::UnicodeString s(str.c_str());
+  icu::StringCharacterIterator iter(s);
+  return iter.first32();
+}
+
+UChar32 get_last_uchar32(const std::string &str) {
+  icu::UnicodeString s(str.c_str());
+  icu::StringCharacterIterator iter(s);
+  return iter.last32();
 }
 
 }  // namespace
@@ -144,6 +182,14 @@ std::string Trans::trans_str(const std::string &str) {
 
   std::string temp;
   return icu_str.toUTF8String(temp);
+}
+
+bool start_with_chinese(const std::string &str) {
+  return is_chinese(get_first_uchar32(str));
+}
+
+bool end_with_chinese(const std::string &str) {
+  return is_chinese(get_last_uchar32(str));
 }
 
 void clean_up() { u_cleanup(); }
