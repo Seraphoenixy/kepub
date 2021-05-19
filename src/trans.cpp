@@ -10,6 +10,8 @@
 namespace {
 
 void custom_trans(icu::UnicodeString &str) {
+  str.findAndReplace("&nbsp;", " ");
+
   str.findAndReplace("<", "&lt;");
   str.findAndReplace(">", "&gt;");
   str.findAndReplace("&", "&amp;");
@@ -144,6 +146,7 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("摀", "捂");
   str.findAndReplace("類", "类");
   str.findAndReplace("諷", "讽");
+  str.findAndReplace("唿", "呼");
 }
 
 UChar32 get_first_uchar32(const std::string &str) {
@@ -179,6 +182,8 @@ std::string Trans::trans_str(const std::string &str) {
 
   trans_->transliterate(icu_str);
   custom_trans(icu_str);
+
+  icu_str.trim();
 
   std::string temp;
   return icu_str.toUTF8String(temp);
