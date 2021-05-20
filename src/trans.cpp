@@ -12,9 +12,10 @@ namespace {
 void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("&nbsp;", " ");
 
+  str.findAndReplace("&", "&amp;");
+
   str.findAndReplace("<", "&lt;");
   str.findAndReplace(">", "&gt;");
-  str.findAndReplace("&", "&amp;");
   str.findAndReplace("\"", "&quot;");
   str.findAndReplace("'", "&apos;");
   str.findAndReplace("¢", "&cent;");
