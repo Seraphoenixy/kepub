@@ -553,19 +553,23 @@ std::pair<std::string, std::vector<std::string>> read_file(
 
   while (std::getline(ifs, line)) {
     auto str{trans.trans_str(line)};
-    if (!std::empty(str)) {
-      if (!std::empty(texts) &&
-          (texts.back().ends_with("，") || str.starts_with("，") ||
-           (end_with_chinese(texts.back()) && start_with_chinese(str)))) {
-        texts.back().append(str);
-      } else {
-        texts.push_back(str);
-      }
-    }
+    push_back(texts, str);
   }
 
   auto book_name{std::filesystem::path{filename}.filename().stem().string()};
   book_name = trans.trans_str(book_name);
 
   return {book_name, texts};
+}
+
+void push_back(std::vector<std::string> &texts, const std::string &str) {
+  if (!std::empty(str)) {
+    if (!std::empty(texts) &&
+        (texts.back().ends_with("，") || str.starts_with("，")
+         /*||(end_with_chinese(texts.back()) && start_with_chinese(str))*/)) {
+      texts.back().append(str);
+    } else {
+      texts.push_back(str);
+    }
+  }
 }

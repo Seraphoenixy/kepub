@@ -36,3 +36,5 @@ void generate_toc_ncx(const std::string &book_name,
 
 std::pair<std::string, std::vector<std::string>> read_file(
     const std::string &filename);
+
+void push_back(std::vector<std::string> &texts, const std::string &str);

@@ -23,6 +23,7 @@
 #include "error.h"
 #include "trans.h"
 
+// https://www.html-tidy.org/developer/
 std::string html_tidy(const std::string &html) {
   const char *input = html.c_str();
   TidyBuffer output = {};
@@ -30,11 +31,10 @@ std::string html_tidy(const std::string &html) {
 
   TidyDoc tdoc = tidyCreate();
 
-  std::int32_t rc = -1;
-  auto ok = tidyOptSetBool(tdoc, TidyXhtmlOut, yes);
-  if (ok) {
-    rc = tidySetErrorBuffer(tdoc, &errbuf);
-  }
+  tidyOptSetBool(tdoc, TidyXhtmlOut, yes);
+  tidyOptSetInt(tdoc, TidyWrapLen, 0);
+
+  auto rc = tidySetErrorBuffer(tdoc, &errbuf);
   if (rc >= 0) {
     rc = tidyParseString(tdoc, input);
   }
@@ -192,6 +192,7 @@ get_content(const std::string &id) {
       auto end{sub_item.find('>')};
       auto title{trans.trans_str(sub_item.substr(first, end - first - 1))};
       title = title.substr(0, title.find("https"));
+      trans.trans_str(title);
 
       if (std::empty(title)) {
         error("title is empty");
@@ -282,15 +283,11 @@ std::vector<std::string> get_text(const std::string &url) {
                    boost::token_compress_on);
       for (const auto &item : lines) {
         auto temp = trans.trans_str(item);
-        if (!std::empty(temp)) {
-          result.push_back(temp);
-        }
+        push_back(result, temp);
       }
     } else {
       auto temp = trans.trans_str(str);
-      if (!std::empty(temp)) {
-        result.push_back(temp);
-      }
+      push_back(result, temp);
     }
   }
 
