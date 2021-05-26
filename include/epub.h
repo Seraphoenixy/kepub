@@ -1,40 +1,67 @@
 #pragma once
 
-#include <cstdint>
-#include <fstream>
+#include <cstddef>
+#include <functional>
 #include <string>
 #include <utility>
 #include <vector>
 
-std::string get_chapter_filename(const std::string &book_name,
-                                 std::int32_t count);
+namespace kepub {
 
-void check_file_is_open(const std::ifstream &file, const std::string &filename);
+class Content {
+ public:
+  explicit Content(const std::string &title,
+                   const std::vector<std::string> &lines = {});
 
-void check_file_is_open(const std::ofstream &file, const std::string &filename);
+  void push_vec(const std::vector<std::string> &lines);
+  void push_line(const std::string &line);
 
-std::string chapter_file_begin(const std::string &title);
+  [[nodiscard]] const std::string &get_title() const;
+  [[nodiscard]] const std::vector<std::string> &get_lines() const;
 
-std::string chapter_file_text(const std::string &text);
+ private:
+  std::string title_;
+  std::vector<std::string> lines_;
+};
 
-const char *chapter_file_end();
+class Epub {
+ public:
+  Epub() = default;
 
-std::pair<std::vector<std::string>, bool> processing_cmd(std::int32_t argc,
-                                                         char *argv[]);
+  void set_creator(const std::string &creator);
 
-void create_epub_directory(const std::string &book_name,
-                           const std::vector<std::string> &description = {});
+  void set_book_name(const std::string &book_name);
+  void set_author(const std::string &author);
+  void set_description(const std::vector<std::string> &description);
 
-void generate_xhtml(const std::string &book_name,
-                    const std::vector<std::string> &texts);
+  void add_content(const std::string &title,
+                   const std::vector<std::string> &text);
+  void add_content(const Content &content);
 
-void generate_content_opf(const std::string &book_name,
-                          const std::string &author, std::int32_t count);
+  void generate() const;
 
-void generate_toc_ncx(const std::string &book_name,
-                      const std::vector<std::string> &titles);
+  void generate_for_web(
+      const std::vector<std::string> &titles,
+      const std::vector<std::string> &urls,
+      std::function<std::vector<std::string>(const std::string &get_text)>
+          get_text) const;
 
-std::pair<std::string, std::vector<std::string>> read_file(
-    const std::string &filename);
+ private:
+  void do_generate() const;
 
-void push_back(std::vector<std::string> &texts, const std::string &str);
+  [[nodiscard]] std::string generate_content_opf(std::size_t size) const;
+  [[nodiscard]] std::string generate_toc_ncx(
+      const std::vector<std::string> &titles) const;
+  [[nodiscard]] std::string generate_introduction() const;
+  [[nodiscard]] std::string generate_chapter(const Content &content) const;
+
+  std::string creator_ = "TODO";
+
+  std::string book_name_ = "TODO";
+  std::string author_ = "TODO";
+  std::vector<std::string> description_ = {"TODO"};
+
+  std::vector<Content> contents_;
+};
+
+}  // namespace kepub

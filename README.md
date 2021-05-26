@@ -22,6 +22,9 @@ Generate epub
 - fmt
 - Boost
 - ICU
+- tidy-html5
+- pugixml
+- libarchive
 
 #### Build
 

@@ -1,55 +1,34 @@
 #include <cstddef>
-#include <cstdint>
-#include <fstream>
-#include <string>
-#include <vector>
+#include <filesystem>
 
 #include "epub.h"
-#include "trans.h"
+#include "util.h"
 
 int main(int argc, char *argv[]) {
-  auto [input_file, xhtml]{processing_cmd(argc, argv)};
+  auto file_name = kepub::processing_cmd(argc, argv);
+  kepub::check_is_txt_file(file_name);
 
-  for (const auto &item : input_file) {
-    auto [book_name, texts]{read_file(item)};
+  kepub::Epub epub;
+  epub.set_creator("kaiser");
+  epub.set_book_name(std::filesystem::path(file_name).stem());
 
-    if (xhtml) {
-      generate_xhtml(book_name, texts);
-    } else {
-      create_epub_directory(book_name);
+  auto vec = kepub::read_file_to_vec(file_name);
+  auto size = std::size(vec);
+  for (std::size_t i = 0; i < size; ++i) {
+    if (vec[i].starts_with("－－－－－－－－－－－－－－－BEGIN")) {
+      i += 2;
+      kepub::Content content(vec[i]);
+      i += 2;
 
-      std::vector<std::string> titles;
-      auto size{std::size(texts)};
-      std::int32_t count{1};
-      for (std::size_t index{}; index < size; ++index) {
-        if (texts[index].starts_with("－－－－－－－－－－－－－－－BEGIN")) {
-          index += 2;
-          auto title{texts[index]};
-          titles.push_back(title);
-          index += 2;
-
-          auto filename{get_chapter_filename(book_name, count)};
-          ++count;
-
-          std::ofstream ofs{filename};
-          check_file_is_open(ofs, filename);
-
-          ofs << chapter_file_begin(title);
-
-          for (; index < size &&
-                 !texts[index].starts_with("－－－－－－－－－－－－－－－END");
-               ++index) {
-            ofs << chapter_file_text(texts[index]);
-          }
-
-          ofs << chapter_file_end() << std::flush;
-        }
+      for (;
+           i < size && !vec[i].starts_with("－－－－－－－－－－－－－－－END");
+           ++i) {
+        content.push_line(vec[i]);
       }
 
-      generate_content_opf(book_name, texts[1], count);
-      generate_toc_ncx(book_name, titles);
+      epub.add_content(content);
     }
   }
 
-  clean_up();
+  epub.generate();
 }

@@ -17,7 +17,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: dependencies
-          key: release-dependencies-20210420
+          key: release-dependencies-20210524
 
       - name: Install dependencies
         run: sudo bash script/build.sh
@@ -28,7 +28,7 @@ jobs:
           TAG_NAME: ${{ github.event.release.tag_name }}
 
       - name: Configure
-        run: cmake -G Ninja -S . -B build
+        run: cmake -S . -B build
 
       - name: Build
         run: cmake --build build --config Release -j"$(nproc)"
@@ -43,9 +43,7 @@ jobs:
           kepub-${{ env.RELEASE_VERSION }}-ubuntu-20.04.tar.gz
 
       - name: Install
-        run: |
-          sudo dpkg -i build/kepub-${{ env.RELEASE_VERSION }}-ubuntu-20.04.deb
-          sudo ldconfig
+        run: sudo dpkg -i build/kepub-${{ env.RELEASE_VERSION }}-ubuntu-20.04.deb
 
       - name: Run executable
         run: masiro -v

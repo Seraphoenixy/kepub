@@ -3,6 +3,6 @@
     "-DKEPUB_BUILD_TEST=ON",
     "-DKEPUB_FORMAT=ON",
     "-DKEPUB_BUILD_COVERAGE=ON",
-    "-DKEPUB_SANITIZER=AddressUndefined"
+    "-DKEPUB_SANITIZER=ON"
   ]
 }

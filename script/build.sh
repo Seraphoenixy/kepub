@@ -2,29 +2,19 @@
 
 set -e
 
-thread=false
-memory=false
-
-while getopts 'mt' OPT; do
-  case $OPT in
-  m)
-    memory=true
-    ;;
-  t)
-    thread=true
-    ;;
-  ?)
-    echo "Unknown option: $OPT"
-    exit 1
-    ;;
-  esac
-done
-
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-  curl -L https://github.com/KaiserLancelot/kpkg/releases/download/v0.1.4/kpkg-0.1.4-ubuntu-20.04.deb \
+  curl -L https://github.com/KaiserLancelot/kpkg/releases/download/v0.2.1/kpkg-0.2.1-ubuntu-20.04.deb \
     -o kpkg.deb
 
   sudo dpkg -i kpkg.deb
+
+  sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
+  sudo apt install -y clang-tidy-12 valgrind
+
+  sudo update-alternatives --install /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-12 400
+  sudo update-alternatives --install /usr/bin/llvm-profdata llvm-profdata /usr/bin/llvm-profdata-12 400
+  sudo update-alternatives --install /usr/bin/llvm-cov llvm-cov /usr/bin/llvm-cov-12 400
+  sudo update-alternatives --install /usr/bin/llvm-symbolizer llvm-symbolizer /usr/bin/llvm-symbolizer-12 400
 
   if [ ! -d "dependencies" ]; then
     echo "mkdir dependencies"
@@ -33,18 +23,7 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
 
   cd dependencies
 
-  if $thread; then
-    kpkg install fmt boost icu -i -t
-  elif $memory; then
-    kpkg install fmt boost icu -i -m
-  else
-    kpkg install lcov fmt boost icu -i
-  fi
-
-  sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 400
-  sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 400
-
-  sudo ldconfig
+  kpkg install lcov catch2 fmt boost icu tidy-html5 pugixml libarchive -i
 else
   echo "The system does not support: $OSTYPE"
   exit 1

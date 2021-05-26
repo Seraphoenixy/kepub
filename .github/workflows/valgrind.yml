@@ -23,14 +23,14 @@ jobs:
         uses: actions/cache@v2
         with:
           path: dependencies
-          key: valgrind-dependencies-20210420
+          key: valgrind-dependencies-20210524
 
       - name: Install dependencies
         run: sudo bash script/build.sh
 
       - name: Configure
         run: |
-          cmake -G Ninja -S . -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo \
           -DKEPUB_BUILD_TEST=ON -DKEPUB_VALGRIND=ON
         env:
           CC: ${{ matrix.compiler.cc }}

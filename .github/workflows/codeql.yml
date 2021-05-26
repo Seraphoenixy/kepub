@@ -18,7 +18,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: dependencies
-          key: codeql-dependencies-20210420
+          key: codeql-dependencies-20210524
 
       - name: Install dependencies
         run: sudo bash script/build.sh
@@ -31,7 +31,7 @@ jobs:
           queries: security-and-quality
 
       - name: Configure
-        run: cmake -G Ninja -S . -B build
+        run: cmake -S . -B build
 
       - name: Build
         run: cmake --build build --config Release -j"$(nproc)"

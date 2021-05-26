@@ -34,15 +34,14 @@ set(LIBRARY lib${PROJECT_NAME})
 set(DEMONOVEL_EXECUTABLE demonovel)
 set(ESJZONE_EXECUTABLE esjzone)
 set(MASIRO_EXECUTABLE masiro)
-
-set(KEPUB_LIBCXX "/usr/local/lib/libc++.a")
-set(KEPUB_LIBCXXABI "/usr/local/lib/libc++abi.a")
+set(XHTML_EXECUTABLE xhtml)
+set(TEST_EXECUTABLE catch2)
 
 set(KEPUB_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(KEPUB_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
 
 # https://cmake.org/cmake/help/latest/command/file.html#glob-recurse
-file(GLOB_RECURSE FONT_SRC CONFIGURE_DEPENDS "${KEPUB_SOURCE_DIR}/src/font.s")
+file(GLOB_RECURSE DATA_SRC CONFIGURE_DEPENDS "${KEPUB_SOURCE_DIR}/src/data.s")
 file(GLOB_RECURSE LIBRARY_SRC CONFIGURE_DEPENDS "${KEPUB_SOURCE_DIR}/src/*.cpp")
 
 # ---------------------------------------------------------------------------------------
@@ -55,39 +54,44 @@ include(Options)
 include(Check)
 include(ClangTidy)
 include(Format)
+include(CompilerOptions)
 
 # ---------------------------------------------------------------------------------------
 # Find package
 # ---------------------------------------------------------------------------------------
 find_package(fmt REQUIRED)
+find_package(ZLIB REQUIRED)
+find_package(LibArchive REQUIRED)
+find_package(pugixml REQUIRED)
+find_package(CURL CONFIG REQUIRED)
 find_package(ICU REQUIRED COMPONENTS uc i18n)
 find_package(Boost REQUIRED COMPONENTS program_options)
 
 # ---------------------------------------------------------------------------------------
-# Compiler Options
+# Build data
 # ---------------------------------------------------------------------------------------
-include(CompilerOptions)
+file(GLOB_RECURSE DATA_FILE CONFIGURE_DEPENDS "${KEPUB_SOURCE_DIR}/data/*")
+file(COPY ${DATA_FILE} DESTINATION ${KEPUB_BINARY_DIR})
 
-# ---------------------------------------------------------------------------------------
-# Build font
-# ---------------------------------------------------------------------------------------
-file(COPY "${KEPUB_SOURCE_DIR}/font/MStiffHei PRC Black.ttf"
-     DESTINATION ${KEPUB_BINARY_DIR})
-
-add_library(font STATIC ${FONT_SRC})
-target_compile_options(font PRIVATE "-Wno-unused-command-line-argument")
+add_library(data STATIC ${DATA_SRC})
+target_compile_options(data PRIVATE "-Wno-unused-command-line-argument")
 
 # ---------------------------------------------------------------------------------------
 # Build static library
 # ---------------------------------------------------------------------------------------
 add_library(${LIBRARY} STATIC ${LIBRARY_SRC})
 target_include_directories(${LIBRARY} PUBLIC "${KEPUB_SOURCE_DIR}/include")
-target_link_libraries(${LIBRARY} PRIVATE font fmt::fmt ${Boost_LIBRARIES}
-                                         ${ICU_LIBRARIES})
-
-if(KEPUB_USE_LIBCXX)
-  target_link_libraries(${LIBRARY} PRIVATE ${KEPUB_LIBCXX} ${KEPUB_LIBCXXABI})
-endif()
+target_link_libraries(
+  ${LIBRARY}
+  PRIVATE data
+          fmt::fmt
+          CURL::libcurl
+          pugixml::pugixml
+          tidys
+          ${LibArchive_LIBRARIES}
+          ${ZLIB_LIBRARIES}
+          ${Boost_LIBRARIES}
+          ${ICU_LIBRARIES})
 
 set_target_properties(
   ${LIBRARY}

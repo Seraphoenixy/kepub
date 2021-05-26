@@ -1,6 +1,5 @@
 #include "trans.h"
 
-#include <unicode/schriter.h>
 #include <unicode/uclean.h>
 #include <unicode/unistr.h>
 #include <unicode/utypes.h>
@@ -150,19 +149,30 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("唿", "呼");
 }
 
-UChar32 get_first_uchar32(const std::string &str) {
-  icu::UnicodeString s(str.c_str());
-  icu::StringCharacterIterator iter(s);
-  return iter.first32();
-}
-
-UChar32 get_last_uchar32(const std::string &str) {
-  icu::UnicodeString s(str.c_str());
-  icu::StringCharacterIterator iter(s);
-  return iter.last32();
-}
-
 }  // namespace
+
+namespace kepub {
+
+Trans::~Trans() {
+  delete trans_;
+  u_cleanup();
+}
+
+const Trans &Trans::get() {
+  static Trans trans;
+  return trans;
+}
+
+std::string Trans::trans_str(const std::string &str) const {
+  icu::UnicodeString icu_str(str.c_str());
+
+  trans_->transliterate(icu_str);
+  custom_trans(icu_str);
+  icu_str.trim();
+
+  std::string temp;
+  return icu_str.toUTF8String(temp);
+}
 
 Trans::Trans() {
   UErrorCode status = U_ZERO_ERROR;
@@ -171,31 +181,12 @@ Trans::Trans() {
       icu::Transliterator::createInstance("Hant-Hans", UTRANS_FORWARD, status);
 
   if (U_FAILURE(status)) {
-    error("error: {}", u_errorName(status));
+    kepub::error("error: {}", u_errorName(status));
   }
 }
 
-Trans::~Trans() { delete trans_; }
-
-std::string Trans::trans_str(const std::string &str) {
-  icu::UnicodeString icu_str(str.c_str());
-  icu_str.trim();
-
-  trans_->transliterate(icu_str);
-  custom_trans(icu_str);
-
-  icu_str.trim();
-
-  std::string temp;
-  return icu_str.toUTF8String(temp);
+std::string trans_str(const std::string &str) {
+  return kepub::Trans::get().trans_str(str);
 }
 
-bool start_with_chinese(const std::string &str) {
-  return is_chinese(get_first_uchar32(str));
-}
-
-bool end_with_chinese(const std::string &str) {
-  return is_chinese(get_last_uchar32(str));
-}
-
-void clean_up() { u_cleanup(); }
+}  // namespace kepub

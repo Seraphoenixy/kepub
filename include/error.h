@@ -5,6 +5,8 @@
 #include <fmt/color.h>
 #include <fmt/format.h>
 
+namespace kepub {
+
 template <typename... Args>
 [[noreturn]] void error(std::string_view format_str, const Args &...args) {
   fmt::print(fmt::fg(fmt::color::red), "error: ");
@@ -13,3 +15,5 @@ template <typename... Args>
 
   std::exit(EXIT_FAILURE);
 }
+
+}  // namespace kepub

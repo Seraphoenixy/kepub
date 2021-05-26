@@ -32,9 +32,3 @@ function(add_cxx_compiler_flag FLAG)
       FATAL_ERROR "Required flag '${FLAG}' is not supported by the compiler")
   endif()
 endfunction()
-
-function(add_cxx_compiler_flag_no_check FLAG)
-  set(CMAKE_CXX_FLAGS
-      "${CMAKE_CXX_FLAGS} ${FLAG}"
-      PARENT_SCOPE)
-endfunction()

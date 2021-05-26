@@ -6,6 +6,28 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # ---------------------------------------------------------------------------------------
+# lld
+# ---------------------------------------------------------------------------------------
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+  execute_process(
+    COMMAND ld.lld --version
+    OUTPUT_VARIABLE LLD_VERSION
+    OUTPUT_STRIP_TRAILING_WHITESPACE)
+  message(STATUS "Linker: ${LLD_VERSION}")
+
+  # FIXME add_link_options("-fuse-ld=lld")
+else()
+  execute_process(
+    COMMAND ${CMAKE_LINKER} --version
+    OUTPUT_VARIABLE LINKER_VERSION
+    OUTPUT_STRIP_TRAILING_WHITESPACE)
+  string(REPLACE "\n" ";" LINKER_VERSION ${LINKER_VERSION})
+  list(GET LINKER_VERSION 0 LINKER_VERSION)
+
+  message(STATUS "Linker: ${LINKER_VERSION}")
+endif()
+
+# ---------------------------------------------------------------------------------------
 # Static link
 # ---------------------------------------------------------------------------------------
 add_link_options("-static-libstdc++")
@@ -18,15 +40,6 @@ add_cxx_compiler_flag("-Wall")
 add_cxx_compiler_flag("-Wextra")
 add_cxx_compiler_flag("-Wpedantic")
 add_cxx_compiler_flag("-Werror")
-
-if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-  add_cxx_compiler_flag("-Weverything")
-  add_cxx_compiler_flag("-Wno-c++98-compat-pedantic")
-  add_cxx_compiler_flag("-Wno-missing-prototypes")
-  add_cxx_compiler_flag("-Wno-disabled-macro-expansion")
-  add_cxx_compiler_flag("-Wno-exit-time-destructors")
-  add_cxx_compiler_flag("-Wno-global-constructors")
-endif()
 
 # ---------------------------------------------------------------------------------------
 # Link time optimization
@@ -50,71 +63,26 @@ else()
 endif()
 
 # ---------------------------------------------------------------------------------------
-# libc++
-# ---------------------------------------------------------------------------------------
-if(KEPUB_USE_LIBCXX)
-  message(STATUS "Standard library: libc++")
-
-  add_cxx_compiler_flag("-stdlib=libc++")
-  # https://blog.jetbrains.com/clion/2019/10/clion-2019-3-eap-debugger-improvements/
-  if((CMAKE_BUILD_TYPE STREQUAL "Debug") OR (CMAKE_BUILD_TYPE STREQUAL
-                                             "RelWithDebInfo"))
-    add_cxx_compiler_flag("-fstandalone-debug")
-  endif()
-else()
-  message(STATUS "Standard library: libstdc++")
-endif()
-
-# ---------------------------------------------------------------------------------------
 # Sanitizer
 # ---------------------------------------------------------------------------------------
 if(KEPUB_SANITIZER)
-  if(NOT (KEPUB_SANITIZER STREQUAL "Thread"))
-    add_cxx_compiler_flag_no_check("-fno-omit-frame-pointer")
-  endif()
+  message(STATUS "Build with AddressSanitizer and UndefinedSanitizer")
+  add_cxx_compiler_flag("-fno-omit-frame-pointer")
 
-  macro(append_address_sanitizer_flags)
-    add_cxx_compiler_flag_no_check("-fsanitize=address")
-    add_cxx_compiler_flag_no_check("-fsanitize-address-use-after-scope")
-    add_cxx_compiler_flag_no_check("-fno-optimize-sibling-calls")
-  endmacro()
+  add_cxx_compiler_flag("-fsanitize=address")
+  add_cxx_compiler_flag("-fsanitize-address-use-after-scope")
+  add_cxx_compiler_flag("-fno-optimize-sibling-calls")
 
-  macro(append_undefined_sanitizer_flags)
-    add_cxx_compiler_flag_no_check("-fsanitize=undefined")
-    add_cxx_compiler_flag_no_check("-fno-sanitize-recover=all")
+  add_cxx_compiler_flag("-fsanitize=undefined")
+  add_cxx_compiler_flag("-fno-sanitize-recover=all")
 
-    if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-      add_cxx_compiler_flag_no_check("-fsanitize=float-divide-by-zero")
-      add_cxx_compiler_flag_no_check("-fsanitize=unsigned-integer-overflow")
-      add_cxx_compiler_flag_no_check("-fsanitize=implicit-conversion")
-      add_cxx_compiler_flag_no_check("-fsanitize=local-bounds")
-      add_cxx_compiler_flag_no_check("-fsanitize=nullability")
-      add_cxx_compiler_flag_no_check(
-        "-fsanitize-recover=unsigned-integer-overflow")
-    endif()
-  endmacro()
-
-  if(KEPUB_SANITIZER STREQUAL "Address")
-    message(STATUS "Build with AddressSanitizer")
-    append_address_sanitizer_flags()
-  elseif(KEPUB_SANITIZER STREQUAL "Thread")
-    message(STATUS "Build with ThreadSanitizer")
-    add_cxx_compiler_flag_no_check("-fsanitize=thread")
-  elseif(KEPUB_SANITIZER STREQUAL "Memory")
-    message(STATUS "Build with MemorySanitizer")
-    add_cxx_compiler_flag_no_check("-fsanitize=memory")
-    add_cxx_compiler_flag_no_check("-fsanitize-memory-track-origins")
-    add_cxx_compiler_flag_no_check("-fsanitize-memory-use-after-dtor")
-    add_cxx_compiler_flag_no_check("-fno-optimize-sibling-calls")
-  elseif(KEPUB_SANITIZER STREQUAL "Undefined")
-    message(STATUS "Build with UndefinedSanitizer")
-    append_undefined_sanitizer_flags()
-  elseif(KEPUB_SANITIZER STREQUAL "AddressUndefined")
-    message(STATUS "Build with AddressSanitizer and UndefinedSanitizer")
-    append_address_sanitizer_flags()
-    append_undefined_sanitizer_flags()
-  else()
-    message(FATAL_ERROR "The Sanitizer is not supported: ${KEPUB_SANITIZER}")
+  if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    add_cxx_compiler_flag("-fsanitize=float-divide-by-zero")
+    add_cxx_compiler_flag("-fsanitize=unsigned-integer-overflow")
+    add_cxx_compiler_flag("-fsanitize=implicit-conversion")
+    add_cxx_compiler_flag("-fsanitize=local-bounds")
+    add_cxx_compiler_flag("-fsanitize=nullability")
+    add_cxx_compiler_flag("-fsanitize-recover=unsigned-integer-overflow")
   endif()
 endif()
 

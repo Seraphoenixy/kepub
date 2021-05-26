@@ -29,8 +29,7 @@ if(KEPUB_BUILD_COVERAGE)
     add_custom_target(
       coverage
       COMMAND ${LCOV_EXECUTABLE} -d ${KEPUB_BINARY_DIR} -z
-      COMMAND ${MASIRO_EXECUTABLE} masiro-txt.txt
-      COMMAND ${DEMONOVEL_EXECUTABLE} demonovel-txt.txt
+      COMMAND ${TEST_EXECUTABLE}
       COMMAND
         ${LCOV_EXECUTABLE} -d ${KEPUB_BINARY_DIR} --include
         '${KEPUB_SOURCE_DIR}/src/*.cpp' --include
@@ -38,11 +37,46 @@ if(KEPUB_BUILD_COVERAGE)
         lcov.info --rc lcov_branch_coverage=1
       COMMAND ${GENHTML_EXECUTABLE} lcov.info -o coverage -s --title
               "${PROJECT_NAME}" --legend --demangle-cpp --branch-coverage
-      WORKING_DIRECTORY ${KEPUB_BINARY_DIR}/tool
-      DEPENDS ${MASIRO_EXECUTABLE} ${DEMONOVEL_EXECUTABLE}
+      WORKING_DIRECTORY ${KEPUB_BINARY_DIR}/test/unit_test
+      DEPENDS ${TEST_EXECUTABLE}
       COMMENT
-        "Generate HTML report: ${KEPUB_BINARY_DIR}/tool/coverage/index.html")
+        "Generate HTML report: ${KEPUB_BINARY_DIR}/test/unit_test/coverage/index.html"
+    )
   else()
-    message(FATAL_ERROR "Does not support llvm-cov")
+    message(
+      STATUS "Build with coverage information, use llvm-cov to generate report")
+
+    find_program(LLVM_PROFDATA_EXECUTABLE llvm-profdata)
+    if(NOT LLVM_PROFDATA_EXECUTABLE)
+      message(FATAL_ERROR "Can not find llvm-profdata")
+    endif()
+
+    find_program(LLVM_COV_EXECUTABLE llvm-cov)
+    if(NOT LLVM_COV_EXECUTABLE)
+      message(FATAL_ERROR "Can not find llvm-cov")
+    endif()
+
+    # https://clang.llvm.org/docs/SourceBasedCodeCoverage.html
+    # https://llvm.org/docs/CommandGuide/llvm-cov.html
+    add_custom_target(
+      coverage
+      COMMAND ${TEST_EXECUTABLE}
+      COMMAND ${LLVM_PROFDATA_EXECUTABLE} merge -sparse -o
+              ${TEST_EXECUTABLE}.profdata default.profraw
+      COMMAND
+        ${LLVM_COV_EXECUTABLE} show ./${TEST_EXECUTABLE}
+        -instr-profile=${TEST_EXECUTABLE}.profdata -format=html
+        -show-branches=percent -show-line-counts-or-regions
+        -ignore-filename-regex=${KEPUB_SOURCE_DIR}/test/* -output-dir=coverage
+      COMMAND
+        ${LLVM_COV_EXECUTABLE} export ./${TEST_EXECUTABLE}
+        -instr-profile=${TEST_EXECUTABLE}.profdata
+        -ignore-filename-regex=${KEPUB_SOURCE_DIR}/test/* -format=lcov >
+        lcov.info
+      WORKING_DIRECTORY ${KEPUB_BINARY_DIR}/test/unit_test
+      DEPENDS ${TEST_EXECUTABLE}
+      COMMENT
+        "Generate HTML report: ${KEPUB_BINARY_DIR}/test/unit_test/coverage/index.html"
+    )
   endif()
 endif()

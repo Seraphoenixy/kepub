@@ -26,14 +26,14 @@ jobs:
         uses: actions/cache@v2
         with:
           path: dependencies
-          key: build-dependencies-20210420
+          key: build-dependencies-20210524
 
       - name: Install dependencies
         run: sudo bash script/build.sh
 
       - name: Configure
         run: |
-          cmake -G Ninja -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
           -DKEPUB_BUILD_TEST=ON
         env:
           CC: ${{ matrix.compiler.cc }}
@@ -43,18 +43,13 @@ jobs:
         run: cmake --build build --config ${{ matrix.build_type }} -j"$(nproc)"
 
       - name: Install
-        if: ${{ matrix.build_type == 'Release' }}
-        run: |
-          sudo cmake --build build --config ${{ matrix.build_type }} --target install
-          sudo ldconfig
+        run: sudo cmake --build build --config ${{ matrix.build_type }} --target install
 
       - name: Run executable
-        if: ${{ matrix.build_type == 'Release' }}
         run: masiro -v
 
       - name: Test
         run: cd build ; ctest -C ${{ matrix.build_type }} -j"$(nproc)" --output-on-failure
 
       - name: Uninstall
-        if: ${{ matrix.build_type == 'Release' }}
         run: sudo cmake --build build --config ${{ matrix.build_type }} --target uninstall

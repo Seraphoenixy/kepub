@@ -18,13 +18,13 @@ jobs:
         uses: actions/cache@v2
         with:
           path: dependencies
-          key: clang-tidy-dependencies-20210420
+          key: clang-tidy-dependencies-20210524
 
       - name: Install dependencies
         run: sudo bash script/build.sh
 
       - name: Configure
-        run: cmake -G Ninja -S . -B build -DKEPUB_CLANG_TIDY=ON
+        run: cmake -S . -B build -DKEPUB_CLANG_TIDY=ON
 
       - name: Build
         run: cmake --build build --config Release -j"$(nproc)"
