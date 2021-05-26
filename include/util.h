@@ -9,6 +9,8 @@
 
 namespace kepub {
 
+inline bool connect_chinese = false;
+
 bool start_with_chinese(const std::string &str);
 
 bool end_with_chinese(const std::string &str);

@@ -150,7 +150,12 @@ void push_back(std::vector<std::string> &texts, const std::string &str) {
   } else if (std::isalpha(texts.back().back()) && std::isalpha(str.front())) {
     texts.back().append(" " + str);
   } else {
-    texts.push_back(str);
+    if (connect_chinese && end_with_chinese(texts.back()) &&
+        start_with_chinese(str)) {
+      texts.back().append(str);
+    } else {
+      texts.push_back(str);
+    }
   }
 }
 
@@ -165,16 +170,19 @@ std::string processing_cmd(std::int32_t argc, char *argv[]) {
   generic.add_options()("version,v", "print version string")(
       "help,h", "produce help message");
 
+  boost::program_options::options_description config("Configuration");
+  config.add_options()("connect,c", "connect chinese");
+
   boost::program_options::options_description hidden("Hidden options");
   hidden.add_options()(
       "input-file",
       boost::program_options::value<std::vector<std::string>>(&input_file));
 
   boost::program_options::options_description cmdline_options;
-  cmdline_options.add(generic).add(hidden);
+  cmdline_options.add(generic).add(config).add(hidden);
 
   boost::program_options::options_description visible("Allowed options");
-  visible.add(generic);
+  visible.add(generic).add(config);
 
   boost::program_options::positional_options_description p;
   p.add("input-file", -1);
@@ -196,6 +204,10 @@ std::string processing_cmd(std::int32_t argc, char *argv[]) {
     fmt::print("{} version: {}.{}.{}\n", argv[0], KEPUB_VER_MAJOR,
                KEPUB_VER_MINOR, KEPUB_VER_PATCH);
     std::exit(EXIT_SUCCESS);
+  }
+
+  if (vm.contains("connect")) {
+    connect_chinese = true;
   }
 
   if (!vm.contains("input-file")) {
