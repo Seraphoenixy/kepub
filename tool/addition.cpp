@@ -105,6 +105,7 @@ int main(int argc, char *argv[]) {
   std::filesystem::rename(epub_name, zip_name);
 
   kepub::decompress(zip_name, book_name);
+  std::filesystem::rename(zip_name, book_name.string() + "-back-up.zip");
 
   std::vector<kepub::Content> contents;
   auto vec = kepub::read_file_to_vec(file_name);
@@ -133,4 +134,10 @@ int main(int argc, char *argv[]) {
                                         std::size(titles));
   deal_with_toc_ncx(book_name / "OEBPS" / "toc.ncx", titles);
   deal_with_chapter(book_name / "OEBPS" / "Text", last_num, contents);
+
+  kepub::compress(book_name);
+  std::filesystem::rename(zip_name, epub_name);
+
+  std::filesystem::remove(file_name);
+  std::filesystem::remove_all(book_name);
 }
