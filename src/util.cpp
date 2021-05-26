@@ -237,10 +237,4 @@ void check_file_exist(const std::string &file_name) {
   }
 }
 
-void remove_file(const std::string &file_name) {
-  if (!std::filesystem::remove(file_name)) {
-    error("can not remove this file: {}", file_name);
-  }
-}
-
 }  // namespace kepub

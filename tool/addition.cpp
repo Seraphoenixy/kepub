@@ -105,7 +105,6 @@ int main(int argc, char *argv[]) {
   std::filesystem::rename(epub_name, zip_name);
 
   kepub::decompress(zip_name, book_name);
-  kepub::remove_file(zip_name);
 
   std::vector<kepub::Content> contents;
   auto vec = kepub::read_file_to_vec(file_name);
