@@ -1,11 +1,13 @@
 #include <cstddef>
 #include <cstdint>
 #include <filesystem>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
 #include "compress.h"
 #include "epub.h"
+#include "error.h"
 #include "parse_html.h"
 #include "util.h"
 
@@ -93,7 +95,7 @@ void deal_with_chapter(const std::string &dir, std::int32_t last_num,
   }
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) try {
   auto file_name = kepub::processing_cmd(argc, argv);
   kepub::check_is_txt_file(file_name);
 
@@ -140,4 +142,8 @@ int main(int argc, char *argv[]) {
 
   std::filesystem::remove(file_name);
   std::filesystem::remove_all(book_name);
+} catch (const std::exception &err) {
+  kepub::error(err.what());
+} catch (...) {
+  kepub::error("unknown exception");
 }

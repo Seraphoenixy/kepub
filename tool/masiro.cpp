@@ -1,10 +1,12 @@
 #include <cstddef>
 #include <filesystem>
+#include <stdexcept>
 
 #include "epub.h"
+#include "error.h"
 #include "util.h"
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) try {
   auto file_name = kepub::processing_cmd(argc, argv);
   kepub::check_is_txt_file(file_name);
 
@@ -29,4 +31,8 @@ int main(int argc, char *argv[]) {
   }
 
   epub.generate();
+} catch (const std::exception &err) {
+  kepub::error(err.what());
+} catch (...) {
+  kepub::error("unknown exception");
 }

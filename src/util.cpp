@@ -18,6 +18,7 @@
 #include <boost/program_options/variables_map.hpp>
 
 #include "error.h"
+#include "trans.h"
 #include "version.h"
 
 namespace {
@@ -123,6 +124,12 @@ std::vector<std::string> read_file_to_vec(const std::string &file_name) {
   auto data = read_file_to_str(file_name);
   std::vector<std::string> result;
   boost::split(result, data, boost::is_any_of("\n"), boost::token_compress_on);
+
+  // FIXME
+  for (auto &item : result) {
+    item = trans_str(item);
+  }
+
   return result;
 }
 

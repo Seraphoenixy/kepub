@@ -1,5 +1,6 @@
 #include <filesystem>
 #include <fstream>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -7,7 +8,7 @@
 #include "trans.h"
 #include "util.h"
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) try {
   auto file_name = kepub::processing_cmd(argc, argv);
   if (std::filesystem::path(file_name).extension() != ".txt") {
     kepub::error("need a txt file");
@@ -28,4 +29,8 @@ int main(int argc, char *argv[]) {
   for (const auto &item : result) {
     ofs << kepub::chapter_line(item) << '\n';
   }
+} catch (const std::exception &err) {
+  kepub::error(err.what());
+} catch (...) {
+  kepub::error("unknown exception");
 }

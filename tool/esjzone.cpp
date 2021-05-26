@@ -1,3 +1,4 @@
+#include <stdexcept>
 #include <string>
 #include <tuple>
 #include <vector>
@@ -128,7 +129,7 @@ std::vector<std::string> get_text(const std::string &url) {
   return result;
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) try {
   auto url = kepub::processing_cmd(argc, argv);
   auto [urls, titles, book_name, author, cover_url, description] =
       get_content(url);
@@ -141,4 +142,8 @@ int main(int argc, char *argv[]) {
   epub.set_description(description);
 
   epub.generate_for_web(titles, urls, get_text);
+} catch (const std::exception &err) {
+  kepub::error(err.what());
+} catch (...) {
+  kepub::error("unknown exception");
 }
