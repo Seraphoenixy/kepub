@@ -46,6 +46,8 @@ class Epub {
       std::function<std::vector<std::string>(const std::string &get_text)>
           get_text) const;
 
+  [[nodiscard]] static std::string generate_chapter(const Content &content);
+
  private:
   void do_generate() const;
 
@@ -53,7 +55,6 @@ class Epub {
   [[nodiscard]] std::string generate_toc_ncx(
       const std::vector<std::string> &titles) const;
   [[nodiscard]] std::string generate_introduction() const;
-  [[nodiscard]] std::string generate_chapter(const Content &content) const;
 
   std::string creator_ = "TODO";
 

@@ -109,7 +109,7 @@ std::string Epub::generate_introduction() const {
   return xhtml.to_string();
 }
 
-std::string Epub::generate_chapter(const Content& content) const {
+std::string Epub::generate_chapter(const Content& content) {
   auto str =
       boost::replace_all_copy(chapter_str, "@title@", content.get_title());
 

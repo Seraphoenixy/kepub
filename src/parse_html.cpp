@@ -139,6 +139,8 @@ std::string XHTML::to_string() const {
   return stream.str();
 }
 
+pugi::xml_node XHTML::last_child() const { return node_.last_child(); }
+
 std::string html_tidy(const std::string& html) {
   TidyDoc doc = tidyCreate();
   tidyOptSetBool(doc, TidyXhtmlOut, yes);

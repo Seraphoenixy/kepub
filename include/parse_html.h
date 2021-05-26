@@ -47,6 +47,8 @@ class XHTML {
   void previous();
   [[nodiscard]] std::vector<pugi::xml_node> children() const;
 
+  pugi::xml_node last_child() const;
+
   void push_back(const Node &node);
 
   void insert_before(const Node &node, std::string_view attr_name,
