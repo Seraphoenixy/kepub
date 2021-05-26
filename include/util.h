@@ -33,4 +33,8 @@ std::string chapter_line(const std::string &line);
 
 void check_is_txt_file(const std::string &file_name);
 
+void check_file_exist(const std::string &file_name);
+
+void remove_file(const std::string &file_name);
+
 }  // namespace kepub
