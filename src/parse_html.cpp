@@ -51,8 +51,6 @@ std::vector<pugi::xml_node> XHTML::children() const {
 
 void XHTML::save(std::string_view file) const { root_.save_file(file.data()); }
 
-void XHTML::print(std::ostream& os) const { root_.save(os); }
-
 void XHTML::push_back(const Node& node) {
   auto child = node_.append_child(node.name_.c_str());
   insert(child, node);

@@ -36,8 +36,6 @@ class Epub {
 
   void set_cover_url(const std::string &url);
 
-  void add_content(const std::string &title,
-                   const std::vector<std::string> &text);
   void add_content(const Content &content);
 
   void generate() const;

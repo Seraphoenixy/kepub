@@ -61,11 +61,6 @@ void Epub::generate() const {
   }
 }
 
-void Epub::add_content(const std::string& title,
-                       const std::vector<std::string>& text) {
-  contents_.emplace_back(title, text);
-}
-
 std::string Epub::generate_content_opf(std::size_t size) const {
   boost::replace_all(content_str, "@creator@", creator_);
   boost::replace_all(content_str, "@book_name@", book_name_);

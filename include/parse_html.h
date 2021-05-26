@@ -40,7 +40,6 @@ class XHTML {
 
   void move_by_attr_class(std::string_view name, std::string_view attr_value);
 
-  void print(std::ostream &os) const;
   void save(std::string_view file) const;
   std::string to_string() const;
 
