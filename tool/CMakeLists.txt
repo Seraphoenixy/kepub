@@ -9,3 +9,6 @@ target_link_libraries(${MASIRO_EXECUTABLE} PRIVATE ${LIBRARY})
 
 add_executable(${XHTML_EXECUTABLE} xhtml.cpp)
 target_link_libraries(${XHTML_EXECUTABLE} PRIVATE ${LIBRARY})
+
+add_executable(${ADDITION_EXECUTABLE} addition.cpp)
+target_link_libraries(${ADDITION_EXECUTABLE} PRIVATE ${LIBRARY})
