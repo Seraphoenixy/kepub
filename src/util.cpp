@@ -18,7 +18,6 @@
 #include <boost/program_options/variables_map.hpp>
 
 #include "error.h"
-#include "trans.h"
 #include "version.h"
 
 namespace {
