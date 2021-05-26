@@ -13,6 +13,7 @@
 #include <boost/algorithm/string.hpp>
 
 #include "data.h"
+#include "download.h"
 #include "error.h"
 #include "parse_html.h"
 #include "trans.h"
@@ -173,6 +174,11 @@ void Epub::generate_for_web(
   std::filesystem::path root = book_name_;
   auto size = std::size(titles);
 
+  // cover.jpg
+  if (!std::empty(cover_url_)) {
+    get_file(cover_url_, root / "OEBPS" / "Images" / "cover.jpg");
+  }
+
   // content.opf
   std::ofstream content_ofs(root / "OEBPS" / "content.opf");
   check_and_write_file(content_ofs, generate_content_opf(size));
@@ -270,6 +276,8 @@ void Epub::do_generate() const {
                                  "introduction.xhtml");
   check_and_write_file(introduction_ofs, generate_introduction());
 }
+
+void Epub::set_cover_url(const std::string& url) { cover_url_ = url; }
 
 Content::Content(const std::string& title,
                  const std::vector<std::string>& lines) {

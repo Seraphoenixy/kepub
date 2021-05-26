@@ -8,14 +8,15 @@
 #include "parse_html.h"
 #include "util.h"
 
-// urls titles book_name author description
+// urls titles book_name author cover description
 std::tuple<std::vector<std::string>, std::vector<std::string>, std::string,
-           std::string, std::vector<std::string>>
+           std::string, std::string, std::vector<std::string>>
 get_content(const std::string &url) {
   std::vector<std::string> urls;
   std::vector<std::string> titles;
   std::string book_name;
   std::string author;
+  std::string cover_url;
   std::vector<std::string> description;
 
   kepub::XHTML html(kepub::html_tidy(kepub::get_page(url)));
@@ -41,6 +42,14 @@ get_content(const std::string &url) {
     }
   }
 
+  html.previous();
+  html.previous();
+  html.move_by_attr_class("div", "col-md-3");
+  html.move_by_attr_class("div", "product-gallery text-center mb-3");
+  html.move_by_name("a");
+  cover_url = html.children().front().attribute("src").value();
+
+  html.previous();
   html.previous();
   html.previous();
   html.previous();
@@ -84,11 +93,14 @@ get_content(const std::string &url) {
   if (std::empty(author)) {
     kepub::error("author name is empty");
   }
+  if (std::empty(cover_url)) {
+    kepub::error("cover url is empty");
+  }
   if (std::empty(description)) {
     kepub::error("description is empty");
   }
 
-  return {urls, titles, book_name, author, description};
+  return {urls, titles, book_name, author, cover_url, description};
 }
 
 std::vector<std::string> get_text(const std::string &url) {
@@ -118,12 +130,14 @@ std::vector<std::string> get_text(const std::string &url) {
 
 int main(int argc, char *argv[]) {
   auto url = kepub::processing_cmd(argc, argv);
-  auto [urls, titles, book_name, author, description] = get_content(url);
+  auto [urls, titles, book_name, author, cover_url, description] =
+      get_content(url);
 
   kepub::Epub epub;
   epub.set_creator("kaiser");
   epub.set_book_name(book_name);
   epub.set_author(author);
+  epub.set_cover_url(cover_url);
   epub.set_description(description);
 
   epub.generate_for_web(titles, urls, get_text);

@@ -101,7 +101,9 @@ void XHTML::move_by_attr(std::string_view name, std::string_view attr_name,
                                              attr_value.data());
 
   if (child.empty()) {
-    error("can not find this node: {} {} {}", name, attr_name, attr_value);
+    error("can not find this node: {} {} {}, curr node name: {} {}", name,
+          attr_name, attr_value, node_.name(),
+          node_.attribute("class").value());
   }
 
   node_ = child;

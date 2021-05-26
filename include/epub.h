@@ -34,6 +34,8 @@ class Epub {
   void set_author(const std::string &author);
   void set_description(const std::vector<std::string> &description);
 
+  void set_cover_url(const std::string &url);
+
   void add_content(const std::string &title,
                    const std::vector<std::string> &text);
   void add_content(const Content &content);
@@ -60,6 +62,8 @@ class Epub {
   std::string book_name_ = "TODO";
   std::string author_ = "TODO";
   std::vector<std::string> description_ = {"TODO"};
+
+  std::string cover_url_;
 
   std::vector<Content> contents_;
 };
