@@ -11,6 +11,21 @@ namespace kepub {
 
 inline bool connect_chinese = false;
 
+class ChangeWorkDir {
+ public:
+  explicit ChangeWorkDir(const std::string &dir = "");
+
+  ChangeWorkDir(const ChangeWorkDir &) = delete;
+  ChangeWorkDir(ChangeWorkDir &&) = delete;
+  ChangeWorkDir &operator=(const ChangeWorkDir &) = delete;
+  ChangeWorkDir &operator=(ChangeWorkDir &&) = delete;
+
+  ~ChangeWorkDir();
+
+ private:
+  std::string backup_;
+};
+
 bool start_with_chinese(const std::string &str);
 
 bool end_with_chinese(const std::string &str);

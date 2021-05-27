@@ -1,5 +1,7 @@
 #include "util.h"
 
+#include <unistd.h>
+
 #include <cassert>
 #include <cctype>
 #include <clocale>
@@ -93,6 +95,22 @@ std::string num_to_str(std::int32_t i) {
 }  // namespace
 
 namespace kepub {
+
+ChangeWorkDir::ChangeWorkDir(const std::string &dir) {
+  if (!std::empty(dir)) {
+    backup_ = std::filesystem::current_path();
+
+    if (chdir(dir.c_str())) {
+      error("chdir error");
+    }
+  }
+}
+
+ChangeWorkDir::~ChangeWorkDir() {
+  if (!std::empty(backup_) && chdir(backup_.c_str())) {
+    error("chdir error");
+  }
+}
 
 bool start_with_chinese(const std::string &str) {
   return is_chinese(utf8_to_utf32(str).front());
