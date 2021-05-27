@@ -24,8 +24,6 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("©", "&copy;");
   str.findAndReplace("®", "&reg;");
 
-  str.findAndReplace(",", "，");
-
   str.findAndReplace("妳", "你");
   str.findAndReplace("壊", "坏");
   str.findAndReplace("拚", "拼");
@@ -156,7 +154,8 @@ void custom_trans(icu::UnicodeString &str) {
 namespace kepub {
 
 Trans::~Trans() {
-  delete trans_;
+  delete hant_hans_;
+  delete halfwidth_fullwidth_;
   u_cleanup();
 }
 
@@ -168,8 +167,10 @@ const Trans &Trans::get() {
 std::string Trans::trans_str(const std::string &str) const {
   icu::UnicodeString icu_str(str.c_str());
 
-  trans_->transliterate(icu_str);
+  hant_hans_->transliterate(icu_str);
   custom_trans(icu_str);
+  halfwidth_fullwidth_->transliterate(icu_str);
+
   icu_str.trim();
 
   std::string temp;
@@ -179,8 +180,17 @@ std::string Trans::trans_str(const std::string &str) const {
 Trans::Trans() {
   UErrorCode status = U_ZERO_ERROR;
 
-  trans_ =
+  hant_hans_ =
       icu::Transliterator::createInstance("Hant-Hans", UTRANS_FORWARD, status);
+
+  if (U_FAILURE(status)) {
+    kepub::error("error: {}", u_errorName(status));
+  }
+
+  status = U_ZERO_ERROR;
+
+  halfwidth_fullwidth_ = icu::Transliterator::createInstance(
+      "Halfwidth-Fullwidth", UTRANS_FORWARD, status);
 
   if (U_FAILURE(status)) {
     kepub::error("error: {}", u_errorName(status));

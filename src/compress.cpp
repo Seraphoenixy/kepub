@@ -40,7 +40,6 @@ void copy_data(struct archive *ar, struct archive *aw) {
 
 namespace kepub {
 
-// FIXME
 void compress(const std::string &file_name) {
   auto archive = archive_write_new();
 
