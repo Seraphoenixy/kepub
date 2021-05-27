@@ -22,7 +22,7 @@ class Trans {
   Trans();
 
   icu::Transliterator *hant_hans_;
-  icu::Transliterator *halfwidth_fullwidth_;
+  icu::Transliterator *fullwidth_halfwidth_;
 };
 
 std::string trans_str(const std::string &str);
