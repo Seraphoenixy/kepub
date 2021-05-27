@@ -169,9 +169,14 @@ void push_back(std::vector<std::string> &texts, const std::string &str) {
     return;
   }
 
-  if (texts.back().ends_with("，") || str.starts_with("，")) {
+  if (texts.back().ends_with("，") || str.starts_with("，") ||
+      str.starts_with("。") || str.starts_with("”")) {
     texts.back().append(str);
   } else if (std::isalpha(texts.back().back()) && std::isalpha(str.front())) {
+    texts.back().append(" " + str);
+  } else if (end_with_chinese(texts.back()) && std::isalpha(str.front())) {
+    texts.back().append(" " + str);
+  } else if (std::isalpha(texts.back().back()) && start_with_chinese(str)) {
     texts.back().append(" " + str);
   } else if (connect_chinese && end_with_chinese(texts.back()) &&
              start_with_chinese(str)) {
