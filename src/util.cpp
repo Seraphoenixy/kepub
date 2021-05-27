@@ -155,13 +155,11 @@ void push_back(std::vector<std::string> &texts, const std::string &str) {
     texts.back().append(str);
   } else if (std::isalpha(texts.back().back()) && std::isalpha(str.front())) {
     texts.back().append(" " + str);
+  } else if (connect_chinese && end_with_chinese(texts.back()) &&
+             start_with_chinese(str)) {
+    texts.back().append(str);
   } else {
-    if (connect_chinese && end_with_chinese(texts.back()) &&
-        start_with_chinese(str)) {
-      texts.back().append(str);
-    } else {
-      texts.push_back(str);
-    }
+    texts.push_back(str);
   }
 }
 

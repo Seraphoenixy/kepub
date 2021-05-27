@@ -24,6 +24,8 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("©", "&copy;");
   str.findAndReplace("®", "&reg;");
 
+  str.findAndReplace(",", "，");
+
   str.findAndReplace("妳", "你");
   str.findAndReplace("壊", "坏");
   str.findAndReplace("拚", "拼");
