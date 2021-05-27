@@ -57,7 +57,6 @@ void compress(const std::string &dir) {
   ChangeWorkDir change_work_dir(dir);
   for (const auto &item :
        std::filesystem::directory_iterator(std::filesystem::current_path())) {
-    fmt::print(item.path().string());
     auto disk = archive_read_disk_new();
     archive_read_disk_set_standard_lookup(disk);
     status = archive_read_disk_open(disk, item.path().filename().c_str());

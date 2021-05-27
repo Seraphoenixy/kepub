@@ -1,8 +1,10 @@
+#include <filesystem>
 #include <stdexcept>
 #include <string>
 #include <tuple>
 #include <vector>
 
+#include "compress.h"
 #include "download.h"
 #include "epub.h"
 #include "error.h"
@@ -142,6 +144,9 @@ int main(int argc, char *argv[]) try {
   epub.set_description(description);
 
   epub.generate_for_web(titles, urls, get_text);
+
+  kepub::compress(book_name);
+  std::filesystem::rename(book_name + ".zip", book_name + ".epub");
 } catch (const std::exception &err) {
   kepub::error(err.what());
 } catch (...) {
