@@ -12,3 +12,6 @@ target_link_libraries(${XHTML_EXECUTABLE} PRIVATE ${LIBRARY})
 
 add_executable(${ADDITION_EXECUTABLE} addition.cpp)
 target_link_libraries(${ADDITION_EXECUTABLE} PRIVATE ${LIBRARY})
+
+add_executable(${LIGHTNOVEL_EXECUTABLE} lightnovel.cpp)
+target_link_libraries(${LIGHTNOVEL_EXECUTABLE} PRIVATE ${LIBRARY})
