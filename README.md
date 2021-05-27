@@ -8,49 +8,41 @@
 [![GitHub Downloads](https://img.shields.io/github/downloads/KaiserLancelot/kepub/total)](https://github.com/KaiserLancelot/kepub/releases)
 [![Bugs](https://img.shields.io/github/issues/KaiserLancelot/kepub/bug)](https://github.com/KaiserLancelot/kepub/issues?q=is%3Aopen+is%3Aissue+label%3Abug)
 
+---
+
 Generate epub
 
-# Quick Start
-
-#### Environment:
+## Environment:
 
 - Linux
 - gcc/clang(Request to support C++20)
 
-#### Libraries:
+## Libraries:
 
 - fmt
-- Boost
-- ICU
-- tidy-html5
-- pugixml
+- zlib
 - libarchive
+- pugixml
+- curl
+- ICU
+- Boost
+- tidy-html5
 
-#### Build
+## Build
 
 ```bash
 cmake -S . -B build
-cmake --build build --config Release
+cmake --build build --config Release -j"$(nproc)"
 ```
 
-#### Install
+## Install
 
 ```bash
 sudo cmake --build build --config Release --target install
 ```
 
-#### Use
-
-The font file needs to be in the working directory
-
-- Generated from the integrated txt file in https://gitlab.com/demonovel/epub-txt/-/tree/master (introduction and packaging need to be done manually)
+## Uninstall
 
 ```bash
-demonovel xxx.txt
-```
-
-- Generated from the integrated txt file in https://mega.nz/#F!dw4DzZhJ!RNFlsWOf-QTOZJvsMmqLlA (introduction, author, and packaging need to be done manually)
-
-```bash
-masiro xxx.txt
+sudo cmake --build build --config Release --target uninstall
 ```
