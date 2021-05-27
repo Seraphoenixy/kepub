@@ -69,6 +69,8 @@ find_package(CURL CONFIG REQUIRED)
 find_package(ICU REQUIRED COMPONENTS uc i18n)
 find_package(Boost REQUIRED COMPONENTS program_options)
 
+set(TIDY_HTML5_LIB "/usr/local/lib/libtidys.a")
+
 # ---------------------------------------------------------------------------------------
 # Build data
 # ---------------------------------------------------------------------------------------
@@ -89,7 +91,7 @@ target_link_libraries(
           fmt::fmt
           CURL::libcurl
           pugixml::pugixml
-          tidys
+          ${TIDY_HTML5_LIB}
           ${LibArchive_LIBRARIES}
           ${ZLIB_LIBRARIES}
           ${Boost_LIBRARIES}

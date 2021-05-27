@@ -15,7 +15,7 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     OUTPUT_STRIP_TRAILING_WHITESPACE)
   message(STATUS "Linker: ${LLD_VERSION}")
 
-  # FIXME add_link_options("-fuse-ld=lld")
+  add_link_options("-fuse-ld=lld")
 else()
   execute_process(
     COMMAND ${CMAKE_LINKER} --version
