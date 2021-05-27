@@ -17,13 +17,13 @@ int main(int argc, char *argv[]) try {
   auto vec = kepub::read_file_to_vec(file_name);
   auto size = std::size(vec);
   for (std::size_t i = 0; i < size; ++i) {
-    if (vec[i].starts_with("－－－－－－－－－－－－－－－BEGIN")) {
+    if (vec[i].starts_with("－－－－－－－－－－－－－－－ＢＥＧＩＮ")) {
       i += 2;
       kepub::Content content(vec[i]);
       i += 2;
 
-      for (;
-           i < size && !vec[i].starts_with("－－－－－－－－－－－－－－－END");
+      for (; i < size &&
+             !vec[i].starts_with("－－－－－－－－－－－－－－－ＥＮＤ");
            ++i) {
         content.push_line(vec[i]);
       }

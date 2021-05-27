@@ -16,12 +16,13 @@ int main(int argc, char *argv[]) try {
 
   auto vec = kepub::read_file_to_vec(file_name);
   auto size = std::size(vec);
+  std::string start = "［ＷＥＢ］　";
   for (std::size_t i = 0; i < size; ++i) {
-    if (vec[i].starts_with("[WEB] ")) {
-      kepub::Content content(vec[i].substr(6));
+    if (vec[i].starts_with(start)) {
+      kepub::Content content(vec[i].substr(std::size(start)));
       ++i;
 
-      for (; i < size && !vec[i].starts_with("[WEB] "); ++i) {
+      for (; i < size && !vec[i].starts_with(start); ++i) {
         content.push_line(vec[i]);
       }
       --i;
