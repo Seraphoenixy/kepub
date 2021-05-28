@@ -169,7 +169,9 @@ void push_back(std::vector<std::string> &texts, const std::string &str) {
   }
 
   if (texts.back().ends_with("，") || str.starts_with("，") ||
-      str.starts_with("。") || str.starts_with("”")) {
+      str.starts_with("。") || str.starts_with("！") || str.starts_with("？") ||
+      str.starts_with("”") || str.starts_with("、") || str.starts_with("』") ||
+      str.starts_with("》") || str.starts_with("】") || str.starts_with("）")) {
     texts.back().append(str);
   } else if (std::isalpha(texts.back().back()) && std::isalpha(str.front())) {
     texts.back().append(" " + str);

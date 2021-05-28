@@ -11,7 +11,19 @@ namespace {
 void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("&nbsp;", " ");
 
+  str.findAndReplace("&lt;", "<");
+  str.findAndReplace("&gt;", ">");
+  str.findAndReplace("&quot;", "\"");
+  str.findAndReplace("&apos;", "'");
+  str.findAndReplace("&cent;", "¢");
+  str.findAndReplace("&pound;", "£");
+  str.findAndReplace("&yen;", "¥");
+  str.findAndReplace("&euro;", "€");
+  str.findAndReplace("&copy;", "©");
+  str.findAndReplace("&reg;", "®");
+
   str.findAndReplace("&", "&amp;");
+  str.findAndReplace(";", "；");
 
   str.findAndReplace("<", "&lt;");
   str.findAndReplace(">", "&gt;");
@@ -31,6 +43,11 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace(",", "，");
   str.findAndReplace(":", "：");
   str.findAndReplace("?", "？");
+  str.findAndReplace("｡", "。");
+  str.findAndReplace("､", "、");
+  str.findAndReplace("~", "～");
+  str.findAndReplace("･", "・");
+  str.findAndReplace("ｰ", "ー");
 
   str.findAndReplace("妳", "你");
   str.findAndReplace("壊", "坏");
