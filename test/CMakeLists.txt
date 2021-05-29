@@ -1,22 +1,37 @@
 file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/data/masiro.txt"
-     DESTINATION ${KEPUB_BINARY_DIR}/tool)
+     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/data/demonovel.txt"
-     DESTINATION ${KEPUB_BINARY_DIR}/tool)
+     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/data/standard.xhtml"
+     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 enable_testing()
 
-file(GLOB_RECURSE TEST_SRC CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
+add_test(NAME check_executable_xhtml COMMAND ${XHTML_EXECUTABLE} -v)
+add_test(NAME run_xhtml COMMAND ${XHTML_EXECUTABLE} masiro.txt)
+add_test(NAME diff_xhtml COMMAND diff standard.xhtml masiro.xhtml)
 
-find_package(Catch2 REQUIRED)
+add_test(NAME check_executable_demonovel COMMAND ${DEMONOVEL_EXECUTABLE} -v)
+# add_test(NAME run_demonovel COMMAND ${DEMONOVEL_EXECUTABLE} demonovel.txt)
+# add_test(NAME diff_demonovel COMMAND diff -r)
 
-add_executable(${TEST_EXECUTABLE} ${TEST_SRC})
-target_link_libraries(${TEST_EXECUTABLE} PRIVATE ${LIBRARY}
-                                                 Catch2::Catch2WithMain)
+add_test(NAME check_executable_masiro COMMAND ${MASIRO_EXECUTABLE} -v)
+# add_test(NAME run_masiro COMMAND ${MASIRO_EXECUTABLE} masiro.txt)
+# add_test(NAME diff_masiro COMMAND diff -r)
 
-# https://github.com/catchorg/Catch2/blob/devel/docs/cmake-integration.md
-include(Catch)
-catch_discover_tests(${TEST_EXECUTABLE} REPORTER compact)
+add_test(NAME check_executable_esjzone COMMAND ${ESJZONE_EXECUTABLE} -v)
+# add_test(NAME run_esjzone COMMAND ${ESJZONE_EXECUTABLE}) add_test(NAME
+# diff_esjzone COMMAND diff -r)
+
+add_test(NAME check_executable_addition COMMAND ${ADDITION_EXECUTABLE} -v)
+# add_test(NAME run_addition COMMAND ${ADDITION_EXECUTABLE}) add_test(NAME
+# diff_addition COMMAND diff -r)
+
+add_test(NAME check_executable_lightnovel COMMAND ${LIGHTNOVEL_EXECUTABLE} -v)
+# add_test(NAME run_lightnovel COMMAND ${LIGHTNOVEL_EXECUTABLE}) add_test(NAME
+# diff_lightnovel COMMAND diff -r)
 
 include(Coverage)
 include(Valgrind)

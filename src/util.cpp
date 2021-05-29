@@ -231,6 +231,7 @@ std::string processing_cmd(std::int32_t argc, char *argv[]) {
   if (vm.contains("version")) {
     fmt::print("{} version: {}.{}.{}\n", argv[0], KEPUB_VER_MAJOR,
                KEPUB_VER_MINOR, KEPUB_VER_PATCH);
+    fmt::print("Build time: {} {}", __DATE__, __TIME__);
     std::exit(EXIT_SUCCESS);
   }
 
@@ -246,7 +247,17 @@ std::string processing_cmd(std::int32_t argc, char *argv[]) {
     error("does not support multiple files");
   }
 
-  return input_file.front();
+  auto file_name = input_file.front();
+
+  if (!std::filesystem::exists(file_name)) {
+    error("the file not exists: {}", file_name);
+  }
+
+  if (!std::filesystem::is_regular_file(file_name)) {
+    error("{} is not a file", file_name);
+  }
+
+  return file_name;
 }
 
 std::string chapter_line(const std::string &line) {
