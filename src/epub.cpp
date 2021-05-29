@@ -366,7 +366,7 @@ void Epub::generate_chapter() {
       xhtml.push_back(line);
     }
 
-    auto file_name = num_to_chapter_name(id);
+    auto file_name = num_to_chapter_name(id++);
     std::ofstream ofs(root_ / "OEBPS" / "Text" / file_name);
     check_and_write_file(ofs, xhtml.to_string());
 

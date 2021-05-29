@@ -4,6 +4,7 @@
 
 #include "epub.h"
 #include "error.h"
+#include "trans.h"
 #include "util.h"
 
 int main(int argc, char *argv[]) try {
@@ -12,7 +13,7 @@ int main(int argc, char *argv[]) try {
 
   kepub::Epub epub;
   epub.set_creator("kaiser");
-  epub.set_book_name(std::filesystem::path(file_name).stem());
+  epub.set_book_name(kepub::trans_str(std::filesystem::path(file_name).stem()));
 
   auto vec = kepub::read_file_to_vec(file_name);
   auto size = std::size(vec);
