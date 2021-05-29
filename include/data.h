@@ -45,6 +45,9 @@ extern int illustration_size;
 extern char message[];
 extern int message_size;
 
+extern char postscript[];
+extern int postscript_size;
+
 namespace kepub {
 
 inline std::string_view container_str(
@@ -88,5 +91,8 @@ inline std::string_view illustration_str(
 
 inline std::string message_str(
     message, static_cast<std::string::size_type>(message_size));
+
+inline std::string_view postscript_str(
+    postscript, static_cast<std::string_view::size_type>(postscript_size));
 
 }  // namespace kepub

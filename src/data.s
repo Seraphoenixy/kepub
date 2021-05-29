@@ -26,6 +26,8 @@
     .global illustration_size
     .global message
     .global message_size
+    .global postscript
+    .global postscript_size
     .section .rodata
 
 container:
@@ -111,3 +113,9 @@ message:
 message_end:
 message_size:
     .int message_end - message
+
+postscript:
+    .incbin "postscript.xhtml"
+postscript_end:
+postscript_size:
+    .int postscript_end - postscript
