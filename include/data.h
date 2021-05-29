@@ -39,6 +39,12 @@ extern int cover_size;
 extern char introduction[];
 extern int introduction_size;
 
+extern char illustration[];
+extern int illustration_size;
+
+extern char message[];
+extern int message_size;
+
 namespace kepub {
 
 inline std::string_view container_str(
@@ -76,5 +82,11 @@ inline std::string_view cover_str(
 
 inline std::string introduction_str(
     introduction, static_cast<std::string::size_type>(introduction_size));
+
+inline std::string_view illustration_str(
+    illustration, static_cast<std::string_view::size_type>(illustration_size));
+
+inline std::string message_str(
+    message, static_cast<std::string::size_type>(message_size));
 
 }  // namespace kepub

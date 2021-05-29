@@ -22,6 +22,10 @@
     .global cover_size
     .global introduction
     .global introduction_size
+    .global illustration
+    .global illustration_size
+    .global message
+    .global message_size
     .section .rodata
 
 container:
@@ -49,7 +53,7 @@ FZCYS_size:
     .int FZCYS_end - FZCYS
 
 SourceHanSansCN_Normal:
-    .incbin "SourceHanSansCN_Normal.ttf"
+    .incbin "SourceHanSansCN-Normal.ttf"
 SourceHanSansCN_Normal_end:
 SourceHanSansCN_Normal_size:
     .int SourceHanSansCN_Normal_end - SourceHanSansCN_Normal
@@ -95,3 +99,15 @@ introduction:
 introduction_end:
 introduction_size:
     .int introduction_end - introduction
+
+illustration:
+    .incbin "illustration.xhtml"
+illustration_end:
+illustration_size:
+    .int illustration_end - illustration
+
+message:
+    .incbin "message.xhtml"
+message_end:
+message_size:
+    .int message_end - message

@@ -47,6 +47,31 @@ td {
   margin-bottom: 0.2em;
 }
 
+/*Logo页样式*/
+.logoarea {
+  text-indent: 0;
+  text-align: center !important;
+  margin-top: 20%;
+  margin-bottom: 0;
+}
+.logoimage {
+  width: 100%;
+}
+
+/*目录页样式*/
+/*“目录”标题颜色*/
+.colorco {
+  color: #000000;
+}
+/*目录页超链接样式*/
+.nodeco {
+  text-decoration: none;
+}
+/*目录页超链接颜色*/
+.colorg {
+  color: #000000;
+}
+
 /*正文样式*/
 /*正文章节标题样式*/
 h1 {
@@ -77,6 +102,8 @@ rt {
   text-emphasis-position: under right;
   -webkit-text-emphasis-style: dot;
   -webkit-text-emphasis-position: under right;
+  -epub-text-emphasis-style: dot;
+  -epub-text-emphasis-position: under right;
 }
 
 /*字体样式控制*/
@@ -394,6 +421,20 @@ rt {
   clear: both;
 }
 
+/*標題頁樣式*/
+.titlepage-background {
+  background-color: #000000;
+}
+.titlepage {
+  width: 20em;
+  max-width: 100%;
+  margin: 1em auto 0 auto;
+}
+.titlepage p {
+  text-indent: 0;
+  line-height: 1;
+  height: 1em;
+}
 .en-tit1 {
   text-align: left;
 }
@@ -410,7 +451,6 @@ rt {
 .author p {
   margin: 0.1em auto;
 }
-
 .illus-tit {
   transform: rotate(90deg);
   -moz-transform: rotate(90deg);
@@ -443,7 +483,17 @@ rt {
   float: right;
   width: 7em;
 }
-
+.vir-chapter {
+  text-align: center !important;
+  margin: 1.5em 1em;
+}
+.vir-chapter img {
+  max-width: 100%;
+}
+.tcy {
+  -webkit-text-combine: horizontal;
+  -epub-text-combine: horizontal;
+}
 .mst {
   width: 20em;
   max-width: 100%;
@@ -472,7 +522,7 @@ rt {
 /*字体样式*/
 @font-face {
   font-family: "SourceHanSansCN-Normal";
-  src: url("../Fonts/SourceHanSansCN_Normal.ttf");
+  src: url("../Fonts/SourceHanSansCN-Normal.ttf");
 }
 .SourceHanSansCN-Normal {
   font-family: SourceHanSansCN-Normal, serif;
