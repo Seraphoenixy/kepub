@@ -22,8 +22,8 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("&copy;", "©");
   str.findAndReplace("&reg;", "®");
 
-  str.findAndReplace("&", "&amp;");
   str.findAndReplace(";", "；");
+  str.findAndReplace("&", "&amp;");
 
   str.findAndReplace("<", "&lt;");
   str.findAndReplace(">", "&gt;");
