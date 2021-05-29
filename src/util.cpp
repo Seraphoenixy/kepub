@@ -114,7 +114,7 @@ void check_is_url(const std::string &url) {
           url,
           std::regex(
               R"(^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$)"))) {
-    error("not a url");
+    error("not a url: {}", url);
   }
 }
 
@@ -181,7 +181,11 @@ std::string processing_cmd(std::int32_t argc, char *argv[]) {
   config.add_options()("connect,c", "connect chinese");
   config.add_options()("no-cover", "do not generate cover");
   config.add_options()("postscript,p", "generate postscript");
-  config.add_options()("illustration,i", "generate illustration");
+  config.add_options()(
+      "illustration,i",
+      boost::program_options::value<std::int32_t>(&illustration_num)
+          ->default_value(0),
+      "generate illustration");
 
   boost::program_options::options_description hidden("Hidden options");
   hidden.add_options()("input-file",
@@ -228,9 +232,6 @@ std::string processing_cmd(std::int32_t argc, char *argv[]) {
   }
   if (vm.contains("postscript")) {
     postscript = true;
-  }
-  if (vm.contains("illustration")) {
-    illustration_num = vm["illustration"].as<std::int32_t>();
   }
 
   return input_file;

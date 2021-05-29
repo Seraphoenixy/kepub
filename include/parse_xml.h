@@ -52,8 +52,9 @@ class XHTML {
   [[nodiscard]] std::string last_child_attr(std::string_view attr_name) const;
 
   [[nodiscard]] std::vector<std::string> get_children_attr(
-      std::string_view attr_name) const;
-  [[nodiscard]] std::vector<std::string> get_children_text() const;
+      std::string_view name, std::string_view attr_name) const;
+  [[nodiscard]] std::vector<std::string> get_children_text(
+      std::string_view name = "") const;
 
   void push_back(const Node &node);
   void push_back(std::string_view name,

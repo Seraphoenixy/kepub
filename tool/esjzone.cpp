@@ -39,7 +39,7 @@ get_content(const std::string &url) {
   html.move_by_attr_class("ul", "list-unstyled mb-2 book-detail");
 
   std::string prefix = "作者:";
-  for (const auto &line : html.get_children_text()) {
+  for (const auto &line : html.get_children_text("li")) {
     if (line.starts_with(prefix)) {
       author = kepub::trans_str(line.substr(std::size(prefix)));
     }
@@ -74,11 +74,15 @@ get_content(const std::string &url) {
   html.move_by_attr_class("div", "tab-pane fade active show");
   html.move_by_attr("div", "id", "chapterList");
 
-  for (const auto &line : html.get_children_text()) {
-    titles.push_back(kepub::trans_str(line));
+  for (const auto &line : html.get_children_text("a")) {
+    auto temp = kepub::trans_str(line);
+    if (std::empty(temp)) {
+      kepub::error("the title is empty");
+    }
+    titles.push_back(temp);
   }
 
-  for (const auto &item : html.get_children_attr("href")) {
+  for (const auto &item : html.get_children_attr("a", "href")) {
     urls.push_back(item);
   }
 
@@ -99,6 +103,15 @@ get_content(const std::string &url) {
   }
   if (std::empty(description)) {
     kepub::error("description is empty");
+  }
+
+  for (const auto &item : urls) {
+    kepub::check_is_url(item);
+  }
+
+  if (std::size(urls) != std::size(titles)) {
+    kepub::error("the number of urls != the number of titles: {} vs {}",
+                 std::size(urls), std::size(titles));
   }
 
   return {urls, titles, book_name, author, cover_url, description};

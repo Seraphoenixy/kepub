@@ -36,16 +36,16 @@ set_tests_properties(run_masiro PROPERTIES FIXTURES_REQUIRED masiro)
 set_tests_properties(diff_masiro PROPERTIES FIXTURES_CLEANUP masiro)
 
 add_test(NAME check_executable_esjzone COMMAND ${ESJZONE_EXECUTABLE} -v)
-# add_test(NAME run_esjzone COMMAND ${ESJZONE_EXECUTABLE}) add_test(NAME
-# diff_esjzone COMMAND diff -r)
+add_test(NAME run_esjzone COMMAND ${ESJZONE_EXECUTABLE}
+                                  https://esjzone.cc/detail/1578022447.html)
+add_test(NAME diff_esjzone COMMAND diff -r)
+set_tests_properties(check_executable_esjzone PROPERTIES FIXTURES_SETUP esjzone)
+set_tests_properties(run_esjzone PROPERTIES FIXTURES_REQUIRED esjzone)
+set_tests_properties(diff_esjzone PROPERTIES FIXTURES_CLEANUP esjzone)
 
 add_test(NAME check_executable_addition COMMAND ${ADDITION_EXECUTABLE} -v)
 # add_test(NAME run_addition COMMAND ${ADDITION_EXECUTABLE}) add_test(NAME
 # diff_addition COMMAND diff -r)
-
-add_test(NAME check_executable_lightnovel COMMAND ${LIGHTNOVEL_EXECUTABLE} -v)
-# add_test(NAME run_lightnovel COMMAND ${LIGHTNOVEL_EXECUTABLE}) add_test(NAME
-# diff_lightnovel COMMAND diff -r)
 
 include(Coverage)
 include(Valgrind)

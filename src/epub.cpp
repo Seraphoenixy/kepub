@@ -108,6 +108,7 @@ void Epub::generate_for_web(
     Epub::add_nav_point(toc_ncx_, title, "Text/" + file_name);
   }
 
+#ifdef NDEBUG
   auto size = std::size(titles);
   for (std::size_t i = 0; i < size; ++i) {
     auto pid = fork();
@@ -117,8 +118,6 @@ void Epub::generate_for_web(
       Content content(titles[i]);
 
       auto text_url = urls[i];
-      check_is_url(text_url);
-
       if (!text_url.starts_with("https://www.esjzone.cc/")) {
         error("url error: {}", text_url);
       }
@@ -138,6 +137,21 @@ void Epub::generate_for_web(
       error("waitpid Error");
     }
   }
+#else
+  auto size = std::size(titles);
+  for (std::size_t i = 0; i < size; ++i) {
+    Content content(titles[i]);
+
+    auto text_url = urls[i];
+    if (!text_url.starts_with("https://www.esjzone.cc/")) {
+      error("url error: {}", text_url);
+    }
+    content.push_lines(get_text(text_url));
+
+    std::ofstream ofs(root_ / "OEBPS" / "Text" / num_to_chapter_name(i + 1));
+    check_and_write_file(ofs, generate_chapter(content));
+  }
+#endif
 
   generate_postscript();
 

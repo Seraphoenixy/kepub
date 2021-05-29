@@ -117,31 +117,62 @@ bool XHTML::has_child() const {
 }
 
 std::string XHTML::first_child_attr(std::string_view attr_name) const {
-  return node_.first_child().attribute(attr_name.data()).value();
+  auto attr = node_.first_child().attribute(attr_name.data());
+  if (attr.empty()) {
+    error("there is no attribute: {}", attr_name);
+  }
+
+  return attr.value();
 }
 
 std::string XHTML::last_child_attr(std::string_view attr_name) const {
-  return node_.last_child().attribute(attr_name.data()).value();
+  auto attr = node_.last_child().attribute(attr_name.data());
+  if (attr.empty()) {
+    error("there is no attribute: {}", attr_name);
+  }
+
+  return attr.value();
 }
 
 std::vector<std::string> XHTML::get_children_attr(
-    std::string_view attr_name) const {
+    std::string_view name, std::string_view attr_name) const {
   std::vector<std::string> result;
 
-  for (const auto& child : node_.children()) {
-    result.push_back(child.attribute(attr_name.data()).value());
+  for (const auto& child : node_.children(name.data())) {
+    auto attr = child.attribute(attr_name.data());
+    if (attr.empty()) {
+      error("there is no {} in {}", attr_name, name);
+    }
+
+    result.emplace_back(attr.value());
+  }
+
+  if (std::empty(result)) {
+    error("get_children_attr no data");
   }
 
   return result;
 }
 
-std::vector<std::string> XHTML::get_children_text() const {
+std::vector<std::string> XHTML::get_children_text(std::string_view name) const {
   std::vector<std::string> result;
 
-  for (const auto& child : node_.children()) {
-    std::string str;
-    kepub::XHTML::get_text(child, str);
-    result.push_back(str);
+  if (std::empty(name)) {
+    for (const auto& child : node_.children()) {
+      std::string str;
+      kepub::XHTML::get_text(child, str);
+      result.push_back(str);
+    }
+  } else {
+    for (const auto& child : node_.children(name.data())) {
+      std::string str;
+      kepub::XHTML::get_text(child, str);
+      result.push_back(str);
+    }
+  }
+
+  if (std::empty(result)) {
+    error("get_children_text no data");
   }
 
   return result;
