@@ -114,7 +114,6 @@ int main(int argc, char *argv[]) try {
   std::filesystem::rename(zip_name, epub_name);
 
   std::filesystem::remove(file_name);
-  std::filesystem::remove_all(book_name);
 } catch (const std::exception &err) {
   kepub::error(err.what());
 } catch (...) {

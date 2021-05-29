@@ -88,6 +88,16 @@ bool end_with_chinese(const std::string &str) {
 namespace kepub {
 
 void create_dir(const std::filesystem::path &path) {
+  if (std::filesystem::exists(path)) {
+    if (std::filesystem::is_directory(path)) {
+      if (std::filesystem::remove_all(path) == 0) {
+        error("can not remove directory: {}", path);
+      }
+    } else {
+      error("{} already exists", path);
+    }
+  }
+
   if (!std::filesystem::create_directory(path)) {
     error("can not create directory: {}", path.string());
   }

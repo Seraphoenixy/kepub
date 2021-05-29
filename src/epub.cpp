@@ -203,16 +203,6 @@ void Epub::add_nav_point(XHTML& toc_ncx, const std::string& title,
 }
 
 void Epub::common_generate() {
-  if (std::filesystem::exists(book_name_)) {
-    if (std::filesystem::is_directory(book_name_)) {
-      if (std::filesystem::remove_all(book_name_) == 0) {
-        error("can not remove directory: {}", book_name_);
-      }
-    } else {
-      error("{} already exists", book_name_);
-    }
-  }
-
   root_ = book_name_;
 
   create_dir(root_);
