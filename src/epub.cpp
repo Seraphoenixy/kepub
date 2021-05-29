@@ -21,6 +21,10 @@
 namespace {
 
 std::string get_date() {
+  if (!std::empty(kepub::data)) {
+    return kepub::data;
+  }
+
   return fmt::format("{:%Y-%m-%d}", fmt::localtime(std::time(nullptr)));
 }
 
@@ -115,12 +119,7 @@ void Epub::generate_for_web(
       error("fork error");
     } else if (pid == 0) {
       Content content(titles[i]);
-
-      auto text_url = urls[i];
-      if (!text_url.starts_with("https://www.esjzone.cc/")) {
-        error("url error: {}", text_url);
-      }
-      content.push_lines(get_text(text_url));
+      content.push_lines(get_text(urls[i]));
 
       std::ofstream ofs(root_ / "OEBPS" / "Text" / num_to_chapter_name(i + 1));
       check_and_write_file(ofs, generate_chapter(content));

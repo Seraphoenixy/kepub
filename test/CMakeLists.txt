@@ -20,7 +20,7 @@ set_tests_properties(diff_xhtml PROPERTIES FIXTURES_CLEANUP xhtml)
 
 add_test(NAME check_executable_demonovel COMMAND ${DEMONOVEL_EXECUTABLE} -v)
 add_test(NAME run_demonovel COMMAND ${DEMONOVEL_EXECUTABLE} 梗角色轉生太過頭了！.txt
-                                    --no-cover)
+                                    --no-cover --data=2021-05-29)
 add_test(NAME diff_demonovel
          COMMAND diff -r ${CMAKE_CURRENT_SOURCE_DIR}/data/standard-demonovel
                  梗角色转生太过头了！)
@@ -30,7 +30,8 @@ set_tests_properties(run_demonovel PROPERTIES FIXTURES_REQUIRED demonovel)
 set_tests_properties(diff_demonovel PROPERTIES FIXTURES_CLEANUP demonovel)
 
 add_test(NAME check_executable_masiro COMMAND ${MASIRO_EXECUTABLE} -v)
-add_test(NAME run_masiro COMMAND ${MASIRO_EXECUTABLE} 梗角色转生太过头了！.txt -c -p -i 3)
+add_test(NAME run_masiro COMMAND ${MASIRO_EXECUTABLE} 梗角色转生太过头了！.txt -c -p -i 3
+                                 --data=2021-05-29)
 add_test(NAME diff_masiro
          COMMAND diff -r ${CMAKE_CURRENT_SOURCE_DIR}/data/standard-masiro
                  梗角色转生太过头了！)
@@ -39,9 +40,10 @@ set_tests_properties(run_masiro PROPERTIES FIXTURES_REQUIRED masiro)
 set_tests_properties(diff_masiro PROPERTIES FIXTURES_CLEANUP masiro)
 
 add_test(NAME check_executable_esjzone COMMAND ${ESJZONE_EXECUTABLE} -v)
-add_test(NAME run_esjzone
-         COMMAND ${ESJZONE_EXECUTABLE}
-                 https://esjzone.cc/detail/1578022447.html --max-chapter=210)
+add_test(
+  NAME run_esjzone
+  COMMAND ${ESJZONE_EXECUTABLE} https://esjzone.cc/detail/1578022447.html
+          --max-chapter=210 --data=2021-05-29)
 add_test(NAME diff_esjzone
          COMMAND diff -r ${CMAKE_CURRENT_SOURCE_DIR}/data/standard-esjzone 魅魔的我)
 set_tests_properties(check_executable_esjzone PROPERTIES FIXTURES_SETUP esjzone)

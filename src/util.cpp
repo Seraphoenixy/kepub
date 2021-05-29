@@ -199,7 +199,11 @@ std::string processing_cmd(std::int32_t argc, char *argv[]) {
   config.add_options()("max-chapter",
                        boost::program_options::value<std::int32_t>(&max_chapter)
                            ->default_value(0),
-                       "maximum number of chapters ");
+                       "maximum number of chapters");
+  config.add_options()(
+      "data",
+      boost::program_options::value<std::string>(&data)->default_value(""),
+      "maximum number of chapters");
 
   boost::program_options::options_description hidden("Hidden options");
   hidden.add_options()("input-file",

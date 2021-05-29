@@ -19,6 +19,8 @@ inline std::int32_t illustration_num = 0;
 
 inline std::int32_t max_chapter = 0;
 
+inline std::string data;
+
 void create_dir(const std::filesystem::path &path);
 
 void check_is_txt_file(const std::string &file_name);

@@ -112,6 +112,9 @@ get_content(const std::string &url) {
 
   for (const auto &item : urls) {
     kepub::check_is_url(item);
+    if (!item.starts_with("https://www.esjzone.cc/")) {
+      kepub::error("url error: {}", item);
+    }
   }
 
   if (std::size(urls) != std::size(titles)) {
