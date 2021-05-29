@@ -147,10 +147,7 @@ void Epub::generate_for_web(
 }
 
 std::string Epub::generate_chapter(const Content& content) {
-  auto str =
-      boost::replace_all_copy(chapter_str, "@title@", content.get_title());
-
-  XHTML xhtml(str);
+  XHTML xhtml(chapter_str);
   xhtml.move_by_name("body");
   xhtml.move_by_name("div");
 
@@ -158,7 +155,8 @@ std::string Epub::generate_chapter(const Content& content) {
     xhtml.push_back(item);
   }
 
-  return xhtml.to_string();
+  return boost::replace_all_copy(xhtml.to_string(), "@title@",
+                                 content.get_title());
 }
 
 void Epub::add_file_in_content_opf(XHTML& content_opf, const std::string& id,
@@ -260,18 +258,26 @@ void Epub::common_generate() {
   check_and_write_file(mimetype_ofs, mimetype_str);
 
   // content.opf
-  boost::replace_all(content_str, "@creator@", creator_);
-  boost::replace_all(content_str, "@book_name@", book_name_);
-  boost::replace_all(content_str, "@author@", author_);
-  boost::replace_all(content_str, "@description@",
-                     boost::join(description_, "\n"));
-  boost::replace_all(content_str, "@date@", get_date());
   content_opf_ = XHTML(content_str);
+  content_opf_.move_by_name("metadata");
+
+  content_opf_.set_child_text("dc:title", book_name_);
+  content_opf_.set_child_attr("dc:creator", "opf:file-as", creator_);
+  content_opf_.set_child_text("dc:creator", author_);
+  content_opf_.set_child_text("dc:rights", creator_);
+  content_opf_.set_child_text("dc:description",
+                              boost::join(description_, "\n"));
+  content_opf_.set_child_text("dc:date", get_date());
 
   // toc.ncx
-  boost::replace_all(toc_str, "@book_name@", book_name_);
-  boost::replace_all(toc_str, "@author@", author_);
   toc_ncx_ = XHTML(toc_str);
+
+  toc_ncx_.move_by_name("docTitle");
+  toc_ncx_.set_child_text("text", book_name_);
+
+  toc_ncx_.previous();
+  toc_ncx_.move_by_name("docAuthor");
+  toc_ncx_.set_child_text("text", author_);
 }
 
 void Epub::generate_cover() {
@@ -353,12 +359,15 @@ void Epub::generate_illustration() {
 void Epub::generate_chapter() {
   std::int32_t id = 1;
   for (const auto& item : contents_) {
-    auto str =
-        boost::replace_all_copy(chapter_str, "@title@", item.get_title());
+    XHTML xhtml(chapter_str);
+    xhtml.move_by_name("head");
+    xhtml.set_child_text("title", item.get_title());
 
-    XHTML xhtml(str);
+    xhtml.previous();
     xhtml.move_by_name("body");
     xhtml.move_by_name("div");
+
+    xhtml.set_child_text("h1", item.get_title());
 
     for (const auto& line : item.get_lines()) {
       xhtml.push_back(line);

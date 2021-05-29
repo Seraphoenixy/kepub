@@ -56,6 +56,10 @@ class XHTML {
   [[nodiscard]] std::vector<std::string> get_children_text(
       std::string_view name = "") const;
 
+  void set_child_text(std::string_view name, const std::string &text);
+  void set_child_attr(std::string_view name, std::string_view attr_name,
+                      const std::string &attr_value);
+
   void push_back(const Node &node);
   void push_back(std::string_view name,
                  const std::vector<std::pair<std::string, std::string>> &attrs,
@@ -66,6 +70,7 @@ class XHTML {
 
  private:
   static void get_text(pugi::xml_node node, std::string &str);
+  pugi::xml_node get_child_by_name(std::string_view name);
 
   pugi::xml_document root_;
   pugi::xml_node node_;

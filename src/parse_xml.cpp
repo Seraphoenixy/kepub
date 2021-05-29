@@ -77,22 +77,7 @@ void XHTML::previous() { node_ = node_.parent(); }
 void XHTML::reset() { node_ = root_.document_element(); }
 
 void XHTML::move_by_name(std::string_view name) {
-  auto child = node_.children(name.data());
-  auto begin = child.begin();
-  auto end = child.end();
-
-  std::size_t size = 0;
-  for (auto iter = begin; iter != end; ++iter) {
-    ++size;
-  }
-
-  if (size == 0) {
-    error("can not find this node: {}", name);
-  } else if (size > 1) {
-    error("multiple nodes with the same name : {}", name);
-  }
-
-  node_ = *begin;
+  node_ = get_child_by_name(name);
 }
 
 void XHTML::move_by_attr(std::string_view name, std::string_view attr_name,
@@ -181,6 +166,24 @@ std::vector<std::string> XHTML::get_children_text(std::string_view name) const {
   return result;
 }
 
+void XHTML::set_child_text(std::string_view name, const std::string& text) {
+  auto child = get_child_by_name(name);
+  child.remove_children();
+  child.append_child(pugi::node_pcdata).set_value(text.c_str());
+}
+
+void XHTML::set_child_attr(std::string_view name, std::string_view attr_name,
+                           const std::string& attr_value) {
+  auto child = get_child_by_name(name);
+  auto attr = child.attribute(attr_name.data());
+
+  if (attr.empty()) {
+    error("there is no attr {} in {}", attr_name, name);
+  }
+
+  attr.set_value(attr_value.data());
+}
+
 void XHTML::push_back(const Node& node) {
   auto child = node_.append_child(node.name_.c_str());
 
@@ -238,6 +241,25 @@ void XHTML::get_text(pugi::xml_node node, std::string& str) {
       get_text(child, str);
     }
   }
+}
+
+pugi::xml_node XHTML::get_child_by_name(std::string_view name) {
+  auto children = node_.children(name.data());
+  auto begin = children.begin();
+  auto end = children.end();
+
+  std::size_t size = 0;
+  for (auto iter = begin; iter != end; ++iter) {
+    ++size;
+  }
+
+  if (size == 0) {
+    error("can not find this node: {}", name);
+  } else if (size > 1) {
+    error("multiple nodes with the same name : {}", name);
+  }
+
+  return *begin;
 }
 
 }  // namespace kepub
