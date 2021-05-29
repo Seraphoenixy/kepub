@@ -86,8 +86,8 @@ inline std::string_view cover_str(
 inline std::string introduction_str(
     introduction, static_cast<std::string::size_type>(introduction_size));
 
-inline std::string_view illustration_str(
-    illustration, static_cast<std::string_view::size_type>(illustration_size));
+inline std::string illustration_str(
+    illustration, static_cast<std::string::size_type>(illustration_size));
 
 inline std::string message_str(
     message, static_cast<std::string::size_type>(message_size));

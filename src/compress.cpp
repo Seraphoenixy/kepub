@@ -1,5 +1,8 @@
 #include "compress.h"
 
+#include <unistd.h>
+
+#include <cerrno>
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
@@ -12,6 +15,33 @@
 #include "util.h"
 
 namespace {
+
+class ChangeWorkDir {
+ public:
+  explicit ChangeWorkDir(const std::string &dir = "") {
+    if (!std::empty(dir)) {
+      backup_ = std::filesystem::current_path();
+
+      if (chdir(dir.c_str())) {
+        kepub::error("chdir error");
+      }
+    }
+  }
+
+  ChangeWorkDir(const ChangeWorkDir &) = delete;
+  ChangeWorkDir(ChangeWorkDir &&) = delete;
+  ChangeWorkDir &operator=(const ChangeWorkDir &) = delete;
+  ChangeWorkDir &operator=(ChangeWorkDir &&) = delete;
+
+  ~ChangeWorkDir() {
+    if (!std::empty(backup_) && chdir(backup_.c_str())) {
+      kepub::error("chdir error");
+    }
+  }
+
+ private:
+  std::string backup_;
+};
 
 void copy_data(struct archive *ar, struct archive *aw) {
   while (true) {
@@ -85,7 +115,7 @@ void compress(const std::string &dir) {
       char buff[16384];
       auto file = std::fopen(archive_entry_sourcepath(entry), "rb");
       if (!file) {
-        error("open file error");
+        error(std::strerror(errno));
       }
 
       auto len = std::fread(buff, 1, sizeof(buff), file);

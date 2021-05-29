@@ -9,28 +9,21 @@
 
 namespace kepub {
 
-inline bool connect_chinese = false;
+inline bool connect_chinese;
 
-class ChangeWorkDir {
- public:
-  explicit ChangeWorkDir(const std::string &dir = "");
+inline bool no_cover;
 
-  ChangeWorkDir(const ChangeWorkDir &) = delete;
-  ChangeWorkDir(ChangeWorkDir &&) = delete;
-  ChangeWorkDir &operator=(const ChangeWorkDir &) = delete;
-  ChangeWorkDir &operator=(ChangeWorkDir &&) = delete;
+inline bool postscript;
 
-  ~ChangeWorkDir();
-
- private:
-  std::string backup_;
-};
-
-bool start_with_chinese(const std::string &str);
-
-bool end_with_chinese(const std::string &str);
+inline std::int32_t illustration_num;
 
 void create_dir(const std::filesystem::path &path);
+
+void check_is_txt_file(const std::string &file_name);
+
+void check_file_exist(const std::string &file_name);
+
+void check_is_url(const std::string &url);
 
 std::string read_file_to_str(const std::string &file_name);
 
@@ -38,16 +31,14 @@ std::vector<std::string> read_file_to_vec(const std::string &file_name);
 
 void check_and_write_file(std::ofstream &ofs, std::string_view str);
 
-void push_back(std::vector<std::string> &texts, const std::string &str);
+std::string num_to_str(std::int32_t i);
 
 std::string num_to_chapter_name(std::int32_t i);
 
+std::string num_to_illustration_name(std::int32_t i);
+
 std::string processing_cmd(std::int32_t argc, char *argv[]);
 
-std::string chapter_line(const std::string &line);
-
-void check_is_txt_file(const std::string &file_name);
-
-void check_file_exist(const std::string &file_name);
+void push_back(std::vector<std::string> &texts, const std::string &str);
 
 }  // namespace kepub

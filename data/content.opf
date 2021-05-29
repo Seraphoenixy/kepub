@@ -10,26 +10,17 @@
     <meta content="1.5.1" name="Sigil version"/>
     <dc:date opf:event="modification" xmlns:opf="http://www.idpf.org/2007/opf">@date@</dc:date>
     <dc:identifier id="BookId" opf:scheme="UUID">urn:uuid:5208e6bb-5d25-45b0-a7fd-b97d79a85fd4</dc:identifier>
-    <meta name="cover" content="cover.jpg"/>
   </metadata>
   <manifest>
     <item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml"/>
-    <item id="cover.xhtml" href="Text/cover.xhtml" media-type="application/xhtml+xml"/>
-    <item id="message.xhtml" href="Text/message.xhtml" media-type="application/xhtml+xml"/>
-    <item id="introduction.xhtml" href="Text/introduction.xhtml" media-type="application/xhtml+xml"/>
     <item id="style.css" href="Styles/style.css" media-type="text/css"/>
-    <item id="cover.jpg" href="Images/cover.jpg" media-type="image/jpeg"/>
     <item id="SourceHanSansCN-Normal.ttf" href="Fonts/SourceHanSansCN-Normal.ttf" media-type="font/ttf"/>
     <item id="DFNMing.ttf" href="Fonts/DFNMing.ttf" media-type="font/ttf"/>
     <item id="DFPMingLight.ttf" href="Fonts/DFPMingLight.ttf" media-type="font/ttf"/>
     <item id="FZCYS.ttf" href="Fonts/FZCYS.ttf" media-type="font/ttf"/>
   </manifest>
   <spine toc="ncx">
-    <itemref idref="cover.xhtml" />
-    <itemref idref="message.xhtml"/>
-    <itemref idref="introduction.xhtml"/>
   </spine>
   <guide>
-    <reference type="cover" title="Cover" href="Text/cover.xhtml"/>
   </guide>
 </package>

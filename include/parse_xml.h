@@ -1,6 +1,5 @@
 #pragma once
 
-#include <iostream>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -9,6 +8,8 @@
 #include <pugixml.hpp>
 
 namespace kepub {
+
+std::string html_tidy(const std::string &html);
 
 class XHTML;
 
@@ -32,40 +33,41 @@ class Node {
 
 class XHTML {
  public:
+  XHTML() = default;
   explicit XHTML(const std::string &xhtml);
+
+  void save(std::string_view file) const;
+  [[nodiscard]] std::string to_string() const;
+
+  void previous();
+  void reset();
 
   void move_by_name(std::string_view name);
   void move_by_attr(std::string_view name, std::string_view attr_name,
                     std::string_view attr_value);
-
   void move_by_attr_class(std::string_view name, std::string_view attr_value);
 
-  void save(std::string_view file) const;
-  std::string to_string() const;
+  [[nodiscard]] bool has_child() const;
+  [[nodiscard]] std::string first_child_attr(std::string_view attr_name) const;
+  [[nodiscard]] std::string last_child_attr(std::string_view attr_name) const;
 
-  [[nodiscard]] std::string get_text() const;
-  void previous();
-  [[nodiscard]] std::vector<pugi::xml_node> children() const;
-
-  pugi::xml_node last_child() const;
+  [[nodiscard]] std::vector<std::string> get_children_attr(
+      std::string_view attr_name) const;
+  [[nodiscard]] std::vector<std::string> get_children_text() const;
 
   void push_back(const Node &node);
+  void push_back(std::string_view name,
+                 const std::vector<std::pair<std::string, std::string>> &attrs,
+                 const std::string &text = "");
+  void push_back(const std::string &text);
 
-  void insert_before(const Node &node, std::string_view attr_name,
-                     std::string_view attr_value);
-
-  void insert_after(const Node &node, std::string_view attr_name,
-                    std::string_view attr_value);
-
-  static void get_text(pugi::xml_node node, std::string &str);
+  [[nodiscard]] std::string get_text() const;
 
  private:
-  void insert(pugi::xml_node child, const Node &node);
+  static void get_text(pugi::xml_node node, std::string &str);
 
   pugi::xml_document root_;
   pugi::xml_node node_;
 };
-
-std::string html_tidy(const std::string &html);
 
 }  // namespace kepub

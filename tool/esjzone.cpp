@@ -8,7 +8,8 @@
 #include "download.h"
 #include "epub.h"
 #include "error.h"
-#include "parse_html.h"
+#include "parse_xml.h"
+#include "trans.h"
 #include "util.h"
 
 // urls titles book_name author cover description
@@ -32,16 +33,15 @@ get_content(const std::string &url) {
   html.move_by_attr_class("div", "row mb-3");
   html.move_by_attr_class("div", "col-md-9 book-detail");
   html.move_by_attr_class("h2", "p-t-10 text-normal");
-  book_name = html.get_text();
+  book_name = kepub::trans_str(html.get_text());
 
   html.previous();
   html.move_by_attr_class("ul", "list-unstyled mb-2 book-detail");
-  for (const auto &child : html.children()) {
-    std::string str;
-    kepub::XHTML::get_text(child, str);
-    if (str.starts_with("作者:")) {
-      // -1 for '\0'
-      author = str.substr(std::size("作者:") - 1);
+
+  std::string prefix = "作者:";
+  for (const auto &line : html.get_children_text()) {
+    if (line.starts_with(prefix)) {
+      author = kepub::trans_str(line.substr(std::size(prefix)));
     }
   }
 
@@ -50,7 +50,7 @@ get_content(const std::string &url) {
   html.move_by_attr_class("div", "col-md-3");
   html.move_by_attr_class("div", "product-gallery text-center mb-3");
   html.move_by_name("a");
-  cover_url = html.children().front().attribute("src").value();
+  cover_url = html.first_child_attr("src");
 
   html.previous();
   html.previous();
@@ -60,10 +60,8 @@ get_content(const std::string &url) {
   html.move_by_attr_class("div", "row");
   html.move_by_attr_class("div", "col-md-12");
   html.move_by_attr_class("div", "description");
-  for (const auto &child : html.children()) {
-    std::string str;
-    kepub::XHTML::get_text(child, str);
-    kepub::push_back(description, str);
+  for (const auto &line : html.get_children_text()) {
+    kepub::push_back(description, kepub::trans_str(line));
   }
 
   html.previous();
@@ -75,13 +73,13 @@ get_content(const std::string &url) {
   html.move_by_attr_class("div", "tab-content");
   html.move_by_attr_class("div", "tab-pane fade active show");
   html.move_by_attr("div", "id", "chapterList");
-  for (const auto &child : html.children()) {
-    if (child.name() == std::string("a")) {
-      std::string str;
-      kepub::XHTML::get_text(child, str);
-      titles.push_back(str);
-      urls.emplace_back(child.attribute("href").as_string());
-    }
+
+  for (const auto &line : html.get_children_text()) {
+    titles.push_back(kepub::trans_str(line));
+  }
+
+  for (const auto &item : html.get_children_attr("href")) {
+    urls.push_back(item);
   }
 
   if (std::empty(urls)) {
@@ -118,10 +116,8 @@ std::vector<std::string> get_text(const std::string &url) {
   html.move_by_attr_class("div", "col-xl-9 col-lg-8 p-r-30");
   html.move_by_attr_class("div", "forum-content mt-3");
 
-  for (const auto &child : html.children()) {
-    std::string str;
-    kepub::XHTML::get_text(child, str);
-    kepub::push_back(result, str);
+  for (const auto &line : html.get_children_text()) {
+    kepub::push_back(result, kepub::trans_str(line));
   }
 
   if (std::empty(result)) {
@@ -133,6 +129,8 @@ std::vector<std::string> get_text(const std::string &url) {
 
 int main(int argc, char *argv[]) try {
   auto url = kepub::processing_cmd(argc, argv);
+  kepub::check_is_url(url);
+
   auto [urls, titles, book_name, author, cover_url, description] =
       get_content(url);
 

@@ -8,89 +8,58 @@
 #include "compress.h"
 #include "epub.h"
 #include "error.h"
-#include "parse_html.h"
+#include "parse_xml.h"
 #include "util.h"
 
-std::int32_t deal_with_content_opf(const std::string &dir, std::int32_t count) {
+std::int32_t last_chapter_num(kepub::XHTML &xhtml) {
+  xhtml.reset();
+  xhtml.move_by_name("manifest");
+  auto result =
+      std::stoi(std::string(xhtml.last_child_attr("id")).substr(7, 3));
+  xhtml.reset();
+  return result;
+}
+
+std::int32_t deal_with_content_opf(const std::string &dir, std::size_t count) {
   auto str = kepub::read_file_to_str(dir);
 
   kepub::XHTML xhtml(str);
-  xhtml.move_by_name("manifest");
+  auto first_num = last_chapter_num(xhtml);
 
-  auto last = xhtml.last_child();
-  std::int32_t last_num =
-      std::stoi(std::string(last.attribute("id").value()).substr(7, 3));
-
-  auto id = last_num + 1;
-  for (std::int32_t i = 0; i < count; ++i) {
-    kepub::Node node("item");
-    node.add_attr("id", kepub::num_to_chapter_name(id));
-    node.add_attr("href", "Text/" + kepub::num_to_chapter_name(id++));
-    node.add_attr("media-type", "application/xhtml+xml");
-    xhtml.push_back(node);
-  }
-
-  xhtml.previous();
-  xhtml.move_by_name("spine");
-
-  id = last_num + 1;
-  for (std::int32_t i = 0; i < count; ++i) {
-    kepub::Node node("itemref");
-    node.add_attr("idref", kepub::num_to_chapter_name(id++));
-    xhtml.push_back(node);
+  auto id = first_num;
+  for (std::size_t i = 0; i < count; ++i) {
+    auto file_name = kepub::num_to_chapter_name(id++);
+    kepub::Epub::add_file_in_content_opf(xhtml, file_name, "Text/" + file_name,
+                                         "application/xhtml+xml");
   }
 
   xhtml.save(dir);
 
-  return last_num;
+  return first_num;
 }
 
 void deal_with_toc_ncx(const std::string &dir,
-                       const std::vector<std::string> &titles) {
+                       const std::vector<std::string> &titles,
+                       std::int32_t first_num) {
   auto str = kepub::read_file_to_str(dir);
 
   kepub::XHTML xhtml(str);
-  xhtml.move_by_name("navMap");
 
-  auto last = xhtml.last_child();
-  std::int32_t last_num =
-      std::stoi(std::string(last.attribute("playOrder").value()));
-
-  std::int32_t chapter_num =
-      std::stoi(std::string(last.child("content").attribute("src").value())
-                    .substr(12, 3)) +
-      1;
-
-  auto size = std::size(titles);
-  std::int32_t id = last_num + 1;
-  for (std::size_t i = 0; i < size; ++i) {
-    kepub::Node node("navPoint");
-    node.add_attr("id", "navPoint-" + std::to_string(id));
-    node.add_attr("playOrder", std::to_string(id++));
-
-    kepub::Node nav_label("navLabel");
-    kepub::Node text("text");
-    text.set_text(titles[i]);
-    nav_label.add_child(text);
-
-    kepub::Node content("content");
-    content.add_attr("src",
-                     "Text/" + kepub::num_to_chapter_name(chapter_num++));
-    node.add_child(nav_label);
-    node.add_child(content);
-
-    xhtml.push_back(node);
+  auto id = first_num;
+  for (const auto &title : titles) {
+    auto file_name = kepub::num_to_chapter_name(id++);
+    kepub::Epub::add_nav_point(xhtml, title, "Text/" + file_name);
   }
 
   xhtml.save(dir);
 }
 
-void deal_with_chapter(const std::string &dir, std::int32_t last_num,
+void deal_with_chapter(const std::string &dir, std::int32_t first_num,
                        const std::vector<kepub::Content> &contents) {
   auto root = std::filesystem::path(dir);
 
   for (const auto &item : contents) {
-    std::ofstream ofs(root / kepub::num_to_chapter_name(++last_num));
+    std::ofstream ofs(root / kepub::num_to_chapter_name(first_num++));
     kepub::check_and_write_file(ofs, kepub::Epub::generate_chapter(item));
   }
 }
@@ -110,14 +79,18 @@ int main(int argc, char *argv[]) try {
   std::filesystem::rename(zip_name, book_name.string() + "-back-up.zip");
 
   std::vector<kepub::Content> contents;
+
   auto vec = kepub::read_file_to_vec(file_name);
   auto size = std::size(vec);
+  std::string start = "[WEB] ";
+  auto start_size = std::size(start);
+
   for (std::size_t i = 0; i < size; ++i) {
-    if (vec[i].starts_with("[WEB] ")) {
-      kepub::Content content(vec[i].substr(6));
+    if (vec[i].starts_with(start)) {
+      kepub::Content content(vec[i].substr(start_size));
       ++i;
 
-      for (; i < size && !vec[i].starts_with("[WEB] "); ++i) {
+      for (; i < size && !vec[i].starts_with(start); ++i) {
         content.push_line(vec[i]);
       }
       --i;
@@ -127,15 +100,15 @@ int main(int argc, char *argv[]) try {
   }
 
   std::vector<std::string> titles;
-  titles.reserve(std::size(titles));
+  titles.reserve(std::size(contents));
   for (const auto &item : contents) {
     titles.push_back(item.get_title());
   }
 
-  auto last_num = deal_with_content_opf(book_name / "OEBPS" / "content.opf",
-                                        std::size(titles));
-  deal_with_toc_ncx(book_name / "OEBPS" / "toc.ncx", titles);
-  deal_with_chapter(book_name / "OEBPS" / "Text", last_num, contents);
+  auto first_num = deal_with_content_opf(book_name / "OEBPS" / "content.opf",
+                                         std::size(titles));
+  deal_with_toc_ncx(book_name / "OEBPS" / "toc.ncx", titles, first_num);
+  deal_with_chapter(book_name / "OEBPS" / "Text", first_num, contents);
 
   kepub::compress(book_name);
   std::filesystem::rename(zip_name, epub_name);

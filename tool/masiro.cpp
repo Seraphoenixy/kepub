@@ -17,9 +17,11 @@ int main(int argc, char *argv[]) try {
   auto vec = kepub::read_file_to_vec(file_name);
   auto size = std::size(vec);
   std::string start = "[WEB] ";
+  auto start_size = std::size(start);
+
   for (std::size_t i = 0; i < size; ++i) {
     if (vec[i].starts_with(start)) {
-      kepub::Content content(vec[i].substr(std::size(start)));
+      kepub::Content content(vec[i].substr(start_size));
       ++i;
 
       for (; i < size && !vec[i].starts_with(start); ++i) {

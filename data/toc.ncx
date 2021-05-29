@@ -13,23 +13,5 @@
     <text>@author@</text>
   </docAuthor>
   <navMap>
-    <navPoint id="navPoint-1" playOrder="1">
-      <navLabel>
-        <text>封面</text>
-      </navLabel>
-      <content src="Text/cover.xhtml"/>
-    </navPoint>
-    <navPoint id="navPoint-2" playOrder="2">
-      <navLabel>
-        <text>制作信息</text>
-      </navLabel>
-      <content src="Text/message.xhtml"/>
-    </navPoint>
-    <navPoint id="navPoint-3" playOrder="3">
-      <navLabel>
-        <text>简介</text>
-      </navLabel>
-      <content src="Text/introduction.xhtml"/>
-    </navPoint>
   </navMap>
 </ncx>

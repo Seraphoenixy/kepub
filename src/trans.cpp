@@ -209,7 +209,7 @@ Trans::Trans() {
       icu::Transliterator::createInstance("Hant-Hans", UTRANS_FORWARD, status);
 
   if (U_FAILURE(status)) {
-    kepub::error("error: {}", u_errorName(status));
+    error("error: {}", u_errorName(status));
   }
 
   status = U_ZERO_ERROR;
@@ -218,12 +218,12 @@ Trans::Trans() {
       "Fullwidth-Halfwidth", UTRANS_FORWARD, status);
 
   if (U_FAILURE(status)) {
-    kepub::error("error: {}", u_errorName(status));
+    error("error: {}", u_errorName(status));
   }
 }
 
 std::string trans_str(const std::string &str) {
-  return kepub::Trans::get().trans_str(str);
+  return Trans::get().trans_str(str);
 }
 
 }  // namespace kepub

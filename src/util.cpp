@@ -1,15 +1,12 @@
 #include "util.h"
 
-#include <unistd.h>
-
 #include <cassert>
 #include <cctype>
 #include <clocale>
 #include <cstddef>
 #include <cstdlib>
 #include <cuchar>
-#include <filesystem>
-#include <fstream>
+#include <regex>
 
 #include <fmt/core.h>
 #include <fmt/ostream.h>
@@ -26,7 +23,7 @@
 namespace {
 
 std::u32string utf8_to_utf32(const std::string &str) {
-  setlocale(LC_ALL, "en_US.utf8");
+  std::setlocale(LC_ALL, "en_US.utf8");
 
   std::u32string result;
 
@@ -78,40 +75,6 @@ constexpr bool is_chinese(char32_t x) noexcept {
          CompatibilityIdeographs{}(x) || CompatibilityIdeographsSupplement{}(x);
 }
 
-std::string num_to_str(std::int32_t i) {
-  if (i <= 0 || i >= 1000) {
-    kepub::error("too many xhtml files need to be generated");
-  }
-
-  if (i < 10) {
-    return "00" + std::to_string(i);
-  } else if (i < 100) {
-    return "0" + std::to_string(i);
-  } else {
-    return std::to_string(i);
-  }
-}
-
-}  // namespace
-
-namespace kepub {
-
-ChangeWorkDir::ChangeWorkDir(const std::string &dir) {
-  if (!std::empty(dir)) {
-    backup_ = std::filesystem::current_path();
-
-    if (chdir(dir.c_str())) {
-      error("chdir error");
-    }
-  }
-}
-
-ChangeWorkDir::~ChangeWorkDir() {
-  if (!std::empty(backup_) && chdir(backup_.c_str())) {
-    error("chdir error");
-  }
-}
-
 bool start_with_chinese(const std::string &str) {
   return is_chinese(utf8_to_utf32(str).front());
 }
@@ -120,9 +83,38 @@ bool end_with_chinese(const std::string &str) {
   return is_chinese(utf8_to_utf32(str).back());
 }
 
+}  // namespace
+
+namespace kepub {
+
 void create_dir(const std::filesystem::path &path) {
   if (!std::filesystem::create_directory(path)) {
-    kepub::error("can not create directory: {}", path.string());
+    error("can not create directory: {}", path.string());
+  }
+}
+
+void check_is_txt_file(const std::string &file_name) {
+  check_file_exist(file_name);
+
+  if (std::filesystem::path(file_name).extension() != ".txt") {
+    error("need a txt file: {}", file_name);
+  }
+}
+
+void check_file_exist(const std::string &file_name) {
+  if (!(std::filesystem::exists(file_name) &&
+        std::filesystem::is_regular_file(file_name))) {
+    error("the file not exist: {}", file_name);
+  }
+}
+
+// https://stackoverflow.com/questions/38608116/how-to-check-a-specified-string-is-a-valid-url-or-not-using-c-code/38608262
+void check_is_url(const std::string &url) {
+  if (!std::regex_match(
+          url,
+          std::regex(
+              R"(^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$)"))) {
+    error("not a url");
   }
 }
 
@@ -130,10 +122,8 @@ std::string read_file_to_str(const std::string &file_name) {
   std::ifstream ifs(file_name, std::ifstream::binary);
   std::string data;
 
-  data.resize(static_cast<std::string::size_type>(
-      ifs.seekg(0, std::ifstream::end).tellg()));
-  ifs.seekg(0, std::ifstream::beg)
-      .read(data.data(), static_cast<std::streamsize>(std::size(data)));
+  data.resize(ifs.seekg(0, std::ifstream::end).tellg());
+  ifs.seekg(0, std::ifstream::beg).read(data.data(), std::size(data));
 
   return data;
 }
@@ -156,6 +146,94 @@ void check_and_write_file(std::ofstream &ofs, std::string_view str) {
   }
 
   ofs << str << std::flush;
+}
+
+std::string num_to_str(std::int32_t i) {
+  if (i <= 0 || i >= 1000) {
+    error("too many xhtml files need to be generated");
+  }
+
+  if (i < 10) {
+    return "00" + std::to_string(i);
+  } else if (i < 100) {
+    return "0" + std::to_string(i);
+  } else {
+    return std::to_string(i);
+  }
+}
+
+std::string num_to_chapter_name(std::int32_t i) {
+  return "chapter" + num_to_str(i) + ".xhtml";
+}
+
+std::string num_to_illustration_name(std::int32_t i) {
+  return "illustration" + num_to_str(i) + ".xhtml";
+}
+
+std::string processing_cmd(std::int32_t argc, char *argv[]) {
+  std::string input_file;
+
+  boost::program_options::options_description generic("Generic options");
+  generic.add_options()("version,v", "print version string");
+  generic.add_options()("help,h", "produce help message");
+
+  boost::program_options::options_description config("Configuration");
+  config.add_options()("connect,c",
+                       boost::program_options::value<bool>(&connect_chinese)
+                           ->default_value(false),
+                       "connect chinese");
+  config.add_options()(
+      "no-cover",
+      boost::program_options::value<bool>(&no_cover)->default_value(false),
+      "do not generate cover");
+  config.add_options()(
+      "postscript,p",
+      boost::program_options::value<bool>(&postscript)->default_value(false),
+      "generate postscript");
+  config.add_options()(
+      "illustration,i",
+      boost::program_options::value<std::int32_t>(&illustration_num)
+          ->default_value(0),
+      "generate illustration");
+
+  boost::program_options::options_description hidden("Hidden options");
+  hidden.add_options()("input-file",
+                       boost::program_options::value<std::string>(&input_file));
+
+  boost::program_options::options_description cmdline_options;
+  cmdline_options.add(generic).add(config).add(hidden);
+
+  boost::program_options::options_description visible("Allowed options");
+  visible.add(generic).add(config);
+
+  boost::program_options::positional_options_description p;
+  p.add("input-file", 1);
+
+  boost::program_options::variables_map vm;
+  store(boost::program_options::command_line_parser(argc, argv)
+            .options(cmdline_options)
+            .positional(p)
+            .run(),
+        vm);
+  notify(vm);
+
+  if (vm.contains("help")) {
+    fmt::print("Usage: {} [options] file...\n\n{}\n", argv[0], visible);
+    std::exit(EXIT_SUCCESS);
+  }
+
+  if (vm.contains("version")) {
+    fmt::print("{} version: {}.{}.{}\n", argv[0], KEPUB_VER_MAJOR,
+               KEPUB_VER_MINOR, KEPUB_VER_PATCH);
+    fmt::print("Build time: {} {}", __DATE__, __TIME__);
+    std::exit(EXIT_SUCCESS);
+  }
+
+  if (!vm.contains("input-file")) {
+    error("need a text file name or a url");
+  }
+
+  return input_file;
 }
 
 void push_back(std::vector<std::string> &texts, const std::string &str) {
@@ -184,96 +262,6 @@ void push_back(std::vector<std::string> &texts, const std::string &str) {
     texts.back().append(str);
   } else {
     texts.push_back(str);
-  }
-}
-
-std::string num_to_chapter_name(std::int32_t i) {
-  return "chapter" + num_to_str(i) + ".xhtml";
-}
-
-std::string processing_cmd(std::int32_t argc, char *argv[]) {
-  std::vector<std::string> input_file;
-
-  boost::program_options::options_description generic("Generic options");
-  generic.add_options()("version,v", "print version string")(
-      "help,h", "produce help message");
-
-  boost::program_options::options_description config("Configuration");
-  config.add_options()("connect,c", "connect chinese");
-
-  boost::program_options::options_description hidden("Hidden options");
-  hidden.add_options()(
-      "input-file",
-      boost::program_options::value<std::vector<std::string>>(&input_file));
-
-  boost::program_options::options_description cmdline_options;
-  cmdline_options.add(generic).add(config).add(hidden);
-
-  boost::program_options::options_description visible("Allowed options");
-  visible.add(generic).add(config);
-
-  boost::program_options::positional_options_description p;
-  p.add("input-file", -1);
-
-  boost::program_options::variables_map vm;
-  store(boost::program_options::command_line_parser(argc, argv)
-            .options(cmdline_options)
-            .positional(p)
-            .run(),
-        vm);
-  notify(vm);
-
-  if (vm.contains("help")) {
-    fmt::print("Usage: {} [options] file...\n\n{}\n", argv[0], visible);
-    std::exit(EXIT_SUCCESS);
-  }
-
-  if (vm.contains("version")) {
-    fmt::print("{} version: {}.{}.{}\n", argv[0], KEPUB_VER_MAJOR,
-               KEPUB_VER_MINOR, KEPUB_VER_PATCH);
-    fmt::print("Build time: {} {}", __DATE__, __TIME__);
-    std::exit(EXIT_SUCCESS);
-  }
-
-  if (vm.contains("connect")) {
-    connect_chinese = true;
-  }
-
-  if (!vm.contains("input-file")) {
-    error("need a text file name");
-  }
-
-  if (std::size(input_file) != 1) {
-    error("does not support multiple files");
-  }
-
-  auto file_name = input_file.front();
-
-  if (!std::filesystem::exists(file_name)) {
-    error("the file not exists: {}", file_name);
-  }
-
-  if (!std::filesystem::is_regular_file(file_name)) {
-    error("{} is not a file", file_name);
-  }
-
-  return file_name;
-}
-
-std::string chapter_line(const std::string &line) {
-  return "<p>" + line + "</p>";
-}
-
-void check_is_txt_file(const std::string &file_name) {
-  if (std::filesystem::path(file_name).extension() != ".txt") {
-    error("need a txt file: {}", file_name);
-  }
-}
-
-void check_file_exist(const std::string &file_name) {
-  if (!(std::filesystem::exists(file_name) &&
-        std::filesystem::is_regular_file(file_name))) {
-    error("the file not exist: {}", file_name);
   }
 }
 

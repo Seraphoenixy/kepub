@@ -5,19 +5,24 @@
 #include <vector>
 
 #include "error.h"
-#include "trans.h"
 #include "util.h"
+
+namespace {
+
+std::string chapter_line(const std::string &str) {
+  return "<p>" + str + "</p>";
+}
+
+}  // namespace
 
 int main(int argc, char *argv[]) try {
   auto file_name = kepub::processing_cmd(argc, argv);
-  if (std::filesystem::path(file_name).extension() != ".txt") {
-    kepub::error("need a txt file");
-  }
+  kepub::check_is_txt_file(file_name);
 
   std::vector<std::string> result;
 
   for (const auto &item : kepub::read_file_to_vec(file_name)) {
-    kepub::push_back(result, kepub::trans_str(item));
+    kepub::push_back(result, item);
   }
 
   std::string out = std::filesystem::path(file_name).stem().string() + ".xhtml";
@@ -27,7 +32,7 @@ int main(int argc, char *argv[]) try {
   }
 
   for (const auto &item : result) {
-    ofs << kepub::chapter_line(item) << '\n';
+    ofs << chapter_line(item) << '\n';
   }
 } catch (const std::exception &err) {
   kepub::error(err.what());
