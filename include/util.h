@@ -9,13 +9,13 @@
 
 namespace kepub {
 
-inline bool connect_chinese;
+inline bool connect_chinese = false;
 
-inline bool no_cover;
+inline bool no_cover = false;
 
-inline bool postscript;
+inline bool postscript = false;
 
-inline std::int32_t illustration_num;
+inline std::int32_t illustration_num = 0;
 
 void create_dir(const std::filesystem::path &path);
 

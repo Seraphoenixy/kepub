@@ -178,23 +178,10 @@ std::string processing_cmd(std::int32_t argc, char *argv[]) {
   generic.add_options()("help,h", "produce help message");
 
   boost::program_options::options_description config("Configuration");
-  config.add_options()("connect,c",
-                       boost::program_options::value<bool>(&connect_chinese)
-                           ->default_value(false),
-                       "connect chinese");
-  config.add_options()(
-      "no-cover",
-      boost::program_options::value<bool>(&no_cover)->default_value(false),
-      "do not generate cover");
-  config.add_options()(
-      "postscript,p",
-      boost::program_options::value<bool>(&postscript)->default_value(false),
-      "generate postscript");
-  config.add_options()(
-      "illustration,i",
-      boost::program_options::value<std::int32_t>(&illustration_num)
-          ->default_value(0),
-      "generate illustration");
+  config.add_options()("connect,c", "connect chinese");
+  config.add_options()("no-cover", "do not generate cover");
+  config.add_options()("postscript,p", "generate postscript");
+  config.add_options()("illustration,i", "generate illustration");
 
   boost::program_options::options_description hidden("Hidden options");
   hidden.add_options()("input-file",
@@ -231,6 +218,19 @@ std::string processing_cmd(std::int32_t argc, char *argv[]) {
 
   if (!vm.contains("input-file")) {
     error("need a text file name or a url");
+  }
+
+  if (vm.contains("connect")) {
+    connect_chinese = true;
+  }
+  if (vm.contains("no-cover")) {
+    no_cover = true;
+  }
+  if (vm.contains("postscript")) {
+    postscript = true;
+  }
+  if (vm.contains("illustration")) {
+    illustration_num = vm["illustration"].as<std::int32_t>();
   }
 
   return input_file;

@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<package version="2.0" unique-identifier="BookId" xmlns="http://www.idpf.org/2007/opf">
+	<metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
+		<dc:title>梗角色转生太过头了！</dc:title>
+		<dc:creator opf:file-as="kaiser" opf:role="aut">TODO</dc:creator>
+		<dc:language>zh</dc:language>
+		<dc:rights>kaiser</dc:rights>
+		<dc:subject>轻小说</dc:subject>
+		<dc:description>TODO</dc:description>
+		<meta content="1.5.1" name="Sigil version" />
+		<dc:date opf:event="modification" xmlns:opf="http://www.idpf.org/2007/opf">2021-05-29</dc:date>
+		<dc:identifier id="BookId" opf:scheme="UUID">urn:uuid:5208e6bb-5d25-45b0-a7fd-b97d79a85fd4</dc:identifier>
+	</metadata>
+	<manifest>
+		<item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml" />
+		<item id="style.css" href="Styles/style.css" media-type="text/css" />
+		<item id="SourceHanSansCN-Normal.ttf" href="Fonts/SourceHanSansCN-Normal.ttf" media-type="font/ttf" />
+		<item id="DFNMing.ttf" href="Fonts/DFNMing.ttf" media-type="font/ttf" />
+		<item id="DFPMingLight.ttf" href="Fonts/DFPMingLight.ttf" media-type="font/ttf" />
+		<item id="FZCYS.ttf" href="Fonts/FZCYS.ttf" media-type="font/ttf" />
+		<item id="message.xhtml" href="Text/message.xhtml" media-type="application/xhtml+xml" />
+		<item id="introduction.xhtml" href="Text/introduction.xhtml" media-type="application/xhtml+xml" />
+		<item id="chapter001.xhtml" href="Text/chapter001.xhtml" media-type="application/xhtml+xml" />
+		<item id="chapter002.xhtml" href="Text/chapter002.xhtml" media-type="application/xhtml+xml" />
+		<item id="chapter003.xhtml" href="Text/chapter003.xhtml" media-type="application/xhtml+xml" />
+		<item id="chapter004.xhtml" href="Text/chapter004.xhtml" media-type="application/xhtml+xml" />
+		<item id="chapter005.xhtml" href="Text/chapter005.xhtml" media-type="application/xhtml+xml" />
+		<item id="chapter006.xhtml" href="Text/chapter006.xhtml" media-type="application/xhtml+xml" />
+		<item id="chapter007.xhtml" href="Text/chapter007.xhtml" media-type="application/xhtml+xml" />
+		<item id="chapter008.xhtml" href="Text/chapter008.xhtml" media-type="application/xhtml+xml" />
+		<item id="chapter009.xhtml" href="Text/chapter009.xhtml" media-type="application/xhtml+xml" />
+		<item id="chapter010.xhtml" href="Text/chapter010.xhtml" media-type="application/xhtml+xml" />
+		<item id="chapter011.xhtml" href="Text/chapter011.xhtml" media-type="application/xhtml+xml" />
+		<item id="chapter012.xhtml" href="Text/chapter012.xhtml" media-type="application/xhtml+xml" />
+		<item id="chapter013.xhtml" href="Text/chapter013.xhtml" media-type="application/xhtml+xml" />
+		<item id="chapter014.xhtml" href="Text/chapter014.xhtml" media-type="application/xhtml+xml" />
+		<item id="chapter015.xhtml" href="Text/chapter015.xhtml" media-type="application/xhtml+xml" />
+		<item id="chapter016.xhtml" href="Text/chapter016.xhtml" media-type="application/xhtml+xml" />
+		<item id="chapter017.xhtml" href="Text/chapter017.xhtml" media-type="application/xhtml+xml" />
+		<item id="chapter018.xhtml" href="Text/chapter018.xhtml" media-type="application/xhtml+xml" />
+		<item id="chapter019.xhtml" href="Text/chapter019.xhtml" media-type="application/xhtml+xml" />
+		<item id="chapter020.xhtml" href="Text/chapter020.xhtml" media-type="application/xhtml+xml" />
+		<item id="chapter021.xhtml" href="Text/chapter021.xhtml" media-type="application/xhtml+xml" />
+		<item id="chapter022.xhtml" href="Text/chapter022.xhtml" media-type="application/xhtml+xml" />
+		<item id="chapter023.xhtml" href="Text/chapter023.xhtml" media-type="application/xhtml+xml" />
+		<item id="chapter024.xhtml" href="Text/chapter024.xhtml" media-type="application/xhtml+xml" />
+		<item id="chapter025.xhtml" href="Text/chapter025.xhtml" media-type="application/xhtml+xml" />
+		<item id="chapter026.xhtml" href="Text/chapter026.xhtml" media-type="application/xhtml+xml" />
+		<item id="chapter027.xhtml" href="Text/chapter027.xhtml" media-type="application/xhtml+xml" />
+		<item id="chapter028.xhtml" href="Text/chapter028.xhtml" media-type="application/xhtml+xml" />
+		<item id="chapter029.xhtml" href="Text/chapter029.xhtml" media-type="application/xhtml+xml" />
+		<item id="chapter030.xhtml" href="Text/chapter030.xhtml" media-type="application/xhtml+xml" />
+		<item id="chapter031.xhtml" href="Text/chapter031.xhtml" media-type="application/xhtml+xml" />
+		<item id="chapter032.xhtml" href="Text/chapter032.xhtml" media-type="application/xhtml+xml" />
+		<item id="chapter033.xhtml" href="Text/chapter033.xhtml" media-type="application/xhtml+xml" />
+		<item id="chapter034.xhtml" href="Text/chapter034.xhtml" media-type="application/xhtml+xml" />
+		<item id="chapter035.xhtml" href="Text/chapter035.xhtml" media-type="application/xhtml+xml" />
+		<item id="chapter036.xhtml" href="Text/chapter036.xhtml" media-type="application/xhtml+xml" />
+		<item id="chapter037.xhtml" href="Text/chapter037.xhtml" media-type="application/xhtml+xml" />
+	</manifest>
+	<spine toc="ncx">
+		<itemref idref="message.xhtml" />
+		<itemref idref="introduction.xhtml" />
+		<itemref idref="chapter001.xhtml" />
+		<itemref idref="chapter002.xhtml" />
+		<itemref idref="chapter003.xhtml" />
+		<itemref idref="chapter004.xhtml" />
+		<itemref idref="chapter005.xhtml" />
+		<itemref idref="chapter006.xhtml" />
+		<itemref idref="chapter007.xhtml" />
+		<itemref idref="chapter008.xhtml" />
+		<itemref idref="chapter009.xhtml" />
+		<itemref idref="chapter010.xhtml" />
+		<itemref idref="chapter011.xhtml" />
+		<itemref idref="chapter012.xhtml" />
+		<itemref idref="chapter013.xhtml" />
+		<itemref idref="chapter014.xhtml" />
+		<itemref idref="chapter015.xhtml" />
+		<itemref idref="chapter016.xhtml" />
+		<itemref idref="chapter017.xhtml" />
+		<itemref idref="chapter018.xhtml" />
+		<itemref idref="chapter019.xhtml" />
+		<itemref idref="chapter020.xhtml" />
+		<itemref idref="chapter021.xhtml" />
+		<itemref idref="chapter022.xhtml" />
+		<itemref idref="chapter023.xhtml" />
+		<itemref idref="chapter024.xhtml" />
+		<itemref idref="chapter025.xhtml" />
+		<itemref idref="chapter026.xhtml" />
+		<itemref idref="chapter027.xhtml" />
+		<itemref idref="chapter028.xhtml" />
+		<itemref idref="chapter029.xhtml" />
+		<itemref idref="chapter030.xhtml" />
+		<itemref idref="chapter031.xhtml" />
+		<itemref idref="chapter032.xhtml" />
+		<itemref idref="chapter033.xhtml" />
+		<itemref idref="chapter034.xhtml" />
+		<itemref idref="chapter035.xhtml" />
+		<itemref idref="chapter036.xhtml" />
+		<itemref idref="chapter037.xhtml" />
+	</spine>
+	<guide />
+</package>
