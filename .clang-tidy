@@ -3,8 +3,6 @@ Checks: "*,
   -modernize-use-trailing-return-type,
   -llvmlibc-*"
 
-WarningsAsErrors: "clang-analyzer-*,clang-diagnostic-*"
-
 HeaderFilterRegex: ".*"
 
 CheckOptions:
