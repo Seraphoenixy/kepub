@@ -23,6 +23,9 @@
 		<item id="cover.jpg" href="Images/cover.jpg" media-type="image/jpeg" />
 		<item id="message.xhtml" href="Text/message.xhtml" media-type="application/xhtml+xml" />
 		<item id="introduction.xhtml" href="Text/introduction.xhtml" media-type="application/xhtml+xml" />
+		<item id="illustration001.xhtml" href="Text/illustration001.xhtml" media-type="application/xhtml+xml" />
+		<item id="illustration002.xhtml" href="Text/illustration002.xhtml" media-type="application/xhtml+xml" />
+		<item id="illustration003.xhtml" href="Text/illustration003.xhtml" media-type="application/xhtml+xml" />
 		<item id="chapter001.xhtml" href="Text/chapter001.xhtml" media-type="application/xhtml+xml" />
 		<item id="chapter002.xhtml" href="Text/chapter002.xhtml" media-type="application/xhtml+xml" />
 		<item id="chapter003.xhtml" href="Text/chapter003.xhtml" media-type="application/xhtml+xml" />
@@ -70,11 +73,15 @@
 		<item id="chapter045.xhtml" href="Text/chapter045.xhtml" media-type="application/xhtml+xml" />
 		<item id="chapter046.xhtml" href="Text/chapter046.xhtml" media-type="application/xhtml+xml" />
 		<item id="chapter047.xhtml" href="Text/chapter047.xhtml" media-type="application/xhtml+xml" />
+		<item id="postscript.xhtml" href="Text/postscript.xhtml" media-type="application/xhtml+xml" />
 	</manifest>
 	<spine toc="ncx">
 		<itemref idref="cover.xhtml" />
 		<itemref idref="message.xhtml" />
 		<itemref idref="introduction.xhtml" />
+		<itemref idref="illustration001.xhtml" />
+		<itemref idref="illustration002.xhtml" />
+		<itemref idref="illustration003.xhtml" />
 		<itemref idref="chapter001.xhtml" />
 		<itemref idref="chapter002.xhtml" />
 		<itemref idref="chapter003.xhtml" />
@@ -122,6 +129,7 @@
 		<itemref idref="chapter045.xhtml" />
 		<itemref idref="chapter046.xhtml" />
 		<itemref idref="chapter047.xhtml" />
+		<itemref idref="postscript.xhtml" />
 	</spine>
 	<guide>
 		<reference type="cover" title="Cover" href="Text/cover.xhtml" />
