@@ -105,6 +105,11 @@ get_content(const std::string &url) {
     kepub::error("description is empty");
   }
 
+  if (kepub::max_chapter > 0) {
+    urls.resize(kepub::max_chapter);
+    titles.resize(kepub::max_chapter);
+  }
+
   for (const auto &item : urls) {
     kepub::check_is_url(item);
   }

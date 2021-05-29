@@ -196,6 +196,10 @@ std::string processing_cmd(std::int32_t argc, char *argv[]) {
       boost::program_options::value<std::int32_t>(&illustration_num)
           ->default_value(0),
       "generate illustration");
+  config.add_options()("max-chapter",
+                       boost::program_options::value<std::int32_t>(&max_chapter)
+                           ->default_value(0),
+                       "maximum number of chapters ");
 
   boost::program_options::options_description hidden("Hidden options");
   hidden.add_options()("input-file",

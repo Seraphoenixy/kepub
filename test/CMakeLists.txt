@@ -39,8 +39,9 @@ set_tests_properties(run_masiro PROPERTIES FIXTURES_REQUIRED masiro)
 set_tests_properties(diff_masiro PROPERTIES FIXTURES_CLEANUP masiro)
 
 add_test(NAME check_executable_esjzone COMMAND ${ESJZONE_EXECUTABLE} -v)
-add_test(NAME run_esjzone COMMAND ${ESJZONE_EXECUTABLE}
-                                  https://esjzone.cc/detail/1578022447.html)
+add_test(NAME run_esjzone
+         COMMAND ${ESJZONE_EXECUTABLE}
+                 https://esjzone.cc/detail/1578022447.html --max-chapter=210)
 add_test(NAME diff_esjzone
          COMMAND diff -r ${CMAKE_CURRENT_SOURCE_DIR}/data/standard-esjzone 魅魔的我)
 set_tests_properties(check_executable_esjzone PROPERTIES FIXTURES_SETUP esjzone)
