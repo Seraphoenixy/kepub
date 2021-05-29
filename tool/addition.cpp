@@ -15,7 +15,7 @@ std::int32_t last_chapter_num(kepub::XHTML &xhtml) {
   xhtml.reset();
   xhtml.move_by_name("manifest");
   auto result =
-      std::stoi(std::string(xhtml.last_child_attr("id")).substr(7, 3));
+      std::stoi(std::string(xhtml.last_child_attr("id")).substr(7, 3)) + 1;
   xhtml.reset();
   return result;
 }

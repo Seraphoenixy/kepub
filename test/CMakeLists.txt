@@ -4,6 +4,9 @@ file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/data/梗角色转生太过头了！.txt"
 file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/data/梗角色轉生太過頭了！.txt"
      DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
+file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/data/魅魔的我.txt"
+     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
 enable_testing()
 
 add_test(NAME check_executable_xhtml COMMAND ${XHTML_EXECUTABLE} -v)
@@ -45,8 +48,14 @@ set_tests_properties(run_esjzone PROPERTIES FIXTURES_REQUIRED esjzone)
 set_tests_properties(diff_esjzone PROPERTIES FIXTURES_CLEANUP esjzone)
 
 add_test(NAME check_executable_addition COMMAND ${ADDITION_EXECUTABLE} -v)
-# add_test(NAME run_addition COMMAND ${ADDITION_EXECUTABLE}) add_test(NAME
-# diff_addition COMMAND diff -r)
+add_test(NAME run_addition COMMAND ${ADDITION_EXECUTABLE} 魅魔的我.txt)
+add_test(NAME diff_addition
+         COMMAND diff -r ${CMAKE_CURRENT_SOURCE_DIR}/data/standard-addition
+                 魅魔的我)
+set_tests_properties(check_executable_addition PROPERTIES FIXTURES_SETUP
+                                                          addition)
+set_tests_properties(run_addition PROPERTIES FIXTURES_REQUIRED addition)
+set_tests_properties(diff_addition PROPERTIES FIXTURES_CLEANUP addition)
 
 include(Coverage)
 include(Valgrind)

@@ -61,10 +61,7 @@ XHTML::XHTML(const std::string& xhtml) {
   node_ = root_.document_element();
 }
 
-void XHTML::save(std::string_view file) const {
-  root_.save_file(file.data(), "\t",
-                  pugi::format_default | pugi::format_no_escapes);
-}
+void XHTML::save(std::string_view file) const { root_.save_file(file.data()); }
 
 std::string XHTML::to_string() const {
   std::ostringstream stream;
