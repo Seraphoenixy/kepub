@@ -122,7 +122,18 @@ void get_file(const std::string& url, const std::string& file_name) {
   curl_easy_setopt(http_handle, CURLOPT_WRITEFUNCTION, write_data);
 
   auto multi_handle = curl_multi_init();
-  curl_multi_add_handle(multi_handle, http_handle);
+  if (!multi_handle) {
+    curl_easy_cleanup(http_handle);
+    curl_global_cleanup();
+  }
+
+  if (auto rc = curl_multi_add_handle(multi_handle, http_handle);
+      rc != CURLM_OK) {
+    curl_easy_cleanup(http_handle);
+    curl_multi_cleanup(multi_handle);
+    curl_global_cleanup();
+    error("curl_multi_add_handle() error: {}", curl_multi_strerror(rc));
+  }
 
   std::int32_t still_running{};
   std::int32_t repeats{};
