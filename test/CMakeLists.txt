@@ -82,6 +82,7 @@ add_test(NAME diff_esjzone
          COMMAND diff -r ${CMAKE_CURRENT_SOURCE_DIR}/data/standard-esjzone 魅魔的我)
 set_tests_properties(check_executable_esjzone PROPERTIES FIXTURES_SETUP esjzone)
 set_tests_properties(run_esjzone PROPERTIES FIXTURES_REQUIRED esjzone)
+set_tests_properties(remove_images_esjzone PROPERTIES FIXTURES_REQUIRED esjzone)
 set_tests_properties(diff_esjzone PROPERTIES FIXTURES_CLEANUP esjzone)
 set_tests_properties(remove_images_esjzone PROPERTIES DEPENDS run_esjzone)
 
@@ -95,6 +96,8 @@ add_test(NAME diff_addition
 set_tests_properties(check_executable_addition PROPERTIES FIXTURES_SETUP
                                                           addition)
 set_tests_properties(run_addition PROPERTIES FIXTURES_REQUIRED addition)
+set_tests_properties(remove_images_addition PROPERTIES FIXTURES_REQUIRED
+                                                       addition)
 set_tests_properties(diff_addition PROPERTIES FIXTURES_CLEANUP addition)
 set_tests_properties(remove_images_addition PROPERTIES DEPENDS run_addition)
 set_tests_properties(run_addition PROPERTIES DEPENDS diff_esjzone)
