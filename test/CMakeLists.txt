@@ -59,6 +59,7 @@ set_tests_properties(check_executable_addition PROPERTIES FIXTURES_SETUP
                                                           addition)
 set_tests_properties(run_addition PROPERTIES FIXTURES_REQUIRED addition)
 set_tests_properties(diff_addition PROPERTIES FIXTURES_CLEANUP addition)
+set_tests_properties(run_addition PROPERTIES DEPENDS run_esjzone)
 
 include(Coverage)
 include(Valgrind)
