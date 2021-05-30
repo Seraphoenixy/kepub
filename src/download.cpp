@@ -9,6 +9,7 @@
 #include <cstring>
 #include <filesystem>
 #include <string>
+#include <string_view>
 
 #include <curl/curl.h>
 
@@ -31,6 +32,10 @@ std::size_t write_data(void* ptr, std::size_t size, std::size_t nmemb,
                        void* stream) {
   return std::fwrite(ptr, size, nmemb, static_cast<std::FILE*>(stream));
 }
+
+constexpr std::string_view user_agent =
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) "
+    "Chrome/91.0.4472.77 Safari/537.36 Edg/91.0.864.37";
 
 }  // namespace
 
@@ -56,10 +61,7 @@ std::string get_page(const std::string& url) {
   curl_easy_setopt(http_handle, CURLOPT_CAPATH, "/etc/ssl/certs");
   curl_easy_setopt(http_handle, CURLOPT_CAINFO,
                    "/etc/ssl/certs/ca-certificates.crt");
-  curl_easy_setopt(
-      http_handle, CURLOPT_USERAGENT,
-      "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) "
-      "Chrome/91.0.4456.0 Safari/537.36 Edg/91.0.845.2");
+  curl_easy_setopt(http_handle, CURLOPT_USERAGENT, user_agent.data());
 
   curl_easy_setopt(http_handle, CURLOPT_NOPROXY, "*");
 
@@ -105,10 +107,7 @@ void get_file(const std::string& url, const std::string& file_name) {
   curl_easy_setopt(http_handle, CURLOPT_CAPATH, "/etc/ssl/certs");
   curl_easy_setopt(http_handle, CURLOPT_CAINFO,
                    "/etc/ssl/certs/ca-certificates.crt");
-  curl_easy_setopt(
-      http_handle, CURLOPT_USERAGENT,
-      "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) "
-      "Chrome/91.0.4456.0 Safari/537.36 Edg/91.0.845.2");
+  curl_easy_setopt(http_handle, CURLOPT_USERAGENT, user_agent.data());
 
   curl_easy_setopt(http_handle, CURLOPT_NOPROXY, "*");
 
