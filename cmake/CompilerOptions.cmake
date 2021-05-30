@@ -90,10 +90,5 @@ endif()
 # Coverage
 # ---------------------------------------------------------------------------------------
 if(KEPUB_BUILD_COVERAGE)
-  if(CMAKE_COMPILER_IS_GNUCXX)
-    add_cxx_compiler_flag("--coverage")
-  else()
-    add_cxx_compiler_flag("-fprofile-instr-generate")
-    add_cxx_compiler_flag("-fcoverage-mapping")
-  endif()
+  add_cxx_compiler_flag("--coverage")
 endif()

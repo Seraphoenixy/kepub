@@ -9,11 +9,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-20.04
-    strategy:
-      matrix:
-        compiler:
-          - { cc: "gcc", cxx: "g++" }
-          - { cc: "clang", cxx: "clang++" }
 
     steps:
       - uses: actions/checkout@v2
@@ -32,26 +27,13 @@ jobs:
         run: |
           cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug \
           -DKEPUB_BUILD_TEST=ON -DKEPUB_BUILD_COVERAGE=ON
-        env:
-          CC: ${{ matrix.compiler.cc }}
-          CXX: ${{ matrix.compiler.cxx }}
 
       - name: Build
         run: cmake --build build --config Debug -j"$(nproc)" --target coverage
 
       # https://github.com/coverallsapp/github-action
       - name: Coveralls
-        if: ${{ matrix.compiler.cxx == 'clang++' }}
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          path-to-lcov: build/test/unit_test/lcov.info
-
-      # https://github.com/actions/upload-artifact
-      - name: Upload artifact
-        if: ${{ matrix.compiler.cxx == 'g++' }}
-        uses: actions/upload-artifact@v2
-        with:
-          name: coverage-lcov
-          path: build/test/unit_test/coverage
-          if-no-files-found: error
+          path-to-lcov: build/lcov.info
