@@ -77,15 +77,18 @@ add_test(
     ${VALGRIND_CMD}${ESJZONE_EXECUTABLE}
     https://esjzone.cc/detail/1578022447.html --max-chapter=210
     --data=2021-05-29)
+add_test(NAME remove_images_esjzone COMMAND rm -rf 魅魔的我/OEBPS/Images)
 add_test(NAME diff_esjzone
          COMMAND diff -r ${CMAKE_CURRENT_SOURCE_DIR}/data/standard-esjzone 魅魔的我)
 set_tests_properties(check_executable_esjzone PROPERTIES FIXTURES_SETUP esjzone)
 set_tests_properties(run_esjzone PROPERTIES FIXTURES_REQUIRED esjzone)
 set_tests_properties(diff_esjzone PROPERTIES FIXTURES_CLEANUP esjzone)
+set_tests_properties(remove_images_esjzone PROPERTIES DEPENDS run_esjzone)
 
 add_test(NAME check_executable_addition COMMAND ${ADDITION_EXECUTABLE} -v)
 add_test(NAME run_addition COMMAND ${VALGRIND_CMD}${ADDITION_EXECUTABLE}
                                    魅魔的我.txt)
+add_test(NAME remove_images_addition COMMAND rm -rf 魅魔的我/OEBPS/Images)
 add_test(NAME diff_addition
          COMMAND diff -r ${CMAKE_CURRENT_SOURCE_DIR}/data/standard-addition
                  魅魔的我)
@@ -93,6 +96,7 @@ set_tests_properties(check_executable_addition PROPERTIES FIXTURES_SETUP
                                                           addition)
 set_tests_properties(run_addition PROPERTIES FIXTURES_REQUIRED addition)
 set_tests_properties(diff_addition PROPERTIES FIXTURES_CLEANUP addition)
+set_tests_properties(remove_images_addition PROPERTIES DEPENDS run_addition)
 set_tests_properties(run_addition PROPERTIES DEPENDS diff_esjzone)
 
 include(Coverage)

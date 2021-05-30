@@ -13,6 +13,8 @@ inline bool connect_chinese = false;
 
 inline bool no_cover = false;
 
+inline bool download_cover = false;
+
 inline bool postscript = false;
 
 inline std::int32_t illustration_num = 0;

@@ -95,11 +95,11 @@ void Epub::generate_for_web(
   common_generate();
 
   // cover.jpg
-  if (!std::empty(cover_url_) && !no_cover) {
-    generate_cover();
+  if (download_cover) {
     get_file(cover_url_, root_ / "OEBPS" / "Images" / "cover.jpg");
   }
 
+  generate_cover();
   generate_message();
   generate_introduction();
   generate_illustration();

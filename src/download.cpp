@@ -46,7 +46,6 @@ std::string get_page(const std::string& url) {
 
   auto http_handle = curl_easy_init();
   if (!http_handle) {
-    curl_global_cleanup();
     error("curl_easy_init() error");
   }
 
@@ -72,8 +71,6 @@ std::string get_page(const std::string& url) {
                    callback_func_std_string);
 
   if (auto rc = curl_easy_perform(http_handle); rc != CURLE_OK) {
-    curl_easy_cleanup(http_handle);
-    curl_global_cleanup();
     error("curl_easy_perform() error: {}", curl_easy_strerror(rc));
   }
 
@@ -92,7 +89,6 @@ void get_file(const std::string& url, const std::string& file_name) {
 
   auto http_handle = curl_easy_init();
   if (!http_handle) {
-    curl_global_cleanup();
     error("curl_easy_init() error");
   }
 
@@ -113,7 +109,6 @@ void get_file(const std::string& url, const std::string& file_name) {
 
   auto file = std::fopen(file_name.c_str(), "wb");
   if (!file) {
-    curl_global_cleanup();
     error("open file error: {}, {}", file_name, std::strerror(errno));
   }
 
@@ -123,15 +118,11 @@ void get_file(const std::string& url, const std::string& file_name) {
 
   auto multi_handle = curl_multi_init();
   if (!multi_handle) {
-    curl_easy_cleanup(http_handle);
-    curl_global_cleanup();
+    error("curl_multi_init() error");
   }
 
   if (auto rc = curl_multi_add_handle(multi_handle, http_handle);
       rc != CURLM_OK) {
-    curl_easy_cleanup(http_handle);
-    curl_multi_cleanup(multi_handle);
-    curl_global_cleanup();
     error("curl_multi_add_handle() error: {}", curl_multi_strerror(rc));
   }
 
@@ -140,12 +131,9 @@ void get_file(const std::string& url, const std::string& file_name) {
 
   if (auto rc = curl_multi_perform(multi_handle, &still_running);
       rc != CURLM_OK) {
-    curl_multi_remove_handle(multi_handle, http_handle);
-    curl_easy_cleanup(http_handle);
-    curl_multi_cleanup(multi_handle);
-    curl_global_cleanup();
     error("curl_multi_perform() error: {}", curl_multi_strerror(rc));
   }
+
   while (still_running != 0) {
     std::int32_t numfds{};
 
@@ -165,10 +153,6 @@ void get_file(const std::string& url, const std::string& file_name) {
 
     if (auto rc = curl_multi_perform(multi_handle, &still_running);
         rc != CURLM_OK) {
-      curl_multi_remove_handle(multi_handle, http_handle);
-      curl_easy_cleanup(http_handle);
-      curl_multi_cleanup(multi_handle);
-      curl_global_cleanup();
       error("curl_multi_perform() error: {}", curl_multi_strerror(rc));
     }
   }
