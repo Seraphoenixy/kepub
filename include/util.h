@@ -17,6 +17,8 @@ inline bool download_cover = false;
 
 inline bool postscript = false;
 
+inline bool old_style = false;
+
 inline std::int32_t illustration_num = 0;
 
 inline std::int32_t max_chapter = 0;

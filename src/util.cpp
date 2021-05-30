@@ -192,6 +192,7 @@ std::string processing_cmd(std::int32_t argc, char *argv[]) {
   config.add_options()("no-cover", "do not generate cover");
   config.add_options()("postscript,p", "generate postscript");
   config.add_options()("download-cover,d", "download cover");
+  config.add_options()("old-style", "old style");
   config.add_options()(
       "illustration,i",
       boost::program_options::value<std::int32_t>(&illustration_num)
@@ -254,6 +255,9 @@ std::string processing_cmd(std::int32_t argc, char *argv[]) {
   }
   if (vm.contains("postscript")) {
     postscript = true;
+  }
+  if (vm.contains("old-style")) {
+    old_style = true;
   }
 
   return input_file;

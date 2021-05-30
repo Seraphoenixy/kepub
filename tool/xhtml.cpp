@@ -10,7 +10,11 @@
 namespace {
 
 std::string chapter_line(const std::string &str) {
-  return "<p>" + str + "</p>";
+  if (kepub::old_style) {
+    return "<p class=\"calibre2\">" + str + "</p>";
+  } else {
+    return "<p>" + str + "</p>";
+  }
 }
 
 }  // namespace
