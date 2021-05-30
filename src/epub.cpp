@@ -3,11 +3,13 @@
 #include <unistd.h>
 #include <wait.h>
 
+#include <chrono>
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
 #include <ctime>
 #include <fstream>
+#include <thread>
 
 #include <fmt/chrono.h>
 #include <fmt/format.h>
@@ -124,6 +126,9 @@ void Epub::generate_for_web(
 #else
   auto size = std::size(titles);
   for (std::size_t i = 0; i < size; ++i) {
+    using namespace std::chrono_literals;
+    std::this_thread::sleep_for(50ms);
+
     auto pid = fork();
     if (pid < 0) {
       error("fork error");
