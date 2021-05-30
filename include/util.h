@@ -21,7 +21,7 @@ inline std::int32_t illustration_num = 0;
 
 inline std::int32_t max_chapter = 0;
 
-inline std::string data;
+inline std::string date;
 
 void create_dir(const std::filesystem::path &path);
 

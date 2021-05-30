@@ -43,7 +43,7 @@ set_tests_properties(diff_xhtml PROPERTIES FIXTURES_CLEANUP xhtml)
 
 add_test(NAME check_executable_demonovel COMMAND ${DEMONOVEL_EXECUTABLE} -v)
 add_test(NAME run_demonovel COMMAND ${VALGRIND_CMD}${DEMONOVEL_EXECUTABLE}
-                                    梗角色轉生太過頭了！.txt --no-cover --data=2021-05-29)
+                                    梗角色轉生太過頭了！.txt --no-cover --date=2021-05-29)
 add_test(NAME remove_images_demonovel COMMAND rm -rf 梗角色转生太过头了！/OEBPS/Images)
 add_test(NAME diff_demonovel
          COMMAND diff -r ${CMAKE_CURRENT_SOURCE_DIR}/data/standard-demonovel
@@ -58,7 +58,7 @@ set_tests_properties(remove_images_demonovel PROPERTIES DEPENDS run_demonovel)
 
 add_test(NAME check_executable_masiro COMMAND ${MASIRO_EXECUTABLE} -v)
 add_test(NAME run_masiro COMMAND ${VALGRIND_CMD}${MASIRO_EXECUTABLE}
-                                 梗角色转生太过头了！.txt -c -p -i 3 --data=2021-05-29)
+                                 梗角色转生太过头了！.txt -c -p -i 3 --date=2021-05-29)
 add_test(NAME remove_images_masiro COMMAND rm -rf 梗角色转生太过头了！/OEBPS/Images)
 add_test(NAME diff_masiro
          COMMAND diff -r ${CMAKE_CURRENT_SOURCE_DIR}/data/standard-masiro
@@ -76,7 +76,7 @@ add_test(
   COMMAND
     ${VALGRIND_CMD}${ESJZONE_EXECUTABLE}
     https://esjzone.cc/detail/1578022447.html --max-chapter=210
-    --data=2021-05-29)
+    --date=2021-05-29)
 add_test(NAME remove_images_esjzone COMMAND rm -rf 魅魔的我/OEBPS/Images)
 add_test(NAME diff_esjzone
          COMMAND diff -r ${CMAKE_CURRENT_SOURCE_DIR}/data/standard-esjzone 魅魔的我)

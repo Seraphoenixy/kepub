@@ -202,9 +202,9 @@ std::string processing_cmd(std::int32_t argc, char *argv[]) {
                            ->default_value(0),
                        "maximum number of chapters");
   config.add_options()(
-      "data",
-      boost::program_options::value<std::string>(&data)->default_value(""),
-      "maximum number of chapters");
+      "date",
+      boost::program_options::value<std::string>(&date)->default_value(""),
+      "specify the date");
 
   boost::program_options::options_description hidden("Hidden options");
   hidden.add_options()("input-file",

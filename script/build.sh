@@ -23,7 +23,7 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
 
   cd dependencies
 
-  kpkg install lcov catch2 fmt boost icu tidy-html5 pugixml libarchive curl -i
+  kpkg install lcov fmt boost icu tidy-html5 pugixml libarchive curl -i
 else
   echo "The system does not support: $OSTYPE"
   exit 1

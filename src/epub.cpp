@@ -23,8 +23,8 @@
 namespace {
 
 std::string get_date() {
-  if (!std::empty(kepub::data)) {
-    return kepub::data;
+  if (!std::empty(kepub::date)) {
+    return kepub::date;
   }
 
   return fmt::format("{:%Y-%m-%d}", fmt::localtime(std::time(nullptr)));
