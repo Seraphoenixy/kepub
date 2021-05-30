@@ -112,6 +112,16 @@ void Epub::generate_for_web(
     Epub::add_nav_point(toc_ncx_, title, "Text/" + file_name);
   }
 
+#ifdef KEPUB_NO_FORK
+  auto size = std::size(titles);
+  for (std::size_t i = 0; i < size; ++i) {
+    Content content(titles[i]);
+    content.push_lines(get_text(urls[i]));
+
+    std::ofstream ofs(root_ / "OEBPS" / "Text" / num_to_chapter_name(i + 1));
+    check_and_write_file(ofs, generate_chapter(content));
+  }
+#else
   auto size = std::size(titles);
   for (std::size_t i = 0; i < size; ++i) {
     auto pid = fork();
@@ -135,6 +145,7 @@ void Epub::generate_for_web(
       error("waitpid Error");
     }
   }
+#endif
 
   generate_postscript();
 

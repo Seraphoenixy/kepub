@@ -18,7 +18,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: dependencies
-          key: coverage-dependencies-20210524
+          key: coverage-dependencies-20210530
 
       - name: Install dependencies
         run: sudo bash script/build.sh
