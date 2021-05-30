@@ -38,6 +38,7 @@ add_test(NAME diff_masiro
 set_tests_properties(check_executable_masiro PROPERTIES FIXTURES_SETUP masiro)
 set_tests_properties(run_masiro PROPERTIES FIXTURES_REQUIRED masiro)
 set_tests_properties(diff_masiro PROPERTIES FIXTURES_CLEANUP masiro)
+set_tests_properties(run_masiro PROPERTIES DEPENDS diff_demonovel)
 
 add_test(NAME check_executable_esjzone COMMAND ${ESJZONE_EXECUTABLE} -v)
 add_test(
@@ -59,7 +60,7 @@ set_tests_properties(check_executable_addition PROPERTIES FIXTURES_SETUP
                                                           addition)
 set_tests_properties(run_addition PROPERTIES FIXTURES_REQUIRED addition)
 set_tests_properties(diff_addition PROPERTIES FIXTURES_CLEANUP addition)
-set_tests_properties(run_addition PROPERTIES DEPENDS run_esjzone)
+set_tests_properties(run_addition PROPERTIES DEPENDS diff_esjzone)
 
 include(Coverage)
 include(Valgrind)
