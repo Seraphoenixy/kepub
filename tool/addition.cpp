@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cstddef>
 #include <cstdint>
 #include <filesystem>
@@ -14,13 +15,23 @@
 std::int32_t last_chapter_num(kepub::XHTML &xhtml) {
   xhtml.reset();
   xhtml.move_by_name("manifest");
-  auto result =
-      std::stoi(std::string(xhtml.last_child_attr("id")).substr(7, 3)) + 1;
+
+  std::vector<std::int32_t> ids;
+  auto ids_str = xhtml.get_children_attr("item", "id");
+  for (const auto &item : ids_str) {
+    if (item.starts_with("chapter")) {
+      ids.push_back(std::stoi(item.substr(7, 3)));
+    }
+  }
+  std::sort(std::begin(ids), std::end(ids));
+
   xhtml.reset();
-  return result;
+
+  return ids.back() + 1;
 }
 
 std::int32_t deal_with_content_opf(const std::string &dir, std::size_t count) {
+  kepub::check_file_exist(dir);
   auto str = kepub::read_file_to_str(dir);
 
   kepub::XHTML xhtml(str);
@@ -29,8 +40,14 @@ std::int32_t deal_with_content_opf(const std::string &dir, std::size_t count) {
   auto id = first_num;
   for (std::size_t i = 0; i < count; ++i) {
     auto file_name = kepub::num_to_chapter_name(id++);
-    kepub::Epub::add_file_in_content_opf(xhtml, file_name, "Text/" + file_name,
-                                         "application/xhtml+xml");
+
+    if (kepub::old_style) {
+      kepub::Epub::add_file_in_content_opf(
+          xhtml, file_name, "OEBPS/Text/" + file_name, "application/xhtml+xml");
+    } else {
+      kepub::Epub::add_file_in_content_opf(
+          xhtml, file_name, "Text/" + file_name, "application/xhtml+xml");
+    }
   }
 
   xhtml.save(dir);
@@ -41,6 +58,7 @@ std::int32_t deal_with_content_opf(const std::string &dir, std::size_t count) {
 void deal_with_toc_ncx(const std::string &dir,
                        const std::vector<std::string> &titles,
                        std::int32_t first_num) {
+  kepub::check_file_exist(dir);
   auto str = kepub::read_file_to_str(dir);
 
   kepub::XHTML xhtml(str);
@@ -48,7 +66,12 @@ void deal_with_toc_ncx(const std::string &dir,
   auto id = first_num;
   for (const auto &title : titles) {
     auto file_name = kepub::num_to_chapter_name(id++);
-    kepub::Epub::add_nav_point(xhtml, title, "Text/" + file_name);
+
+    if (kepub::old_style) {
+      kepub::Epub::add_nav_point(xhtml, title, "OEBPS/Text/" + file_name);
+    } else {
+      kepub::Epub::add_nav_point(xhtml, title, "Text/" + file_name);
+    }
   }
 
   xhtml.save(dir);
@@ -105,9 +128,17 @@ int main(int argc, char *argv[]) try {
     titles.push_back(item.get_title());
   }
 
-  auto first_num = deal_with_content_opf(book_name / "OEBPS" / "content.opf",
-                                         std::size(titles));
-  deal_with_toc_ncx(book_name / "OEBPS" / "toc.ncx", titles, first_num);
+  std::filesystem::path prefix;
+  if (kepub::old_style) {
+    prefix = book_name;
+  } else {
+    prefix = book_name / "OEBPS";
+  }
+
+  auto first_num =
+      deal_with_content_opf(prefix / "content.opf", std::size(titles));
+  deal_with_toc_ncx(prefix / "toc.ncx", titles, first_num);
+
   deal_with_chapter(book_name / "OEBPS" / "Text", first_num, contents);
 
   kepub::compress(book_name);

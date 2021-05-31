@@ -7,6 +7,7 @@
 #include <tidybuffio.h>
 
 #include "error.h"
+#include "util.h"
 
 namespace kepub {
 
@@ -182,6 +183,18 @@ void XHTML::set_child_attr(std::string_view name, std::string_view attr_name,
   attr.set_value(attr_value.data());
 }
 
+void XHTML::add_child_attr(std::string_view name, std::string_view attr_name,
+                           const std::string& attr_value) {
+  auto child = get_child_by_name(name);
+  auto attr = child.attribute(attr_name.data());
+
+  if (!attr.empty()) {
+    error("attr {} in {} already here", attr_name, name);
+  }
+
+  child.append_attribute(attr_name.data()).set_value(attr_value.data());
+}
+
 void XHTML::push_back(const Node& node) {
   auto child = node_.append_child(node.name_.c_str());
 
@@ -220,7 +233,21 @@ void XHTML::push_back(
   push_back(node);
 }
 
-void XHTML::push_back(const std::string& text) { push_back("p", {}, text); }
+void XHTML::push_title(const std::string& title) {
+  if (old_style) {
+    push_back("h1", {{"class", "color"}}, title);
+  } else {
+    push_back("h1", {{"class", "FZCYS"}}, title);
+  }
+}
+
+void XHTML::push_text(const std::string& text) {
+  if (old_style) {
+    push_back("p", {{"class", "calibre2"}}, text);
+  } else {
+    push_back("p", {}, text);
+  }
+}
 
 std::string XHTML::get_text() const {
   std::string str;

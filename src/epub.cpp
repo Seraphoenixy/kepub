@@ -163,15 +163,46 @@ void Epub::generate_for_web(
 
 std::string Epub::generate_chapter(const Content& content) {
   XHTML xhtml(chapter_str);
-  xhtml.move_by_name("body");
-  xhtml.move_by_name("div");
 
-  for (const auto& item : content.get_lines()) {
-    xhtml.push_back(item);
+  xhtml.move_by_name("head");
+
+  if (old_style) {
+    xhtml.push_back("title", {}, content.get_title());
+    xhtml.push_back("meta", {{"http-equiv", "Content-Type"},
+                             {"content", "text/html"},
+                             {"charset", "utf-8"}});
+    xhtml.push_back("link", {{"href", "../../stylesheet.css"},
+                             {"rel", "stylesheet"},
+                             {"type", "text/css"}});
+    xhtml.push_back("link", {{"href", "../../page_styles.css"},
+                             {"rel", "stylesheet"},
+                             {"type", "text/css"}});
+  } else {
+    xhtml.push_back("link", {{"href", "../Styles/style.css"},
+                             {"rel", "stylesheet"},
+                             {"type", "text/css"}});
+    xhtml.push_back("title", {}, content.get_title());
   }
 
-  return boost::replace_all_copy(xhtml.to_string(), "@title@",
-                                 content.get_title());
+  xhtml.previous();
+
+  if (old_style) {
+    xhtml.add_child_attr("body", "class", "calibre");
+  }
+  xhtml.move_by_name("body");
+
+  if (old_style) {
+    xhtml.add_child_attr("div", "class", "calibre1");
+  }
+  xhtml.move_by_name("div");
+
+  xhtml.push_title(content.get_title());
+
+  for (const auto& item : content.get_lines()) {
+    xhtml.push_text(item);
+  }
+
+  return xhtml.to_string();
 }
 
 void Epub::add_file_in_content_opf(XHTML& content_opf, const std::string& id,
@@ -180,8 +211,13 @@ void Epub::add_file_in_content_opf(XHTML& content_opf, const std::string& id,
   content_opf.reset();
   content_opf.move_by_name("manifest");
 
-  content_opf.push_back(
-      "item", {{"id", id}, {"href", href}, {"media-type", media_type}});
+  if (old_style) {
+    content_opf.push_back(
+        "item", {{"href", href}, {"id", id}, {"media-type", media_type}});
+  } else {
+    content_opf.push_back(
+        "item", {{"id", id}, {"href", href}, {"media-type", media_type}});
+  }
 
   if (href.ends_with(".xhtml")) {
     content_opf.previous();
@@ -200,6 +236,10 @@ void Epub::add_nav_point(XHTML& toc_ncx, const std::string& title,
                            : 1);
 
   Node node("navPoint");
+
+  if (old_style) {
+    node.add_attr("class", "chapter");
+  }
   node.add_attr("id", "navPoint-" + std::to_string(start_id));
   node.add_attr("playOrder", std::to_string(start_id));
 
@@ -328,7 +368,7 @@ void Epub::generate_introduction() {
   xhtml.move_by_name("div");
 
   for (const auto& item : description_) {
-    xhtml.push_back(item);
+    xhtml.push_text(item);
   }
 
   std::ofstream introduction_ofs(root_ / "OEBPS" / "Text" /
@@ -364,23 +404,9 @@ void Epub::generate_illustration() {
 void Epub::generate_chapter() {
   std::int32_t id = 1;
   for (const auto& item : contents_) {
-    XHTML xhtml(chapter_str);
-    xhtml.move_by_name("head");
-    xhtml.set_child_text("title", item.get_title());
-
-    xhtml.previous();
-    xhtml.move_by_name("body");
-    xhtml.move_by_name("div");
-
-    xhtml.set_child_text("h1", item.get_title());
-
-    for (const auto& line : item.get_lines()) {
-      xhtml.push_back(line);
-    }
-
     auto file_name = num_to_chapter_name(id++);
     std::ofstream ofs(root_ / "OEBPS" / "Text" / file_name);
-    check_and_write_file(ofs, xhtml.to_string());
+    check_and_write_file(ofs, Epub::generate_chapter(item));
 
     Epub::add_file_in_content_opf(content_opf_, file_name, "Text/" + file_name,
                                   "application/xhtml+xml");

@@ -7,6 +7,12 @@ file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/data/梗角色轉生太過頭了！.txt"
 file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/data/魅魔的我.txt"
      DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
+file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/data/魅魔的我-old-style.txt"
+     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/data/魅魔的我-old-style.epub"
+     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
 enable_testing()
 
 if(KEPUB_VALGRIND)
@@ -101,5 +107,25 @@ set_tests_properties(remove_images_addition PROPERTIES FIXTURES_REQUIRED
 set_tests_properties(diff_addition PROPERTIES FIXTURES_CLEANUP addition)
 set_tests_properties(remove_images_addition PROPERTIES DEPENDS run_addition)
 set_tests_properties(run_addition PROPERTIES DEPENDS diff_esjzone)
+
+add_test(NAME run_addition_old_style
+         COMMAND ${VALGRIND_CMD}${ADDITION_EXECUTABLE} 魅魔的我-old-style.txt
+                 --old-style)
+add_test(NAME remove_images_addition_old_style
+         COMMAND rm -rf 魅魔的我-old-style/OEBPS/Images)
+add_test(
+  NAME diff_addition_old_style
+  COMMAND diff -r ${CMAKE_CURRENT_SOURCE_DIR}/data/standard-addition-old-style
+          魅魔的我-old-style)
+set_tests_properties(check_executable_addition PROPERTIES FIXTURES_SETUP
+                                                          addition_old_style)
+set_tests_properties(run_addition_old_style PROPERTIES FIXTURES_REQUIRED
+                                                       addition_old_style)
+set_tests_properties(remove_images_addition_old_style
+                     PROPERTIES FIXTURES_REQUIRED addition_old_style)
+set_tests_properties(diff_addition_old_style PROPERTIES FIXTURES_CLEANUP
+                                                        addition_old_style)
+set_tests_properties(remove_images_addition_old_style
+                     PROPERTIES DEPENDS run_addition_old_style)
 
 include(Coverage)

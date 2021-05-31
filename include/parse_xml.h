@@ -59,12 +59,16 @@ class XHTML {
   void set_child_text(std::string_view name, const std::string &text);
   void set_child_attr(std::string_view name, std::string_view attr_name,
                       const std::string &attr_value);
+  void add_child_attr(std::string_view name, std::string_view attr_name,
+                      const std::string &attr_value);
 
   void push_back(const Node &node);
   void push_back(std::string_view name,
                  const std::vector<std::pair<std::string, std::string>> &attrs,
                  const std::string &text = "");
-  void push_back(const std::string &text);
+
+  void push_title(const std::string &title);
+  void push_text(const std::string &text);
 
   [[nodiscard]] std::string get_text() const;
 
