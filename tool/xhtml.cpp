@@ -38,6 +38,8 @@ int main(int argc, char *argv[]) try {
   for (const auto &item : result) {
     ofs << chapter_line(item) << '\n';
   }
+
+  std::filesystem::remove(file_name);
 } catch (const std::exception &err) {
   kepub::error(err.what());
 } catch (...) {
