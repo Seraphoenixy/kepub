@@ -237,7 +237,7 @@ void XHTML::push_title(const std::string& title) {
   if (old_style) {
     push_back("h1", {{"class", "color"}}, title);
   } else {
-    push_back("h1", {{"class", "FZCYS"}}, title);
+    push_back("h1", {{"class", "FZCYSJW"}}, title);
   }
 }
 

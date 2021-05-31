@@ -272,27 +272,10 @@ void Epub::common_generate() {
   std::ofstream container_ofs(root_ / "META-INF" / "container.xml");
   check_and_write_file(container_ofs, container_str);
 
-  // DFNMing.ttf
-  std::ofstream font_ofs(root_ / "OEBPS" / "Fonts" / "DFNMing.ttf",
-                         std::ofstream::binary);
-  check_and_write_file(font_ofs, DFNMing_str);
-  font_ofs.close();
-
-  // DFPMingLight.ttf
-  font_ofs.open(root_ / "OEBPS" / "Fonts" / "DFPMingLight.ttf",
-                std::ofstream::binary);
-  check_and_write_file(font_ofs, DFPMingLight_str);
-  font_ofs.close();
-
-  // FZCYS.ttf
-  font_ofs.open(root_ / "OEBPS" / "Fonts" / "FZCYS.ttf", std::ofstream::binary);
-  check_and_write_file(font_ofs, FZCYS_str);
-  font_ofs.close();
-
-  // SourceHanSansCN-Normal.ttf
-  font_ofs.open(root_ / "OEBPS" / "Fonts" / "SourceHanSansCN-Normal.ttf",
-                std::ofstream::binary);
-  check_and_write_file(font_ofs, SourceHanSansCN_Normal_str);
+  // FZCYSJW.ttf
+  std::ofstream FZCYSJW_ofs(root_ / "OEBPS" / "Fonts" / "FZCYSJW.ttf",
+                            std::ofstream::binary);
+  check_and_write_file(FZCYSJW_ofs, FZCYSJW_str);
 
   // style.css
   std::ofstream styles_ofs(root_ / "OEBPS" / "Styles" / "style.css");

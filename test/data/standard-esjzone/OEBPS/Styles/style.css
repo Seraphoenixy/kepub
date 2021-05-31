@@ -47,31 +47,6 @@ td {
   margin-bottom: 0.2em;
 }
 
-/*Logo页样式*/
-.logoarea {
-  text-indent: 0;
-  text-align: center !important;
-  margin-top: 20%;
-  margin-bottom: 0;
-}
-.logoimage {
-  width: 100%;
-}
-
-/*目录页样式*/
-/*“目录”标题颜色*/
-.colorco {
-  color: #000000;
-}
-/*目录页超链接样式*/
-.nodeco {
-  text-decoration: none;
-}
-/*目录页超链接颜色*/
-.colorg {
-  color: #000000;
-}
-
 /*正文样式*/
 /*正文章节标题样式*/
 h1 {
@@ -82,6 +57,7 @@ h1 {
   font-weight: bold;
   text-align: center !important;
 }
+
 /*注释代码样式*/
 .po {
   font-size: 0.9em;
@@ -89,6 +65,7 @@ h1 {
   padding: 0 0.1em 0.1em 1em;
   color: #960014;
 }
+
 /*上标样式*/
 ruby {
   ruby-align: center;
@@ -96,14 +73,13 @@ ruby {
 rt {
   font-size: 0.7em;
 }
+
 /*下标黑点着重号*/
 .zzh {
   text-emphasis-style: dot;
   text-emphasis-position: under right;
   -webkit-text-emphasis-style: dot;
   -webkit-text-emphasis-position: under right;
-  -epub-text-emphasis-style: dot;
-  -epub-text-emphasis-position: under right;
 }
 
 /*字体样式控制*/
@@ -111,6 +87,7 @@ rt {
 .bold {
   font-weight: bold;
 }
+
 /*字体高度*/
 .font03 {
   font-size: 0.3em;
@@ -187,29 +164,35 @@ rt {
 .font40 {
   font-size: 4em;
 }
+
 /*首行缩进值为0*/
 .in0 {
   text-indent: 0;
 }
+
 /*文本居中*/
 .center {
   text-align: center !important;
   text-indent: 0;
 }
+
 /*文本居左*/
 .left {
   text-align: left !important;
   text-indent: 0;
 }
+
 /*文本居右*/
 .right {
   text-align: right !important;
   text-indent: 0;
 }
+
 /*斜体的字体样式*/
 .italic {
   font-style: italic;
 }
+
 /*倾斜的字体样式*/
 .oblique {
   font-style: oblique;
@@ -218,31 +201,39 @@ rt {
 /*字体颜色控制*/
 .colorc1 {
   color: #000000;
-} /*书名颜色，默认黑色。*/
+}
+
+/*书名颜色，默认黑色。*/
 .colorc2 {
   color: #000000;
-} /*卷数颜色，默认黑色。*/
+}
+
+/*卷数颜色，默认黑色。*/
 .color1 {
   color: #000000;
-} /*印象色，用于制作者人名、章节标题等处，默认黑色。*/
+}
+
+/*印象色，用于制作者人名、章节标题等处，默认黑色。*/
 .white {
   color: #ffffff;
 }
-/*补充颜色写在下面，并注明用处*/
 
 /*元素控制样式*/
 /*td元素顶端对齐*/
 .tdtop {
   vertical-align: top;
 }
+
 /*td元素底端对齐*/
 .tdbottom {
   vertical-align: bottom;
 }
+
 /*td元素垂直居中对齐*/
 .tdmiddle {
   vertical-align: middle;
 }
+
 /*td元素水平居中*/
 .tdcenter {
   margin-left: auto;
@@ -300,6 +291,7 @@ rt {
 .w100 {
   width: 100%;
 }
+
 /*元素顶部外边距*/
 .mtb13 {
   margin-top: -1.3em;
@@ -337,6 +329,7 @@ rt {
 .mt40 {
   margin-top: 4em;
 }
+
 /*元素上下外边距*/
 .mbt02 {
   margin-top: 0.2em;
@@ -358,6 +351,7 @@ rt {
   margin-top: 1.8em;
   margin-bottom: 1.8em;
 }
+
 /*元素左右外边距*/
 .mrl02 {
   margin-left: 0.2em;
@@ -421,79 +415,7 @@ rt {
   clear: both;
 }
 
-/*标题页样式*/
-.titlepage-background {
-  background-color: #000000;
-}
-.titlepage {
-  width: 20em;
-  max-width: 100%;
-  margin: 1em auto 0 auto;
-}
-.titlepage p {
-  text-indent: 0;
-  line-height: 1;
-  height: 1em;
-}
-.en-tit1 {
-  text-align: left;
-}
-.en-tit1 p {
-  margin: 0.3em auto;
-}
-.creator {
-  width: 100%;
-  margin: 0 auto 0 auto;
-}
-.creator > div {
-  float: right;
-}
-.author p {
-  margin: 0.1em auto;
-}
-.illus-tit {
-  transform: rotate(90deg);
-  -moz-transform: rotate(90deg);
-  -webkit-transform: rotate(90deg);
-  padding: 0 0 0 1.8em;
-  margin: 0 -1.5em;
-}
-.illus-name {
-  margin-top: 4.2em;
-  margin-right: -1.8em;
-}
-.illus-name p {
-  margin: 0 auto;
-}
-.booktitle {
-  margin: 11em auto 0 auto;
-}
-.booktitle p {
-  margin: 0.1em auto;
-  text-align: center;
-}
-.title-box {
-  background-color: #ffffff;
-  color: #000000;
-  padding: 0;
-}
-
 /*章节*/
-.ChapterTitleSD img {
-  float: right;
-  width: 7em;
-}
-.vir-chapter {
-  text-align: center !important;
-  margin: 1.5em 1em;
-}
-.vir-chapter img {
-  max-width: 100%;
-}
-.tcy {
-  -webkit-text-combine: horizontal;
-  -epub-text-combine: horizontal;
-}
 .mst {
   width: 20em;
   max-width: 100%;
@@ -508,45 +430,13 @@ rt {
   -moz-transform: rotate(90deg);
   -webkit-transform: rotate(90deg);
 }
-.paper {
-  width: 85%;
-  margin: 1.5em auto;
-  border: 2px solid #000000;
-  padding: 1em 2em;
-  border-radius: 5px;
-}
-.paper p {
-  text-indent: 0;
-}
 
 /*字体样式*/
 @font-face {
-  font-family: "SourceHanSansCN-Normal";
-  src: url("../Fonts/SourceHanSansCN-Normal.ttf");
+  font-family: "FZCYSJW";
+  src: url("../Fonts/FZCYSJW.ttf");
 }
-.SourceHanSansCN-Normal {
-  font-family: SourceHanSansCN-Normal, serif;
-}
-@font-face {
-  font-family: "DFPMingLight";
-  src: url("../Fonts/DFPMingLight.ttf");
-}
-.DFPMingLight {
-  font-family: DFPMingLight, serif;
-}
-@font-face {
-  font-family: "DFNMing";
-  src: url("../Fonts/DFNMing.ttf");
-}
-.DFNMing {
-  font-family: DFNMing, serif;
-  font-weight: normal;
-}
-@font-face {
-  font-family: "FZCYS";
-  src: url("../Fonts/FZCYS.ttf");
-}
-.FZCYS {
-  font-family: FZCYS, serif;
+.FZCYSJW {
+  font-family: FZCYSJW, serif;
   font-weight: normal;
 }

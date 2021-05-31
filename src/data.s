@@ -1,13 +1,7 @@
     .global container
     .global container_size
-    .global DFNMing
-    .global DFNMing_size
-    .global DFPMingLight
-    .global DFPMingLight_size
-    .global FZCYS
-    .global FZCYS_size
-    .global SourceHanSansCN_Normal
-    .global SourceHanSansCN_Normal_size
+    .global FZCYSJW
+    .global FZCYSJW_size
     .global style
     .global style_size
     .global mimetype
@@ -36,29 +30,11 @@ container_end:
 container_size:
     .int container_end - container
 
-DFNMing:
-    .incbin "DFNMing.ttf"
-DFNMing_end:
-DFNMing_size:
-    .int DFNMing_end - DFNMing
-
-DFPMingLight:
-    .incbin "DFPMingLight.ttf"
-DFPMingLight_end:
-DFPMingLight_size:
-    .int DFPMingLight_end - DFPMingLight
-
-FZCYS:
-    .incbin "FZCYS.ttf"
-FZCYS_end:
-FZCYS_size:
-    .int FZCYS_end - FZCYS
-
-SourceHanSansCN_Normal:
-    .incbin "SourceHanSansCN-Normal.ttf"
-SourceHanSansCN_Normal_end:
-SourceHanSansCN_Normal_size:
-    .int SourceHanSansCN_Normal_end - SourceHanSansCN_Normal
+FZCYSJW:
+    .incbin "FZCYSJW.ttf"
+FZCYSJW_end:
+FZCYSJW_size:
+    .int FZCYSJW_end - FZCYSJW
 
 style:
     .incbin "style.css"

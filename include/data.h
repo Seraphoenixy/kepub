@@ -6,17 +6,8 @@
 extern char container[];
 extern int container_size;
 
-extern char DFNMing[];
-extern int DFNMing_size;
-
-extern char DFPMingLight[];
-extern int DFPMingLight_size;
-
-extern char FZCYS[];
-extern int FZCYS_size;
-
-extern char SourceHanSansCN_Normal[];
-extern int SourceHanSansCN_Normal_size;
+extern char FZCYSJW[];
+extern int FZCYSJW_size;
 
 extern char style[];
 extern int style_size;
@@ -53,18 +44,8 @@ namespace kepub {
 inline std::string_view container_str(
     container, static_cast<std::string_view::size_type>(container_size));
 
-inline std::string_view DFNMing_str(
-    DFNMing, static_cast<std::string_view::size_type>(DFNMing_size));
-
-inline std::string_view DFPMingLight_str(
-    DFPMingLight, static_cast<std::string_view::size_type>(DFPMingLight_size));
-
-inline std::string_view FZCYS_str(
-    FZCYS, static_cast<std::string_view::size_type>(FZCYS_size));
-
-inline std::string_view SourceHanSansCN_Normal_str(
-    SourceHanSansCN_Normal,
-    static_cast<std::string_view::size_type>(SourceHanSansCN_Normal_size));
+inline std::string_view FZCYSJW_str(
+    FZCYSJW, static_cast<std::string_view::size_type>(FZCYSJW_size));
 
 inline std::string_view style_str(
     style, static_cast<std::string_view::size_type>(style_size));
