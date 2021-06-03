@@ -159,9 +159,7 @@ void check_and_write_file(std::ofstream &ofs, std::string_view str) {
 }
 
 std::string num_to_str(std::int32_t i) {
-  if (i <= 0 || i >= 1000) {
-    error("too many xhtml files need to be generated");
-  }
+  assert(i > 0);
 
   if (i < 10) {
     return "00" + std::to_string(i);
