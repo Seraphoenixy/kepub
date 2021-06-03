@@ -8,6 +8,9 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
 
   sudo dpkg -i kpkg.deb
 
+  sudo apt update
+  sudo apt install -y gcc-11 g++-11
+
   sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
   sudo apt install -y clang-tidy-12 valgrind
 
