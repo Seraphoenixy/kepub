@@ -433,10 +433,10 @@ rt {
 
 /*字体样式*/
 @font-face {
-  font-family: "FZCYSJW";
-  src: url("../Fonts/FZCYSJW.ttf");
+  font-family: "FZCYSK";
+  src: url("../Fonts/FZCYSK.ttf");
 }
-.FZCYSJW {
-  font-family: FZCYSJW, serif;
+.FZCYSK {
+  font-family: FZCYSK, serif;
   font-weight: normal;
 }

@@ -1,7 +1,7 @@
     .global container
     .global container_size
-    .global FZCYSJW
-    .global FZCYSJW_size
+    .global FZCYSK
+    .global FZCYSK_size
     .global style
     .global style_size
     .global mimetype
@@ -30,11 +30,11 @@ container_end:
 container_size:
     .int container_end - container
 
-FZCYSJW:
-    .incbin "FZCYSJW.ttf"
-FZCYSJW_end:
-FZCYSJW_size:
-    .int FZCYSJW_end - FZCYSJW
+FZCYSK:
+    .incbin "FZCYSK.ttf"
+FZCYSK_end:
+FZCYSK_size:
+    .int FZCYSK_end - FZCYSK
 
 style:
     .incbin "style.css"

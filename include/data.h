@@ -6,8 +6,8 @@
 extern char container[];
 extern int container_size;
 
-extern char FZCYSJW[];
-extern int FZCYSJW_size;
+extern char FZCYSK[];
+extern int FZCYSK_size;
 
 extern char style[];
 extern int style_size;
@@ -44,8 +44,8 @@ namespace kepub {
 inline std::string_view container_str(
     container, static_cast<std::string_view::size_type>(container_size));
 
-inline std::string_view FZCYSJW_str(
-    FZCYSJW, static_cast<std::string_view::size_type>(FZCYSJW_size));
+inline std::string_view FZCYSK_str(
+    FZCYSK, static_cast<std::string_view::size_type>(FZCYSK_size));
 
 inline std::string_view style_str(
     style, static_cast<std::string_view::size_type>(style_size));

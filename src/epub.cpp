@@ -272,10 +272,10 @@ void Epub::common_generate() {
   std::ofstream container_ofs(root_ / "META-INF" / "container.xml");
   check_and_write_file(container_ofs, container_str);
 
-  // FZCYSJW.ttf
-  std::ofstream FZCYSJW_ofs(root_ / "OEBPS" / "Fonts" / "FZCYSJW.ttf",
-                            std::ofstream::binary);
-  check_and_write_file(FZCYSJW_ofs, FZCYSJW_str);
+  // FZCYSK.ttf
+  std::ofstream FZCYSK_ofs(root_ / "OEBPS" / "Fonts" / "FZCYSK.ttf",
+                           std::ofstream::binary);
+  check_and_write_file(FZCYSK_ofs, FZCYSK_str);
 
   // style.css
   std::ofstream styles_ofs(root_ / "OEBPS" / "Styles" / "style.css");
