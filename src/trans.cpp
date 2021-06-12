@@ -48,6 +48,7 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("~", "～");
   str.findAndReplace("･", "・");
   str.findAndReplace("ｰ", "ー");
+  str.findAndReplace("￫", "→");
 
   str.findAndReplace("妳", "你");
   str.findAndReplace("壊", "坏");
