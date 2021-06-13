@@ -1,5 +1,6 @@
 #include <filesystem>
 #include <fstream>
+#include <iostream>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -35,9 +36,12 @@ int main(int argc, char *argv[]) try {
     kepub::error("can not open: {}", out);
   }
 
+  std::int32_t count = 0;
   for (const auto &item : result) {
+    count += kepub::str_size(item);
     ofs << chapter_line(item) << '\n';
   }
+  std::cout << "总字数：" << count << '\n';
 
   std::filesystem::remove(file_name);
 } catch (const std::exception &err) {

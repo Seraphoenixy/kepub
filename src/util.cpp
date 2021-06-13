@@ -35,14 +35,12 @@ std::u32string utf8_to_utf32(const std::string &str) {
   while ((rc = mbrtoc32(&out, begin, std::size(str), &state))) {
     assert(rc != static_cast<std::size_t>(-3));
 
-    if (rc == static_cast<std::size_t>(-2)) {
-      kepub::error("Incomplete byte composition Incomplete byte composition");
-    } else if (rc == static_cast<std::size_t>(-1)) {
-      kepub::error("Character encoding error");
+    if (rc > static_cast<std::size_t>(-1) / 2) {
+      break;
+    } else {
+      begin += rc;
+      result.push_back(out);
     }
-
-    begin += rc;
-    result.push_back(out);
   }
 
   return result;
@@ -288,6 +286,10 @@ void push_back(std::vector<std::string> &texts, const std::string &str) {
   } else {
     texts.push_back(str);
   }
+}
+
+std::int32_t str_size(const std::string &str) {
+  return std::size(utf8_to_utf32(str));
 }
 
 }  // namespace kepub

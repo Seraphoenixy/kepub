@@ -49,4 +49,6 @@ std::string processing_cmd(std::int32_t argc, char *argv[]);
 
 void push_back(std::vector<std::string> &texts, const std::string &str);
 
+std::int32_t str_size(const std::string &str);
+
 }  // namespace kepub
