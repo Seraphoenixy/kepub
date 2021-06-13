@@ -42,8 +42,6 @@ int main(int argc, char *argv[]) try {
     ofs << chapter_line(item) << '\n';
   }
   std::cout << "总字数：" << count << '\n';
-
-  std::filesystem::remove(file_name);
 } catch (const std::exception &err) {
   kepub::error(err.what());
 } catch (...) {
