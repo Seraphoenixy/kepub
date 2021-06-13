@@ -10,6 +10,7 @@
 
 #include <fmt/core.h>
 #include <fmt/ostream.h>
+#include <unicode/uchar.h>
 #include <boost/algorithm/string.hpp>
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/parsers.hpp>
@@ -289,7 +290,15 @@ void push_back(std::vector<std::string> &texts, const std::string &str) {
 }
 
 std::int32_t str_size(const std::string &str) {
-  return std::size(utf8_to_utf32(str));
+  std::int32_t result = 0;
+
+  for (auto c : utf8_to_utf32(str)) {
+    if (!u_ispunct(c)) {
+      ++result;
+    }
+  }
+
+  return result;
 }
 
 }  // namespace kepub
