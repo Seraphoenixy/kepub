@@ -10,6 +10,7 @@ namespace {
 
 void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("&nbsp;", " ");
+  str.findAndReplace("\u00A0", " ");
 
   str.findAndReplace("&lt;", "<");
   str.findAndReplace("&gt;", ">");

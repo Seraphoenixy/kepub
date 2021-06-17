@@ -1,5 +1,6 @@
 #include "util.h"
 
+#include <algorithm>
 #include <cassert>
 #include <cctype>
 #include <clocale>
@@ -11,6 +12,8 @@
 #include <fmt/core.h>
 #include <fmt/ostream.h>
 #include <unicode/uchar.h>
+#include <unicode/umachine.h>
+#include <unicode/unistr.h>
 #include <boost/algorithm/string.hpp>
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/parsers.hpp>
@@ -82,6 +85,13 @@ bool end_with_chinese(const std::string &str) {
   return is_chinese(utf8_to_utf32(str).back());
 }
 
+char32_t to_unicode(const std::string &str) {
+  auto utf32 = utf8_to_utf32(str);
+  assert(std::size(utf32) == 1);
+
+  return utf32.front();
+}
+
 }  // namespace
 
 namespace kepub {
@@ -145,6 +155,9 @@ std::vector<std::string> read_file_to_vec(const std::string &file_name) {
   for (auto &item : result) {
     item = trans_str(item);
   }
+
+  std::erase_if(result,
+                [](const std::string &line) { return std::empty(line); });
 
   return result;
 }
@@ -295,6 +308,16 @@ std::int32_t str_size(const std::string &str) {
   for (auto c : utf8_to_utf32(str)) {
     if (!u_ispunct(c)) {
       ++result;
+    }
+
+    if (!u_isalnum(c) && !u_ispunct(c) && !u_isspace(c) && !is_chinese(c) &&
+        c != to_unicode("～") && c != to_unicode("+") && c != to_unicode("-") &&
+        c != to_unicode("*") && c != to_unicode("×") && c != to_unicode("/") &&
+        c != to_unicode("=")) {
+      std::string temp;
+      UChar32 ch = c;
+      warning("unknown character: {}, in {}",
+              icu::UnicodeString::fromUTF32(&ch, 1).toUTF8String(temp), str);
     }
   }
 
