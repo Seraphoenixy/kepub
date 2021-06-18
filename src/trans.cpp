@@ -16,26 +16,14 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("&gt;", ">");
   str.findAndReplace("&quot;", "\"");
   str.findAndReplace("&apos;", "'");
-  str.findAndReplace("&cent;", "¢");
-  str.findAndReplace("&pound;", "£");
-  str.findAndReplace("&yen;", "¥");
-  str.findAndReplace("&euro;", "€");
-  str.findAndReplace("&copy;", "©");
-  str.findAndReplace("&reg;", "®");
 
   str.findAndReplace(";", "；");
-  str.findAndReplace("&", "&amp;");
 
+  str.findAndReplace("&", "&amp;");
   str.findAndReplace("<", "&lt;");
   str.findAndReplace(">", "&gt;");
   str.findAndReplace("\"", "&quot;");
   str.findAndReplace("'", "&apos;");
-  str.findAndReplace("¢", "&cent;");
-  str.findAndReplace("£", "&pound;");
-  str.findAndReplace("¥", "&yen;");
-  str.findAndReplace("€", "&euro;");
-  str.findAndReplace("©", "&copy;");
-  str.findAndReplace("®", "&reg;");
 
   // https://zh.wikipedia.org/wiki/%E5%85%A8%E5%BD%A2%E5%92%8C%E5%8D%8A%E5%BD%A2
   str.findAndReplace("!", "！");
