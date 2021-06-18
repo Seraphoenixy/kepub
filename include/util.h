@@ -19,6 +19,8 @@ inline bool postscript = false;
 
 inline bool old_style = false;
 
+inline bool no_trans_hant = false;
+
 inline std::int32_t illustration_num = 0;
 
 inline std::int32_t max_chapter = 0;
@@ -50,5 +52,7 @@ std::string processing_cmd(std::int32_t argc, char *argv[]);
 void push_back(std::vector<std::string> &texts, const std::string &str);
 
 std::int32_t str_size(const std::string &str);
+
+void str_check(const std::string &str);
 
 }  // namespace kepub

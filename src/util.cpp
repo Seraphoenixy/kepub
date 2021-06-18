@@ -92,6 +92,12 @@ char32_t to_unicode(const std::string &str) {
   return utf32.front();
 }
 
+bool is_punct(char32_t c) {
+  return u_ispunct(c) || c == to_unicode("～") || c == to_unicode("+") ||
+         c == to_unicode("-") || c == to_unicode("*") || c == to_unicode("×") ||
+         c == to_unicode("/") || c == to_unicode("=");
+}
+
 }  // namespace
 
 namespace kepub {
@@ -203,6 +209,7 @@ std::string processing_cmd(std::int32_t argc, char *argv[]) {
   config.add_options()("postscript,p", "generate postscript");
   config.add_options()("download-cover,d", "download cover");
   config.add_options()("old-style", "old style");
+  config.add_options()("no-trans-hant", "no trans hant");
   config.add_options()(
       "illustration,i",
       boost::program_options::value<std::int32_t>(&illustration_num)
@@ -269,6 +276,9 @@ std::string processing_cmd(std::int32_t argc, char *argv[]) {
   if (vm.contains("old-style")) {
     old_style = true;
   }
+  if (vm.contains("no-trans-hant")) {
+    no_trans_hant = true;
+  }
 
   return input_file;
 }
@@ -306,22 +316,23 @@ std::int32_t str_size(const std::string &str) {
   std::int32_t result = 0;
 
   for (auto c : utf8_to_utf32(str)) {
-    if (!u_ispunct(c)) {
+    if (!is_punct(c)) {
       ++result;
-    }
-
-    if (!u_isalnum(c) && !u_ispunct(c) && !u_isspace(c) && !is_chinese(c) &&
-        c != to_unicode("～") && c != to_unicode("+") && c != to_unicode("-") &&
-        c != to_unicode("*") && c != to_unicode("×") && c != to_unicode("/") &&
-        c != to_unicode("=")) {
-      std::string temp;
-      UChar32 ch = c;
-      warning("unknown character: {}, in {}",
-              icu::UnicodeString::fromUTF32(&ch, 1).toUTF8String(temp), str);
     }
   }
 
   return result;
+}
+
+void str_check(const std::string &str) {
+  for (auto c : utf8_to_utf32(str)) {
+    if (!u_isalnum(c) && !u_isspace(c) && !is_chinese(c) && !is_punct(c)) {
+      std::string temp;
+      UChar32 ch = c;
+      warning("unknown character: {} in {}",
+              icu::UnicodeString::fromUTF32(&ch, 1).toUTF8String(temp), str);
+    }
+  }
 }
 
 }  // namespace kepub

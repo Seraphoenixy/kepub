@@ -38,6 +38,7 @@ int main(int argc, char *argv[]) try {
 
   std::int32_t count = 0;
   for (const auto &item : result) {
+    kepub::str_check(item);
     count += kepub::str_size(item);
     ofs << chapter_line(item) << '\n';
   }

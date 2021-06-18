@@ -5,6 +5,7 @@
 #include <unicode/utypes.h>
 
 #include "error.h"
+#include "util.h"
 
 namespace {
 
@@ -182,7 +183,10 @@ const Trans &Trans::get() {
 std::string Trans::trans_str(const std::string &str) const {
   icu::UnicodeString icu_str(str.c_str());
 
-  hant_hans_->transliterate(icu_str);
+  if (!no_trans_hant) {
+    hant_hans_->transliterate(icu_str);
+  }
+
   fullwidth_halfwidth_->transliterate(icu_str);
   custom_trans(icu_str);
 
