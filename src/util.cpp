@@ -5,6 +5,7 @@
 #include <cctype>
 #include <clocale>
 #include <cstddef>
+#include <cstdint>
 #include <cstdlib>
 #include <cuchar>
 #include <regex>
@@ -15,6 +16,7 @@
 #include <unicode/calendar.h>
 #include <unicode/timezone.h>
 #include <unicode/uchar.h>
+#include <unicode/ucsdet.h>
 #include <unicode/umachine.h>
 #include <unicode/unistr.h>
 #include <unicode/utypes.h>
@@ -102,6 +104,16 @@ bool is_punct(char32_t c) {
          c == to_unicode("/") || c == to_unicode("=");
 }
 
+bool is_ascii(const std::string &text) {
+  for (auto c : text) {
+    if (static_cast<std::uint8_t>(c) > 0x7F) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 }  // namespace
 
 namespace kepub {
@@ -148,11 +160,15 @@ void check_is_url(const std::string &url) {
 }
 
 std::string read_file_to_str(const std::string &file_name) {
-  std::ifstream ifs(file_name, std::ifstream::binary);
+  std::ifstream ifs(file_name);
   std::string data;
 
   data.resize(ifs.seekg(0, std::ifstream::end).tellg());
   ifs.seekg(0, std::ifstream::beg).read(data.data(), std::size(data));
+
+  if (auto encoding = detect_encoding(data); encoding != "UTF-8") {
+    error("file {} encoding is not UTF-8 ({})", file_name, encoding);
+  }
 
   return data;
 }
@@ -355,6 +371,31 @@ std::string get_date(std::string_view time_zone) {
   }
 
   delete calendar;
+  return result;
+}
+
+std::string detect_encoding(const std::string &text) {
+  if (is_ascii(text)) {
+    return "UTF-8";
+  }
+
+  UErrorCode status = U_ZERO_ERROR;
+  UCharsetDetector *csd = ucsdet_open(&status);
+
+  ucsdet_setText(csd, text.c_str(), -1, &status);
+  auto ucm = ucsdet_detect(csd, &status);
+
+  if (!ucm) {
+    error("unable to determine character set");
+  }
+
+  std::string result = ucsdet_getName(ucm, &status);
+  if (U_FAILURE(status)) {
+    error("detect encoding error");
+  }
+
+  ucsdet_close(csd);
+
   return result;
 }
 
