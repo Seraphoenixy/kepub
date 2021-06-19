@@ -10,6 +10,9 @@
 namespace {
 
 void custom_trans(icu::UnicodeString &str) {
+  // https://en.wikipedia.org/wiki/Word_joiner
+  str.findAndReplace("\uFEFF", " ");
+
   str.findAndReplace("&nbsp;", " ");
   str.findAndReplace("\u00A0", " ");
 
@@ -35,8 +38,8 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("?", "？");
   str.findAndReplace("｡", "。");
   str.findAndReplace("､", "、");
-  str.findAndReplace("~", "～");
   str.findAndReplace("･", "・");
+  str.findAndReplace("~", "～");
   str.findAndReplace("ｰ", "ー");
   str.findAndReplace("￫", "→");
 

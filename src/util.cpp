@@ -98,9 +98,9 @@ char32_t to_unicode(const std::string &str) {
 }
 
 bool is_punct(char32_t c) {
-  return u_ispunct(c) || c == to_unicode("～") || c == to_unicode("+") ||
-         c == to_unicode("-") || c == to_unicode("*") || c == to_unicode("×") ||
-         c == to_unicode("/") || c == to_unicode("=");
+  return u_ispunct(c) || c == to_unicode("+") || c == to_unicode("-") ||
+         c == to_unicode("*") || c == to_unicode("/") || c == to_unicode("=") ||
+         c == to_unicode("～") || c == to_unicode("ー") || c == to_unicode("→");
 }
 
 }  // namespace
@@ -324,7 +324,7 @@ std::int32_t str_size(const std::string &str) {
   std::int32_t result = 0;
 
   for (auto c : utf8_to_utf32(str)) {
-    if (u_isalnum(c) || is_chinese(c)) {
+    if (std::isalnum(c) || is_chinese(c)) {
       ++result;
     }
   }
@@ -334,7 +334,7 @@ std::int32_t str_size(const std::string &str) {
 
 void str_check(const std::string &str) {
   for (auto c : utf8_to_utf32(str)) {
-    if (!u_isalnum(c) && !u_isspace(c) && !is_chinese(c) && !is_punct(c)) {
+    if (!std::isalnum(c) && !u_isspace(c) && !is_chinese(c) && !is_punct(c)) {
       std::string temp;
       UChar32 ch = c;
       warning("unknown character: {} in {}",
