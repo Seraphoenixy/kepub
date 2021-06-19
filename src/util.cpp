@@ -10,10 +10,14 @@
 #include <regex>
 
 #include <fmt/core.h>
+#include <fmt/format.h>
 #include <fmt/ostream.h>
+#include <unicode/calendar.h>
+#include <unicode/timezone.h>
 #include <unicode/uchar.h>
 #include <unicode/umachine.h>
 #include <unicode/unistr.h>
+#include <unicode/utypes.h>
 #include <boost/algorithm/string.hpp>
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/parsers.hpp>
@@ -251,9 +255,8 @@ std::string processing_cmd(std::int32_t argc, char *argv[]) {
   }
 
   if (vm.contains("version")) {
-    fmt::print("{} version: {}.{}.{}\n", argv[0], KEPUB_VER_MAJOR,
+    fmt::print("{} version: {}.{}.{}", argv[0], KEPUB_VER_MAJOR,
                KEPUB_VER_MINOR, KEPUB_VER_PATCH);
-    fmt::print("Build time: {} {}", __DATE__, __TIME__);
     std::exit(EXIT_SUCCESS);
   }
 
@@ -333,6 +336,26 @@ void str_check(const std::string &str) {
               icu::UnicodeString::fromUTF32(&ch, 1).toUTF8String(temp), str);
     }
   }
+}
+
+std::string get_date(std::string_view time_zone) {
+  UErrorCode status = U_ZERO_ERROR;
+
+  auto calendar = icu::Calendar::createInstance(
+      icu::TimeZone::createTimeZone(time_zone.data()), status);
+  if (U_FAILURE(status)) {
+    error("error: {}", u_errorName(status));
+  }
+
+  auto result = fmt::format("{}-{:02d}-{}", calendar->get(UCAL_YEAR, status),
+                            calendar->get(UCAL_MONTH, status),
+                            calendar->get(UCAL_DATE, status));
+  if (U_FAILURE(status)) {
+    error("error: {}", u_errorName(status));
+  }
+
+  delete calendar;
+  return result;
 }
 
 }  // namespace kepub

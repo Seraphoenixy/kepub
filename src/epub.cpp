@@ -7,30 +7,15 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
-#include <ctime>
 #include <fstream>
 #include <thread>
 
-#include <fmt/chrono.h>
-#include <fmt/format.h>
 #include <boost/algorithm/string.hpp>
 
 #include "data.h"
 #include "download.h"
 #include "error.h"
 #include "util.h"
-
-namespace {
-
-std::string get_date() {
-  if (!std::empty(kepub::date)) {
-    return kepub::date;
-  }
-
-  return fmt::format("{:%Y-%m-%d}", fmt::localtime(std::time(nullptr)));
-}
-
-}  // namespace
 
 namespace kepub {
 
@@ -295,7 +280,11 @@ void Epub::common_generate() {
   content_opf_.set_child_text("dc:rights", creator_);
   content_opf_.set_child_text("dc:description",
                               boost::join(description_, "\n"));
-  content_opf_.set_child_text("dc:date", get_date());
+  if (!std::empty(date)) {
+    content_opf_.set_child_text("dc:date", date);
+  } else {
+    content_opf_.set_child_text("dc:date", get_date());
+  }
 
   // toc.ncx
   toc_ncx_ = XHTML(toc_str);

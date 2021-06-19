@@ -55,4 +55,6 @@ std::int32_t str_size(const std::string &str);
 
 void str_check(const std::string &str);
 
+std::string get_date(std::string_view time_zone = "Asia/Shanghai");
+
 }  // namespace kepub
