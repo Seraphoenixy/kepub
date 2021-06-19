@@ -4,4 +4,4 @@
 
 #define KEPUB_VER_MINOR 3
 
-#define KEPUB_VER_PATCH 10
+#define KEPUB_VER_PATCH 11

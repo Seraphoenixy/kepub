@@ -321,10 +321,17 @@ void push_back(std::vector<std::string> &texts, const std::string &str) {
 }
 
 std::int32_t str_size(const std::string &str) {
-  std::int32_t result = 0;
+  auto copy = str;
+  boost::replace_all(copy, "&amp;", "&");
+  boost::replace_all(copy, "&lt;", "<");
+  boost::replace_all(copy, "&gt;", ">");
+  boost::replace_all(copy, "&quot;", "\"");
+  boost::replace_all(copy, "&apos;", "'");
 
-  for (auto c : utf8_to_utf32(str)) {
-    if (std::isalnum(c) || is_chinese(c)) {
+  auto result = std::erase_if(copy, [](auto c) { return std::isalnum(c); });
+
+  for (auto c : utf8_to_utf32(copy)) {
+    if (is_chinese(c)) {
       ++result;
     }
   }
@@ -333,8 +340,11 @@ std::int32_t str_size(const std::string &str) {
 }
 
 void str_check(const std::string &str) {
-  for (auto c : utf8_to_utf32(str)) {
-    if (!std::isalnum(c) && !u_isspace(c) && !is_chinese(c) && !is_punct(c)) {
+  auto copy = str;
+  std::erase_if(copy, [](auto c) { return std::isalnum(c); });
+
+  for (auto c : utf8_to_utf32(copy)) {
+    if (!u_isblank(c) && !is_chinese(c) && !is_punct(c)) {
       std::string temp;
       UChar32 ch = c;
       warning("unknown character: {} in {}",
