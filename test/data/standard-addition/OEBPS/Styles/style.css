@@ -80,6 +80,8 @@ rt {
   text-emphasis-position: under right;
   -webkit-text-emphasis-style: dot;
   -webkit-text-emphasis-position: under right;
+  -epub-text-emphasis-style: dot;
+  -epub-text-emphasis-position: under right;
 }
 
 /*字体样式控制*/
@@ -100,9 +102,6 @@ rt {
 }
 .font06 {
   font-size: 0.6em;
-}
-.font065 {
-  font-size: 0.65em;
 }
 .font07 {
   font-size: 0.7em;
@@ -158,8 +157,20 @@ rt {
 .font25 {
   font-size: 2.5em;
 }
+.font26 {
+  font-size: 2.6em;
+}
+.font27 {
+  font-size: 2.7em;
+}
+.font28 {
+  font-size: 2.8em;
+}
 .font30 {
   font-size: 3em;
+}
+.font35 {
+  font-size: 3.5em;
 }
 .font40 {
   font-size: 4em;
@@ -214,8 +225,33 @@ rt {
 }
 
 /*印象色，用于制作者人名、章节标题等处，默认黑色。*/
-.white {
+/*标题颜色*/
+.colort1 {
+  color: #910884;
+  text-shadow: 0 0 1px #ffffff;
+}
+.colort2 {
+  color: #e4007b;
+  text-shadow: 0 0 1px #ffffff;
+}
+.colort3 {
+  color: #e6003d;
+  text-shadow: 0 0 1px #ffffff;
+}
+.colort4 {
+  color: #ec6200;
+  text-shadow: 0 0 1px #ffffff;
+}
+.colort5 {
+  color: #f28f00;
+  text-shadow: 0 0 1px #ffffff;
+}
+.colora1 {
+  color: #14116f;
+}
+.colora2 {
   color: #ffffff;
+  text-shadow: 0 0 3px #14116f;
 }
 
 /*元素控制样式*/
@@ -263,9 +299,6 @@ rt {
 }
 .w11 {
   width: 1.1em;
-}
-.w15 {
-  width: 1.5em;
 }
 .w26 {
   width: 2.6em;
@@ -320,15 +353,6 @@ rt {
 .mt15 {
   margin-top: 1.5em;
 }
-.mt20 {
-  margin-top: 2em;
-}
-.mt30 {
-  margin-top: 3em;
-}
-.mt40 {
-  margin-top: 4em;
-}
 
 /*元素上下外边距*/
 .mbt02 {
@@ -352,28 +376,6 @@ rt {
   margin-bottom: 1.8em;
 }
 
-/*元素左右外边距*/
-.mrl02 {
-  margin-left: 0.2em;
-  margin-right: 0.2em;
-}
-.mrl03 {
-  margin-left: 0.3em;
-  margin-right: 0.3em;
-}
-.mrl05 {
-  margin-left: 0.5em;
-  margin-right: 0.5em;
-}
-.mrl07 {
-  margin-left: 0.7em;
-  margin-right: 0.7em;
-}
-.mrl10 {
-  margin-left: 1em;
-  margin-right: 1em;
-}
-
 /*元素上下内边距*/
 .pbt05 {
   padding-top: 0.5em;
@@ -385,10 +387,6 @@ rt {
   line-height: 0.4;
   vertical-align: center;
 }
-.h10 {
-  line-height: 1;
-  vertical-align: center;
-}
 .h11 {
   line-height: 1.1;
   vertical-align: center;
@@ -396,6 +394,10 @@ rt {
 .h20 {
   line-height: 2;
   vertical-align: bottom;
+}
+.h1 {
+  line-height: 100%;
+  height: 1em;
 }
 
 /*浮动控制*/
@@ -413,22 +415,6 @@ rt {
 }
 .cboth {
   clear: both;
-}
-
-/*章节*/
-.mst {
-  width: 20em;
-  max-width: 100%;
-  margin: 1.5em auto;
-}
-.mst p {
-  text-indent: 0;
-  font-size: 1.2em;
-}
-.rot90 {
-  transform: rotate(90deg);
-  -moz-transform: rotate(90deg);
-  -webkit-transform: rotate(90deg);
 }
 
 /*字体样式*/

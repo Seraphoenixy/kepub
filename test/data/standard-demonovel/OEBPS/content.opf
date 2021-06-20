@@ -7,7 +7,8 @@
 		<dc:rights>kaiser</dc:rights>
 		<dc:subject>轻小说</dc:subject>
 		<dc:description>TODO</dc:description>
-		<meta content="1.5.1" name="Sigil version" />
+		<meta content="1.6.0" name="Sigil version" />
+		<meta content="1.0.0" name="epub version" />
 		<dc:date opf:event="modification" xmlns:opf="http://www.idpf.org/2007/opf">2021-05-29</dc:date>
 		<dc:identifier id="BookId" opf:scheme="UUID">urn:uuid:5208e6bb-5d25-45b0-a7fd-b97d79a85fd4</dc:identifier>
 	</metadata>
