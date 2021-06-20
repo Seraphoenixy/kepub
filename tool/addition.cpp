@@ -50,6 +50,16 @@ std::int32_t deal_with_content_opf(const std::string &dir, std::size_t count) {
     }
   }
 
+  if (!kepub::old_style) {
+    xhtml.reset();
+    xhtml.move_by_name("metadata");
+    if (!std::empty(kepub::date)) {
+      xhtml.set_child_text("dc:date", kepub::date);
+    } else {
+      xhtml.set_child_text("dc:date", kepub::get_date());
+    }
+  }
+
   xhtml.save(dir);
 
   return first_num;
@@ -143,8 +153,6 @@ int main(int argc, char *argv[]) try {
 
   kepub::compress(book_name);
   std::filesystem::rename(zip_name, epub_name);
-
-  std::filesystem::remove(file_name);
 } catch (const std::exception &err) {
   kepub::error(err.what());
 } catch (...) {

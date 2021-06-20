@@ -95,7 +95,7 @@ set_tests_properties(remove_images_esjzone PROPERTIES DEPENDS run_esjzone)
 
 add_test(NAME check_executable_addition COMMAND ${ADDITION_EXECUTABLE} -v)
 add_test(NAME run_addition COMMAND ${VALGRIND_CMD}${ADDITION_EXECUTABLE}
-                                   魅魔的我.txt)
+                                   魅魔的我.txt --date=2021-05-29)
 add_test(NAME remove_images_addition COMMAND rm -rf 魅魔的我/OEBPS/Images)
 add_test(NAME diff_addition
          COMMAND diff -r ${CMAKE_CURRENT_SOURCE_DIR}/data/standard-addition

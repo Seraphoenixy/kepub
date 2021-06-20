@@ -367,7 +367,7 @@ std::string get_date(std::string_view time_zone) {
   }
 
   auto result = fmt::format("{}-{:02d}-{}", calendar->get(UCAL_YEAR, status),
-                            calendar->get(UCAL_MONTH, status),
+                            calendar->get(UCAL_MONTH, status) + 1,
                             calendar->get(UCAL_DATE, status));
   if (U_FAILURE(status)) {
     error("error: {}", u_errorName(status));
