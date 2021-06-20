@@ -23,6 +23,8 @@ inline bool no_trans_hant = false;
 
 inline std::int32_t illustration_num = 0;
 
+inline std::int32_t image_num = 0;
+
 inline std::int32_t max_chapter = 0;
 
 inline std::string date;

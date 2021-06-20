@@ -53,8 +53,9 @@ set_tests_properties(diff_demonovel PROPERTIES FIXTURES_CLEANUP demonovel)
 set_tests_properties(remove_images_demonovel PROPERTIES DEPENDS run_demonovel)
 
 add_test(NAME check_executable_masiro COMMAND ${MASIRO_EXECUTABLE} -v)
-add_test(NAME run_masiro COMMAND ${VALGRIND_CMD}${MASIRO_EXECUTABLE}
-                                 梗角色转生太过头了！.txt -c -p -i 3 --date=2021-05-29)
+add_test(NAME run_masiro
+         COMMAND ${VALGRIND_CMD}${MASIRO_EXECUTABLE} 梗角色转生太过头了！.txt -c -p -i 3
+                 --date=2021-05-29 --image 3)
 add_test(NAME remove_images_masiro COMMAND rm -rf 梗角色转生太过头了！/OEBPS/Images)
 add_test(NAME diff_masiro
          COMMAND diff -r ${CMAKE_CURRENT_SOURCE_DIR}/data/standard-masiro

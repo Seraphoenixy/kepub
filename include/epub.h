@@ -55,6 +55,7 @@ class Epub {
  private:
   void common_generate();
 
+  void generate_image();
   void generate_cover();
   void generate_message();
   void generate_introduction();

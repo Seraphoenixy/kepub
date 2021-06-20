@@ -60,6 +60,7 @@ void Epub::add_content(const Content& content) { contents_.push_back(content); }
 void Epub::generate() {
   common_generate();
 
+  generate_image();
   generate_cover();
   generate_message();
   generate_introduction();
@@ -297,6 +298,14 @@ void Epub::common_generate() {
   toc_ncx_.set_child_text("text", author_);
 }
 
+void Epub::generate_image() {
+  for (std::int32_t i = 1; i <= illustration_num + image_num; ++i) {
+    Epub::add_file_in_content_opf(content_opf_, "x" + num_to_str(i) + ".jpg",
+                                  "Images/" + num_to_str(i) + ".jpg",
+                                  "image/jpeg");
+  }
+}
+
 void Epub::generate_cover() {
   if (no_cover) {
     return;
@@ -309,10 +318,10 @@ void Epub::generate_cover() {
   content_opf_.move_by_name("metadata");
   content_opf_.push_back("meta", {{"name", "cover"}, {"content", "cover.jpg"}});
 
-  Epub::add_file_in_content_opf(content_opf_, "cover.xhtml", "Text/cover.xhtml",
-                                "application/xhtml+xml");
   Epub::add_file_in_content_opf(content_opf_, "cover.jpg", "Images/cover.jpg",
                                 "image/jpeg");
+  Epub::add_file_in_content_opf(content_opf_, "cover.xhtml", "Text/cover.xhtml",
+                                "application/xhtml+xml");
 
   content_opf_.previous();
   content_opf_.move_by_name("guide");
