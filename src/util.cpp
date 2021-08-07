@@ -377,4 +377,10 @@ std::string get_date(std::string_view time_zone) {
   return result;
 }
 
+void check_icu(UErrorCode status) {
+  if (U_FAILURE(status)) {
+    error("{}", u_errorName(status));
+  }
+}
+
 }  // namespace kepub
