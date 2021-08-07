@@ -1,10 +1,24 @@
+# https://clang.llvm.org/extra/clang-tidy/
 Checks: "*,
-  -fuchsia-default-arguments-calls,
-  -modernize-use-trailing-return-type,
-  -llvmlibc-*"
+  -abseil-*,
+  -altera-*,
+  -android-*,
+  -darwin-*,
+  -fuchsia-*,
+  -google-*,
+  -linuxkernel-*,
+  -llvm-*,
+  -llvmlibc-*,
+  -objc-*,
+  -openmp-*,
+  -zircon-*,
+  -modernize-use-trailing-return-type"
+
+WarningsAsErrors: "clang-analyzer-*,clang-diagnostic-*"
 
 HeaderFilterRegex: ".*"
 
+# https://clang.llvm.org/extra/clang-tidy/checks/readability-identifier-naming.html
 CheckOptions:
   - key: readability-identifier-naming.ClassCase
     value: CamelCase
@@ -20,8 +34,6 @@ CheckOptions:
     value: lower_case
   - key: readability-identifier-naming.MemberSuffix
     value: "_"
-  - key: readability-identifier-naming.MethodCase
-    value: lower_case
   - key: readability-identifier-naming.NamespaceCase
     value: lower_case
   - key: readability-identifier-naming.ParameterCase

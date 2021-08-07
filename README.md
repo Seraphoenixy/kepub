@@ -1,8 +1,9 @@
-# epub
+# kepub
 
+[![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/KaiserLancelot/kepub)
 [![Build](https://github.com/KaiserLancelot/kepub/actions/workflows/build.yml/badge.svg)](https://github.com/KaiserLancelot/kepub/actions/workflows/build.yml)
 [![Coverage Status](https://coveralls.io/repos/github/KaiserLancelot/kepub/badge.svg?branch=main)](https://coveralls.io/github/KaiserLancelot/kepub?branch=main)
-[![GitHub License](https://img.shields.io/github/license/KaiserLancelot/kepub)](https://raw.githubusercontent.com/KaiserLancelot/kepub/master/LICENSE)
+[![GitHub License](https://img.shields.io/github/license/KaiserLancelot/kepub)](https://github.com/KaiserLancelot/kepub/blob/main/LICENSE)
 [![996.icu](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu)
 [![GitHub Releases](https://img.shields.io/github/release/KaiserLancelot/kepub)](https://github.com/KaiserLancelot/kepub/releases/latest)
 [![GitHub Downloads](https://img.shields.io/github/downloads/KaiserLancelot/kepub/total)](https://github.com/KaiserLancelot/kepub/releases)
@@ -12,21 +13,18 @@
 
 Generate epub
 
-## Environment:
+## Environment
 
-- Linux
-- gcc/clang(Request to support C++20)
+- Ubuntu 20.04
+- GCC 11 or Clang 12
 
-## Libraries:
+## Dependency
 
-- fmt
-- zlib
-- libarchive
-- pugixml
-- curl
-- ICU
-- Boost
-- tidy-html5
+- [fmt](https://github.com/fmtlib/fmt)
+- [pugixml](https://github.com/zeux/pugixml)
+- [icu](https://github.com/unicode-org/icu)
+- [boost](https://www.boost.org/)
+- [klib](https://github.com/KaiserLancelot/klib)
 
 ## Build
 
@@ -46,3 +44,7 @@ sudo cmake --build build --config Release --target install
 ```bash
 sudo cmake --build build --config Release --target uninstall
 ```
+
+---
+
+Thanks to [JetBrains](https://www.jetbrains.com/) for donating product licenses to help develop this project <a href="https://www.jetbrains.com/"><img src="logo/jetbrains.svg" width="94" align="center" /></a>
