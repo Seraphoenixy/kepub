@@ -1,32 +1,36 @@
 name: Build
 
-on:
-  push:
-  pull_request:
-  schedule:
-    - cron: "0 0 1 * *"
+on: [push, pull_request]
 
 jobs:
   build:
+    # https://docs.github.com/cn/actions/reference/workflow-syntax-for-github-actions
+    # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        build_type: ["Debug", "Release", "MinSizeRel", "RelWithDebInfo"]
+        # https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html
+        build_type: ["Debug", "Release", "RelWithDebInfo", "MinSizeRel"]
         compiler:
           - { cc: "gcc", cxx: "g++" }
           - { cc: "clang", cxx: "clang++" }
 
     steps:
       # https://github.com/actions/checkout
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
-      #  https://github.com/actions/cache
+      # https://github.com/actions/cache
+      - name: Get date
+        id: get-date
+        run: echo "::set-output name=date::$(/bin/date -u "+%Y%m")"
+        shell: bash
+
       - name: Cache dependencies
-        id: cache-dependencies
         uses: actions/cache@v2
         with:
           path: dependencies
-          key: build-dependencies-20210530
+          key: ${{ runner.os }}-${{ steps.get-date.outputs.date }}
 
       - name: Install dependencies
         run: sudo bash script/build.sh
@@ -43,13 +47,19 @@ jobs:
         run: cmake --build build --config ${{ matrix.build_type }} -j"$(nproc)"
 
       - name: Install
-        run: sudo cmake --build build --config ${{ matrix.build_type }} --target install
+        if: ${{ matrix.build_type == 'Release' }}
+        run: |
+          sudo cmake --build build --config ${{ matrix.build_type }} --target install
+          sudo ldconfig
 
       - name: Run executable
+        if: ${{ matrix.build_type == 'Release' }}
         run: masiro -v
 
       - name: Test
-        run: cd build ; ctest -C ${{ matrix.build_type }} -j"$(nproc)" --output-on-failure
+        run: ctest -C ${{ matrix.build_type }} -j"$(nproc)" --output-on-failure
+        working-directory: build
 
       - name: Uninstall
+        if: ${{ matrix.build_type == 'Release' }}
         run: sudo cmake --build build --config ${{ matrix.build_type }} --target uninstall

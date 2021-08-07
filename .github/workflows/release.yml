@@ -2,48 +2,60 @@ name: Release
 
 on:
   release:
-    types:
-      - published
+    # https://stackoverflow.com/questions/59319281/github-action-different-between-release-created-and-published
+    types: [published]
 
 jobs:
   build:
+    # https://docs.github.com/cn/actions/reference/workflow-syntax-for-github-actions
+    # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
     runs-on: ubuntu-20.04
 
     steps:
-      - uses: actions/checkout@v2
+      # https://github.com/actions/checkout
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # https://github.com/actions/cache
+      - name: Get date
+        id: get-date
+        run: echo "::set-output name=date::$(/bin/date -u "+%Y%m")"
+        shell: bash
 
       - name: Cache dependencies
-        id: cache-dependencies
         uses: actions/cache@v2
         with:
           path: dependencies
-          key: release-dependencies-20210530
+          key: ${{ runner.os }}-${{ steps.get-date.outputs.date }}
 
       - name: Install dependencies
         run: sudo bash script/build.sh
 
-      - name: Set environment variable
-        run: echo "RELEASE_VERSION=${TAG_NAME:1}" >> $GITHUB_ENV
-        env:
-          TAG_NAME: ${{ github.event.release.tag_name }}
-
       - name: Configure
-        run: cmake -S . -B build
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 
       - name: Build
         run: cmake --build build --config Release -j"$(nproc)"
 
+      - name: Get version
+        run: echo "RELEASE_VERSION=${TAG_NAME:1}" >> $GITHUB_ENV
+        env:
+          TAG_NAME: ${{ github.event.release.tag_name }}
+
       - name: CPack
         run: |
-          cd build
           cpack
           mv kepub-${{ env.RELEASE_VERSION }}-Linux.deb \
-          kepub-${{ env.RELEASE_VERSION }}-ubuntu-20.04.deb
+          kepub-v${{ env.RELEASE_VERSION }}-ubuntu-20.04.deb
           mv kepub-${{ env.RELEASE_VERSION }}-Linux.tar.gz \
-          kepub-${{ env.RELEASE_VERSION }}-ubuntu-20.04.tar.gz
+          kepub-v${{ env.RELEASE_VERSION }}-ubuntu-20.04.tar.gz
+        working-directory: build
 
       - name: Install
-        run: sudo dpkg -i build/kepub-${{ env.RELEASE_VERSION }}-ubuntu-20.04.deb
+        run: |
+          sudo dpkg -i kepub-v${{ env.RELEASE_VERSION }}-ubuntu-20.04.deb
+          sudo ldconfig
+        working-directory: build
 
       - name: Run executable
         run: masiro -v
@@ -53,7 +65,5 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            build/kepub-${{ env.RELEASE_VERSION }}-ubuntu-20.04.deb
-            build/kepub-${{ env.RELEASE_VERSION }}-ubuntu-20.04.tar.gz
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            build/kepub-v${{ env.RELEASE_VERSION }}-ubuntu-20.04.deb
+            build/kepub-v${{ env.RELEASE_VERSION }}-ubuntu-20.04.tar.gz

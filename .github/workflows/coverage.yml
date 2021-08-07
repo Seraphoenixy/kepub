@@ -1,24 +1,34 @@
 name: Coverage
 
-on:
-  push:
-  pull_request:
-  schedule:
-    - cron: "0 0 1 * *"
+on: [push, pull_request]
 
 jobs:
   build:
+    # https://docs.github.com/cn/actions/reference/workflow-syntax-for-github-actions
+    # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
     runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        compiler:
+          - { cc: "gcc", cxx: "g++" }
+          - { cc: "clang", cxx: "clang++" }
 
     steps:
-      - uses: actions/checkout@v2
+      # https://github.com/actions/checkout
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # https://github.com/actions/cache
+      - name: Get date
+        id: get-date
+        run: echo "::set-output name=date::$(/bin/date -u "+%Y%m")"
+        shell: bash
 
       - name: Cache dependencies
-        id: cache-dependencies
         uses: actions/cache@v2
         with:
           path: dependencies
-          key: coverage-dependencies-20210530
+          key: ${{ runner.os }}-${{ steps.get-date.outputs.date }}
 
       - name: Install dependencies
         run: sudo bash script/build.sh
@@ -27,13 +37,26 @@ jobs:
         run: |
           cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug \
           -DKEPUB_BUILD_TEST=ON -DKEPUB_BUILD_COVERAGE=ON
+        env:
+          CC: ${{ matrix.compiler.cc }}
+          CXX: ${{ matrix.compiler.cxx }}
 
       - name: Build
         run: cmake --build build --config Debug -j"$(nproc)" --target coverage
 
       # https://github.com/coverallsapp/github-action
       - name: Coveralls
+        if: ${{ matrix.compiler.cxx == 'clang++' }}
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path-to-lcov: build/lcov.info
+
+      # https://github.com/actions/upload-artifact
+      - name: Upload artifact
+        if: ${{ matrix.compiler.cxx == 'g++' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-lcov
+          path: build/coverage
+          if-no-files-found: error
