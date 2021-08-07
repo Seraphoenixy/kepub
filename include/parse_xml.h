@@ -9,8 +9,6 @@
 
 namespace kepub {
 
-std::string html_tidy(const std::string &html);
-
 class XHTML;
 
 class Node {

@@ -6,7 +6,8 @@
 #include <string>
 #include <vector>
 
-#include "compress.h"
+#include <klib/archive.h>
+
 #include "epub.h"
 #include "error.h"
 #include "parse_xml.h"
@@ -108,7 +109,7 @@ int main(int argc, char *argv[]) try {
 
   std::filesystem::rename(epub_name, zip_name);
 
-  kepub::decompress(zip_name, book_name);
+  klib::archive::decompress(zip_name, book_name);
   std::filesystem::rename(zip_name, book_name.string() + "-back-up.zip");
 
   std::vector<kepub::Content> contents;
@@ -151,7 +152,7 @@ int main(int argc, char *argv[]) try {
 
   deal_with_chapter(book_name / "OEBPS" / "Text", first_num, contents);
 
-  kepub::compress(book_name);
+  klib::archive::compress(book_name, klib::archive::Algorithm::Zip, "", false);
   std::filesystem::rename(zip_name, epub_name);
 } catch (const std::exception &err) {
   kepub::error(err.what());

@@ -3,44 +3,10 @@
 #include <cstddef>
 #include <sstream>
 
-#include <tidy.h>
-#include <tidybuffio.h>
-
 #include "error.h"
 #include "util.h"
 
 namespace kepub {
-
-std::string html_tidy(const std::string& html) {
-  TidyDoc doc = tidyCreate();
-  tidyOptSetBool(doc, TidyXhtmlOut, yes);
-  tidyOptSetBool(doc, TidyShowWarnings, no);
-  tidyOptSetInt(doc, TidyWrapLen, 0);
-  tidyOptSetBool(doc, TidyHideComments, yes);
-
-  auto rc = tidyParseString(doc, html.c_str());
-
-  if (rc >= 0) {
-    rc = tidyCleanAndRepair(doc);
-  }
-
-  TidyBuffer output = {};
-  if (rc >= 0) {
-    rc = tidySaveBuffer(doc, &output);
-  }
-
-  std::string xhtml;
-  if (rc >= 0) {
-    xhtml.assign(reinterpret_cast<const char*>(output.bp), output.size);
-  } else {
-    error("error");
-  }
-
-  tidyBufFree(&output);
-  tidyRelease(doc);
-
-  return xhtml;
-}
 
 Node::Node(const std::string& name) : name_(name) {}
 

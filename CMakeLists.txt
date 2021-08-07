@@ -63,14 +63,10 @@ include(CompilerOptions)
 # Find package
 # ---------------------------------------------------------------------------------------
 find_package(fmt REQUIRED)
-find_package(ZLIB REQUIRED)
-find_package(LibArchive REQUIRED)
 find_package(pugixml REQUIRED)
-find_package(CURL CONFIG REQUIRED)
 find_package(ICU REQUIRED COMPONENTS uc i18n)
 find_package(Boost REQUIRED COMPONENTS program_options)
-
-set(TIDY_HTML5_LIB "/usr/local/lib/libtidys.a")
+find_package(klib REQUIRED)
 
 # ---------------------------------------------------------------------------------------
 # Build data
@@ -87,16 +83,8 @@ target_compile_options(data PRIVATE "-Wno-unused-command-line-argument")
 add_library(${LIBRARY} STATIC ${LIBRARY_SRC})
 target_include_directories(${LIBRARY} PUBLIC "${KEPUB_SOURCE_DIR}/include")
 target_link_libraries(
-  ${LIBRARY}
-  PRIVATE data
-          fmt::fmt
-          CURL::libcurl
-          pugixml::pugixml
-          ${TIDY_HTML5_LIB}
-          ${LibArchive_LIBRARIES}
-          ${ZLIB_LIBRARIES}
-          ${Boost_LIBRARIES}
-          ${ICU_LIBRARIES})
+  ${LIBRARY} PRIVATE data fmt::fmt pugixml::pugixml klib::klib
+                     ${Boost_LIBRARIES} ${ICU_LIBRARIES})
 
 set_target_properties(
   ${LIBRARY}

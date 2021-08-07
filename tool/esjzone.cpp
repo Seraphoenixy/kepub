@@ -4,8 +4,10 @@
 #include <tuple>
 #include <vector>
 
-#include "compress.h"
-#include "download.h"
+#include <klib/archive.h>
+#include <klib/html.h>
+#include <klib/http.h>
+
 #include "epub.h"
 #include "error.h"
 #include "parse_xml.h"
@@ -23,7 +25,15 @@ get_content(const std::string &url) {
   std::string cover_url;
   std::vector<std::string> description;
 
-  kepub::XHTML html(kepub::html_tidy(kepub::get_page(url)));
+  klib::http::Request request;
+  request.set_no_proxy();
+  auto response = request.get(url);
+  if (response.status_code() != klib::http::Response::StatusCode::Ok) {
+    kepub::error("Status code is not ok: {}, url: {}", response.status_code(),
+                 url);
+  }
+
+  kepub::XHTML html(klib::html::html_tidy(response.text()));
 
   html.move_by_name("body");
   html.move_by_attr_class("div", "offcanvas-wrapper");
@@ -128,7 +138,15 @@ get_content(const std::string &url) {
 std::vector<std::string> get_text(const std::string &url) {
   std::vector<std::string> result;
 
-  kepub::XHTML html(kepub::html_tidy(kepub::get_page(url)));
+  klib::http::Request request;
+  request.set_no_proxy();
+  auto response = request.get(url);
+  if (response.status_code() != klib::http::Response::StatusCode::Ok) {
+    kepub::error("Status code is not ok: {}, url: {}", response.status_code(),
+                 url);
+  }
+
+  kepub::XHTML html(klib::html::html_tidy(response.text()));
 
   html.move_by_name("body");
   html.move_by_attr_class("div", "offcanvas-wrapper");
@@ -164,7 +182,7 @@ int main(int argc, char *argv[]) try {
 
   epub.generate_for_web(titles, urls, get_text);
 
-  kepub::compress(book_name);
+  klib::archive::compress(book_name, klib::archive::Algorithm::Zip, "", false);
   std::filesystem::rename(book_name + ".zip", book_name + ".epub");
 } catch (const std::exception &err) {
   kepub::error(err.what());

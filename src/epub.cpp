@@ -10,10 +10,10 @@
 #include <fstream>
 #include <thread>
 
+#include <klib/http.h>
 #include <boost/algorithm/string.hpp>
 
 #include "data.h"
-#include "download.h"
 #include "error.h"
 #include "util.h"
 
@@ -84,7 +84,14 @@ void Epub::generate_for_web(
 
   // cover.jpg
   if (download_cover) {
-    get_file(cover_url_, root_ / "OEBPS" / "Images" / "cover.jpg");
+    klib::http::Request request;
+    request.set_no_proxy();
+    auto response = request.get(cover_url_);
+    if (response.status_code() != klib::http::Response::StatusCode::Ok) {
+      kepub::error("Status code is not ok: {}, url: {}", response.status_code(),
+                   cover_url_);
+    }
+    response.save_to_file(root_ / "OEBPS" / "Images" / "cover.jpg", true);
   }
 
   generate_cover();
