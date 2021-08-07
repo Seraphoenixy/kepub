@@ -1,8 +1,8 @@
-include(GNUInstallDirs)
-
 # ---------------------------------------------------------------------------------------
 # Install executable
 # ---------------------------------------------------------------------------------------
+include(GNUInstallDirs)
+
 # https://stackoverflow.com/questions/30398238/cmake-rpath-not-working-could-not-find-shared-object-file
 set_target_properties(
   ${DEMONOVEL_EXECUTABLE}
@@ -57,6 +57,7 @@ install(
 # ---------------------------------------------------------------------------------------
 # Support creation of installable packages
 # ---------------------------------------------------------------------------------------
+# https://cmake.org/cmake/help/latest/cpack_gen/deb.html
 # https://cmake.org/cmake/help/latest/module/CPack.html
 set(CPACK_INCLUDE_TOPLEVEL_DIRECTORY OFF)
 set(CPACK_INSTALL_CMAKE_PROJECTS ${KEPUB_BINARY_DIR} ${LIBRARY} ALL .)

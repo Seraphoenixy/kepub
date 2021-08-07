@@ -1,13 +1,16 @@
-if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_CURRENT_BINARY_DIR)
+# ---------------------------------------------------------------------------------------
+# In-source build
+# ---------------------------------------------------------------------------------------
+if(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
   message(FATAL_ERROR "In-source build is not allowed")
 endif()
 
 # ---------------------------------------------------------------------------------------
 # Architecture
 # ---------------------------------------------------------------------------------------
-if(CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "x86_64")
+if(${CMAKE_HOST_SYSTEM_PROCESSOR} STREQUAL "x86_64")
   message(STATUS "Architecture: x86_64")
-elseif(CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "AMD64")
+elseif(${CMAKE_HOST_SYSTEM_PROCESSOR} STREQUAL "AMD64")
   message(STATUS "Architecture: AMD64")
 else()
   message(
@@ -18,7 +21,7 @@ endif()
 # ---------------------------------------------------------------------------------------
 # System
 # ---------------------------------------------------------------------------------------
-if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
   # https://kurotych.com/development/cmake_check_linux_kernel_version/
   execute_process(
     COMMAND uname -r
@@ -33,23 +36,24 @@ endif()
 # ---------------------------------------------------------------------------------------
 # Generator
 # ---------------------------------------------------------------------------------------
-if(CMAKE_GENERATOR STREQUAL "Ninja")
+if(${CMAKE_GENERATOR} STREQUAL "Unix Makefiles")
   execute_process(
-    COMMAND ninja --version
-    OUTPUT_VARIABLE NINJA_VERSION
+    COMMAND make --version
+    OUTPUT_VARIABLE GENERATOR_VERSION
     OUTPUT_STRIP_TRAILING_WHITESPACE)
+  string(REPLACE "\n" ";" GENERATOR_VERSION ${GENERATOR_VERSION})
+  list(GET GENERATOR_VERSION 0 GENERATOR_VERSION)
 
-  message(STATUS "CMake Generator: ${CMAKE_GENERATOR} ${NINJA_VERSION}")
+  message(STATUS "CMake Generator: ${GENERATOR_VERSION}")
 else()
-  message(STATUS "CMake Generator: ${CMAKE_GENERATOR}")
-  message(WARNING "CMake Generator should be Ninja")
+  message(FATAL_ERROR "The generator not support: ${CMAKE_GENERATOR}")
 endif()
 
 # ---------------------------------------------------------------------------------------
 # Compiler
 # ---------------------------------------------------------------------------------------
 if(CMAKE_COMPILER_IS_GNUCXX)
-  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 11.1.0)
+  if(${CMAKE_CXX_COMPILER_VERSION} VERSION_LESS 11.1.0)
     message(
       FATAL_ERROR
         "GCC version must be at least 11.1.0, the current version is: ${CMAKE_CXX_COMPILER_VERSION}"
@@ -57,8 +61,8 @@ if(CMAKE_COMPILER_IS_GNUCXX)
   endif()
   message(
     STATUS "Compiler: ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
-elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 12.0.0)
+elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
+  if(${CMAKE_CXX_COMPILER_VERSION} VERSION_LESS 12.0.0)
     message(
       FATAL_ERROR
         "Clang version must be at least 12.0.0, the current version is: ${CMAKE_CXX_COMPILER_VERSION}"
@@ -73,6 +77,15 @@ endif()
 # ---------------------------------------------------------------------------------------
 # Option
 # ---------------------------------------------------------------------------------------
-if(KEPUB_VALGRIND AND KEPUB_SANITIZER)
-  message(FATAL_ERROR "Valgrind and sanitizer cannot be used at the same time ")
+if(KEPUB_SANITIZER AND KEPUB_VALGRIND)
+  message(
+    FATAL_ERROR "AddressSanitizer and valgrind cannot be used at the same time")
+endif()
+
+if(NOT (BUILD_TESTING AND KEPUB_BUILD_TEST) AND KEPUB_SANITIZER)
+  message(FATAL_ERROR "Must build test when using AddressSanitizer")
+endif()
+
+if(NOT (BUILD_TESTING AND KEPUB_BUILD_TEST) AND KEPUB_VALGRIND)
+  message(FATAL_ERROR "Must build test when using valgrind")
 endif()

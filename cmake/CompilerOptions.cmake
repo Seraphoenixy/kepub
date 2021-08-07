@@ -1,18 +1,15 @@
 include(AddCXXCompilerFlag)
 
+# https://cmake.org/cmake/help/latest/prop_tgt/CXX_STANDARD.html
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-if(KEPUB_VALGRIND)
-  add_definitions(-DKEPUB_NO_FORK)
-endif()
-
 # ---------------------------------------------------------------------------------------
 # lld
 # ---------------------------------------------------------------------------------------
-if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+if(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
   execute_process(
     COMMAND ld.lld --version
     OUTPUT_VARIABLE LLD_VERSION
@@ -43,7 +40,8 @@ add_cxx_compiler_flag("-Werror")
 # Link time optimization
 # ---------------------------------------------------------------------------------------
 # https://github.com/ninja-build/ninja/blob/master/CMakeLists.txt
-if(CMAKE_BUILD_TYPE STREQUAL "Release")
+if((${CMAKE_BUILD_TYPE} STREQUAL "Release") OR (${CMAKE_BUILD_TYPE} STREQUAL
+                                                "MinSizeRel"))
   include(CheckIPOSupported)
   check_ipo_supported(
     RESULT LTO_SUPPORTED
@@ -65,10 +63,10 @@ endif()
 # ---------------------------------------------------------------------------------------
 if(KEPUB_SANITIZER)
   message(STATUS "Build with AddressSanitizer and UndefinedSanitizer")
-  add_cxx_compiler_flag("-fno-omit-frame-pointer")
 
   add_cxx_compiler_flag("-fsanitize=address")
   add_cxx_compiler_flag("-fsanitize-address-use-after-scope")
+  add_cxx_compiler_flag("-fno-omit-frame-pointer")
   add_cxx_compiler_flag("-fno-optimize-sibling-calls")
 
   add_cxx_compiler_flag("-fsanitize=undefined")
@@ -88,5 +86,10 @@ endif()
 # Coverage
 # ---------------------------------------------------------------------------------------
 if(KEPUB_BUILD_COVERAGE)
-  add_cxx_compiler_flag("--coverage")
+  if(CMAKE_COMPILER_IS_GNUCXX)
+    add_cxx_compiler_flag("--coverage")
+  else()
+    add_cxx_compiler_flag("-fprofile-instr-generate")
+    add_cxx_compiler_flag("-fcoverage-mapping")
+  endif()
 endif()
