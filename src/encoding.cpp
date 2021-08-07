@@ -4,6 +4,7 @@
 #include <unicode/ucsdet.h>
 #include <unicode/utypes.h>
 
+#include "error.h"
 #include "util.h"
 
 namespace kepub {
@@ -27,6 +28,13 @@ std::string detect_encoding(const std::string &text) {
 
   std::string result = ucsdet_getName(ucm, &status);
   check_icu(status);
+
+  auto confidence = ucsdet_getConfidence(ucm, &status);
+  check_icu(status);
+
+  if (confidence < 95) {
+    warn("Confidence is less than 95%: {}%", confidence);
+  }
 
   ucsdet_close(csd);
 

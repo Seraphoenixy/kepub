@@ -1,26 +1,28 @@
 #pragma once
 
 #include <cstdlib>
+#include <string_view>
+#include <utility>
 
 #include <fmt/color.h>
-#include <fmt/format.h>
+#include <fmt/core.h>
 
 namespace kepub {
 
 template <typename... Args>
-[[noreturn]] void error(std::string_view format_str, const Args &...args) {
-  fmt::print(fmt::fg(fmt::color::red), "error: ");
-  fmt::print(fmt::fg(fmt::color::red), format_str, args...);
+void warn(std::string_view fmt, Args &&...args) {
+  fmt::print(fmt::fg(fmt::color::yellow), "kepub warning:\n");
+  fmt::print(fmt::fg(fmt::color::yellow), fmt, std::forward<Args>(args)...);
   fmt::print("\n");
-
-  std::exit(EXIT_FAILURE);
 }
 
 template <typename... Args>
-void warning(std::string_view format_str, const Args &...args) {
-  fmt::print(fmt::fg(fmt::color::yellow), "warning: ");
-  fmt::print(fmt::fg(fmt::color::yellow), format_str, args...);
+[[noreturn]] void error(std::string_view fmt, Args &&...args) {
+  fmt::print(fmt::fg(fmt::color::red), "kepub error:\n");
+  fmt::print(fmt::fg(fmt::color::red), fmt, std::forward<Args>(args)...);
   fmt::print("\n");
+
+  std::exit(EXIT_FAILURE);
 }
 
 }  // namespace kepub

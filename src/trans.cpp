@@ -1,13 +1,35 @@
 #include "trans.h"
 
+#include <unicode/translit.h>
 #include <unicode/uclean.h>
 #include <unicode/unistr.h>
 #include <unicode/utypes.h>
 
-#include "error.h"
 #include "util.h"
 
+namespace kepub {
+
 namespace {
+
+class Trans {
+ public:
+  ~Trans();
+
+  Trans(const Trans &) = delete;
+  Trans(Trans &&) = delete;
+  Trans &operator=(const Trans &) = delete;
+  Trans &operator=(Trans &&) = delete;
+
+  static const Trans &get();
+  [[nodiscard]] std::string trans_str(const std::string &str,
+                                      bool trans_hant) const;
+
+ private:
+  Trans();
+
+  icu::Transliterator *hant_hans_;
+  icu::Transliterator *fullwidth_halfwidth_;
+};
 
 void custom_trans(icu::UnicodeString &str) {
   // https://en.wikipedia.org/wiki/Word_joiner
@@ -20,6 +42,7 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("&gt;", ">");
   str.findAndReplace("&quot;", "\"");
   str.findAndReplace("&apos;", "'");
+  str.findAndReplace("&amp;", "&");
 
   str.findAndReplace(";", "；");
 
@@ -42,6 +65,7 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("~", "～");
   str.findAndReplace("ｰ", "ー");
   str.findAndReplace("￫", "→");
+  str.findAndReplace("￩", "←");
 
   str.findAndReplace("妳", "你");
   str.findAndReplace("壊", "坏");
@@ -168,10 +192,6 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("唿", "呼");
 }
 
-}  // namespace
-
-namespace kepub {
-
 Trans::~Trans() {
   delete hant_hans_;
   delete fullwidth_halfwidth_;
@@ -183,13 +203,12 @@ const Trans &Trans::get() {
   return trans;
 }
 
-std::string Trans::trans_str(const std::string &str) const {
+std::string Trans::trans_str(const std::string &str, bool trans_hant) const {
   icu::UnicodeString icu_str(str.c_str());
 
-  if (!no_trans_hant) {
+  if (trans_hant) {
     hant_hans_->transliterate(icu_str);
   }
-
   fullwidth_halfwidth_->transliterate(icu_str);
   custom_trans(icu_str);
 
@@ -204,23 +223,17 @@ Trans::Trans() {
 
   hant_hans_ =
       icu::Transliterator::createInstance("Hant-Hans", UTRANS_FORWARD, status);
-
-  if (U_FAILURE(status)) {
-    error("error: {}", u_errorName(status));
-  }
-
-  status = U_ZERO_ERROR;
+  check_icu(status);
 
   fullwidth_halfwidth_ = icu::Transliterator::createInstance(
       "Fullwidth-Halfwidth", UTRANS_FORWARD, status);
-
-  if (U_FAILURE(status)) {
-    error("error: {}", u_errorName(status));
-  }
+  check_icu(status);
 }
 
-std::string trans_str(const std::string &str) {
-  return Trans::get().trans_str(str);
+}  // namespace
+
+std::string trans_str(const std::string &str, bool trans_hant) {
+  return Trans::get().trans_str(str, trans_hant);
 }
 
 }  // namespace kepub

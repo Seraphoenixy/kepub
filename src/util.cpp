@@ -168,7 +168,8 @@ std::vector<std::string> read_file_to_vec(const std::string &file_name) {
   boost::split(result, data, boost::is_any_of("\n"), boost::token_compress_on);
 
   for (auto &item : result) {
-    item = trans_str(item);
+    // FIXME
+    item = trans_str(item, true);
   }
 
   std::erase_if(result,

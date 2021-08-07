@@ -22,7 +22,6 @@ std::string to_str(std::initializer_list<std::uint8_t> il) {
 TEST_CASE("detect_encoding") {
   REQUIRE(kepub::detect_encoding("abc") == "UTF-8");
   REQUIRE(kepub::detect_encoding("你好世界") == "UTF-8");
-  REQUIRE(kepub::detect_encoding("zß水🍌") == "UTF-8");
 
   // https://zh.wikipedia.org/wiki/UTF-16
   std::string utf_16 = to_str(
