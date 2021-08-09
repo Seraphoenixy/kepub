@@ -1,194 +1,247 @@
-//#include <filesystem>
-//#include <stdexcept>
-//#include <string>
-//#include <tuple>
-//#include <vector>
-//
-//#include <klib/archive.h>
-//#include <klib/html.h>
-//#include <klib/http.h>
-//
-//#include "epub.h"
-//#include "error.h"
-//#include "parse_xml.h"
-//#include "trans.h"
-//#include "util.h"
-//
-//// urls titles book_name author cover description
-// std::tuple<std::vector<std::string>, std::vector<std::string>, std::string,
-//            std::string, std::string, std::vector<std::string>>
-// get_content(const std::string &url) {
-//   std::vector<std::string> urls;
-//   std::vector<std::string> titles;
-//   std::string book_name;
-//   std::string author;
-//   std::string cover_url;
-//   std::vector<std::string> description;
-//
-//   klib::http::Request request;
-//   request.set_no_proxy();
-//   auto response = request.get(url);
-//   if (response.status_code() != klib::http::Response::StatusCode::Ok) {
-//     kepub::error("Status code is not ok: {}, url: {}",
-//     response.status_code(),
-//                  url);
-//   }
-//
-//   kepub::XHTML html(klib::html::html_tidy(response.text()));
-//
-//   html.move_by_name("body");
-//   html.move_by_attr_class("div", "offcanvas-wrapper");
-//   html.move_by_attr_class("section", "container");
-//   html.move_by_attr_class("div", "row");
-//   html.move_by_attr_class("div", "col-xl-9 col-lg-8 p-r-30");
-//   html.move_by_attr_class("div", "row mb-3");
-//   html.move_by_attr_class("div", "col-md-9 book-detail");
-//   html.move_by_attr_class("h2", "p-t-10 text-normal");
-//   book_name = kepub::trans_str(html.get_text());
-//
-//   html.previous();
-//   html.move_by_attr_class("ul", "list-unstyled mb-2 book-detail");
-//
-//   std::string prefix = "作者:";
-//   for (const auto &line : html.get_children_text("li")) {
-//     if (line.starts_with(prefix)) {
-//       author = kepub::trans_str(line.substr(std::size(prefix)));
-//     }
-//   }
-//
-//   html.previous();
-//   html.previous();
-//   html.move_by_attr_class("div", "col-md-3");
-//   html.move_by_attr_class("div", "product-gallery text-center mb-3");
-//   html.move_by_name("a");
-//   cover_url = html.first_child_attr("src");
-//
-//   html.previous();
-//   html.previous();
-//   html.previous();
-//   html.previous();
-//   html.move_by_attr_class("div", "bg-secondary p-20 margin-top-1x");
-//   html.move_by_attr_class("div", "row");
-//   html.move_by_attr_class("div", "col-md-12");
-//   html.move_by_attr_class("div", "description");
-//   for (const auto &line : html.get_children_text()) {
-//     kepub::push_back(description, kepub::trans_str(line));
-//   }
-//
-//   html.previous();
-//   html.previous();
-//   html.previous();
-//   html.previous();
-//   html.move_by_attr_class("div", "row padding-top-1x mb-3");
-//   html.move_by_attr_class("div", "col-lg-12");
-//   html.move_by_attr_class("div", "tab-content");
-//   html.move_by_attr_class("div", "tab-pane fade active show");
-//   html.move_by_attr("div", "id", "chapterList");
-//
-//   for (const auto &line : html.get_children_text("a")) {
-//     auto temp = kepub::trans_str(line);
-//     if (std::empty(temp)) {
-//       kepub::error("the title is empty");
-//     }
-//     titles.push_back(temp);
-//   }
-//
-//   for (const auto &item : html.get_children_attr("a", "href")) {
-//     urls.push_back(item);
-//   }
-//
-//   if (std::empty(urls)) {
-//     kepub::error("urls is empty");
-//   }
-//   if (std::empty(titles)) {
-//     kepub::error("titles is empty");
-//   }
-//   if (std::empty(book_name)) {
-//     kepub::error("book name is empty");
-//   }
-//   if (std::empty(author)) {
-//     kepub::error("author name is empty");
-//   }
-//   if (std::empty(cover_url)) {
-//     kepub::error("cover url is empty");
-//   }
-//   if (std::empty(description)) {
-//     kepub::error("description is empty");
-//   }
-//
-//   if (kepub::max_chapter > 0) {
-//     urls.resize(kepub::max_chapter);
-//     titles.resize(kepub::max_chapter);
-//   }
-//
-//   for (const auto &item : urls) {
-//     kepub::check_is_url(item);
-//     if (!item.starts_with("https://www.esjzone.cc/")) {
-//       kepub::error("url error: {}", item);
-//     }
-//   }
-//
-//   if (std::size(urls) != std::size(titles)) {
-//     kepub::error("the number of urls != the number of titles: {} vs {}",
-//                  std::size(urls), std::size(titles));
-//   }
-//
-//   return {urls, titles, book_name, author, cover_url, description};
-// }
-//
-// std::vector<std::string> get_text(const std::string &url) {
-//   std::vector<std::string> result;
-//
-//   klib::http::Request request;
-//   request.set_no_proxy();
-//   auto response = request.get(url);
-//   if (response.status_code() != klib::http::Response::StatusCode::Ok) {
-//     kepub::error("Status code is not ok: {}, url: {}",
-//     response.status_code(),
-//                  url);
-//   }
-//
-//   kepub::XHTML html(klib::html::html_tidy(response.text()));
-//
-//   html.move_by_name("body");
-//   html.move_by_attr_class("div", "offcanvas-wrapper");
-//   html.move_by_attr_class("section", "container");
-//   html.move_by_attr_class("div", "row");
-//   html.move_by_attr_class("div", "col-xl-9 col-lg-8 p-r-30");
-//   html.move_by_attr_class("div", "forum-content mt-3");
-//
-//   for (const auto &line : html.get_children_text()) {
-//     kepub::push_back(result, kepub::trans_str(line));
-//   }
-//
-//   if (std::empty(result)) {
-//     kepub::error("text result is empty");
-//   }
-//
-//   return result;
-// }
-//
-// int main(int argc, char *argv[]) try {
-//   auto url = kepub::processing_cmd(argc, argv);
-//   kepub::check_is_url(url);
-//
-//   auto [urls, titles, book_name, author, cover_url, description] =
-//       get_content(url);
-//
-//   kepub::Epub epub;
-//   epub.set_creator("kaiser");
-//   epub.set_book_name(book_name);
-//   epub.set_author(author);
-//   epub.set_cover_url(cover_url);
-//   epub.set_description(description);
-//
-//   epub.generate_for_web(titles, urls, get_text);
-//
-//   klib::archive::compress(book_name, klib::archive::Algorithm::Zip, "",
-//   false); std::filesystem::rename(book_name + ".zip", book_name + ".epub");
-// } catch (const std::exception &err) {
-//   kepub::error(err.what());
-// } catch (...) {
-//   kepub::error("unknown exception");
-// }
-int main() {}
+#include <wait.h>
+
+#include <chrono>
+#include <filesystem>
+#include <stdexcept>
+#include <string>
+#include <thread>
+#include <tuple>
+#include <vector>
+
+#include <klib/archive.h>
+#include <klib/error.h>
+#include <klib/html.h>
+#include <klib/http.h>
+#include <klib/util.h>
+#include <boost/algorithm/string.hpp>
+#include <pugixml.hpp>
+
+#include "trans.h"
+#include "util.h"
+
+void get_text(pugi::xml_node node, std::string &str) {
+  if (node.children().begin() == node.children().end()) {
+    str += node.text().as_string();
+  } else {
+    for (const auto &child : node.children()) {
+      if (node.name() == std::string("p") || node.name() == std::string("br")) {
+        str += "\n";
+      }
+      get_text(child, str);
+    }
+  }
+}
+
+std::vector<std::string> get_children_text(const pugi::xml_node &node) {
+  std::vector<std::string> result;
+
+  for (const auto &child : node.children()) {
+    std::string str;
+    get_text(child, str);
+    result.push_back(str);
+  }
+
+  if (std::empty(result)) {
+    klib::error("get_children_text no data");
+  }
+
+  return result;
+}
+
+// book_name author description titles_and_urls
+std::tuple<std::string, std::string, std::vector<std::string>,
+           std::vector<std::pair<std::string, std::string>>>
+get_content(const std::string &url, bool connect_chinese) {
+  std::string book_name;
+  std::string author;
+  std::vector<std::string> description;
+  std::vector<std::pair<std::string, std::string>> titles_and_urls;
+
+  klib::Request request;
+  request.set_no_proxy();
+#ifndef NDEBUG
+  request.verbose(true);
+#endif
+
+  auto response = request.get(url);
+  if (response.status_code() != klib::Response::StatusCode::Ok) {
+    klib::error("Status code is not ok: {}, url: {}", response.status_code(),
+                url);
+  }
+
+  auto xml = klib::html_tidy(response.text());
+  pugi::xml_document doc;
+  doc.load_string(xml.c_str());
+
+  auto node = doc.select_node(
+                     "/html/body/div[@class='offcanvas-wrapper']/section/div/"
+                     "div[@class='col-xl-9 col-lg-8 p-r-30']/div[@class='row "
+                     "mb-3']/div[@class='col-md-9 book-detail']/h2")
+                  .node();
+  book_name = kepub::trans_str(node.text().as_string());
+
+  node = doc.select_node(
+                "/html/body/div[@class='offcanvas-wrapper']/section/div/"
+                "div[@class='col-xl-9 col-lg-8 p-r-30']/div[@class='row "
+                "mb-3']/div[@class='col-md-9 book-detail']/ul")
+             .node();
+
+  std::string prefix = "作者:";
+  for (const auto &child : node.children()) {
+    if (child.child("strong").text().as_string() == prefix) {
+      author = kepub::trans_str(child.child("a").text().as_string());
+    }
+  }
+
+  node =
+      doc.select_node(
+             "/html/body/div[@class='offcanvas-wrapper']/section/div/"
+             "div[@class='col-xl-9 col-lg-8 p-r-30']/div[@class='bg-secondary "
+             "p-20 margin-top-1x']/div/div/div")
+          .node();
+  for (const auto &child : node.children()) {
+    kepub::push_back(description, kepub::trans_str(child.text().as_string()),
+                     connect_chinese);
+  }
+
+  node = doc.select_node(
+                "/html/body/div[@class='offcanvas-wrapper']/section/div/"
+                "div[@class='col-xl-9 col-lg-8 p-r-30']/div[@class='row "
+                "padding-top-1x mb-3']/div/div/div[@class='tab-pane fade "
+                "active show']/div[@id='chapterList']")
+             .node();
+
+  for (const auto &child : node.children("a")) {
+    auto title = kepub::trans_str(child.child("p").text().as_string());
+    if (std::empty(title)) {
+      klib::error("the title is empty");
+    }
+
+    std::string may_be_url = child.attribute("href").as_string();
+    if (!may_be_url.starts_with("https://www.esjzone.cc/")) {
+      klib::warn("url error: {}, title: {}", may_be_url, title);
+    } else {
+      titles_and_urls.emplace_back(title, may_be_url);
+    }
+  }
+
+  if (std::empty(titles_and_urls)) {
+    klib::error("titles_and_urls is empty");
+  }
+  if (std::empty(book_name)) {
+    klib::error("book name is empty");
+  }
+  if (std::empty(author)) {
+    klib::error("author name is empty");
+  }
+  if (std::empty(description)) {
+    klib::error("description is empty");
+  }
+
+  return {book_name, author, description, titles_and_urls};
+}
+
+std::vector<std::string> get_text(const std::string &url,
+                                  bool connect_chinese) {
+  std::vector<std::string> result;
+
+  klib::Request request;
+  request.set_no_proxy();
+#ifndef NDEBUG
+  request.verbose(true);
+#endif
+
+  auto response = request.get(url);
+  if (response.status_code() != klib::Response::StatusCode::Ok) {
+    klib::error("Status code is not ok: {}, url: {}", response.status_code(),
+                url);
+  }
+
+  auto xml = klib::html_tidy(response.text());
+  pugi::xml_document doc;
+  doc.load_string(xml.c_str());
+
+  auto node = doc.select_node(
+                     "/html/body/div[@class='offcanvas-wrapper']/section/div/"
+                     "div[@class='col-xl-9 col-lg-8 "
+                     "p-r-30']/div[@class='forum-content mt-3']")
+                  .node();
+
+  for (const auto &line : get_children_text(node)) {
+    kepub::push_back(result, kepub::trans_str(line), connect_chinese);
+  }
+
+  if (std::empty(result)) {
+    klib::error("text result is empty, url: {}", url);
+  }
+
+  return result;
+}
+
+#include <iostream>
+
+int main(/*int argc, const char *argv[]*/) try {
+  /// auto [url, options] = kepub::processing_cmd(argc, argv);
+
+  auto [book_name, author, description, titles_and_urls] =
+      get_content("https://www.esjzone.cc/detail/1578022447.html", false);
+
+  std::cout << book_name << '\n';
+  std::cout << author << '\n';
+
+  for (const auto &line : description) {
+    std::cout << line << '\n';
+  }
+  for (const auto &[title, url] : titles_and_urls) {
+    std::cout << title << ": " << url << '\n';
+  }
+
+  std::filesystem::create_directory(book_name);
+  auto p = std::make_unique<klib::ChangeWorkingDir>(book_name);
+
+  for (const auto &[title, url] : titles_and_urls) {
+    using namespace std::chrono_literals;
+    std::this_thread::sleep_for(50ms);
+    auto pid = fork();
+    if (pid < 0) {
+      klib::error("fork error");
+    } else if (pid == 0) {
+      klib::write_file(title, false, boost::join(get_text(url, false), "\n"));
+      std::clog << title << " ok" << std::endl;
+      std::exit(EXIT_SUCCESS);
+    }
+  }
+
+  std::int32_t status = 0;
+  while (waitpid(-1, &status, 0) > 0) {
+    if (!WIFEXITED(status) || WEXITSTATUS(status)) {
+      klib::error("Waitpid error: {}", status);
+    }
+  }
+
+  std::vector<std::pair<std::string, std::string>> v;
+  for (const auto &[title, url] : titles_and_urls) {
+    v.emplace_back(title, klib::read_file(title, false));
+  }
+
+  p.reset();
+  std::filesystem::remove_all(book_name);
+
+  std::ofstream ofs(book_name + ".txt");
+
+  ofs << book_name << '\n';
+  ofs << author << '\n';
+
+  for (const auto &line : description) {
+    ofs << line << '\n';
+  }
+
+  for (const auto &[title, text] : v) {
+    ofs << "[WEB] " << title << '\n';
+    ofs << text << '\n';
+  }
+} catch (const std::exception &err) {
+  klib::error(err.what());
+} catch (...) {
+  klib::error("unknown exception");
+}
