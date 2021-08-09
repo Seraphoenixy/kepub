@@ -14,7 +14,8 @@ Checks: "*,
   -zircon-*,
   -modernize-use-trailing-return-type"
 
-WarningsAsErrors: "clang-analyzer-*,clang-diagnostic-*,-clang-analyzer-cplusplus.NewDeleteLeaks"
+# FIXME
+# WarningsAsErrors: "clang-analyzer-*,clang-diagnostic-*"
 
 HeaderFilterRegex: ".*"
 

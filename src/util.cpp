@@ -3,21 +3,15 @@
 #include <algorithm>
 #include <cassert>
 #include <cctype>
-#include <clocale>
 #include <cstddef>
 #include <cstdlib>
-#include <cuchar>
-#include <regex>
 
 #include <fmt/core.h>
 #include <fmt/format.h>
 #include <fmt/ostream.h>
 #include <klib/error.h>
 #include <klib/util.h>
-#include <unicode/calendar.h>
-#include <unicode/timezone.h>
 #include <unicode/uchar.h>
-#include <unicode/umachine.h>
 #include <unicode/unistr.h>
 #include <unicode/utypes.h>
 #include <boost/algorithm/string.hpp>
@@ -54,17 +48,6 @@ bool is_punct(char32_t c) {
 }  // namespace
 
 namespace kepub {
-
-void create_dir(const std::filesystem::path &path) {
-  if (std::filesystem::is_directory(path) &&
-      std::filesystem::remove_all(path) == 0) {
-    klib::error("can not remove directory: '{}'", path);
-  }
-
-  if (!std::filesystem::create_directory(path)) {
-    klib::error("can not create directory: '{}'", path.string());
-  }
-}
 
 void check_is_txt_file(const std::string &file_name) {
   check_file_exist(file_name);
@@ -123,10 +106,6 @@ std::string num_to_chapter_name(std::int32_t i) {
   return "chapter" + num_to_str(i) + ".xhtml";
 }
 
-std::string num_to_illustration_name(std::int32_t i) {
-  return "illustration" + num_to_str(i) + ".xhtml";
-}
-
 std::pair<std::string, Options> processing_cmd(std::int32_t argc,
                                                const char *argv[]) {
   std::string input_file;
@@ -140,7 +119,6 @@ std::pair<std::string, Options> processing_cmd(std::int32_t argc,
   config.add_options()("connect,c", "connect chinese");
   config.add_options()("no-cover", "do not generate cover");
   config.add_options()("postscript,p", "generate postscript");
-  config.add_options()("old-style", "old style");
   config.add_options()(
       "illustration,i",
       boost::program_options::value<std::int32_t>(&options.illustration_num_)
@@ -205,9 +183,6 @@ std::pair<std::string, Options> processing_cmd(std::int32_t argc,
   }
   if (vm.contains("postscript")) {
     options.generate_postscript_ = true;
-  }
-  if (vm.contains("old-style")) {
-    options.old_style_ = true;
   }
 
   return {input_file, options};
