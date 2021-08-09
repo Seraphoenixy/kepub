@@ -5,7 +5,6 @@
         <dc:creator opf:file-as="kaiser" opf:role="aut">TODO</dc:creator>
         <dc:language>zh-CN</dc:language>
         <dc:rights>kaiser</dc:rights>
-        <meta name="klib version" content="v0.2.6" />
         <dc:date opf:event="modification" xmlns:opf="http://www.idpf.org/2007/opf">2021-05-29</dc:date>
         <dc:identifier id="BookId" opf:scheme="UUID">urn:uuid:5208e6bb-5d25-45b0-a7fd-b97d79a85fd4</dc:identifier>
     </metadata>
@@ -16,9 +15,6 @@
         <item id="message.xhtml" href="Text/message.xhtml" media-type="application/xhtml+xml" />
         <item id="introduction.xhtml" href="Text/introduction.xhtml" media-type="application/xhtml+xml" />
         <item id="volume001.xhtml" href="Text/volume001.xhtml" media-type="application/xhtml+xml" />
-        <item id="volume002.xhtml" href="Text/volume002.xhtml" media-type="application/xhtml+xml" />
-        <item id="volume003.xhtml" href="Text/volume003.xhtml" media-type="application/xhtml+xml" />
-        <item id="volume004.xhtml" href="Text/volume004.xhtml" media-type="application/xhtml+xml" />
         <item id="chapter001.xhtml" href="Text/chapter001.xhtml" media-type="application/xhtml+xml" />
         <item id="chapter002.xhtml" href="Text/chapter002.xhtml" media-type="application/xhtml+xml" />
         <item id="chapter003.xhtml" href="Text/chapter003.xhtml" media-type="application/xhtml+xml" />
@@ -81,6 +77,7 @@
         <item id="chapter060.xhtml" href="Text/chapter060.xhtml" media-type="application/xhtml+xml" />
         <item id="chapter061.xhtml" href="Text/chapter061.xhtml" media-type="application/xhtml+xml" />
         <item id="chapter062.xhtml" href="Text/chapter062.xhtml" media-type="application/xhtml+xml" />
+        <item id="volume002.xhtml" href="Text/volume002.xhtml" media-type="application/xhtml+xml" />
         <item id="chapter063.xhtml" href="Text/chapter063.xhtml" media-type="application/xhtml+xml" />
         <item id="chapter064.xhtml" href="Text/chapter064.xhtml" media-type="application/xhtml+xml" />
         <item id="chapter065.xhtml" href="Text/chapter065.xhtml" media-type="application/xhtml+xml" />
@@ -143,6 +140,7 @@
         <item id="chapter122.xhtml" href="Text/chapter122.xhtml" media-type="application/xhtml+xml" />
         <item id="chapter123.xhtml" href="Text/chapter123.xhtml" media-type="application/xhtml+xml" />
         <item id="chapter124.xhtml" href="Text/chapter124.xhtml" media-type="application/xhtml+xml" />
+        <item id="volume003.xhtml" href="Text/volume003.xhtml" media-type="application/xhtml+xml" />
         <item id="chapter125.xhtml" href="Text/chapter125.xhtml" media-type="application/xhtml+xml" />
         <item id="chapter126.xhtml" href="Text/chapter126.xhtml" media-type="application/xhtml+xml" />
         <item id="chapter127.xhtml" href="Text/chapter127.xhtml" media-type="application/xhtml+xml" />
@@ -205,6 +203,7 @@
         <item id="chapter184.xhtml" href="Text/chapter184.xhtml" media-type="application/xhtml+xml" />
         <item id="chapter185.xhtml" href="Text/chapter185.xhtml" media-type="application/xhtml+xml" />
         <item id="chapter186.xhtml" href="Text/chapter186.xhtml" media-type="application/xhtml+xml" />
+        <item id="volume004.xhtml" href="Text/volume004.xhtml" media-type="application/xhtml+xml" />
         <item id="chapter187.xhtml" href="Text/chapter187.xhtml" media-type="application/xhtml+xml" />
         <item id="chapter188.xhtml" href="Text/chapter188.xhtml" media-type="application/xhtml+xml" />
         <item id="chapter189.xhtml" href="Text/chapter189.xhtml" media-type="application/xhtml+xml" />
@@ -246,9 +245,6 @@
         <itemref idref="message.xhtml" />
         <itemref idref="introduction.xhtml" />
         <itemref idref="volume001.xhtml" />
-        <itemref idref="volume002.xhtml" />
-        <itemref idref="volume003.xhtml" />
-        <itemref idref="volume004.xhtml" />
         <itemref idref="chapter001.xhtml" />
         <itemref idref="chapter002.xhtml" />
         <itemref idref="chapter003.xhtml" />
@@ -311,6 +307,7 @@
         <itemref idref="chapter060.xhtml" />
         <itemref idref="chapter061.xhtml" />
         <itemref idref="chapter062.xhtml" />
+        <itemref idref="volume002.xhtml" />
         <itemref idref="chapter063.xhtml" />
         <itemref idref="chapter064.xhtml" />
         <itemref idref="chapter065.xhtml" />
@@ -373,6 +370,7 @@
         <itemref idref="chapter122.xhtml" />
         <itemref idref="chapter123.xhtml" />
         <itemref idref="chapter124.xhtml" />
+        <itemref idref="volume003.xhtml" />
         <itemref idref="chapter125.xhtml" />
         <itemref idref="chapter126.xhtml" />
         <itemref idref="chapter127.xhtml" />
@@ -435,6 +433,7 @@
         <itemref idref="chapter184.xhtml" />
         <itemref idref="chapter185.xhtml" />
         <itemref idref="chapter186.xhtml" />
+        <itemref idref="volume004.xhtml" />
         <itemref idref="chapter187.xhtml" />
         <itemref idref="chapter188.xhtml" />
         <itemref idref="chapter189.xhtml" />
