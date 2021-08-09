@@ -1,14 +1,17 @@
 #include <wait.h>
 
 #include <chrono>
+#include <cstdlib>
 #include <filesystem>
+#include <iostream>
+#include <memory>
 #include <stdexcept>
 #include <string>
 #include <thread>
 #include <tuple>
+#include <utility>
 #include <vector>
 
-#include <klib/archive.h>
 #include <klib/error.h>
 #include <klib/html.h>
 #include <klib/http.h>
@@ -18,6 +21,8 @@
 
 #include "trans.h"
 #include "util.h"
+
+namespace {
 
 void get_text(pugi::xml_node node, std::string &str) {
   if (node.children().begin() == node.children().end()) {
@@ -48,7 +53,6 @@ std::vector<std::string> get_children_text(const pugi::xml_node &node) {
   return result;
 }
 
-// book_name author description titles_and_urls
 std::tuple<std::string, std::string, std::vector<std::string>,
            std::vector<std::pair<std::string, std::string>>>
 get_content(const std::string &url, bool connect_chinese) {
@@ -178,35 +182,25 @@ std::vector<std::string> get_text(const std::string &url,
   return result;
 }
 
-#include <iostream>
+}  // namespace
 
-int main(/*int argc, const char *argv[]*/) try {
-  /// auto [url, options] = kepub::processing_cmd(argc, argv);
-
+int main(int argc, const char *argv[]) try {
+  auto [url, options] = kepub::processing_cmd(argc, argv);
   auto [book_name, author, description, titles_and_urls] =
-      get_content("https://www.esjzone.cc/detail/1578022447.html", false);
-
-  std::cout << book_name << '\n';
-  std::cout << author << '\n';
-
-  for (const auto &line : description) {
-    std::cout << line << '\n';
-  }
-  for (const auto &[title, url] : titles_and_urls) {
-    std::cout << title << ": " << url << '\n';
-  }
+      get_content(url, options.connect_chinese_);
 
   std::filesystem::create_directory(book_name);
   auto p = std::make_unique<klib::ChangeWorkingDir>(book_name);
 
-  for (const auto &[title, url] : titles_and_urls) {
+  for (const auto &[title, urls] : titles_and_urls) {
     using namespace std::chrono_literals;
     std::this_thread::sleep_for(50ms);
+
     auto pid = fork();
     if (pid < 0) {
-      klib::error("fork error");
+      klib::error("Fork error");
     } else if (pid == 0) {
-      klib::write_file(title, false, boost::join(get_text(url, false), "\n"));
+      klib::write_file(title, false, boost::join(get_text(urls, false), "\n"));
       std::clog << title << " ok" << std::endl;
       std::exit(EXIT_SUCCESS);
     }
@@ -220,7 +214,7 @@ int main(/*int argc, const char *argv[]*/) try {
   }
 
   std::vector<std::pair<std::string, std::string>> v;
-  for (const auto &[title, url] : titles_and_urls) {
+  for (const auto &[title, urls] : titles_and_urls) {
     v.emplace_back(title, klib::read_file(title, false));
   }
 
@@ -243,5 +237,5 @@ int main(/*int argc, const char *argv[]*/) try {
 } catch (const std::exception &err) {
   klib::error(err.what());
 } catch (...) {
-  klib::error("unknown exception");
+  klib::error("Unknown exception");
 }

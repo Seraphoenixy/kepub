@@ -1,5 +1,7 @@
-# https://github.com/gabime/spdlog/blob/v1.x/CMakeLists.txt
-cmake_minimum_required(VERSION 3.19)
+# ---------------------------------------------------------------------------------------
+# CMake version
+# ---------------------------------------------------------------------------------------
+cmake_minimum_required(VERSION 3.20)
 message(STATUS "CMake version: ${CMAKE_VERSION}")
 
 # ---------------------------------------------------------------------------------------
@@ -23,7 +25,7 @@ message(STATUS "${PROJECT_NAME} version: ${KEPUB_VERSION}")
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE
       "Release"
-      CACHE STRING "Choose Debug, Release, MinSizeRel or RelWithDebInfo" FORCE)
+      CACHE STRING "Choose Debug, Release, RelWithDebInfo or MinSizeRel" FORCE)
 endif()
 message(STATUS "Build type: " ${CMAKE_BUILD_TYPE})
 
@@ -36,16 +38,12 @@ set(ESJZONE_EXECUTABLE esjzone)
 set(MASIRO_EXECUTABLE masiro)
 set(XHTML_EXECUTABLE xhtml)
 set(ADDITION_EXECUTABLE addition)
-set(TEST_EXECUTABLE
-    ${DEMONOVEL_EXECUTABLE} ${ESJZONE_EXECUTABLE} ${MASIRO_EXECUTABLE}
-    ${XHTML_EXECUTABLE} ${ADDITION_EXECUTABLE})
 set(TEST_EXECUTABLE ${PROJECT_NAME}-test)
 
 set(KEPUB_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(KEPUB_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
 
 # https://cmake.org/cmake/help/latest/command/file.html#glob-recurse
-file(GLOB_RECURSE DATA_SRC CONFIGURE_DEPENDS "${KEPUB_SOURCE_DIR}/src/data.s")
 file(GLOB_RECURSE LIBRARY_SRC CONFIGURE_DEPENDS "${KEPUB_SOURCE_DIR}/src/*.cpp")
 
 # ---------------------------------------------------------------------------------------
@@ -73,14 +71,15 @@ find_package(klib REQUIRED)
 # Build static library
 # ---------------------------------------------------------------------------------------
 add_library(${LIBRARY} STATIC ${LIBRARY_SRC})
+
 target_include_directories(${LIBRARY} PUBLIC "${KEPUB_SOURCE_DIR}/include")
+
 target_link_libraries(${LIBRARY} PRIVATE fmt::fmt pugixml::pugixml klib::klib
                                          ${Boost_LIBRARIES} ${ICU_LIBRARIES})
 
 set_target_properties(
   ${LIBRARY}
-  PROPERTIES DEBUG_POSTFIX d
-             OUTPUT_NAME ${PROJECT_NAME}
+  PROPERTIES OUTPUT_NAME ${PROJECT_NAME}
              POSITION_INDEPENDENT_CODE ON
              INTERPROCEDURAL_OPTIMIZATION FALSE)
 
@@ -104,6 +103,6 @@ include(Install)
 
 # https://gitlab.kitware.com/cmake/community/-/wikis/FAQ#can-i-do-make-uninstall-with-cmake
 configure_file("${KEPUB_SOURCE_DIR}/cmake/CMakeUninstall.cmake.in"
-               "${KEPUB_BINARY_DIR}/CMakeUninstall.cmake" @ONLY)
+               "${KEPUB_BINARY_DIR}/CMakeUninstall.cmake" IMMEDIATE @ONLY)
 add_custom_target(uninstall COMMAND ${CMAKE_COMMAND} -P
                                     ${KEPUB_BINARY_DIR}/CMakeUninstall.cmake)
