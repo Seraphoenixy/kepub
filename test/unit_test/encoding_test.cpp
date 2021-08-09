@@ -11,7 +11,7 @@ namespace {
 std::string to_str(std::initializer_list<std::uint8_t> il) {
   std::string str;
   for (auto i : il) {
-    str.push_back(i);
+    str.push_back(static_cast<char>(i));
   }
 
   return str;
