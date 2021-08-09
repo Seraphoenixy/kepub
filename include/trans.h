@@ -4,6 +4,6 @@
 
 namespace kepub {
 
-std::string trans_str(const std::string &str, bool trans_hant);
+std::string trans_str(const std::string &str);
 
 }  // namespace kepub

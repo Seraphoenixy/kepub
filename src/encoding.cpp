@@ -1,17 +1,17 @@
 #include "encoding.h"
 
+#include <klib/error.h>
 #include <klib/util.h>
 #include <unicode/ucsdet.h>
 #include <unicode/utypes.h>
 
-#include "error.h"
 #include "util.h"
 
 namespace kepub {
 
 // https://unicode-org.github.io/icu/userguide/conversion/detection.html#charsetdetector
 std::string detect_encoding(const std::string &text) {
-  if (klib::util::is_ascii(text)) {
+  if (klib::is_ascii(text)) {
     return "UTF-8";
   }
 
@@ -33,7 +33,7 @@ std::string detect_encoding(const std::string &text) {
   check_icu(status);
 
   if (confidence < 95) {
-    warn("Confidence is less than 95%: {}%", confidence);
+    klib::warn("Confidence is less than 95%: {}%", confidence);
   }
 
   ucsdet_close(csd);

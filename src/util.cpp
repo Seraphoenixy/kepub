@@ -12,6 +12,7 @@
 #include <fmt/core.h>
 #include <fmt/format.h>
 #include <fmt/ostream.h>
+#include <klib/error.h>
 #include <klib/util.h>
 #include <unicode/calendar.h>
 #include <unicode/timezone.h>
@@ -26,25 +27,24 @@
 #include <boost/program_options/variables_map.hpp>
 
 #include "encoding.h"
-#include "error.h"
 #include "trans.h"
 #include "version.h"
 
 namespace {
 
 char32_t to_unicode(const std::string &str) {
-  auto utf32 = klib::util::utf8_to_utf32(str);
+  auto utf32 = klib::utf8_to_utf32(str);
   assert(std::size(utf32) == 1);
 
   return utf32.front();
 }
 
 bool start_with_chinese(const std::string &str) {
-  return klib::util::is_chinese(klib::util::utf8_to_utf32(str).front());
+  return klib::is_chinese(klib::utf8_to_utf32(str).front());
 }
 
 bool end_with_chinese(const std::string &str) {
-  return klib::util::is_chinese(klib::util::utf8_to_utf32(str).back());
+  return klib::is_chinese(klib::utf8_to_utf32(str).back());
 }
 
 bool is_punct(char32_t c) {
@@ -58,11 +58,11 @@ namespace kepub {
 void create_dir(const std::filesystem::path &path) {
   if (std::filesystem::is_directory(path) &&
       std::filesystem::remove_all(path) == 0) {
-    error("can not remove directory: '{}'", path);
+    klib::error("can not remove directory: '{}'", path);
   }
 
   if (!std::filesystem::create_directory(path)) {
-    error("can not create directory: '{}'", path.string());
+    klib::error("can not create directory: '{}'", path.string());
   }
 }
 
@@ -70,35 +70,34 @@ void check_is_txt_file(const std::string &file_name) {
   check_file_exist(file_name);
 
   if (std::filesystem::path(file_name).extension() != ".txt") {
-    error("Need a txt file: {}", file_name);
+    klib::error("Need a txt file: {}", file_name);
   }
 }
 
 void check_file_exist(const std::string &file_name) {
   if (!std::filesystem::is_regular_file(file_name)) {
-    error("The file not exist: '{}'", file_name);
+    klib::error("The file not exist: '{}'", file_name);
   }
 }
 
 std::string read_file_to_str(const std::string &file_name) {
-  auto data = klib::util::read_file(file_name, false);
+  auto data = klib::read_file(file_name, false);
 
   if (auto encoding = detect_encoding(data); encoding != "UTF-8") {
-    error("file '{}' encoding is not UTF-8 ({})", file_name, encoding);
+    klib::error("file '{}' encoding is not UTF-8 ({})", file_name, encoding);
   }
 
   return data;
 }
 
-std::vector<std::string> read_file_to_vec(const std::string &file_name,
-                                          bool trans_hant) {
+std::vector<std::string> read_file_to_vec(const std::string &file_name) {
   auto data = read_file_to_str(file_name);
 
   std::vector<std::string> result;
   boost::split(result, data, boost::is_any_of("\n"), boost::token_compress_on);
 
   for (auto &item : result) {
-    item = trans_str(item, trans_hant);
+    item = trans_str(item);
   }
 
   std::erase_if(result,
@@ -141,9 +140,7 @@ std::pair<std::string, Options> processing_cmd(std::int32_t argc,
   config.add_options()("connect,c", "connect chinese");
   config.add_options()("no-cover", "do not generate cover");
   config.add_options()("postscript,p", "generate postscript");
-  config.add_options()("download-cover,d", "download cover");
   config.add_options()("old-style", "old style");
-  config.add_options()("trans-hant", "trans hant");
   config.add_options()(
       "illustration,i",
       boost::program_options::value<std::int32_t>(&options.illustration_num_)
@@ -154,11 +151,6 @@ std::pair<std::string, Options> processing_cmd(std::int32_t argc,
       boost::program_options::value<std::int32_t>(&options.image_num_)
           ->default_value(0),
       "generate image");
-  config.add_options()(
-      "max-chapter",
-      boost::program_options::value<std::int32_t>(&options.max_chapter_)
-          ->default_value(0),
-      "maximum number of chapters");
   config.add_options()(
       "date",
       boost::program_options::value<std::string>(&options.date_)
@@ -197,7 +189,7 @@ std::pair<std::string, Options> processing_cmd(std::int32_t argc,
   }
 
   if (!vm.contains("input-file")) {
-    error("need a text file name or a url");
+    klib::error("need a text file name or a url");
   }
 
   if (vm.contains("connect")) {
@@ -206,17 +198,11 @@ std::pair<std::string, Options> processing_cmd(std::int32_t argc,
   if (vm.contains("no-cover")) {
     options.no_cover_ = true;
   }
-  if (vm.contains("download-cover")) {
-    options.download_cover_ = true;
-  }
   if (vm.contains("postscript")) {
     options.generate_postscript_ = true;
   }
   if (vm.contains("old-style")) {
     options.old_style_ = true;
-  }
-  if (vm.contains("trans-hant")) {
-    options.trans_hant_ = true;
   }
 
   return {input_file, options};
@@ -262,8 +248,8 @@ std::int32_t str_size(const std::string &str) {
 
   auto result = std::erase_if(copy, [](auto c) { return std::isalnum(c); });
 
-  for (auto c : klib::util::utf8_to_utf32(copy)) {
-    if (klib::util::is_chinese(c)) {
+  for (auto c : klib::utf8_to_utf32(copy)) {
+    if (klib::is_chinese(c)) {
       ++result;
     }
   }
@@ -275,36 +261,19 @@ void str_check(const std::string &str) {
   auto copy = str;
   std::erase_if(copy, [](auto c) { return std::isalnum(c); });
 
-  for (auto c : klib::util::utf8_to_utf32(copy)) {
-    if (!u_isblank(c) && !klib::util::is_chinese(c) && !is_punct(c)) {
+  for (auto c : klib::utf8_to_utf32(copy)) {
+    if (!u_isblank(c) && !klib::is_chinese(c) && !is_punct(c)) {
       std::string temp;
       UChar32 ch = c;
-      warn("Unknown character: {} in {}",
-           icu::UnicodeString::fromUTF32(&ch, 1).toUTF8String(temp), str);
+      klib::warn("Unknown character: {} in {}",
+                 icu::UnicodeString::fromUTF32(&ch, 1).toUTF8String(temp), str);
     }
   }
 }
 
-std::string get_date(std::string_view time_zone) {
-  UErrorCode status = U_ZERO_ERROR;
-
-  auto calendar = icu::Calendar::createInstance(
-      icu::TimeZone::createTimeZone(time_zone.data()), status);
-  check_icu(status);
-
-  auto result = fmt::format("{}-{:02d}-{}", calendar->get(UCAL_YEAR, status),
-                            calendar->get(UCAL_MONTH, status) + 1,
-                            calendar->get(UCAL_DATE, status));
-  check_icu(status);
-
-  delete calendar;
-
-  return result;
-}
-
 void check_icu(UErrorCode status) {
   if (U_FAILURE(status)) {
-    error("{}", u_errorName(status));
+    klib::error("{}", u_errorName(status));
   }
 }
 

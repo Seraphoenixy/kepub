@@ -21,8 +21,7 @@ class Trans {
   Trans &operator=(Trans &&) = delete;
 
   static const Trans &get();
-  [[nodiscard]] std::string trans_str(const std::string &str,
-                                      bool trans_hant) const;
+  [[nodiscard]] std::string trans_str(const std::string &str) const;
 
  private:
   Trans();
@@ -31,6 +30,7 @@ class Trans {
   icu::Transliterator *fullwidth_halfwidth_;
 };
 
+// TODO Traditional Chinese translation error
 void custom_trans(icu::UnicodeString &str) {
   // https://en.wikipedia.org/wiki/Word_joiner
   str.findAndReplace("\uFEFF", " ");
@@ -203,12 +203,10 @@ const Trans &Trans::get() {
   return trans;
 }
 
-std::string Trans::trans_str(const std::string &str, bool trans_hant) const {
+std::string Trans::trans_str(const std::string &str) const {
   icu::UnicodeString icu_str(str.c_str());
 
-  if (trans_hant) {
-    hant_hans_->transliterate(icu_str);
-  }
+  hant_hans_->transliterate(icu_str);
   fullwidth_halfwidth_->transliterate(icu_str);
   custom_trans(icu_str);
 
@@ -232,8 +230,8 @@ Trans::Trans() {
 
 }  // namespace
 
-std::string trans_str(const std::string &str, bool trans_hant) {
-  return Trans::get().trans_str(str, trans_hant);
+std::string trans_str(const std::string &str) {
+  return Trans::get().trans_str(str);
 }
 
 }  // namespace kepub

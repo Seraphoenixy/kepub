@@ -31,12 +31,9 @@ void check_is_txt_file(const std::string &file_name);
 
 void check_file_exist(const std::string &file_name);
 
-void check_is_url(const std::string &url);
-
 std::string read_file_to_str(const std::string &file_name);
 
-std::vector<std::string> read_file_to_vec(const std::string &file_name,
-                                          bool trans_hant);
+std::vector<std::string> read_file_to_vec(const std::string &file_name);
 
 void check_and_write_file(std::ofstream &ofs, std::string_view str);
 
@@ -55,8 +52,6 @@ void push_back(std::vector<std::string> &texts, const std::string &str,
 std::int32_t str_size(const std::string &str);
 
 void str_check(const std::string &str);
-
-std::string get_date(std::string_view time_zone = "Asia/Shanghai");
 
 void check_icu(UErrorCode status);
 
