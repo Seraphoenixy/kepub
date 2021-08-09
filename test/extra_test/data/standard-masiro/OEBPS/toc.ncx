@@ -1,329 +1,329 @@
 <?xml version="1.0"?>
 <ncx version="2005-1" xmlns="http://www.daisy.org/z3986/2005/ncx/">
-	<head>
-		<meta name="dtb:uid" content="urn:uuid:5208e6bb-5d25-45b0-a7fd-b97d79a85fd4" />
-		<meta name="dtb:depth" content="1" />
-		<meta name="dtb:totalPageCount" content="0" />
-		<meta name="dtb:maxPageNumber" content="0" />
-	</head>
-	<docTitle>
-		<text>梗角色转生太过头了！</text>
-	</docTitle>
-	<docAuthor>
-		<text>TODO</text>
-	</docAuthor>
-	<navMap>
-		<navPoint id="navPoint-1" playOrder="1">
-			<navLabel>
-				<text>封面</text>
-			</navLabel>
-			<content src="Text/cover.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-2" playOrder="2">
-			<navLabel>
-				<text>制作信息</text>
-			</navLabel>
-			<content src="Text/message.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-3" playOrder="3">
-			<navLabel>
-				<text>简介</text>
-			</navLabel>
-			<content src="Text/introduction.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-4" playOrder="4">
-			<navLabel>
-				<text>彩页</text>
-			</navLabel>
-			<content src="Text/illustration001.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-5" playOrder="5">
-			<navLabel>
-				<text>1 序</text>
-			</navLabel>
-			<content src="Text/chapter001.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-6" playOrder="6">
-			<navLabel>
-				<text>2 梦的结束</text>
-			</navLabel>
-			<content src="Text/chapter002.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-7" playOrder="7">
-			<navLabel>
-				<text>3 梗角色转生</text>
-			</navLabel>
-			<content src="Text/chapter003.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-8" playOrder="8">
-			<navLabel>
-				<text>4 能力把握</text>
-			</navLabel>
-			<content src="Text/chapter004.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-9" playOrder="9">
-			<navLabel>
-				<text>5 枯草色的半森精灵</text>
-			</navLabel>
-			<content src="Text/chapter005.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-10" playOrder="10">
-			<navLabel>
-				<text>6 主从契约</text>
-			</navLabel>
-			<content src="Text/chapter006.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-11" playOrder="11">
-			<navLabel>
-				<text>7 龙之从者</text>
-			</navLabel>
-			<content src="Text/chapter007.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-12" playOrder="12">
-			<navLabel>
-				<text>8 风竜</text>
-			</navLabel>
-			<content src="Text/chapter008.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-13" playOrder="13">
-			<navLabel>
-				<text>9 黑狼之牙</text>
-			</navLabel>
-			<content src="Text/chapter009.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-14" playOrder="14">
-			<navLabel>
-				<text>10 幻想魔法</text>
-			</navLabel>
-			<content src="Text/chapter010.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-15" playOrder="15">
-			<navLabel>
-				<text>11 变化的鬼</text>
-			</navLabel>
-			<content src="Text/chapter011.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-16" playOrder="16">
-			<navLabel>
-				<text>12 杜兰VS娜哈特</text>
-			</navLabel>
-			<content src="Text/chapter012.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-17" playOrder="17">
-			<navLabel>
-				<text>13 空白中的可能性</text>
-			</navLabel>
-			<content src="Text/chapter013.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-18" playOrder="18">
-			<navLabel>
-				<text>14 无言的心意</text>
-			</navLabel>
-			<content src="Text/chapter014.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-19" playOrder="19">
-			<navLabel>
-				<text>15 小小的奇迹</text>
-			</navLabel>
-			<content src="Text/chapter015.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-20" playOrder="20">
-			<navLabel>
-				<text>16 闲话 娜哈特的约定俗成</text>
-			</navLabel>
-			<content src="Text/chapter016.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-21" playOrder="21">
-			<navLabel>
-				<text>18 报酬</text>
-			</navLabel>
-			<content src="Text/chapter017.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-22" playOrder="22">
-			<navLabel>
-				<text>19 冒险者公会</text>
-			</navLabel>
-			<content src="Text/chapter018.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-23" playOrder="23">
-			<navLabel>
-				<text>20 交易都市的两大贵族</text>
-			</navLabel>
-			<content src="Text/chapter019.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-24" playOrder="24">
-			<navLabel>
-				<text>21 龙的逆鳞</text>
-			</navLabel>
-			<content src="Text/chapter020.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-25" playOrder="25">
-			<navLabel>
-				<text>22 两个异变</text>
-			</navLabel>
-			<content src="Text/chapter021.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-26" playOrder="26">
-			<navLabel>
-				<text>23 一言的忠义</text>
-			</navLabel>
-			<content src="Text/chapter022.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-27" playOrder="27">
-			<navLabel>
-				<text>24 在浴室始动</text>
-			</navLabel>
-			<content src="Text/chapter023.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-28" playOrder="28">
-			<navLabel>
-				<text>25 名为娜哈特的希望</text>
-			</navLabel>
-			<content src="Text/chapter024.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-29" playOrder="29">
-			<navLabel>
-				<text>26 守护者们的骄傲</text>
-			</navLabel>
-			<content src="Text/chapter025.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-30" playOrder="30">
-			<navLabel>
-				<text>27 出阵</text>
-			</navLabel>
-			<content src="Text/chapter026.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-31" playOrder="31">
-			<navLabel>
-				<text>28 魔族的少女</text>
-			</navLabel>
-			<content src="Text/chapter027.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-32" playOrder="32">
-			<navLabel>
-				<text>29 惩罚</text>
-			</navLabel>
-			<content src="Text/chapter028.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-33" playOrder="33">
-			<navLabel>
-				<text>30 回忆与异变</text>
-			</navLabel>
-			<content src="Text/chapter029.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-34" playOrder="34">
-			<navLabel>
-				<text>31 合成魔法</text>
-			</navLabel>
-			<content src="Text/chapter030.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-35" playOrder="35">
-			<navLabel>
-				<text>32 各自的死斗</text>
-			</navLabel>
-			<content src="Text/chapter031.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-36" playOrder="36">
-			<navLabel>
-				<text>33 各自的死斗（2）</text>
-			</navLabel>
-			<content src="Text/chapter032.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-37" playOrder="37">
-			<navLabel>
-				<text>34 乱入竜</text>
-			</navLabel>
-			<content src="Text/chapter033.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-38" playOrder="38">
-			<navLabel>
-				<text>35 龙击魔法</text>
-			</navLabel>
-			<content src="Text/chapter034.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-39" playOrder="39">
-			<navLabel>
-				<text>36 尾声</text>
-			</navLabel>
-			<content src="Text/chapter035.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-40" playOrder="40">
-			<navLabel>
-				<text>2-1 序章</text>
-			</navLabel>
-			<content src="Text/chapter036.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-41" playOrder="41">
-			<navLabel>
-				<text>2-2 新的早晨</text>
-			</navLabel>
-			<content src="Text/chapter037.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-42" playOrder="42">
-			<navLabel>
-				<text>2-3 追忆的艾夏</text>
-			</navLabel>
-			<content src="Text/chapter038.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-43" playOrder="43">
-			<navLabel>
-				<text>2-4 离别与启程</text>
-			</navLabel>
-			<content src="Text/chapter039.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-44" playOrder="44">
-			<navLabel>
-				<text>2-5 旅途中</text>
-			</navLabel>
-			<content src="Text/chapter040.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-45" playOrder="45">
-			<navLabel>
-				<text>2-6 尤里vs艾夏</text>
-			</navLabel>
-			<content src="Text/chapter041.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-46" playOrder="46">
-			<navLabel>
-				<text>2-7 进攻的军队</text>
-			</navLabel>
-			<content src="Text/chapter042.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-47" playOrder="47">
-			<navLabel>
-				<text>2-8 阴谋的影子</text>
-			</navLabel>
-			<content src="Text/chapter043.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-48" playOrder="48">
-			<navLabel>
-				<text>2-9 再会</text>
-			</navLabel>
-			<content src="Text/chapter044.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-49" playOrder="49">
-			<navLabel>
-				<text>2-10 离别</text>
-			</navLabel>
-			<content src="Text/chapter045.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-50" playOrder="50">
-			<navLabel>
-				<text>2-11 娜哈特的忧郁</text>
-			</navLabel>
-			<content src="Text/chapter046.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-51" playOrder="51">
-			<navLabel>
-				<text>2-12 艾夏的纠葛</text>
-			</navLabel>
-			<content src="Text/chapter047.xhtml" />
-		</navPoint>
-		<navPoint id="navPoint-52" playOrder="52">
-			<navLabel>
-				<text>后记</text>
-			</navLabel>
-			<content src="Text/postscript.xhtml" />
-		</navPoint>
-	</navMap>
+    <head>
+        <meta name="dtb:uid" content="urn:uuid:5208e6bb-5d25-45b0-a7fd-b97d79a85fd4" />
+        <meta name="dtb:depth" content="1" />
+        <meta name="dtb:totalPageCount" content="0" />
+        <meta name="dtb:maxPageNumber" content="0" />
+    </head>
+    <docTitle>
+        <text>梗角色转生太过头了！</text>
+    </docTitle>
+    <docAuthor>
+        <text>TODO</text>
+    </docAuthor>
+    <navMap>
+        <navPoint id="navPoint-1" playOrder="1">
+            <navLabel>
+                <text>封面</text>
+            </navLabel>
+            <content src="Text/cover.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-2" playOrder="2">
+            <navLabel>
+                <text>制作信息</text>
+            </navLabel>
+            <content src="Text/message.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-3" playOrder="3">
+            <navLabel>
+                <text>简介</text>
+            </navLabel>
+            <content src="Text/introduction.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-4" playOrder="4">
+            <navLabel>
+                <text>彩页</text>
+            </navLabel>
+            <content src="Text/illustration001.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-5" playOrder="5">
+            <navLabel>
+                <text>1 序</text>
+            </navLabel>
+            <content src="Text/chapter001.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-6" playOrder="6">
+            <navLabel>
+                <text>2 梦的结束</text>
+            </navLabel>
+            <content src="Text/chapter002.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-7" playOrder="7">
+            <navLabel>
+                <text>3 梗角色转生</text>
+            </navLabel>
+            <content src="Text/chapter003.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-8" playOrder="8">
+            <navLabel>
+                <text>4 能力把握</text>
+            </navLabel>
+            <content src="Text/chapter004.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-9" playOrder="9">
+            <navLabel>
+                <text>5 枯草色的半森精灵</text>
+            </navLabel>
+            <content src="Text/chapter005.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-10" playOrder="10">
+            <navLabel>
+                <text>6 主从契约</text>
+            </navLabel>
+            <content src="Text/chapter006.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-11" playOrder="11">
+            <navLabel>
+                <text>7 龙之从者</text>
+            </navLabel>
+            <content src="Text/chapter007.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-12" playOrder="12">
+            <navLabel>
+                <text>8 风竜</text>
+            </navLabel>
+            <content src="Text/chapter008.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-13" playOrder="13">
+            <navLabel>
+                <text>9 黑狼之牙</text>
+            </navLabel>
+            <content src="Text/chapter009.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-14" playOrder="14">
+            <navLabel>
+                <text>10 幻想魔法</text>
+            </navLabel>
+            <content src="Text/chapter010.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-15" playOrder="15">
+            <navLabel>
+                <text>11 变化的鬼</text>
+            </navLabel>
+            <content src="Text/chapter011.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-16" playOrder="16">
+            <navLabel>
+                <text>12 杜兰VS娜哈特</text>
+            </navLabel>
+            <content src="Text/chapter012.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-17" playOrder="17">
+            <navLabel>
+                <text>13 空白中的可能性</text>
+            </navLabel>
+            <content src="Text/chapter013.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-18" playOrder="18">
+            <navLabel>
+                <text>14 无言的心意</text>
+            </navLabel>
+            <content src="Text/chapter014.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-19" playOrder="19">
+            <navLabel>
+                <text>15 小小的奇迹</text>
+            </navLabel>
+            <content src="Text/chapter015.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-20" playOrder="20">
+            <navLabel>
+                <text>16 闲话 娜哈特的约定俗成</text>
+            </navLabel>
+            <content src="Text/chapter016.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-21" playOrder="21">
+            <navLabel>
+                <text>18 报酬</text>
+            </navLabel>
+            <content src="Text/chapter017.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-22" playOrder="22">
+            <navLabel>
+                <text>19 冒险者公会</text>
+            </navLabel>
+            <content src="Text/chapter018.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-23" playOrder="23">
+            <navLabel>
+                <text>20 交易都市的两大贵族</text>
+            </navLabel>
+            <content src="Text/chapter019.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-24" playOrder="24">
+            <navLabel>
+                <text>21 龙的逆鳞</text>
+            </navLabel>
+            <content src="Text/chapter020.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-25" playOrder="25">
+            <navLabel>
+                <text>22 两个异变</text>
+            </navLabel>
+            <content src="Text/chapter021.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-26" playOrder="26">
+            <navLabel>
+                <text>23 一言的忠义</text>
+            </navLabel>
+            <content src="Text/chapter022.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-27" playOrder="27">
+            <navLabel>
+                <text>24 在浴室始动</text>
+            </navLabel>
+            <content src="Text/chapter023.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-28" playOrder="28">
+            <navLabel>
+                <text>25 名为娜哈特的希望</text>
+            </navLabel>
+            <content src="Text/chapter024.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-29" playOrder="29">
+            <navLabel>
+                <text>26 守护者们的骄傲</text>
+            </navLabel>
+            <content src="Text/chapter025.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-30" playOrder="30">
+            <navLabel>
+                <text>27 出阵</text>
+            </navLabel>
+            <content src="Text/chapter026.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-31" playOrder="31">
+            <navLabel>
+                <text>28 魔族的少女</text>
+            </navLabel>
+            <content src="Text/chapter027.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-32" playOrder="32">
+            <navLabel>
+                <text>29 惩罚</text>
+            </navLabel>
+            <content src="Text/chapter028.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-33" playOrder="33">
+            <navLabel>
+                <text>30 回忆与异变</text>
+            </navLabel>
+            <content src="Text/chapter029.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-34" playOrder="34">
+            <navLabel>
+                <text>31 合成魔法</text>
+            </navLabel>
+            <content src="Text/chapter030.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-35" playOrder="35">
+            <navLabel>
+                <text>32 各自的死斗</text>
+            </navLabel>
+            <content src="Text/chapter031.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-36" playOrder="36">
+            <navLabel>
+                <text>33 各自的死斗（2）</text>
+            </navLabel>
+            <content src="Text/chapter032.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-37" playOrder="37">
+            <navLabel>
+                <text>34 乱入竜</text>
+            </navLabel>
+            <content src="Text/chapter033.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-38" playOrder="38">
+            <navLabel>
+                <text>35 龙击魔法</text>
+            </navLabel>
+            <content src="Text/chapter034.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-39" playOrder="39">
+            <navLabel>
+                <text>36 尾声</text>
+            </navLabel>
+            <content src="Text/chapter035.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-40" playOrder="40">
+            <navLabel>
+                <text>2-1 序章</text>
+            </navLabel>
+            <content src="Text/chapter036.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-41" playOrder="41">
+            <navLabel>
+                <text>2-2 新的早晨</text>
+            </navLabel>
+            <content src="Text/chapter037.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-42" playOrder="42">
+            <navLabel>
+                <text>2-3 追忆的艾夏</text>
+            </navLabel>
+            <content src="Text/chapter038.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-43" playOrder="43">
+            <navLabel>
+                <text>2-4 离别与启程</text>
+            </navLabel>
+            <content src="Text/chapter039.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-44" playOrder="44">
+            <navLabel>
+                <text>2-5 旅途中</text>
+            </navLabel>
+            <content src="Text/chapter040.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-45" playOrder="45">
+            <navLabel>
+                <text>2-6 尤里vs艾夏</text>
+            </navLabel>
+            <content src="Text/chapter041.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-46" playOrder="46">
+            <navLabel>
+                <text>2-7 进攻的军队</text>
+            </navLabel>
+            <content src="Text/chapter042.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-47" playOrder="47">
+            <navLabel>
+                <text>2-8 阴谋的影子</text>
+            </navLabel>
+            <content src="Text/chapter043.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-48" playOrder="48">
+            <navLabel>
+                <text>2-9 再会</text>
+            </navLabel>
+            <content src="Text/chapter044.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-49" playOrder="49">
+            <navLabel>
+                <text>2-10 离别</text>
+            </navLabel>
+            <content src="Text/chapter045.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-50" playOrder="50">
+            <navLabel>
+                <text>2-11 娜哈特的忧郁</text>
+            </navLabel>
+            <content src="Text/chapter046.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-51" playOrder="51">
+            <navLabel>
+                <text>2-12 艾夏的纠葛</text>
+            </navLabel>
+            <content src="Text/chapter047.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-52" playOrder="52">
+            <navLabel>
+                <text>后记</text>
+            </navLabel>
+            <content src="Text/postscript.xhtml" />
+        </navPoint>
+    </navMap>
 </ncx>
