@@ -148,6 +148,7 @@ std::pair<std::string, Options> processing_cmd(std::int32_t argc,
   boost::program_options::options_description config("Configuration");
   config.add_options()("connect,c", "connect chinese");
   config.add_options()("no-cover", "do not generate cover");
+  config.add_options()("no-compress", "do not compress");
   config.add_options()("postscript,p", "generate postscript");
   config.add_options()(
       "illustration,i",
@@ -210,6 +211,9 @@ std::pair<std::string, Options> processing_cmd(std::int32_t argc,
   }
   if (vm.contains("no-cover")) {
     options.no_cover_ = true;
+  }
+  if (vm.contains("no-compress")) {
+    options.no_compress_ = true;
   }
   if (vm.contains("postscript")) {
     options.generate_postscript_ = true;

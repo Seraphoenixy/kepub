@@ -1,0 +1,1386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ncx PUBLIC "-//NISO//DTD ncx 2005-1//EN" "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd">
+<ncx version="2005-1" xmlns="http://www.daisy.org/z3986/2005/ncx/">
+    <head>
+        <meta name="dtb:uid" content="urn:uuid:5208e6bb-5d25-45b0-a7fd-b97d79a85fd4" />
+        <meta name="dtb:depth" content="1" />
+        <meta name="dtb:totalPageCount" content="0" />
+        <meta name="dtb:maxPageNumber" content="0" />
+    </head>
+    <docTitle>
+        <text>魅魔的我1</text>
+    </docTitle>
+    <docAuthor>
+        <text>TODO</text>
+    </docAuthor>
+    <navMap>
+        <navPoint id="navPoint-1" playOrder="1">
+            <navLabel>
+                <text>制作信息</text>
+            </navLabel>
+            <content src="Text/message.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-2" playOrder="2">
+            <navLabel>
+                <text>简介</text>
+            </navLabel>
+            <content src="Text/introduction.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-3" playOrder="3">
+            <navLabel>
+                <text>第一卷</text>
+            </navLabel>
+            <content src="Text/volume001.xhtml" />
+            <navPoint id="navPoint-4" playOrder="4">
+                <navLabel>
+                    <text>第一卷01——从绝望开始的故事</text>
+                </navLabel>
+                <content src="Text/chapter001.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-5" playOrder="5">
+                <navLabel>
+                    <text>第一卷02——从便器转职为奴隶</text>
+                </navLabel>
+                <content src="Text/chapter002.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-6" playOrder="6">
+                <navLabel>
+                    <text>第一卷03——贱卖的商品上沾染了鲜血</text>
+                </navLabel>
+                <content src="Text/chapter003.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-7" playOrder="7">
+                <navLabel>
+                    <text>第一卷04——other sdie，在开始之前的之前</text>
+                </navLabel>
+                <content src="Text/chapter004.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-8" playOrder="8">
+                <navLabel>
+                    <text>第一卷05——other sdie，唤醒睡美人的不一定是亲吻</text>
+                </navLabel>
+                <content src="Text/chapter005.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-9" playOrder="9">
+                <navLabel>
+                    <text>第一卷06——苏醒</text>
+                </navLabel>
+                <content src="Text/chapter006.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-10" playOrder="10">
+                <navLabel>
+                    <text>第一卷07——好像错过了见面的机会</text>
+                </navLabel>
+                <content src="Text/chapter007.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-11" playOrder="11">
+                <navLabel>
+                    <text>第一卷08——果然还是会害怕的</text>
+                </navLabel>
+                <content src="Text/chapter008.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-12" playOrder="12">
+                <navLabel>
+                    <text>第一卷09——认错人了</text>
+                </navLabel>
+                <content src="Text/chapter009.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-13" playOrder="13">
+                <navLabel>
+                    <text>第一卷10——感动的泪水</text>
+                </navLabel>
+                <content src="Text/chapter010.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-14" playOrder="14">
+                <navLabel>
+                    <text>第一卷11——意料之外，情理之中</text>
+                </navLabel>
+                <content src="Text/chapter011.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-15" playOrder="15">
+                <navLabel>
+                    <text>第一卷12——比无能更糟的结果</text>
+                </navLabel>
+                <content src="Text/chapter012.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-16" playOrder="16">
+                <navLabel>
+                    <text>第一卷13——初次尝试战斗</text>
+                </navLabel>
+                <content src="Text/chapter013.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-17" playOrder="17">
+                <navLabel>
+                    <text>第一卷14——名为“自我鉴定”的……垃圾玩意</text>
+                </navLabel>
+                <content src="Text/chapter014.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-18" playOrder="18">
+                <navLabel>
+                    <text>第一卷15——魔生大起大落就是这么回事</text>
+                </navLabel>
+                <content src="Text/chapter015.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-19" playOrder="19">
+                <navLabel>
+                    <text>第一卷16——只看着我就好了嘛！</text>
+                </navLabel>
+                <content src="Text/chapter016.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-20" playOrder="20">
+                <navLabel>
+                    <text>第一卷17——并非人类</text>
+                </navLabel>
+                <content src="Text/chapter017.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-21" playOrder="21">
+                <navLabel>
+                    <text>第一卷18——自己不知道的过去</text>
+                </navLabel>
+                <content src="Text/chapter018.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-22" playOrder="22">
+                <navLabel>
+                    <text>第一卷19——决定床上胜负的不仅是寝技</text>
+                </navLabel>
+                <content src="Text/chapter019.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-23" playOrder="23">
+                <navLabel>
+                    <text>第一卷20——学习魔法，真的是学习</text>
+                </navLabel>
+                <content src="Text/chapter020.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-24" playOrder="24">
+                <navLabel>
+                    <text>第一卷21——学完就练</text>
+                </navLabel>
+                <content src="Text/chapter021.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-25" playOrder="25">
+                <navLabel>
+                    <text>第一卷22——虽然说依靠装备不太好</text>
+                </navLabel>
+                <content src="Text/chapter022.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-26" playOrder="26">
+                <navLabel>
+                    <text>第一卷23——进城</text>
+                </navLabel>
+                <content src="Text/chapter023.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-27" playOrder="27">
+                <navLabel>
+                    <text>第一卷24——自己的事情自己做……不到</text>
+                </navLabel>
+                <content src="Text/chapter024.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-28" playOrder="28">
+                <navLabel>
+                    <text>第一卷25——得到了远超预想的贵重礼物却</text>
+                </navLabel>
+                <content src="Text/chapter025.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-29" playOrder="29">
+                <navLabel>
+                    <text>第一卷26——为了缓解压力</text>
+                </navLabel>
+                <content src="Text/chapter026.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-30" playOrder="30">
+                <navLabel>
+                    <text>第一卷27——前进，目标黑猫村落</text>
+                </navLabel>
+                <content src="Text/chapter027.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-31" playOrder="31">
+                <navLabel>
+                    <text>第一卷28——秒杀（指被对方）</text>
+                </navLabel>
+                <content src="Text/chapter028.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-32" playOrder="32">
+                <navLabel>
+                    <text>第一卷29——关于村长不是随处可见的NPC的事</text>
+                </navLabel>
+                <content src="Text/chapter029.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-33" playOrder="33">
+                <navLabel>
+                    <text>第一卷30——委托内容很奇怪但好处很多</text>
+                </navLabel>
+                <content src="Text/chapter030.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-34" playOrder="34">
+                <navLabel>
+                    <text>第一卷31——被相当程度的警戒了</text>
+                </navLabel>
+                <content src="Text/chapter031.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-35" playOrder="35">
+                <navLabel>
+                    <text>第一卷32——并不是业界奖励的那种被揍</text>
+                </navLabel>
+                <content src="Text/chapter032.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-36" playOrder="36">
+                <navLabel>
+                    <text>第一卷33——好感度似乎上升了1点</text>
+                </navLabel>
+                <content src="Text/chapter033.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-37" playOrder="37">
+                <navLabel>
+                    <text>第一卷34——连自己都觉得有点拔O无情了</text>
+                </navLabel>
+                <content src="Text/chapter034.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-38" playOrder="38">
+                <navLabel>
+                    <text>第一卷35——做了那种事自然得承担责任</text>
+                </navLabel>
+                <content src="Text/chapter035.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-39" playOrder="39">
+                <navLabel>
+                    <text>第一卷36——新来的妹妹是个病娇</text>
+                </navLabel>
+                <content src="Text/chapter036.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-40" playOrder="40">
+                <navLabel>
+                    <text>第一卷37——是敌人就很危险，作为队友……不一定能安心</text>
+                </navLabel>
+                <content src="Text/chapter037.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-41" playOrder="41">
+                <navLabel>
+                    <text>第一卷38——说到异世界绝对逃不开的东西</text>
+                </navLabel>
+                <content src="Text/chapter038.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-42" playOrder="42">
+                <navLabel>
+                    <text>第一卷39——成为冒险者吧！只是嘴上说说</text>
+                </navLabel>
+                <content src="Text/chapter039.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-43" playOrder="43">
+                <navLabel>
+                    <text>第一卷40——正常来说是被找麻烦而不是找麻烦</text>
+                </navLabel>
+                <content src="Text/chapter040.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-44" playOrder="44">
+                <navLabel>
+                    <text>第一卷41——类似钓鱼执法的感觉</text>
+                </navLabel>
+                <content src="Text/chapter041.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-45" playOrder="45">
+                <navLabel>
+                    <text>第一卷42——这种处理方式容易引起误会</text>
+                </navLabel>
+                <content src="Text/chapter042.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-46" playOrder="46">
+                <navLabel>
+                    <text>第一卷43——变强的方式</text>
+                </navLabel>
+                <content src="Text/chapter043.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-47" playOrder="47">
+                <navLabel>
+                    <text>第一卷44——契约魔法</text>
+                </navLabel>
+                <content src="Text/chapter044.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-48" playOrder="48">
+                <navLabel>
+                    <text>第一卷45——史莱姆</text>
+                </navLabel>
+                <content src="Text/chapter045.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-49" playOrder="49">
+                <navLabel>
+                    <text>第一卷46——预想外的关系</text>
+                </navLabel>
+                <content src="Text/chapter046.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-50" playOrder="50">
+                <navLabel>
+                    <text>第一卷47——寄居的家伙似乎比我强太多</text>
+                </navLabel>
+                <content src="Text/chapter047.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-51" playOrder="51">
+                <navLabel>
+                    <text>第一卷48——other sdie，听姐姐大人说魅魔就是要配触手的</text>
+                </navLabel>
+                <content src="Text/chapter048.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-52" playOrder="52">
+                <navLabel>
+                    <text>第一卷49——和猫耳幼女一起做任务</text>
+                </navLabel>
+                <content src="Text/chapter049.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-53" playOrder="53">
+                <navLabel>
+                    <text>第一卷50——巨甲黑蛛</text>
+                </navLabel>
+                <content src="Text/chapter050.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-54" playOrder="54">
+                <navLabel>
+                    <text>第一卷51——比预想中还要聪明的魔物</text>
+                </navLabel>
+                <content src="Text/chapter051.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-55" playOrder="55">
+                <navLabel>
+                    <text>第一卷52——变身！史莱姆！</text>
+                </navLabel>
+                <content src="Text/chapter052.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-56" playOrder="56">
+                <navLabel>
+                    <text>第一卷53——被赶出冒险者公会后遇到了奇怪的事</text>
+                </navLabel>
+                <content src="Text/chapter053.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-57" playOrder="57">
+                <navLabel>
+                    <text>第一卷54——初次的对人战，大概</text>
+                </navLabel>
+                <content src="Text/chapter054.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-58" playOrder="58">
+                <navLabel>
+                    <text>第一卷55——你从哪里看出来我是个好人的？</text>
+                </navLabel>
+                <content src="Text/chapter055.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-59" playOrder="59">
+                <navLabel>
+                    <text>第一卷56——被招待到领主的宅邸里了</text>
+                </navLabel>
+                <content src="Text/chapter056.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-60" playOrder="60">
+                <navLabel>
+                    <text>第一卷57——嘴上很强势，身体很……？</text>
+                </navLabel>
+                <content src="Text/chapter057.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-61" playOrder="61">
+                <navLabel>
+                    <text>第一卷58——解锁技能分支时遇到了突发事件</text>
+                </navLabel>
+                <content src="Text/chapter058.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-62" playOrder="62">
+                <navLabel>
+                    <text>第一卷59——『莉莉丝』</text>
+                </navLabel>
+                <content src="Text/chapter059.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-63" playOrder="63">
+                <navLabel>
+                    <text>第一卷60——奋战</text>
+                </navLabel>
+                <content src="Text/chapter060.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-64" playOrder="64">
+                <navLabel>
+                    <text>第一卷61——灭魂</text>
+                </navLabel>
+                <content src="Text/chapter061.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-65" playOrder="65">
+                <navLabel>
+                    <text>第一卷62——尾声&amp;极密资料</text>
+                </navLabel>
+                <content src="Text/chapter062.xhtml" />
+            </navPoint>
+        </navPoint>
+        <navPoint id="navPoint-66" playOrder="66">
+            <navLabel>
+                <text>第二卷</text>
+            </navLabel>
+            <content src="Text/volume002.xhtml" />
+            <navPoint id="navPoint-67" playOrder="67">
+                <navLabel>
+                    <text>第二卷01——虽然房子没了但那种事是说干就能干的吗？</text>
+                </navLabel>
+                <content src="Text/chapter063.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-68" playOrder="68">
+                <navLabel>
+                    <text>第二卷02——看板娘？总感觉像是吉祥物</text>
+                </navLabel>
+                <content src="Text/chapter064.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-69" playOrder="69">
+                <navLabel>
+                    <text>第二卷03——过程中身体产生了异变</text>
+                </navLabel>
+                <content src="Text/chapter065.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-70" playOrder="70">
+                <navLabel>
+                    <text>第二卷04——莫名其妙的来到了熟悉的地方</text>
+                </navLabel>
+                <content src="Text/chapter066.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-71" playOrder="71">
+                <navLabel>
+                    <text>第二卷05——幽灵？鬼魂？实际上是死神！</text>
+                </navLabel>
+                <content src="Text/chapter067.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-72" playOrder="72">
+                <navLabel>
+                    <text>第二卷06——可儿的模样</text>
+                </navLabel>
+                <content src="Text/chapter068.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-73" playOrder="73">
+                <navLabel>
+                    <text>第二卷07——这死神怕不是得了精神分裂症</text>
+                </navLabel>
+                <content src="Text/chapter069.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-74" playOrder="74">
+                <navLabel>
+                    <text>第二卷08——身世这种东西不是初次见面就该谈的吧？</text>
+                </navLabel>
+                <content src="Text/chapter070.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-75" playOrder="75">
+                <navLabel>
+                    <text>第二卷09——同盟提案</text>
+                </navLabel>
+                <content src="Text/chapter071.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-76" playOrder="76">
+                <navLabel>
+                    <text>第二卷10——莫名增加的新头衔</text>
+                </navLabel>
+                <content src="Text/chapter072.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-77" playOrder="77">
+                <navLabel>
+                    <text>第二卷11——感觉是个外挂级别的神器</text>
+                </navLabel>
+                <content src="Text/chapter073.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-78" playOrder="78">
+                <navLabel>
+                    <text>第二卷12——我就知道外挂也不是随便能用的</text>
+                </navLabel>
+                <content src="Text/chapter074.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-79" playOrder="79">
+                <navLabel>
+                    <text>第二卷13——VS洛斯</text>
+                </navLabel>
+                <content src="Text/chapter075.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-80" playOrder="80">
+                <navLabel>
+                    <text>第二卷14——在冒失的性格被纠正前</text>
+                </navLabel>
+                <content src="Text/chapter076.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-81" playOrder="81">
+                <navLabel>
+                    <text>第二卷15——魔力暴走与对策</text>
+                </navLabel>
+                <content src="Text/chapter077.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-82" playOrder="82">
+                <navLabel>
+                    <text>第二卷16——其实我对幸福的要求并不高</text>
+                </navLabel>
+                <content src="Text/chapter078.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-83" playOrder="83">
+                <navLabel>
+                    <text>第二卷17——能控制的妄想还叫妄想吗</text>
+                </navLabel>
+                <content src="Text/chapter079.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-84" playOrder="84">
+                <navLabel>
+                    <text>第二卷18——突如其来的修罗场</text>
+                </navLabel>
+                <content src="Text/chapter080.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-85" playOrder="85">
+                <navLabel>
+                    <text>第二卷19——谁也没说过暴走只会发生一次</text>
+                </navLabel>
+                <content src="Text/chapter081.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-86" playOrder="86">
+                <navLabel>
+                    <text>第二卷20——other sdie，原圣职者与原勇者</text>
+                </navLabel>
+                <content src="Text/chapter082.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-87" playOrder="87">
+                <navLabel>
+                    <text>第二卷21——other sdie，所谓的区别对待</text>
+                </navLabel>
+                <content src="Text/chapter083.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-88" playOrder="88">
+                <navLabel>
+                    <text>第二卷22——other sdie，谁都希望手里的宝石闪闪发光吧</text>
+                </navLabel>
+                <content src="Text/chapter084.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-89" playOrder="89">
+                <navLabel>
+                    <text>第二卷23——关于我身边的人都是开挂者的事</text>
+                </navLabel>
+                <content src="Text/chapter085.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-90" playOrder="90">
+                <navLabel>
+                    <text>第二卷24——这大概就是看着丈夫长期出差的妻子的心情</text>
+                </navLabel>
+                <content src="Text/chapter086.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-91" playOrder="91">
+                <navLabel>
+                    <text>第二卷25——预想外的来访者</text>
+                </navLabel>
+                <content src="Text/chapter087.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-92" playOrder="92">
+                <navLabel>
+                    <text>第二卷26——没想到会被别人提醒这种事</text>
+                </navLabel>
+                <content src="Text/chapter088.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-93" playOrder="93">
+                <navLabel>
+                    <text>第二卷27——看起来是很重要的事</text>
+                </navLabel>
+                <content src="Text/chapter089.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-94" playOrder="94">
+                <navLabel>
+                    <text>第二卷28——我或许有不幸体质</text>
+                </navLabel>
+                <content src="Text/chapter090.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-95" playOrder="95">
+                <navLabel>
+                    <text>第二卷29——检验与准备</text>
+                </navLabel>
+                <content src="Text/chapter091.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-96" playOrder="96">
+                <navLabel>
+                    <text>第二卷30——会让人想起“黑O圣经”的场景</text>
+                </navLabel>
+                <content src="Text/chapter092.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-97" playOrder="97">
+                <navLabel>
+                    <text>第二卷31——单挑的意思是你一个挑我们两个</text>
+                </navLabel>
+                <content src="Text/chapter093.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-98" playOrder="98">
+                <navLabel>
+                    <text>第二卷32——早就该猜到不可能那么简单</text>
+                </navLabel>
+                <content src="Text/chapter094.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-99" playOrder="99">
+                <navLabel>
+                    <text>第二卷33——对失败者的处刑往往都很残忍</text>
+                </navLabel>
+                <content src="Text/chapter095.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-100" playOrder="100">
+                <navLabel>
+                    <text>第二卷34——善后处理比事件本身可能更麻烦</text>
+                </navLabel>
+                <content src="Text/chapter096.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-101" playOrder="101">
+                <navLabel>
+                    <text>第二卷35——知道得越少就会活得越幸福</text>
+                </navLabel>
+                <content src="Text/chapter097.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-102" playOrder="102">
+                <navLabel>
+                    <text>第二卷36——新的发现，新的发现以及新的发现</text>
+                </navLabel>
+                <content src="Text/chapter098.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-103" playOrder="103">
+                <navLabel>
+                    <text>第二卷37——对付过分坚固的东西就该像这样</text>
+                </navLabel>
+                <content src="Text/chapter099.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-104" playOrder="104">
+                <navLabel>
+                    <text>第二卷38——德国骨科的现在进行时哦</text>
+                </navLabel>
+                <content src="Text/chapter100.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-105" playOrder="105">
+                <navLabel>
+                    <text>第二卷39——好像并非全员幸福的Happy End</text>
+                </navLabel>
+                <content src="Text/chapter101.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-106" playOrder="106">
+                <navLabel>
+                    <text>第二卷40——不管怎么说剩下的和我无关所以溜吧</text>
+                </navLabel>
+                <content src="Text/chapter102.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-107" playOrder="107">
+                <navLabel>
+                    <text>第二卷41——坏孩子就会被惩罚（指自己）</text>
+                </navLabel>
+                <content src="Text/chapter103.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-108" playOrder="108">
+                <navLabel>
+                    <text>第二卷42——所谓的恨铁不成钢</text>
+                </navLabel>
+                <content src="Text/chapter104.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-109" playOrder="109">
+                <navLabel>
+                    <text>第二卷43——本来想宅在家结果被赶出门</text>
+                </navLabel>
+                <content src="Text/chapter105.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-110" playOrder="110">
+                <navLabel>
+                    <text>第二卷44——跟预想中的桥段有区别</text>
+                </navLabel>
+                <content src="Text/chapter106.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-111" playOrder="111">
+                <navLabel>
+                    <text>第二卷45——忍耐是有限度的</text>
+                </navLabel>
+                <content src="Text/chapter107.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-112" playOrder="112">
+                <navLabel>
+                    <text>第二卷46——对策与困境</text>
+                </navLabel>
+                <content src="Text/chapter108.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-113" playOrder="113">
+                <navLabel>
+                    <text>第二卷47——觉悟</text>
+                </navLabel>
+                <content src="Text/chapter109.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-114" playOrder="114">
+                <navLabel>
+                    <text>第二卷48——完全就是个坏人</text>
+                </navLabel>
+                <content src="Text/chapter110.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-115" playOrder="115">
+                <navLabel>
+                    <text>第二卷49——勇者登场</text>
+                </navLabel>
+                <content src="Text/chapter111.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-116" playOrder="116">
+                <navLabel>
+                    <text>第二卷50——压倒性的差距</text>
+                </navLabel>
+                <content src="Text/chapter112.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-117" playOrder="117">
+                <navLabel>
+                    <text>第二卷51——必须承担的后果</text>
+                </navLabel>
+                <content src="Text/chapter113.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-118" playOrder="118">
+                <navLabel>
+                    <text>第二卷52——结局，然后是新的开始</text>
+                </navLabel>
+                <content src="Text/chapter114.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-119" playOrder="119">
+                <navLabel>
+                    <text>第二卷53——other sdie，那个时候猫耳幼女正在……（番外1）</text>
+                </navLabel>
+                <content src="Text/chapter115.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-120" playOrder="120">
+                <navLabel>
+                    <text>第二卷54——other sdie，那个时候猫耳幼女已经……（番外2）</text>
+                </navLabel>
+                <content src="Text/chapter116.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-121" playOrder="121">
+                <navLabel>
+                    <text>第二卷55——other sdie，那个时候猫耳幼女遇到……（番外3）</text>
+                </navLabel>
+                <content src="Text/chapter117.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-122" playOrder="122">
+                <navLabel>
+                    <text>第二卷56——other sdie，那个时候猫耳幼女决定……（番外4）</text>
+                </navLabel>
+                <content src="Text/chapter118.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-123" playOrder="123">
+                <navLabel>
+                    <text>第二卷57——other sdie，孩子闯祸家长头疼（番外5）</text>
+                </navLabel>
+                <content src="Text/chapter119.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-124" playOrder="124">
+                <navLabel>
+                    <text>第二卷58——other sdie，所谓的交涉（番外6）</text>
+                </navLabel>
+                <content src="Text/chapter120.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-125" playOrder="125">
+                <navLabel>
+                    <text>第二卷59——other sdie，遭遇战（番外7）</text>
+                </navLabel>
+                <content src="Text/chapter121.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-126" playOrder="126">
+                <navLabel>
+                    <text>第二卷60——other sdie，妖狐一族的公主，玲菲（番外8）</text>
+                </navLabel>
+                <content src="Text/chapter122.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-127" playOrder="127">
+                <navLabel>
+                    <text>第二卷61——other sdie，与传说对峙（番外9）</text>
+                </navLabel>
+                <content src="Text/chapter123.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-128" playOrder="128">
+                <navLabel>
+                    <text>第二卷62——other sdie，家长与子女（番外10）</text>
+                </navLabel>
+                <content src="Text/chapter124.xhtml" />
+            </navPoint>
+        </navPoint>
+        <navPoint id="navPoint-129" playOrder="129">
+            <navLabel>
+                <text>第三卷</text>
+            </navLabel>
+            <content src="Text/volume003.xhtml" />
+            <navPoint id="navPoint-130" playOrder="130">
+                <navLabel>
+                    <text>第三卷01——要上学可免不了考试对吧？</text>
+                </navLabel>
+                <content src="Text/chapter125.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-131" playOrder="131">
+                <navLabel>
+                    <text>第三卷02——入学考试·笔试部分</text>
+                </navLabel>
+                <content src="Text/chapter126.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-132" playOrder="132">
+                <navLabel>
+                    <text>第三卷03——入学考试·中场休息</text>
+                </navLabel>
+                <content src="Text/chapter127.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-133" playOrder="133">
+                <navLabel>
+                    <text>第三卷04——入学考试·实技部分</text>
+                </navLabel>
+                <content src="Text/chapter128.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-134" playOrder="134">
+                <navLabel>
+                    <text>第三卷05——other sdie，‘原勇者’今天也在忙</text>
+                </navLabel>
+                <content src="Text/chapter129.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-135" playOrder="135">
+                <navLabel>
+                    <text>第三卷06——other sdie，探讨，调查与结论</text>
+                </navLabel>
+                <content src="Text/chapter130.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-136" playOrder="136">
+                <navLabel>
+                    <text>第三卷07——事情总能出乎意料</text>
+                </navLabel>
+                <content src="Text/chapter131.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-137" playOrder="137">
+                <navLabel>
+                    <text>第三卷08——能忍受的事，不能忍受的事</text>
+                </navLabel>
+                <content src="Text/chapter132.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-138" playOrder="138">
+                <navLabel>
+                    <text>第三卷09——迈出的一步</text>
+                </navLabel>
+                <content src="Text/chapter133.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-139" playOrder="139">
+                <navLabel>
+                    <text>第三卷10——人与人之间为什么差距那么大呢？</text>
+                </navLabel>
+                <content src="Text/chapter134.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-140" playOrder="140">
+                <navLabel>
+                    <text>第三卷11——朋友</text>
+                </navLabel>
+                <content src="Text/chapter135.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-141" playOrder="141">
+                <navLabel>
+                    <text>第三卷12——小小的一步</text>
+                </navLabel>
+                <content src="Text/chapter136.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-142" playOrder="142">
+                <navLabel>
+                    <text>第三卷13——闲暇时光</text>
+                </navLabel>
+                <content src="Text/chapter137.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-143" playOrder="143">
+                <navLabel>
+                    <text>第三卷14——魅魔总是犯下同样的错误</text>
+                </navLabel>
+                <content src="Text/chapter138.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-144" playOrder="144">
+                <navLabel>
+                    <text>第三卷15——other sdie， 姐姐大人就是姐姐大人</text>
+                </navLabel>
+                <content src="Text/chapter139.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-145" playOrder="145">
+                <navLabel>
+                    <text>第三卷16——other sdie， 最后关头掉链子</text>
+                </navLabel>
+                <content src="Text/chapter140.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-146" playOrder="146">
+                <navLabel>
+                    <text>第三卷17——有关圣女的二三事</text>
+                </navLabel>
+                <content src="Text/chapter141.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-147" playOrder="147">
+                <navLabel>
+                    <text>第三卷18——other sdie， 关于我的奇怪舍友</text>
+                </navLabel>
+                <content src="Text/chapter142.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-148" playOrder="148">
+                <navLabel>
+                    <text>第三卷19——无知是“福”</text>
+                </navLabel>
+                <content src="Text/chapter143.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-149" playOrder="149">
+                <navLabel>
+                    <text>第三卷20——出发，前进</text>
+                </navLabel>
+                <content src="Text/chapter144.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-150" playOrder="150">
+                <navLabel>
+                    <text>第三卷21——other sdie， 关于我的奇怪舍友2</text>
+                </navLabel>
+                <content src="Text/chapter145.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-151" playOrder="151">
+                <navLabel>
+                    <text>第三卷22——other sdie， 关于我的奇怪舍……不，我周围奇怪的人3</text>
+                </navLabel>
+                <content src="Text/chapter146.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-152" playOrder="152">
+                <navLabel>
+                    <text>第三卷23——一件接着一件</text>
+                </navLabel>
+                <content src="Text/chapter147.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-153" playOrder="153">
+                <navLabel>
+                    <text>第三卷24——人不能，至少不应该</text>
+                </navLabel>
+                <content src="Text/chapter148.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-154" playOrder="154">
+                <navLabel>
+                    <text>第三卷25——如暴风席卷过境</text>
+                </navLabel>
+                <content src="Text/chapter149.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-155" playOrder="155">
+                <navLabel>
+                    <text>第三卷26——一团乱麻</text>
+                </navLabel>
+                <content src="Text/chapter150.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-156" playOrder="156">
+                <navLabel>
+                    <text>第三卷27——约会</text>
+                </navLabel>
+                <content src="Text/chapter151.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-157" playOrder="157">
+                <navLabel>
+                    <text>第三卷28——天才史莱姆少……个鬼</text>
+                </navLabel>
+                <content src="Text/chapter152.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-158" playOrder="158">
+                <navLabel>
+                    <text>第三卷29——other sdie，从不同的角度</text>
+                </navLabel>
+                <content src="Text/chapter153.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-159" playOrder="159">
+                <navLabel>
+                    <text>第三卷30——燃眉之急</text>
+                </navLabel>
+                <content src="Text/chapter154.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-160" playOrder="160">
+                <navLabel>
+                    <text>第三卷31——校园恋爱喜剧</text>
+                </navLabel>
+                <content src="Text/chapter155.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-161" playOrder="161">
+                <navLabel>
+                    <text>第三卷32——‘赤色委托’</text>
+                </navLabel>
+                <content src="Text/chapter156.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-162" playOrder="162">
+                <navLabel>
+                    <text>第三卷33——飞龙狩猎</text>
+                </navLabel>
+                <content src="Text/chapter157.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-163" playOrder="163">
+                <navLabel>
+                    <text>第三卷34——科目二（飞行篇）</text>
+                </navLabel>
+                <content src="Text/chapter158.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-164" playOrder="164">
+                <navLabel>
+                    <text>第三卷35——善后</text>
+                </navLabel>
+                <content src="Text/chapter159.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-165" playOrder="165">
+                <navLabel>
+                    <text>第三卷36——‘女仆’</text>
+                </navLabel>
+                <content src="Text/chapter160.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-166" playOrder="166">
+                <navLabel>
+                    <text>第三卷37——魔法少女（上）</text>
+                </navLabel>
+                <content src="Text/chapter161.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-167" playOrder="167">
+                <navLabel>
+                    <text>第三卷38——魔法少女（下）</text>
+                </navLabel>
+                <content src="Text/chapter162.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-168" playOrder="168">
+                <navLabel>
+                    <text>第三卷39——狂热爱慕</text>
+                </navLabel>
+                <content src="Text/chapter163.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-169" playOrder="169">
+                <navLabel>
+                    <text>第三卷40——临门一脚</text>
+                </navLabel>
+                <content src="Text/chapter164.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-170" playOrder="170">
+                <navLabel>
+                    <text>第三卷41——总在关键的时刻</text>
+                </navLabel>
+                <content src="Text/chapter165.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-171" playOrder="171">
+                <navLabel>
+                    <text>第三卷42——草（一种植物）</text>
+                </navLabel>
+                <content src="Text/chapter166.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-172" playOrder="172">
+                <navLabel>
+                    <text>第三卷43——草（语气词）</text>
+                </navLabel>
+                <content src="Text/chapter167.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-173" playOrder="173">
+                <navLabel>
+                    <text>第三卷44——other sdie，酸臭没有，疼痛一堆</text>
+                </navLabel>
+                <content src="Text/chapter168.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-174" playOrder="174">
+                <navLabel>
+                    <text>第三卷45——武斗祭·开幕前夕</text>
+                </navLabel>
+                <content src="Text/chapter169.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-175" playOrder="175">
+                <navLabel>
+                    <text>第三卷46——武斗祭·第一日（上）</text>
+                </navLabel>
+                <content src="Text/chapter170.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-176" playOrder="176">
+                <navLabel>
+                    <text>第三卷47——武斗祭·第一日（中）</text>
+                </navLabel>
+                <content src="Text/chapter171.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-177" playOrder="177">
+                <navLabel>
+                    <text>第三卷48——武斗祭·第一日（下）</text>
+                </navLabel>
+                <content src="Text/chapter172.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-178" playOrder="178">
+                <navLabel>
+                    <text>第三卷49——other sdie，鱼与熊掌不可兼得</text>
+                </navLabel>
+                <content src="Text/chapter173.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-179" playOrder="179">
+                <navLabel>
+                    <text>第三卷50——武斗祭·海选结束</text>
+                </navLabel>
+                <content src="Text/chapter174.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-180" playOrder="180">
+                <navLabel>
+                    <text>第三卷51——意外之喜</text>
+                </navLabel>
+                <content src="Text/chapter175.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-181" playOrder="181">
+                <navLabel>
+                    <text>第三卷52——好像这才是该做的事</text>
+                </navLabel>
+                <content src="Text/chapter176.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-182" playOrder="182">
+                <navLabel>
+                    <text>第三卷53——优点</text>
+                </navLabel>
+                <content src="Text/chapter177.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-183" playOrder="183">
+                <navLabel>
+                    <text>第三卷54——other sdie，“真诚”</text>
+                </navLabel>
+                <content src="Text/chapter178.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-184" playOrder="184">
+                <navLabel>
+                    <text>第三卷55——other sdie，互相帮助</text>
+                </navLabel>
+                <content src="Text/chapter179.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-185" playOrder="185">
+                <navLabel>
+                    <text>第三卷56——other sdie，问题，问题与问题</text>
+                </navLabel>
+                <content src="Text/chapter180.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-186" playOrder="186">
+                <navLabel>
+                    <text>第三卷57——武斗祭·淘汰赛·VS？？？（1）</text>
+                </navLabel>
+                <content src="Text/chapter181.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-187" playOrder="187">
+                <navLabel>
+                    <text>第三卷58——武斗祭·淘汰赛·VS蕾蒂娅（2）</text>
+                </navLabel>
+                <content src="Text/chapter182.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-188" playOrder="188">
+                <navLabel>
+                    <text>第三卷59——武斗祭·淘汰赛·VS蕾蒂娅（3）</text>
+                </navLabel>
+                <content src="Text/chapter183.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-189" playOrder="189">
+                <navLabel>
+                    <text>第三卷60——武斗祭·淘汰赛·相遇</text>
+                </navLabel>
+                <content src="Text/chapter184.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-190" playOrder="190">
+                <navLabel>
+                    <text>第三卷61——武斗祭·淘汰赛·场外</text>
+                </navLabel>
+                <content src="Text/chapter185.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-191" playOrder="191">
+                <navLabel>
+                    <text>第三卷62——武斗祭·幕间</text>
+                </navLabel>
+                <content src="Text/chapter186.xhtml" />
+            </navPoint>
+        </navPoint>
+        <navPoint id="navPoint-192" playOrder="192">
+            <navLabel>
+                <text>第四卷</text>
+            </navLabel>
+            <content src="Text/volume004.xhtml" />
+            <navPoint id="navPoint-193" playOrder="193">
+                <navLabel>
+                    <text>第四卷01——other sdie，石破天惊</text>
+                </navLabel>
+                <content src="Text/chapter187.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-194" playOrder="194">
+                <navLabel>
+                    <text>第四卷02——“妹妹”</text>
+                </navLabel>
+                <content src="Text/chapter188.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-195" playOrder="195">
+                <navLabel>
+                    <text>第四卷03——手淫</text>
+                </navLabel>
+                <content src="Text/chapter189.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-196" playOrder="196">
+                <navLabel>
+                    <text>第四卷04——重视</text>
+                </navLabel>
+                <content src="Text/chapter190.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-197" playOrder="197">
+                <navLabel>
+                    <text>第四卷05——方案</text>
+                </navLabel>
+                <content src="Text/chapter191.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-198" playOrder="198">
+                <navLabel>
+                    <text>第四卷06——诱惑</text>
+                </navLabel>
+                <content src="Text/chapter192.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-199" playOrder="199">
+                <navLabel>
+                    <text>第四卷07——other sdie，油炸豆腐</text>
+                </navLabel>
+                <content src="Text/chapter193.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-200" playOrder="200">
+                <navLabel>
+                    <text>第四卷08——油炸豆腐（2）</text>
+                </navLabel>
+                <content src="Text/chapter194.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-201" playOrder="201">
+                <navLabel>
+                    <text>第四卷09——套路与反套路</text>
+                </navLabel>
+                <content src="Text/chapter195.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-202" playOrder="202">
+                <navLabel>
+                    <text>第四卷10——可以预料的结果</text>
+                </navLabel>
+                <content src="Text/chapter196.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-203" playOrder="203">
+                <navLabel>
+                    <text>第四卷11——目光指向的是？</text>
+                </navLabel>
+                <content src="Text/chapter197.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-204" playOrder="204">
+                <navLabel>
+                    <text>第四卷12——本心</text>
+                </navLabel>
+                <content src="Text/chapter198.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-205" playOrder="205">
+                <navLabel>
+                    <text>第四卷13——other sdie，学无常师</text>
+                </navLabel>
+                <content src="Text/chapter199.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-206" playOrder="206">
+                <navLabel>
+                    <text>第四卷14——想法</text>
+                </navLabel>
+                <content src="Text/chapter200.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-207" playOrder="207">
+                <navLabel>
+                    <text>第四卷15——为了朋友两肋插刀，为了……</text>
+                </navLabel>
+                <content src="Text/chapter201.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-208" playOrder="208">
+                <navLabel>
+                    <text>第四卷16——理由</text>
+                </navLabel>
+                <content src="Text/chapter202.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-209" playOrder="209">
+                <navLabel>
+                    <text>第四卷17——妖狐</text>
+                </navLabel>
+                <content src="Text/chapter203.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-210" playOrder="210">
+                <navLabel>
+                    <text>第四卷18——妖狐（2）</text>
+                </navLabel>
+                <content src="Text/chapter204.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-211" playOrder="211">
+                <navLabel>
+                    <text>第四卷19——要求</text>
+                </navLabel>
+                <content src="Text/chapter205.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-212" playOrder="212">
+                <navLabel>
+                    <text>第四卷20——旧地与旧识</text>
+                </navLabel>
+                <content src="Text/chapter206.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-213" playOrder="213">
+                <navLabel>
+                    <text>第四卷21——写作“过去”读作“黑历史”</text>
+                </navLabel>
+                <content src="Text/chapter207.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-214" playOrder="214">
+                <navLabel>
+                    <text>第四卷22——明明一直都在笑，就没停过</text>
+                </navLabel>
+                <content src="Text/chapter208.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-215" playOrder="215">
+                <navLabel>
+                    <text>第四卷23——主人大人的过去</text>
+                </navLabel>
+                <content src="Text/chapter209.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-216" playOrder="216">
+                <navLabel>
+                    <text>第四卷24——想太多</text>
+                </navLabel>
+                <content src="Text/chapter210.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-217" playOrder="217">
+                <navLabel>
+                    <text>第四卷25——届不到的……</text>
+                </navLabel>
+                <content src="Text/chapter211.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-218" playOrder="218">
+                <navLabel>
+                    <text>第四卷26——人生大起大落大起大落大起大落落落</text>
+                </navLabel>
+                <content src="Text/chapter212.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-219" playOrder="219">
+                <navLabel>
+                    <text>第四卷27——小过失酿成大错误</text>
+                </navLabel>
+                <content src="Text/chapter213.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-220" playOrder="220">
+                <navLabel>
+                    <text>第四卷28——周末的结束</text>
+                </navLabel>
+                <content src="Text/chapter214.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-221" playOrder="221">
+                <navLabel>
+                    <text>第四卷29——前奏</text>
+                </navLabel>
+                <content src="Text/chapter215.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-222" playOrder="222">
+                <navLabel>
+                    <text>第四卷30——外部因素</text>
+                </navLabel>
+                <content src="Text/chapter216.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-223" playOrder="223">
+                <navLabel>
+                    <text>第四卷31——失算</text>
+                </navLabel>
+                <content src="Text/chapter217.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-224" playOrder="224">
+                <navLabel>
+                    <text>第四卷32——other sdie，“幕后黑手”</text>
+                </navLabel>
+                <content src="Text/chapter218.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-225" playOrder="225">
+                <navLabel>
+                    <text>第四卷33——姐姐总是对妹妹没辙的</text>
+                </navLabel>
+                <content src="Text/chapter219.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-226" playOrder="226">
+                <navLabel>
+                    <text>第四卷34——日在校园</text>
+                </navLabel>
+                <content src="Text/chapter220.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-227" playOrder="227">
+                <navLabel>
+                    <text>第四卷35——收束</text>
+                </navLabel>
+                <content src="Text/chapter221.xhtml" />
+            </navPoint>
+            <navPoint id="navPoint-228" playOrder="228">
+                <navLabel>
+                    <text>第四卷36——应对</text>
+                </navLabel>
+                <content src="Text/chapter222.xhtml" />
+            </navPoint>
+        </navPoint>
+    </navMap>
+</ncx>

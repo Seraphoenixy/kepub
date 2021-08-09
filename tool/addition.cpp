@@ -21,7 +21,10 @@ int main(int argc, const char *argv[]) try {
   kepub::check_file_exist(epub_name);
 
   klib::decompress(epub_name, book_name);
-  std::filesystem::rename(epub_name, book_name + "-back-up.epub");
+
+  if (!options.no_compress_) {
+    std::filesystem::rename(epub_name, book_name + "-back-up.epub");
+  }
 
   std::vector<std::pair<std::string, std::vector<std::string>>> contents;
 
@@ -46,7 +49,11 @@ int main(int argc, const char *argv[]) try {
   }
 
   klib::Epub::append_chapter(book_name, contents);
-  klib::compress(book_name, klib::Algorithm::Zip, book_name + ".epub", false);
+
+  if (!options.no_compress_) {
+    klib::compress(book_name, klib::Algorithm::Zip, book_name + ".epub", false);
+    std::filesystem::remove_all(book_name);
+  }
 } catch (const std::exception &err) {
   klib::error(err.what());
 } catch (...) {

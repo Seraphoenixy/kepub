@@ -20,6 +20,7 @@ struct Options {
   // for testing
   std::string uuid_;
   std::string date_;
+  bool no_compress_ = false;
 };
 
 void check_file_exist(const std::string &file_name);
