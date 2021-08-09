@@ -156,6 +156,11 @@ std::pair<std::string, Options> processing_cmd(std::int32_t argc,
       boost::program_options::value<std::string>(&options.date_)
           ->default_value(""),
       "specify the date");
+  config.add_options()(
+      "uuid",
+      boost::program_options::value<std::string>(&options.uuid_)
+          ->default_value(""),
+      "specify the uuid");
 
   boost::program_options::options_description hidden("Hidden options");
   hidden.add_options()("input-file",
