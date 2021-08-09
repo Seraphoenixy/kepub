@@ -3,6 +3,7 @@
 #include <chrono>
 #include <cstdlib>
 #include <filesystem>
+#include <fstream>
 #include <iostream>
 #include <memory>
 #include <stdexcept>
@@ -200,7 +201,9 @@ int main(int argc, const char *argv[]) try {
     if (pid < 0) {
       klib::error("Fork error");
     } else if (pid == 0) {
-      klib::write_file(title, false, boost::join(get_text(urls, false), "\n"));
+      klib::write_file(
+          title, false,
+          boost::join(get_text(urls, options.connect_chinese_), "\n"));
       std::clog << title << " ok" << std::endl;
       std::exit(EXIT_SUCCESS);
     }

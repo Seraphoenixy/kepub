@@ -1,19 +1,16 @@
 #include "util.h"
 
-#include <algorithm>
 #include <cassert>
 #include <cctype>
-#include <cstddef>
 #include <cstdlib>
+#include <filesystem>
 
 #include <fmt/core.h>
-#include <fmt/format.h>
 #include <fmt/ostream.h>
 #include <klib/error.h>
 #include <klib/util.h>
 #include <unicode/uchar.h>
 #include <unicode/unistr.h>
-#include <unicode/utypes.h>
 #include <boost/algorithm/string.hpp>
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/parsers.hpp>
@@ -49,6 +46,12 @@ bool is_punct(char32_t c) {
 
 namespace kepub {
 
+void check_file_exist(const std::string &file_name) {
+  if (!std::filesystem::is_regular_file(file_name)) {
+    klib::error("The file not exist: '{}'", file_name);
+  }
+}
+
 void check_is_txt_file(const std::string &file_name) {
   check_file_exist(file_name);
 
@@ -57,24 +60,12 @@ void check_is_txt_file(const std::string &file_name) {
   }
 }
 
-void check_file_exist(const std::string &file_name) {
-  if (!std::filesystem::is_regular_file(file_name)) {
-    klib::error("The file not exist: '{}'", file_name);
-  }
-}
-
-std::string read_file_to_str(const std::string &file_name) {
+std::vector<std::string> read_file_to_vec(const std::string &file_name) {
   auto data = klib::read_file(file_name, false);
 
   if (auto encoding = detect_encoding(data); encoding != "UTF-8") {
     klib::error("file '{}' encoding is not UTF-8 ({})", file_name, encoding);
   }
-
-  return data;
-}
-
-std::vector<std::string> read_file_to_vec(const std::string &file_name) {
-  auto data = read_file_to_str(file_name);
 
   std::vector<std::string> result;
   boost::split(result, data, boost::is_any_of("\n"), boost::token_compress_on);
@@ -89,21 +80,60 @@ std::vector<std::string> read_file_to_vec(const std::string &file_name) {
   return result;
 }
 
-std::string num_to_str(std::int32_t i) {
-  assert(i > 0);
+std::int32_t str_size(const std::string &str) {
+  std::int32_t result = 0;
 
-  auto str = std::to_string(i);
-  if (i < 10) {
-    return "00" + str;
-  } else if (i < 100) {
-    return "0" + str;
-  } else {
-    return str;
+  for (auto c : klib::utf8_to_utf32(str)) {
+    if (klib::is_chinese(c)) {
+      ++result;
+    }
+  }
+
+  return result;
+}
+
+void str_check(const std::string &str) {
+  auto copy = str;
+  std::erase_if(copy, [](auto c) { return std::isalnum(c); });
+
+  for (auto c : klib::utf8_to_utf32(copy)) {
+    if (!u_isblank(c) && !klib::is_chinese(c) && !is_punct(c)) {
+      std::string temp;
+      UChar32 ch = c;
+      klib::warn("Unknown character: {} in {}",
+                 icu::UnicodeString::fromUTF32(&ch, 1).toUTF8String(temp), str);
+    }
   }
 }
 
-std::string num_to_chapter_name(std::int32_t i) {
-  return "chapter" + num_to_str(i) + ".xhtml";
+void push_back(std::vector<std::string> &texts, const std::string &str,
+               bool connect_chinese) {
+  if (std::empty(str)) {
+    return;
+  }
+
+  if (std::empty(texts)) {
+    texts.push_back(str);
+    return;
+  }
+
+  if (texts.back().ends_with("，") || str.starts_with("，") ||
+      str.starts_with("。") || str.starts_with("！") || str.starts_with("？") ||
+      str.starts_with("”") || str.starts_with("、") || str.starts_with("』") ||
+      str.starts_with("》") || str.starts_with("】") || str.starts_with("）")) {
+    texts.back().append(str);
+  } else if (std::isalpha(texts.back().back()) && std::isalpha(str.front())) {
+    texts.back().append(" " + str);
+  } else if (end_with_chinese(texts.back()) && std::isalpha(str.front())) {
+    texts.back().append(" " + str);
+  } else if (std::isalpha(texts.back().back()) && start_with_chinese(str)) {
+    texts.back().append(" " + str);
+  } else if (connect_chinese && end_with_chinese(texts.back()) &&
+             start_with_chinese(str)) {
+    texts.back().append(str);
+  } else {
+    texts.push_back(str);
+  }
 }
 
 std::pair<std::string, Options> processing_cmd(std::int32_t argc,
@@ -133,12 +163,12 @@ std::pair<std::string, Options> processing_cmd(std::int32_t argc,
       "date",
       boost::program_options::value<std::string>(&options.date_)
           ->default_value(""),
-      "specify the date");
+      "specify the date(for testing)");
   config.add_options()(
       "uuid",
       boost::program_options::value<std::string>(&options.uuid_)
           ->default_value(""),
-      "specify the uuid");
+      "specify the uuid(for testing)");
 
   boost::program_options::options_description hidden("Hidden options");
   hidden.add_options()("input-file",
@@ -186,69 +216,6 @@ std::pair<std::string, Options> processing_cmd(std::int32_t argc,
   }
 
   return {input_file, options};
-}
-
-void push_back(std::vector<std::string> &texts, const std::string &str,
-               bool connect_chinese) {
-  if (std::empty(str)) {
-    return;
-  }
-
-  if (std::empty(texts)) {
-    texts.push_back(str);
-    return;
-  }
-
-  if (texts.back().ends_with("，") || str.starts_with("，") ||
-      str.starts_with("。") || str.starts_with("！") || str.starts_with("？") ||
-      str.starts_with("”") || str.starts_with("、") || str.starts_with("』") ||
-      str.starts_with("》") || str.starts_with("】") || str.starts_with("）")) {
-    texts.back().append(str);
-  } else if (std::isalpha(texts.back().back()) && std::isalpha(str.front())) {
-    texts.back().append(" " + str);
-  } else if (end_with_chinese(texts.back()) && std::isalpha(str.front())) {
-    texts.back().append(" " + str);
-  } else if (std::isalpha(texts.back().back()) && start_with_chinese(str)) {
-    texts.back().append(" " + str);
-  } else if (connect_chinese && end_with_chinese(texts.back()) &&
-             start_with_chinese(str)) {
-    texts.back().append(str);
-  } else {
-    texts.push_back(str);
-  }
-}
-
-std::int32_t str_size(const std::string &str) {
-  auto copy = str;
-  boost::replace_all(copy, "&amp;", "&");
-  boost::replace_all(copy, "&lt;", "<");
-  boost::replace_all(copy, "&gt;", ">");
-  boost::replace_all(copy, "&quot;", "\"");
-  boost::replace_all(copy, "&apos;", "'");
-
-  auto result = std::erase_if(copy, [](auto c) { return std::isalnum(c); });
-
-  for (auto c : klib::utf8_to_utf32(copy)) {
-    if (klib::is_chinese(c)) {
-      ++result;
-    }
-  }
-
-  return result;
-}
-
-void str_check(const std::string &str) {
-  auto copy = str;
-  std::erase_if(copy, [](auto c) { return std::isalnum(c); });
-
-  for (auto c : klib::utf8_to_utf32(copy)) {
-    if (!u_isblank(c) && !klib::is_chinese(c) && !is_punct(c)) {
-      std::string temp;
-      UChar32 ch = c;
-      klib::warn("Unknown character: {} in {}",
-                 icu::UnicodeString::fromUTF32(&ch, 1).toUTF8String(temp), str);
-    }
-  }
 }
 
 void check_icu(UErrorCode status) {

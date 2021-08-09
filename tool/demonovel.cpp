@@ -47,7 +47,7 @@ int main(int argc, const char *argv[]) try {
     }
   }
 
-  epub.generate();
+  epub.generate(false);
 } catch (const std::exception &err) {
   klib::error(err.what());
 } catch (...) {
