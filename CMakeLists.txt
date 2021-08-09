@@ -70,22 +70,12 @@ find_package(Boost REQUIRED COMPONENTS program_options)
 find_package(klib REQUIRED)
 
 # ---------------------------------------------------------------------------------------
-# Build data
-# ---------------------------------------------------------------------------------------
-file(GLOB_RECURSE DATA_FILE CONFIGURE_DEPENDS "${KEPUB_SOURCE_DIR}/data/*")
-file(COPY ${DATA_FILE} DESTINATION ${KEPUB_BINARY_DIR})
-
-add_library(data STATIC ${DATA_SRC})
-target_compile_options(data PRIVATE "-Wno-unused-command-line-argument")
-
-# ---------------------------------------------------------------------------------------
 # Build static library
 # ---------------------------------------------------------------------------------------
 add_library(${LIBRARY} STATIC ${LIBRARY_SRC})
 target_include_directories(${LIBRARY} PUBLIC "${KEPUB_SOURCE_DIR}/include")
-target_link_libraries(
-  ${LIBRARY} PRIVATE data fmt::fmt pugixml::pugixml klib::klib
-                     ${Boost_LIBRARIES} ${ICU_LIBRARIES})
+target_link_libraries(${LIBRARY} PRIVATE fmt::fmt pugixml::pugixml klib::klib
+                                         ${Boost_LIBRARIES} ${ICU_LIBRARIES})
 
 set_target_properties(
   ${LIBRARY}

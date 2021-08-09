@@ -65,8 +65,10 @@ class XHTML {
                  const std::vector<std::pair<std::string, std::string>> &attrs,
                  const std::string &text = "");
 
-  void push_title(const std::string &title);
-  void push_text(const std::string &text);
+  // TODO
+  // Remove
+  void push_title(const std::string &title, bool old_style);
+  void push_text(const std::string &text, bool old_style);
 
   [[nodiscard]] std::string get_text() const;
 

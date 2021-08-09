@@ -25,11 +25,14 @@ Content::Content(const std::string& title,
   push_lines(lines);
 }
 
-void Content::push_line(const std::string& line) { push_back(lines_, line); }
+void Content::push_line(const std::string& line, bool connect_chinese) {
+  push_back(lines_, line, connect_chinese);
+}
 
-void Content::push_lines(const std::vector<std::string>& lines) {
+void Content::push_lines(const std::vector<std::string>& lines,
+                         bool connect_chinese) {
   for (const auto& line : lines) {
-    push_line(line);
+    push_line(line, connect_chinese);
   }
 }
 
@@ -45,12 +48,8 @@ void Epub::set_book_name(const std::string& book_name) {
 
 void Epub::set_author(const std::string& author) { author_ = author; }
 
-void Epub::set_description(const std::vector<std::string>& description) {
-  description_.clear();
-
-  for (const auto& line : description) {
-    push_back(description_, line);
-  }
+void Epub::set_description(const Content& content) {
+  description_ = content.get_lines();
 }
 
 void Epub::set_cover_url(const std::string& url) { cover_url_ = url; }
@@ -83,7 +82,7 @@ void Epub::generate_for_web(
   common_generate();
 
   // cover.jpg
-  if (download_cover) {
+  if (download_cover_) {
     klib::http::Request request;
     request.set_no_proxy();
     auto response = request.get(cover_url_);

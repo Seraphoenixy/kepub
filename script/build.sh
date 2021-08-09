@@ -7,7 +7,9 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
   sudo apt update
   sudo apt install -y gcc-11 g++-11
 
-  sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
+  wget https://apt.llvm.org/llvm.sh
+  chmod +x llvm.sh
+  sudo ./llvm.sh 12
   sudo apt install -y clang-tidy-12 valgrind
 
   sudo apt install -y make cmake re2c autoconf automake libtool m4 tcl
@@ -27,11 +29,11 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
   sudo update-alternatives --install /usr/bin/llvm-cov llvm-cov /usr/bin/llvm-cov-12 400
   sudo update-alternatives --install /usr/bin/llvm-symbolizer llvm-symbolizer /usr/bin/llvm-symbolizer-12 400
 
-  curl -L https://github.com/KaiserLancelot/klib/releases/download/v0.1.8/klib-v0.1.8-ubuntu-20.04.deb \
+  curl -L https://github.com/KaiserLancelot/klib/releases/download/v0.2.1/klib-v0.2.1-ubuntu-20.04.deb \
       -o klib.deb
     sudo dpkg -i klib.deb
 
-  curl -L https://github.com/KaiserLancelot/kpkg/releases/download/v0.3.3/kpkg-v0.3.3-ubuntu-20.04.deb \
+  curl -L https://github.com/KaiserLancelot/kpkg/releases/download/v0.3.5/kpkg-v0.3.5-ubuntu-20.04.deb \
       -o kpkg.deb
   sudo dpkg -i kpkg.deb
 

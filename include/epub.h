@@ -14,8 +14,8 @@ class Content {
   explicit Content(const std::string &title,
                    const std::vector<std::string> &lines = {});
 
-  void push_line(const std::string &line);
-  void push_lines(const std::vector<std::string> &lines);
+  void push_line(const std::string &line, bool connect_chinese);
+  void push_lines(const std::vector<std::string> &lines, bool connect_chinese);
 
   [[nodiscard]] const std::string &get_title() const;
   [[nodiscard]] const std::vector<std::string> &get_lines() const;
@@ -29,10 +29,16 @@ class Epub {
  public:
   Epub() = default;
 
+  void set_generate_cover(bool generate_cover);
+  void set_generate_postscript(bool generate_postscript);
+  void set_old_style(bool old_style);
+  void set_illustration_num(int32_t illustration_num);
+  void set_image_num(int32_t image_num);
+
   void set_creator(const std::string &creator);
   void set_book_name(const std::string &book_name);
   void set_author(const std::string &author);
-  void set_description(const std::vector<std::string> &description);
+  void set_description(const Content &content);
   void set_cover_url(const std::string &url);
 
   void add_content(const Content &content);
@@ -62,6 +68,12 @@ class Epub {
   void generate_illustration();
   void generate_chapter();
   void generate_postscript();
+
+  bool generate_cover_ = false;
+  bool generate_postscript_ = false;
+  bool old_style_ = false;
+  std::int32_t illustration_num_ = 0;
+  std::int32_t image_num_ = 0;
 
   std::string creator_ = "TODO";
   std::string book_name_ = "TODO";

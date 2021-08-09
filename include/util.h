@@ -11,25 +11,19 @@
 
 namespace kepub {
 
-inline bool connect_chinese = false;
+struct Options {
+  bool no_cover_ = false;
+  bool generate_postscript_ = false;
+  std::int32_t illustration_num_ = 0;
+  std::int32_t image_num_ = 0;
 
-inline bool no_cover = false;
+  bool old_style_ = false;
+  bool connect_chinese_ = false;
 
-inline bool download_cover = false;
-
-inline bool postscript = false;
-
-inline bool old_style = false;
-
-inline bool no_trans_hant = false;
-
-inline std::int32_t illustration_num = 0;
-
-inline std::int32_t image_num = 0;
-
-inline std::int32_t max_chapter = 0;
-
-inline std::string date;
+  // for test
+  std::string uuid_;
+  std::string date_;
+};
 
 void create_dir(const std::filesystem::path &path);
 
@@ -41,7 +35,8 @@ void check_is_url(const std::string &url);
 
 std::string read_file_to_str(const std::string &file_name);
 
-std::vector<std::string> read_file_to_vec(const std::string &file_name);
+std::vector<std::string> read_file_to_vec(const std::string &file_name,
+                                          bool trans_hant);
 
 void check_and_write_file(std::ofstream &ofs, std::string_view str);
 
@@ -51,9 +46,11 @@ std::string num_to_chapter_name(std::int32_t i);
 
 std::string num_to_illustration_name(std::int32_t i);
 
-std::string processing_cmd(std::int32_t argc, char *argv[]);
+std::pair<std::string, Options> processing_cmd(std::int32_t argc,
+                                               const char *argv[]);
 
-void push_back(std::vector<std::string> &texts, const std::string &str);
+void push_back(std::vector<std::string> &texts, const std::string &str,
+               bool connect_chinese);
 
 std::int32_t str_size(const std::string &str);
 

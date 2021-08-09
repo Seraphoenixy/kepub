@@ -199,7 +199,7 @@ void XHTML::push_back(
   push_back(node);
 }
 
-void XHTML::push_title(const std::string& title) {
+void XHTML::push_title(const std::string& title, bool old_style) {
   if (old_style) {
     push_back("h1", {{"class", "color"}}, title);
   } else {
@@ -207,7 +207,7 @@ void XHTML::push_title(const std::string& title) {
   }
 }
 
-void XHTML::push_text(const std::string& text) {
+void XHTML::push_text(const std::string& text, bool old_style) {
   if (old_style) {
     push_back("p", {{"class", "calibre2"}}, text);
   } else {

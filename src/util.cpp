@@ -12,6 +12,7 @@
 #include <fmt/core.h>
 #include <fmt/format.h>
 #include <fmt/ostream.h>
+#include <klib/util.h>
 #include <unicode/calendar.h>
 #include <unicode/timezone.h>
 #include <unicode/uchar.h>
@@ -31,76 +32,23 @@
 
 namespace {
 
-std::u32string utf8_to_utf32(const std::string &str) {
-  std::setlocale(LC_ALL, "en_US.utf8");
-
-  std::u32string result;
-
-  std::size_t rc;
-  char32_t out;
-  auto begin = str.c_str();
-  mbstate_t state = {};
-
-  while ((rc = mbrtoc32(&out, begin, std::size(str), &state))) {
-    assert(rc != static_cast<std::size_t>(-3));
-
-    if (rc > static_cast<std::size_t>(-1) / 2) {
-      break;
-    } else {
-      begin += rc;
-      result.push_back(out);
-    }
-  }
-
-  return result;
-}
-
-// https://stackoverflow.com/questions/62531882/is-there-a-way-to-detect-chinese-characters-in-c-using-boost
-template <char32_t a, char32_t b>
-class UnicodeRange {
-  static_assert(a <= b, "proper range");
-
- public:
-  constexpr bool operator()(char32_t x) const noexcept {
-    return x >= a && x <= b;
-  }
-};
-
-using UnifiedIdeographs = UnicodeRange<0x4E00, 0x9FFF>;
-using UnifiedIdeographsA = UnicodeRange<0x3400, 0x4DBF>;
-using UnifiedIdeographsB = UnicodeRange<0x20000, 0x2A6DF>;
-using UnifiedIdeographsC = UnicodeRange<0x2A700, 0x2B73F>;
-using UnifiedIdeographsD = UnicodeRange<0x2B740, 0x2B81F>;
-using UnifiedIdeographsE = UnicodeRange<0x2B820, 0x2CEAF>;
-using CompatibilityIdeographs = UnicodeRange<0xF900, 0xFAFF>;
-using CompatibilityIdeographsSupplement = UnicodeRange<0x2F800, 0x2FA1F>;
-
-constexpr bool is_chinese(char32_t x) noexcept {
-  return UnifiedIdeographs{}(x) || UnifiedIdeographsA{}(x) ||
-         UnifiedIdeographsB{}(x) || UnifiedIdeographsC{}(x) ||
-         UnifiedIdeographsD{}(x) || UnifiedIdeographsE{}(x) ||
-         CompatibilityIdeographs{}(x) || CompatibilityIdeographsSupplement{}(x);
-}
-
-bool start_with_chinese(const std::string &str) {
-  return is_chinese(utf8_to_utf32(str).front());
-}
-
-bool end_with_chinese(const std::string &str) {
-  return is_chinese(utf8_to_utf32(str).back());
-}
-
 char32_t to_unicode(const std::string &str) {
-  auto utf32 = utf8_to_utf32(str);
+  auto utf32 = klib::util::utf8_to_utf32(str);
   assert(std::size(utf32) == 1);
 
   return utf32.front();
 }
 
+bool start_with_chinese(const std::string &str) {
+  return klib::util::is_chinese(klib::util::utf8_to_utf32(str).front());
+}
+
+bool end_with_chinese(const std::string &str) {
+  return klib::util::is_chinese(klib::util::utf8_to_utf32(str).back());
+}
+
 bool is_punct(char32_t c) {
-  return u_ispunct(c) || c == to_unicode("+") || c == to_unicode("-") ||
-         c == to_unicode("*") || c == to_unicode("/") || c == to_unicode("=") ||
-         c == to_unicode("～") || c == to_unicode("ー") || c == to_unicode("→");
+  return u_ispunct(c) || c == to_unicode("～") || c == to_unicode("ー");
 }
 
 }  // namespace
@@ -108,18 +56,13 @@ bool is_punct(char32_t c) {
 namespace kepub {
 
 void create_dir(const std::filesystem::path &path) {
-  if (std::filesystem::exists(path)) {
-    if (std::filesystem::is_directory(path)) {
-      if (std::filesystem::remove_all(path) == 0) {
-        error("can not remove directory: {}", path);
-      }
-    } else {
-      error("{} already exists", path);
-    }
+  if (std::filesystem::is_directory(path) &&
+      std::filesystem::remove_all(path) == 0) {
+    error("can not remove directory: '{}'", path);
   }
 
   if (!std::filesystem::create_directory(path)) {
-    error("can not create directory: {}", path.string());
+    error("can not create directory: '{}'", path.string());
   }
 }
 
@@ -127,49 +70,35 @@ void check_is_txt_file(const std::string &file_name) {
   check_file_exist(file_name);
 
   if (std::filesystem::path(file_name).extension() != ".txt") {
-    error("need a txt file: {}", file_name);
+    error("Need a txt file: {}", file_name);
   }
 }
 
 void check_file_exist(const std::string &file_name) {
-  if (!(std::filesystem::exists(file_name) &&
-        std::filesystem::is_regular_file(file_name))) {
-    error("the file not exist: {}", file_name);
-  }
-}
-
-// https://stackoverflow.com/questions/38608116/how-to-check-a-specified-string-is-a-valid-url-or-not-using-c-code/38608262
-void check_is_url(const std::string &url) {
-  if (!std::regex_match(
-          url,
-          std::regex(
-              R"(^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$)"))) {
-    error("not a url: {}", url);
+  if (!std::filesystem::is_regular_file(file_name)) {
+    error("The file not exist: '{}'", file_name);
   }
 }
 
 std::string read_file_to_str(const std::string &file_name) {
-  std::ifstream ifs(file_name);
-  std::string data;
-
-  data.resize(ifs.seekg(0, std::ifstream::end).tellg());
-  ifs.seekg(0, std::ifstream::beg).read(data.data(), std::size(data));
+  auto data = klib::util::read_file(file_name, false);
 
   if (auto encoding = detect_encoding(data); encoding != "UTF-8") {
-    error("file {} encoding is not UTF-8 ({})", file_name, encoding);
+    error("file '{}' encoding is not UTF-8 ({})", file_name, encoding);
   }
 
   return data;
 }
 
-std::vector<std::string> read_file_to_vec(const std::string &file_name) {
+std::vector<std::string> read_file_to_vec(const std::string &file_name,
+                                          bool trans_hant) {
   auto data = read_file_to_str(file_name);
+
   std::vector<std::string> result;
   boost::split(result, data, boost::is_any_of("\n"), boost::token_compress_on);
 
   for (auto &item : result) {
-    // FIXME
-    item = trans_str(item, true);
+    item = trans_str(item, trans_hant);
   }
 
   std::erase_if(result,
@@ -178,23 +107,16 @@ std::vector<std::string> read_file_to_vec(const std::string &file_name) {
   return result;
 }
 
-void check_and_write_file(std::ofstream &ofs, std::string_view str) {
-  if (!ofs) {
-    error("file is not open");
-  }
-
-  ofs << str << std::flush;
-}
-
 std::string num_to_str(std::int32_t i) {
   assert(i > 0);
 
+  auto str = std::to_string(i);
   if (i < 10) {
-    return "00" + std::to_string(i);
+    return "00" + str;
   } else if (i < 100) {
-    return "0" + std::to_string(i);
+    return "0" + str;
   } else {
-    return std::to_string(i);
+    return str;
   }
 }
 
@@ -206,8 +128,10 @@ std::string num_to_illustration_name(std::int32_t i) {
   return "illustration" + num_to_str(i) + ".xhtml";
 }
 
-std::string processing_cmd(std::int32_t argc, char *argv[]) {
+std::pair<std::string, Options> processing_cmd(std::int32_t argc,
+                                               const char *argv[]) {
   std::string input_file;
+  Options options;
 
   boost::program_options::options_description generic("Generic options");
   generic.add_options()("version,v", "print version string");
@@ -219,23 +143,26 @@ std::string processing_cmd(std::int32_t argc, char *argv[]) {
   config.add_options()("postscript,p", "generate postscript");
   config.add_options()("download-cover,d", "download cover");
   config.add_options()("old-style", "old style");
-  config.add_options()("no-trans-hant", "no trans hant");
+  config.add_options()("trans-hant", "trans hant");
   config.add_options()(
       "illustration,i",
-      boost::program_options::value<std::int32_t>(&illustration_num)
+      boost::program_options::value<std::int32_t>(&options.illustration_num_)
           ->default_value(0),
       "generate illustration");
   config.add_options()(
       "image",
-      boost::program_options::value<std::int32_t>(&image_num)->default_value(0),
+      boost::program_options::value<std::int32_t>(&options.image_num_)
+          ->default_value(0),
       "generate image");
-  config.add_options()("max-chapter",
-                       boost::program_options::value<std::int32_t>(&max_chapter)
-                           ->default_value(0),
-                       "maximum number of chapters");
+  config.add_options()(
+      "max-chapter",
+      boost::program_options::value<std::int32_t>(&options.max_chapter_)
+          ->default_value(0),
+      "maximum number of chapters");
   config.add_options()(
       "date",
-      boost::program_options::value<std::string>(&date)->default_value(""),
+      boost::program_options::value<std::string>(&options.date_)
+          ->default_value(""),
       "specify the date");
 
   boost::program_options::options_description hidden("Hidden options");
@@ -260,13 +187,12 @@ std::string processing_cmd(std::int32_t argc, char *argv[]) {
   notify(vm);
 
   if (vm.contains("help")) {
-    fmt::print("Usage: {} [options] file...\n\n{}\n", argv[0], visible);
+    fmt::print("{}", visible);
     std::exit(EXIT_SUCCESS);
   }
 
   if (vm.contains("version")) {
-    fmt::print("{} version: {}.{}.{}", argv[0], KEPUB_VER_MAJOR,
-               KEPUB_VER_MINOR, KEPUB_VER_PATCH);
+    fmt::print("{} version: {}", argv[0], kepub_version());
     std::exit(EXIT_SUCCESS);
   }
 
@@ -275,28 +201,29 @@ std::string processing_cmd(std::int32_t argc, char *argv[]) {
   }
 
   if (vm.contains("connect")) {
-    connect_chinese = true;
+    options.connect_chinese_ = true;
   }
   if (vm.contains("no-cover")) {
-    no_cover = true;
+    options.no_cover_ = true;
   }
   if (vm.contains("download-cover")) {
-    download_cover = true;
+    options.download_cover_ = true;
   }
   if (vm.contains("postscript")) {
-    postscript = true;
+    options.generate_postscript_ = true;
   }
   if (vm.contains("old-style")) {
-    old_style = true;
+    options.old_style_ = true;
   }
-  if (vm.contains("no-trans-hant")) {
-    no_trans_hant = true;
+  if (vm.contains("trans-hant")) {
+    options.trans_hant_ = true;
   }
 
-  return input_file;
+  return {input_file, options};
 }
 
-void push_back(std::vector<std::string> &texts, const std::string &str) {
+void push_back(std::vector<std::string> &texts, const std::string &str,
+               bool connect_chinese) {
   if (std::empty(str)) {
     return;
   }
@@ -335,8 +262,8 @@ std::int32_t str_size(const std::string &str) {
 
   auto result = std::erase_if(copy, [](auto c) { return std::isalnum(c); });
 
-  for (auto c : utf8_to_utf32(copy)) {
-    if (is_chinese(c)) {
+  for (auto c : klib::util::utf8_to_utf32(copy)) {
+    if (klib::util::is_chinese(c)) {
       ++result;
     }
   }
@@ -348,12 +275,12 @@ void str_check(const std::string &str) {
   auto copy = str;
   std::erase_if(copy, [](auto c) { return std::isalnum(c); });
 
-  for (auto c : utf8_to_utf32(copy)) {
-    if (!u_isblank(c) && !is_chinese(c) && !is_punct(c)) {
+  for (auto c : klib::util::utf8_to_utf32(copy)) {
+    if (!u_isblank(c) && !klib::util::is_chinese(c) && !is_punct(c)) {
       std::string temp;
       UChar32 ch = c;
-      warning("unknown character: {} in {}",
-              icu::UnicodeString::fromUTF32(&ch, 1).toUTF8String(temp), str);
+      warn("Unknown character: {} in {}",
+           icu::UnicodeString::fromUTF32(&ch, 1).toUTF8String(temp), str);
     }
   }
 }
@@ -363,18 +290,15 @@ std::string get_date(std::string_view time_zone) {
 
   auto calendar = icu::Calendar::createInstance(
       icu::TimeZone::createTimeZone(time_zone.data()), status);
-  if (U_FAILURE(status)) {
-    error("error: {}", u_errorName(status));
-  }
+  check_icu(status);
 
   auto result = fmt::format("{}-{:02d}-{}", calendar->get(UCAL_YEAR, status),
                             calendar->get(UCAL_MONTH, status) + 1,
                             calendar->get(UCAL_DATE, status));
-  if (U_FAILURE(status)) {
-    error("error: {}", u_errorName(status));
-  }
+  check_icu(status);
 
   delete calendar;
+
   return result;
 }
 
