@@ -1,8 +1,0 @@
-[WEB] title1
-text1
-
-[WEB] title2
-text2
-
-[WEB] title3
-text3

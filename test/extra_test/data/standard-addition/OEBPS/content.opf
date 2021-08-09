@@ -1,35 +1,18 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <package version="2.0" unique-identifier="BookId" xmlns="http://www.idpf.org/2007/opf">
     <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
         <dc:title>魅魔的我</dc:title>
-        <dc:creator opf:file-as="kaiser" opf:role="aut">百合图书</dc:creator>
-        <dc:language>zh</dc:language>
+        <dc:creator opf:file-as="kaiser" opf:role="aut">TODO</dc:creator>
+        <dc:language>zh-CN</dc:language>
         <dc:rights>kaiser</dc:rights>
-        <dc:subject>轻小说</dc:subject>
-        <dc:description>转生苏醒的时候已经在被侵犯了！？
-又是被当成商品贩卖，又是被当成罪犯处刑，历经重重磨难终于被拯救后却发现了自己早已处于‘成长不能’的诅咒下。
-但即便如此也要追求幸福，魅魔少女与原·圣职者间，欢乐且恩爱日常故事，就此拉开帷幕。
-来自作者：
-原创作品，主打欢乐日常向，非傲天
-开头较为黑暗，承受能力低下者建议从1-4开始阅读
-欢迎各位吐槽&amp;评价，大家的反馈是我坚持下去的最大动力。
-QQ群号：751379095
-之前忘记设置分类所以导致找不到了来着 PS：以前的《魅魔的我与叛教的不信仰者》为原版，现在发布的是在原版基础上精炼修改剧情的重置版。
-如果想看原版，请加群，谢谢合作 https：//www.pixiv.net/member.php？id=7516923
-内含人设图的P站地址
-现发文进度已远超P站（别问 问就是懒）</dc:description>
-        <meta content="1.6.0" name="Sigil version" />
-        <meta content="1.0.0" name="epub version" />
-        <dc:date opf:event="modification" xmlns:opf="http://www.idpf.org/2007/opf">2021-05-29</dc:date>
-        <dc:identifier id="BookId" opf:scheme="UUID">urn:uuid:5208e6bb-5d25-45b0-a7fd-b97d79a85fd4</dc:identifier>
-        <meta name="cover" content="cover.jpg" />
+        <meta name="klib version" content="v0.2.5" />
+        <dc:date opf:event="modification" xmlns:opf="http://www.idpf.org/2007/opf">2021-08-09.</dc:date>
+        <dc:identifier id="BookId" opf:scheme="UUID">urn:uuid:cb25e335-629c-4cfb-a85a-2ee1cda385a7</dc:identifier>
     </metadata>
     <manifest>
         <item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml" />
         <item id="style.css" href="Styles/style.css" media-type="text/css" />
-        <item id="FZCYSK.ttf" href="Fonts/FZCYSK.ttf" media-type="font/ttf" />
-        <item id="cover.jpg" href="Images/cover.jpg" media-type="image/jpeg" />
-        <item id="cover.xhtml" href="Text/cover.xhtml" media-type="application/xhtml+xml" />
+        <item id="SourceHanSansHWSC-Bold.otf" href="Fonts/SourceHanSansHWSC-Bold.otf" media-type="application/vnd.ms-opentype" />
         <item id="message.xhtml" href="Text/message.xhtml" media-type="application/xhtml+xml" />
         <item id="introduction.xhtml" href="Text/introduction.xhtml" media-type="application/xhtml+xml" />
         <item id="chapter001.xhtml" href="Text/chapter001.xhtml" media-type="application/xhtml+xml" />
@@ -245,9 +228,20 @@ QQ群号：751379095
         <item id="chapter211.xhtml" href="Text/chapter211.xhtml" media-type="application/xhtml+xml" />
         <item id="chapter212.xhtml" href="Text/chapter212.xhtml" media-type="application/xhtml+xml" />
         <item id="chapter213.xhtml" href="Text/chapter213.xhtml" media-type="application/xhtml+xml" />
+        <item id="chapter214.xhtml" href="Text/chapter214.xhtml" media-type="application/xhtml+xml" />
+        <item id="chapter215.xhtml" href="Text/chapter215.xhtml" media-type="application/xhtml+xml" />
+        <item id="chapter216.xhtml" href="Text/chapter216.xhtml" media-type="application/xhtml+xml" />
+        <item id="chapter217.xhtml" href="Text/chapter217.xhtml" media-type="application/xhtml+xml" />
+        <item id="chapter218.xhtml" href="Text/chapter218.xhtml" media-type="application/xhtml+xml" />
+        <item id="chapter219.xhtml" href="Text/chapter219.xhtml" media-type="application/xhtml+xml" />
+        <item id="chapter220.xhtml" href="Text/chapter220.xhtml" media-type="application/xhtml+xml" />
+        <item id="chapter221.xhtml" href="Text/chapter221.xhtml" media-type="application/xhtml+xml" />
+        <item id="chapter222.xhtml" href="Text/chapter222.xhtml" media-type="application/xhtml+xml" />
+        <item id="chapter223.xhtml" href="Text/chapter223.xhtml" media-type="application/xhtml+xml" />
+        <item id="chapter224.xhtml" href="Text/chapter224.xhtml" media-type="application/xhtml+xml" />
+        <item id="chapter225.xhtml" href="Text/chapter225.xhtml" media-type="application/xhtml+xml" />
     </manifest>
     <spine toc="ncx">
-        <itemref idref="cover.xhtml" />
         <itemref idref="message.xhtml" />
         <itemref idref="introduction.xhtml" />
         <itemref idref="chapter001.xhtml" />
@@ -463,8 +457,18 @@ QQ群号：751379095
         <itemref idref="chapter211.xhtml" />
         <itemref idref="chapter212.xhtml" />
         <itemref idref="chapter213.xhtml" />
+        <itemref idref="chapter214.xhtml" />
+        <itemref idref="chapter215.xhtml" />
+        <itemref idref="chapter216.xhtml" />
+        <itemref idref="chapter217.xhtml" />
+        <itemref idref="chapter218.xhtml" />
+        <itemref idref="chapter219.xhtml" />
+        <itemref idref="chapter220.xhtml" />
+        <itemref idref="chapter221.xhtml" />
+        <itemref idref="chapter222.xhtml" />
+        <itemref idref="chapter223.xhtml" />
+        <itemref idref="chapter224.xhtml" />
+        <itemref idref="chapter225.xhtml" />
     </spine>
-    <guide>
-        <reference type="cover" title="Cover" href="Text/cover.xhtml" />
-    </guide>
+    <guide />
 </package>

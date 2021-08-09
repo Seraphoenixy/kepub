@@ -4,13 +4,10 @@ file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/data/梗角色转生太过头了！2.txt"
 file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/data/梗角色轉生太過頭了！.txt"
      DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
-file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/data/魅魔的我.txt"
+file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/data/魅魔的我2.epub"
      DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
-file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/data/魅魔的我-old-style.txt"
-     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-
-file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/data/魅魔的我-old-style.epub"
+file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/data/魅魔的我2.txt"
      DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 add_test(NAME check_executable_demonovel COMMAND ${DEMONOVEL_EXECUTABLE} -v)
@@ -59,20 +56,12 @@ set_tests_properties(check_executable_esjzone PROPERTIES FIXTURES_SETUP esjzone)
 set_tests_properties(run_esjzone PROPERTIES FIXTURES_REQUIRED esjzone)
 set_tests_properties(diff_esjzone PROPERTIES FIXTURES_CLEANUP esjzone)
 
-# add_test(NAME check_executable_addition COMMAND ${ADDITION_EXECUTABLE} -v)
-# add_test(NAME run_addition COMMAND ${ADDITION_EXECUTABLE} 魅魔的我.txt
-# --date=2021-05-29) add_test(NAME diff_addition COMMAND diff -r
-# ${CMAKE_CURRENT_SOURCE_DIR}/data/standard-addition 魅魔的我)
-# set_tests_properties(check_executable_addition PROPERTIES FIXTURES_SETUP
-# addition) set_tests_properties(run_addition PROPERTIES FIXTURES_REQUIRED
-# addition) set_tests_properties(diff_addition PROPERTIES FIXTURES_CLEANUP
-# addition) set_tests_properties(run_addition PROPERTIES DEPENDS diff_esjzone)
-#
-# add_test(NAME run_addition_old_style COMMAND ${ADDITION_EXECUTABLE}
-# 魅魔的我-old-style.txt --old-style) add_test( NAME diff_addition_old_style COMMAND
-# diff -r ${CMAKE_CURRENT_SOURCE_DIR}/data/standard-addition-old-style
-# 魅魔的我-old-style) set_tests_properties(check_executable_addition PROPERTIES
-# FIXTURES_SETUP addition_old_style) set_tests_properties(run_addition_old_style
-# PROPERTIES FIXTURES_REQUIRED addition_old_style)
-# set_tests_properties(diff_addition_old_style PROPERTIES FIXTURES_CLEANUP
-# addition_old_style)
+add_test(NAME check_executable_addition COMMAND ${ADDITION_EXECUTABLE} -v)
+add_test(NAME run_addition COMMAND ${ADDITION_EXECUTABLE} 魅魔的我2.txt)
+add_test(NAME diff_addition
+         COMMAND diff -r ${CMAKE_CURRENT_SOURCE_DIR}/data/standard-addition
+                 魅魔的我2)
+set_tests_properties(check_executable_addition PROPERTIES FIXTURES_SETUP
+                                                          addition)
+set_tests_properties(run_addition PROPERTIES FIXTURES_REQUIRED addition)
+set_tests_properties(diff_addition PROPERTIES FIXTURES_CLEANUP addition)
