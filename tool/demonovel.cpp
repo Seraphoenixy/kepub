@@ -19,7 +19,7 @@ int main(int argc, const char *argv[]) try {
   epub.set_creator("kaiser");
   epub.set_book_name(book_name);
   epub.set_generate_cover(!options.no_cover_);
-  epub.set_generate_postscript(!options.generate_postscript_);
+  epub.set_generate_postscript(options.generate_postscript_);
   epub.set_illustration_num(options.illustration_num_);
   epub.set_image_num(options.image_num_);
   // For testing
