@@ -30,7 +30,6 @@ class Trans {
   icu::Transliterator *fullwidth_halfwidth_;
 };
 
-// TODO Traditional Chinese translation error
 void custom_trans(icu::UnicodeString &str) {
   // https://en.wikipedia.org/wiki/Word_joiner
   str.findAndReplace("\uFEFF", " ");
@@ -184,6 +183,10 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("類", "类");
   str.findAndReplace("諷", "讽");
   str.findAndReplace("唿", "呼");
+
+  str.findAndReplace("摔交", "摔跤");
+  str.findAndReplace("万事具备", "万事俱备");
+  str.findAndReplace("具乐部", "俱乐部");
 }
 
 Trans::~Trans() {
