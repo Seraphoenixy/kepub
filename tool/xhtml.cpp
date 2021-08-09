@@ -1,12 +1,11 @@
 #include <cstdint>
-#include <filesystem>
-#include <fstream>
 #include <iostream>
 #include <stdexcept>
 #include <string>
 #include <vector>
 
 #include <klib/error.h>
+#include <pugixml.hpp>
 
 #include "util.h"
 
@@ -19,20 +18,19 @@ int main(int argc, const char *argv[]) try {
     kepub::push_back(result, item, options.connect_chinese_);
   }
 
-  std::string out = std::filesystem::path(file_name).stem().string() + ".xhtml";
-  std::ofstream ofs(out);
-  if (!ofs) {
-    klib::error("can not open: '{}'", out);
-  }
-
+  pugi::xml_document doc;
   std::int32_t count = 0;
   for (const auto &item : result) {
     kepub::str_check(item);
     count += kepub::str_size(item);
-    ofs << "<p>" << item << "</p>" << '\n';
+    doc.append_child("p").text() = item.c_str();
   }
 
   std::cout << "总字数：" << count << '\n';
+
+  std::string out = std::filesystem::path(file_name).stem().string() + ".xhtml";
+  doc.save_file(out.c_str(), "    ",
+                pugi::format_default | pugi::format_no_declaration);
 } catch (const std::exception &err) {
   klib::error(err.what());
 } catch (...) {
