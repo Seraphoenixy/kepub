@@ -13,7 +13,7 @@
         <meta name="calibre:title_sort" content="魅魔的我" />
         <meta name="calibre:timestamp" content="2020-07-31T12:46:51.406000+00:00" />
         <meta name="cover" content="cover" />
-        <meta name="calibre:author_link_map" content="{&quot;百合图书&quot;: &quot;&quot;}" />
+        <meta name="calibre:author_link_map" content="{"百合图书": ""}" />
     </metadata>
     <manifest>
         <item href="titlepage.xhtml" id="titlepage" media-type="application/xhtml+xml" />
