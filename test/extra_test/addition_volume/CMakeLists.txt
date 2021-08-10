@@ -6,9 +6,7 @@ file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/魅魔的我.epub"
 
 add_test(NAME check_executable COMMAND ${ADDITION_EXECUTABLE} -v)
 add_test(NAME run COMMAND ${ADDITION_EXECUTABLE} 魅魔的我.txt --no-compress)
-add_test(NAME diff
-         COMMAND diff -r ${CMAKE_CURRENT_SOURCE_DIR}/data/standard-add-volume
-                 魅魔的我)
+add_test(NAME diff COMMAND diff -r ${CMAKE_CURRENT_SOURCE_DIR}/standard 魅魔的我)
 set_tests_properties(check_executable PROPERTIES FIXTURES_SETUP add_volume)
 set_tests_properties(run PROPERTIES FIXTURES_REQUIRED add_volume)
 set_tests_properties(diff PROPERTIES FIXTURES_CLEANUP add_volume)
