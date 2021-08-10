@@ -73,7 +73,8 @@ find_package(klib REQUIRED)
 file(GLOB_RECURSE EPUB_FILE CONFIGURE_DEPENDS "${KEPUB_SOURCE_DIR}/epub/*")
 file(COPY ${EPUB_FILE} DESTINATION ${KEPUB_BINARY_DIR})
 
-add_library(font STATIC ${KEPUB_SOURCE_DIR}/src/font.s)
+set(CMAKE_ASM_CREATE_SHARED_LIBRARY ${CMAKE_CXX_CREATE_SHARED_LIBRARY})
+add_library(font SHARED ${KEPUB_SOURCE_DIR}/src/font.s)
 target_compile_options(font PRIVATE "-Wno-unused-command-line-argument")
 
 add_library(style STATIC ${KEPUB_SOURCE_DIR}/src/style.s)

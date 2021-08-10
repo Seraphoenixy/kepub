@@ -4,7 +4,7 @@ find_package(Catch2 REQUIRED)
 
 add_executable(${TEST_EXECUTABLE} ${TEST_SRC})
 target_link_libraries(${TEST_EXECUTABLE} PRIVATE ${LIBRARY}
-                                                 Catch2::Catch2WithMain)
+                                                 Catch2::Catch2WithMain fmt::fmt)
 
 include(Catch)
 catch_discover_tests(${TEST_EXECUTABLE} REPORTER compact)

@@ -30,7 +30,7 @@ set_target_properties(
              INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 install(
-  TARGETS ${DEMONOVEL_EXECUTABLE}
+  TARGETS ${DEMONOVEL_EXECUTABLE} font
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
@@ -40,7 +40,7 @@ install(
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 install(
-  TARGETS ${MASIRO_EXECUTABLE}
+  TARGETS ${MASIRO_EXECUTABLE} font
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
@@ -60,7 +60,7 @@ install(
 # https://cmake.org/cmake/help/latest/cpack_gen/deb.html
 # https://cmake.org/cmake/help/latest/module/CPack.html
 set(CPACK_INCLUDE_TOPLEVEL_DIRECTORY OFF)
-set(CPACK_INSTALL_CMAKE_PROJECTS ${KEPUB_BINARY_DIR} ${LIBRARY} ALL .)
+set(CPACK_INSTALL_CMAKE_PROJECTS ${KEPUB_BINARY_DIR} ${PROJECT_NAME} ALL .)
 
 # https://cmake.org/cmake/help/latest/cpack_gen/deb.html
 set(CPACK_PACKAGE_CONTACT "kaiser <KaiserLancelot123@gmail.com>")
