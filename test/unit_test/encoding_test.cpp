@@ -19,7 +19,7 @@ std::string to_str(std::initializer_list<std::uint8_t> il) {
 
 }  // namespace
 
-TEST_CASE("detect_encoding") {
+TEST_CASE("detect_encoding", "[encoding]") {
   REQUIRE(kepub::detect_encoding("abc") == "UTF-8");
   REQUIRE(kepub::detect_encoding("你好世界") == "UTF-8");
 

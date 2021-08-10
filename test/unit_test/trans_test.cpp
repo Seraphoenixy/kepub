@@ -2,7 +2,7 @@
 
 #include "trans.h"
 
-TEST_CASE("trans_str") {
+TEST_CASE("trans_str", "[trans]") {
   REQUIRE(kepub::trans_str("&amp;") == "&");
   REQUIRE(kepub::trans_str("安裝後?") == "安装后？");
 }
