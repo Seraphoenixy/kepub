@@ -73,7 +73,7 @@ find_package(klib REQUIRED)
 file(GLOB_RECURSE EPUB_FILE CONFIGURE_DEPENDS "${KEPUB_SOURCE_DIR}/epub/*")
 file(COPY ${EPUB_FILE} DESTINATION ${KEPUB_BINARY_DIR})
 
-add_library(epub STATIC ${KEPUB_SOURCE_DIR}/src/epub.s)
+add_library(epub STATIC "${KEPUB_SOURCE_DIR}/src/epub.s")
 
 # ---------------------------------------------------------------------------------------
 # Build static library
