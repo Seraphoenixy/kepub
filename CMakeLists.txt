@@ -84,17 +84,23 @@ target_include_directories(${LIBRARY} PUBLIC "${KEPUB_SOURCE_DIR}/include")
 target_link_libraries(
   ${LIBRARY} PRIVATE epub fmt::fmt pugixml::pugixml klib::klib
                      ${Boost_LIBRARIES} ${ICU_LIBRARIES})
+set_target_properties(${LIBRARY} PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
 
 # ---------------------------------------------------------------------------------------
-# Build static library
+# Build shared library
 # ---------------------------------------------------------------------------------------
 add_library(${LIBRARY}-shared SHARED ${LIBRARY_SRC})
 
-target_include_directories(${LIBRARY} PUBLIC "${KEPUB_SOURCE_DIR}/include")
+target_include_directories(${LIBRARY}-shared
+                           PUBLIC "${KEPUB_SOURCE_DIR}/include")
 target_link_libraries(
-  ${LIBRARY} PRIVATE epub fmt::fmt pugixml::pugixml klib::klib
-                     ${Boost_LIBRARIES} ${ICU_LIBRARIES})
-set_target_properties(${LIBRARY} PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
+  ${LIBRARY}-shared PRIVATE epub fmt::fmt pugixml::pugixml klib::klib
+                            ${Boost_LIBRARIES} ${ICU_LIBRARIES})
+set_target_properties(
+  ${LIBRARY}-shared
+  PROPERTIES OUTPUT_NAME ${PROJECT_NAME}
+             VERSION ${KEPUB_VERSION}
+             SOVERSION ${KEPUB_VERSION_MAJOR})
 
 # ---------------------------------------------------------------------------------------
 # Build executable
