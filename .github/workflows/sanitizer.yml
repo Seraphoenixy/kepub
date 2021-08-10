@@ -51,6 +51,7 @@ jobs:
         working-directory: build
         env:
           # https://clang.llvm.org/docs/AddressSanitizer.html
-          ASAN_OPTIONS: detect_stack_use_after_return=1
+          # FIXME fmt odr-violation
+          ASAN_OPTIONS: detect_stack_use_after_return=1:detect_odr_violation=0
           # https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html
           UBSAN_OPTIONS: print_stacktrace=1
