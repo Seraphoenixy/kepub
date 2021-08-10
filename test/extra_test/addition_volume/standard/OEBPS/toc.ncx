@@ -1383,7 +1383,7 @@
             </navPoint>
             <navPoint id="navPoint-229" playOrder="229">
                 <navLabel>
-                    <text>title </text>
+                    <text>title 1</text>
                 </navLabel>
                 <content src="Text/chapter223.xhtml" />
             </navPoint>

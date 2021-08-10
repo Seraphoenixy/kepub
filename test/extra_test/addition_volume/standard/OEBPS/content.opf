@@ -240,6 +240,10 @@
         <item id="chapter220.xhtml" href="Text/chapter220.xhtml" media-type="application/xhtml+xml" />
         <item id="chapter221.xhtml" href="Text/chapter221.xhtml" media-type="application/xhtml+xml" />
         <item id="chapter222.xhtml" href="Text/chapter222.xhtml" media-type="application/xhtml+xml" />
+        <item id="chapter223.xhtml" href="Text/chapter223.xhtml" media-type="application/xhtml+xml" />
+        <item id="volume005.xhtml" href="Text/volume005.xhtml" media-type="application/xhtml+xml" />
+        <item id="chapter224.xhtml" href="Text/chapter224.xhtml" media-type="application/xhtml+xml" />
+        <item id="chapter225.xhtml" href="Text/chapter225.xhtml" media-type="application/xhtml+xml" />
     </manifest>
     <spine toc="ncx">
         <itemref idref="message.xhtml" />
@@ -470,6 +474,10 @@
         <itemref idref="chapter220.xhtml" />
         <itemref idref="chapter221.xhtml" />
         <itemref idref="chapter222.xhtml" />
+        <itemref idref="chapter223.xhtml" />
+        <itemref idref="volume005.xhtml" />
+        <itemref idref="chapter224.xhtml" />
+        <itemref idref="chapter225.xhtml" />
     </spine>
     <guide />
 </package>

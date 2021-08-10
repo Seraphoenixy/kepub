@@ -195,7 +195,7 @@ int main(int argc, const char *argv[]) try {
 
   for (const auto &[title, urls] : titles_and_urls) {
     using namespace std::chrono_literals;
-    std::this_thread::sleep_for(50ms);
+    std::this_thread::sleep_for(100ms);
 
     auto pid = fork();
     if (pid < 0) {
