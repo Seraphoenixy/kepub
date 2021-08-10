@@ -60,6 +60,11 @@ void save_file(const pugi::xml_document &doc, std::string_view path) {
   }
 }
 
+bool has_children(const pugi::xml_node &node, std::string_view name) {
+  auto children = node.children(name.data());
+  return children.begin() != children.end();
+}
+
 void append_manifest_and_spine(pugi::xml_node &manifest, const std::string &id,
                                const std::string &href) {
   auto item = manifest.append_child("item");
@@ -260,16 +265,16 @@ void do_deal_with_toc(
   std::string last_volume_name;
   for (const auto &[volume_name, title, text] : content) {
     if (std::empty(volume_name)) {
-      if (!std::empty(last_volume_name)) {
-        throw klib::RuntimeError("Each must have a volume name");
+      if (has_children(nav_map.last_child(), "navPoint")) {
+        nav_map = nav_map.last_child();
       }
 
       append_nav_map(nav_map, title,
                      "Text/" + num_to_chapter_name(first_chapter_id++));
+      nav_map = nav_map.select_node("/ncx/navMap").node();
     } else {
       if (std::empty(last_volume_name)) {
-        generate_volume(volume_name, first_volume_id++);
-
+        generate_volume(volume_name, first_volume_id);
         append_nav_map(nav_map, volume_name,
                        "Text/" + num_to_volume_name(first_volume_id++));
         nav_map = nav_map.last_child();
@@ -277,8 +282,7 @@ void do_deal_with_toc(
                        "Text/" + num_to_chapter_name(first_chapter_id++));
       } else {
         if (volume_name != last_volume_name) {
-          generate_volume(volume_name, first_volume_id++);
-
+          generate_volume(volume_name, first_volume_id);
           nav_map = nav_map.parent();
           append_nav_map(nav_map, volume_name,
                          "Text/" + num_to_volume_name(first_volume_id++));
@@ -647,9 +651,8 @@ void Epub::generate_toc() {
     append_nav_map(nav_map, "彩页", "Text/illustration001.xhtml");
   }
 
-  //  if (!std::empty(last_volume_name)) {
-  //    nav_map = nav_map.parent();
-  //  }
+  do_deal_with_toc(nav_map, 1, 1, content_);
+  nav_map = doc.select_node("/ncx/navMap").node();
 
   if (generate_postscript_) {
     append_nav_map(nav_map, "后记", "Text/postscript.xhtml");
