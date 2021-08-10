@@ -68,14 +68,33 @@ find_package(Boost REQUIRED COMPONENTS program_options)
 find_package(klib REQUIRED)
 
 # ---------------------------------------------------------------------------------------
+# Build epub file
+# ---------------------------------------------------------------------------------------
+file(GLOB_RECURSE EPUB_FILE CONFIGURE_DEPENDS "${KEPUB_SOURCE_DIR}/epub/*")
+file(COPY ${EPUB_FILE} DESTINATION ${KEPUB_BINARY_DIR})
+
+add_library(font STATIC ${KEPUB_SOURCE_DIR}/src/font.s)
+target_compile_options(font PRIVATE "-Wno-unused-command-line-argument")
+
+add_library(style STATIC ${KEPUB_SOURCE_DIR}/src/style.s)
+target_compile_options(style PRIVATE "-Wno-unused-command-line-argument")
+
+# ---------------------------------------------------------------------------------------
 # Build static library
 # ---------------------------------------------------------------------------------------
 add_library(${LIBRARY} STATIC ${LIBRARY_SRC})
 
 target_include_directories(${LIBRARY} PUBLIC "${KEPUB_SOURCE_DIR}/include")
 
-target_link_libraries(${LIBRARY} PRIVATE fmt::fmt pugixml::pugixml klib::klib
-                                         ${Boost_LIBRARIES} ${ICU_LIBRARIES})
+target_link_libraries(
+  ${LIBRARY}
+  PRIVATE font
+          style
+          fmt::fmt
+          pugixml::pugixml
+          klib::klib
+          ${Boost_LIBRARIES}
+          ${ICU_LIBRARIES})
 
 set_target_properties(
   ${LIBRARY}

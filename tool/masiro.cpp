@@ -4,9 +4,9 @@
 #include <string>
 #include <vector>
 
-#include <klib/epub.h>
 #include <klib/error.h>
 
+#include "epub.h"
 #include "trans.h"
 #include "util.h"
 
@@ -15,7 +15,7 @@ int main(int argc, const char *argv[]) try {
   kepub::check_is_txt_file(file_name);
   auto book_name = kepub::trans_str(std::filesystem::path(file_name).stem());
 
-  klib::Epub epub;
+  kepub::Epub epub;
   epub.set_creator("kaiser");
   epub.set_book_name(book_name);
   epub.set_generate_cover(!options.no_cover_);

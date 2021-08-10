@@ -26,6 +26,10 @@ Generate epub
 - [boost](https://www.boost.org/)
 - [klib](https://github.com/KaiserLancelot/klib)
 
+## Font
+
+- [source-han-sans](https://github.com/adobe-fonts/source-han-sans)
+
 ## Build
 
 ```bash

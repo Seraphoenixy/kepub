@@ -2,13 +2,13 @@
 #include <filesystem>
 #include <stdexcept>
 #include <string>
-#include <utility>
+#include <tuple>
 #include <vector>
 
 #include <klib/archive.h>
-#include <klib/epub.h>
 #include <klib/error.h>
 
+#include "epub.h"
 #include "util.h"
 
 int main(int argc, const char *argv[]) try {
@@ -26,7 +26,8 @@ int main(int argc, const char *argv[]) try {
     std::filesystem::rename(epub_name, book_name + "-back-up.epub");
   }
 
-  std::vector<std::pair<std::string, std::vector<std::string>>> contents;
+  std::vector<std::tuple<std::string, std::string, std::vector<std::string>>>
+      contents;
 
   auto vec = kepub::read_file_to_vec(file_name);
   auto size = std::size(vec);
@@ -44,11 +45,11 @@ int main(int argc, const char *argv[]) try {
       }
       --i;
 
-      contents.emplace_back(title, text);
+      contents.emplace_back("", title, text);
     }
   }
 
-  klib::Epub::append_chapter(book_name, contents);
+  kepub::Epub::append_chapter(book_name, contents);
 
   if (!options.no_compress_) {
     klib::compress(book_name, klib::Algorithm::Zip, book_name + ".epub", false);
