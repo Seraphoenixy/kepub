@@ -26,6 +26,7 @@ if(KEPUB_BUILD_COVERAGE)
         lcov_branch_coverage=1
       COMMAND ${GENHTML_EXECUTABLE} lcov.info -o coverage -s --title
               "${PROJECT_NAME}" --legend --demangle-cpp --branch-coverage
+      COMMAND rm -rf ${KEPUB_BINARY_DIR}/coverage
       COMMAND mv lcov.info ${KEPUB_BINARY_DIR}/lcov.info
       COMMAND mv coverage ${KEPUB_BINARY_DIR}/coverage
       WORKING_DIRECTORY ${KEPUB_BINARY_DIR}/test/unit_test
@@ -63,6 +64,7 @@ if(KEPUB_BUILD_COVERAGE)
         ${LLVM_COV_EXECUTABLE} export ./${TEST_EXECUTABLE}
         -instr-profile=${TEST_EXECUTABLE}.profdata -format=lcov
         -ignore-filename-regex=${KEPUB_SOURCE_DIR}/test/* > lcov.info
+      COMMAND rm -rf ${KEPUB_BINARY_DIR}/coverage
       COMMAND mv lcov.info ${KEPUB_BINARY_DIR}/lcov.info
       COMMAND mv coverage ${KEPUB_BINARY_DIR}/coverage
       WORKING_DIRECTORY ${KEPUB_BINARY_DIR}/test/unit_test

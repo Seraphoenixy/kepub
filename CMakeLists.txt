@@ -78,19 +78,23 @@ add_library(epub STATIC ${KEPUB_SOURCE_DIR}/src/epub.s)
 # ---------------------------------------------------------------------------------------
 # Build static library
 # ---------------------------------------------------------------------------------------
-add_library(${LIBRARY} SHARED ${LIBRARY_SRC})
+add_library(${LIBRARY} STATIC ${LIBRARY_SRC})
 
 target_include_directories(${LIBRARY} PUBLIC "${KEPUB_SOURCE_DIR}/include")
-
 target_link_libraries(
   ${LIBRARY} PRIVATE epub fmt::fmt pugixml::pugixml klib::klib
                      ${Boost_LIBRARIES} ${ICU_LIBRARIES})
 
-set_target_properties(
-  ${LIBRARY}
-  PROPERTIES OUTPUT_NAME ${PROJECT_NAME}
-             POSITION_INDEPENDENT_CODE ON
-             INTERPROCEDURAL_OPTIMIZATION FALSE)
+# ---------------------------------------------------------------------------------------
+# Build static library
+# ---------------------------------------------------------------------------------------
+add_library(${LIBRARY}-shared SHARED ${LIBRARY_SRC})
+
+target_include_directories(${LIBRARY} PUBLIC "${KEPUB_SOURCE_DIR}/include")
+target_link_libraries(
+  ${LIBRARY} PRIVATE epub fmt::fmt pugixml::pugixml klib::klib
+                     ${Boost_LIBRARIES} ${ICU_LIBRARIES})
+set_target_properties(${LIBRARY} PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
 
 # ---------------------------------------------------------------------------------------
 # Build executable
