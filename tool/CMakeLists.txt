@@ -18,5 +18,5 @@ target_link_libraries(${ADDITION_EXECUTABLE} PRIVATE ${LIBRARY}-shared
                                                      klib::klib)
 
 add_executable(${CIWEIMAO_EXECUTABLE} ciweimao.cpp)
-target_link_libraries(${CIWEIMAO_EXECUTABLE} PRIVATE ${LIBRARY}-shared
-                                                     klib::klib)
+target_link_libraries(${CIWEIMAO_EXECUTABLE}
+                      PRIVATE ${LIBRARY}-shared klib::klib ${Boost_LIBRARIES})
