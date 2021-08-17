@@ -4,9 +4,9 @@
 
 #define KEPUB_VER_MAJOR 0
 
-#define KEPUB_VER_MINOR 5
+#define KEPUB_VER_MINOR 6
 
-#define KEPUB_VER_PATCH 2
+#define KEPUB_VER_PATCH 0
 
 #define STRINGIZE2(s) #s
 #define STRINGIZE(s) STRINGIZE2(s)
