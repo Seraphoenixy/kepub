@@ -25,6 +25,7 @@ Generate epub
 - [icu](https://github.com/unicode-org/icu)
 - [boost](https://www.boost.org/)
 - [klib](https://github.com/KaiserLancelot/klib)
+- [spdlog](https://github.com/gabime/spdlog)
 
 ## Font
 
