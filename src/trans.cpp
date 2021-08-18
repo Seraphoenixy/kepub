@@ -185,18 +185,36 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("唿", "呼");
 
   str.findAndReplace("摔交", "摔跤");
-  str.findAndReplace("万事具备", "万事俱备");
+
   str.findAndReplace("具乐部", "俱乐部");
+  str.findAndReplace("万事具备", "万事俱备");
   str.findAndReplace("两败具伤", "两败俱伤");
   str.findAndReplace("万念具灰", "万念俱灰");
   str.findAndReplace("身心具疲", "身心俱疲");
-  str.findAndReplace("着称", "著称");
   str.findAndReplace("色香味具全", "色香味俱全");
   str.findAndReplace("形神具灭", "形神俱灭");
   str.findAndReplace("玉石具焚", "玉石俱焚");
   str.findAndReplace("与生具来", "与生俱来");
-  str.findAndReplace("了望", "瞭望");
   str.findAndReplace("与日具增", "与日俱增");
+  str.findAndReplace("声泪具下", "声泪俱下");
+  str.findAndReplace("灵魂具灭", "灵魂俱灭");
+  str.findAndReplace("涕泪具下", "涕泪俱下");
+  str.findAndReplace("肝胆具裂", "肝胆俱裂");
+  str.findAndReplace("样样具全", "样样俱全");
+  str.findAndReplace("一应具全", "一应俱全");
+  str.findAndReplace("面面具到", "面面俱到");
+  str.findAndReplace("五脏六腑具碎", "五脏六腑俱碎");
+
+  str.findAndReplace("着称", "著称");
+  str.findAndReplace("显着", "显著");
+  str.findAndReplace("想著", "想着");
+
+  str.findAndReplace("了望塔", "瞭望塔");
+  str.findAndReplace("了望台", "瞭望台");
+
+  str.findAndReplace("分道扬镖", "分道扬镳");
+  str.findAndReplace("慰借", "慰藉");
+  str.findAndReplace("巡查", "巡察");
 }
 
 Trans::~Trans() {

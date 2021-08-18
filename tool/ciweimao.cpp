@@ -246,6 +246,8 @@ int main(int argc, const char *argv[]) try {
   for (const auto &[volume_id, volume_name] :
        get_book_volume(account, login_token, book_id)) {
     auto chapters = get_chapters(account, login_token, volume_id);
+    spdlog::info("{} get chapters ok", volume_name);
+
     volume_chapter.emplace_back(std::make_pair(volume_id, volume_name),
                                 chapters);
   }
@@ -291,6 +293,8 @@ int main(int argc, const char *argv[]) try {
       book_ofs << klib::read_file(chapter_title + ".txt", false) << "\n\n";
     }
   }
+
+  std::filesystem::remove_all("temp");
 } catch (const std::exception &err) {
   klib::error(err.what());
 } catch (...) {
