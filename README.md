@@ -31,6 +31,10 @@ Generate epub
 
 - [source-han-sans](https://github.com/adobe-fonts/source-han-sans)
 
+## Reference
+
+- [Cirno-go](https://github.com/zsakvo/Cirno-go)
+
 ## Build
 
 ```bash

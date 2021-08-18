@@ -166,8 +166,11 @@ std::vector<std::pair<std::string, std::string>> get_book_volume(
   std::vector<std::pair<std::string, std::string>> result;
   auto division_list = jv.at("data").at("division_list").as_array();
   for (const auto &division : division_list) {
-    result.emplace_back(division.at("division_id").as_string().c_str(),
-                        division.at("division_name").as_string().c_str());
+    std::string division_id = division.at("division_id").as_string().c_str();
+    std::string division_name =
+        kepub::trans_str(division.at("division_name").as_string().c_str());
+
+    result.emplace_back(division_id, division_name);
   }
 
   return result;
@@ -189,7 +192,8 @@ std::vector<std::pair<std::string, std::string>> get_chapters(
   auto chapter_list = jv.at("data").at("chapter_list").as_array();
   for (const auto &chapter : chapter_list) {
     std::string chapter_id = chapter.at("chapter_id").as_string().c_str();
-    std::string chapter_title = chapter.at("chapter_title").as_string().c_str();
+    std::string chapter_title =
+        kepub::trans_str(chapter.at("chapter_title").as_string().c_str());
     std::string is_valid = chapter.at("is_valid").as_string().c_str();
     std::string auth_access = chapter.at("auth_access").as_string().c_str();
 
@@ -236,7 +240,7 @@ std::vector<std::string> get_content(const std::string &account,
 
   auto chapter_info = jv.at("data").at("chapter_info");
   std::string chapter_title =
-      chapter_info.at("chapter_title").as_string().c_str();
+      kepub::trans_str(chapter_info.at("chapter_title").as_string().c_str());
   std::string auth_access = chapter_info.at("auth_access").as_string().c_str();
 
   if (auth_access != "1") {
