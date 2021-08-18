@@ -1,11 +1,16 @@
 #include <unistd.h>
 
+#include <chrono>
 #include <cstdint>
+#include <filesystem>
+#include <fstream>
 #include <iostream>
 #include <map>
 #include <stdexcept>
 #include <string>
+#include <thread>
 #include <tuple>
+#include <utility>
 #include <vector>
 
 #include <klib/error.h>
@@ -25,15 +30,16 @@ const std::string device_token = "ciweimao_client";
 const std::string default_key = "zG2nSeEfSHfvTCHy5LCcqtBbQehKNLXn";
 const std::string user_agent = "Android com.kuangxiangciweimao.novel";
 
-std::string decrypt(const std::string &str) {
-  const static auto key = klib::sha_256_raw(default_key);
-
+std::string decrypt(const std::string &str,
+                    const std::string &key = default_key) {
   static std::vector<std::uint8_t> iv;
   if (std::empty(iv)) {
     iv.resize(16, 0);
   }
 
-  return klib::aes_256_cbc_decrypt(klib::base64_decode(str), key, iv);
+  auto decrypt_key = klib::sha_256_raw(key);
+  auto base64_decode_str = klib::base64_decode(str);
+  return klib::aes_256_cbc_decrypt(base64_decode_str, decrypt_key, iv);
 }
 
 std::string get_login_name() {
@@ -157,9 +163,71 @@ std::vector<std::pair<std::string, std::string>> get_book_volume(
   return result;
 }
 
+std::vector<std::pair<std::string, std::string>> get_chapters(
+    const std::string &account, const std::string &login_token,
+    const std::string &division_id) {
+  auto response = http_get(
+      "https://app.hbooker.com/chapter/get_updated_chapter_by_division_id",
+      {{"app_version", app_version},
+       {"device_token", device_token},
+       {"account", account},
+       {"login_token", login_token},
+       {"division_id", division_id}});
+  auto jv = parse_json(decrypt(response.text()));
+
+  std::vector<std::pair<std::string, std::string>> result;
+  auto chapter_list = jv.at("data").at("chapter_list").as_array();
+  for (const auto &chapter : chapter_list) {
+    result.emplace_back(chapter.at("chapter_id").as_string().c_str(),
+                        chapter.at("chapter_title").as_string().c_str());
+  }
+
+  return result;
+}
+
+std::string get_chapter_command(const std::string &account,
+                                const std::string &login_token,
+                                const std::string &chapter_id) {
+  auto response = http_get("https://app.hbooker.com/chapter/get_chapter_cmd",
+                           {{"app_version", app_version},
+                            {"device_token", device_token},
+                            {"account", account},
+                            {"login_token", login_token},
+                            {"chapter_id", chapter_id}});
+  auto jv = parse_json(decrypt(response.text()));
+
+  return jv.at("data").at("command").as_string().c_str();
+}
+
+std::vector<std::string> get_content(const std::string &account,
+                                     const std::string &login_token,
+                                     const std::string &chapter_id) {
+  auto chapter_command = get_chapter_command(account, login_token, chapter_id);
+  auto response = http_get("https://app.hbooker.com/chapter/get_cpt_ifm",
+                           {{"app_version", app_version},
+                            {"device_token", device_token},
+                            {"account", account},
+                            {"login_token", login_token},
+                            {"chapter_id", chapter_id},
+                            {"chapter_command", chapter_command}});
+  auto jv = parse_json(decrypt(response.text()));
+  std::string encrypt_content_str =
+      jv.at("data").at("chapter_info").at("txt_content").as_string().c_str();
+  auto content_str = decrypt(encrypt_content_str, chapter_command);
+
+  std::vector<std::string> temp;
+  boost::split(temp, content_str, boost::is_any_of("\n"),
+               boost::token_compress_on);
+  std::vector<std::string> content;
+  for (const auto &line : temp) {
+    kepub::push_back(content, kepub::trans_str(line), false);
+  }
+
+  return content;
+}
+
 }  // namespace
 
-// 100194379
 int main(int argc, const char *argv[]) try {
   auto [book_id, options] = kepub::processing_cmd(argc, argv);
 
@@ -169,7 +237,60 @@ int main(int argc, const char *argv[]) try {
   auto [account, login_token] = login(login_name, password);
   auto [book_name, author, description] =
       get_book_info(account, login_token, book_id);
-  auto volume = get_book_volume(account, login_token, book_id);
+
+  auto p = std::make_unique<klib::ChangeWorkingDir>("temp");
+
+  std::vector<std::pair<std::pair<std::string, std::string>,
+                        std::vector<std::pair<std::string, std::string>>>>
+      volume_chapter;
+  for (const auto &[volume_id, volume_name] :
+       get_book_volume(account, login_token, book_id)) {
+    auto chapters = get_chapters(account, login_token, volume_id);
+    volume_chapter.emplace_back(std::make_pair(volume_id, volume_name),
+                                chapters);
+  }
+
+  for (const auto &[volume, chapters] : volume_chapter) {
+    std::filesystem::create_directory(volume.second);
+    klib::ChangeWorkingDir change_working_dir(volume.second);
+
+    for (const auto &[chapter_id, chapter_title] : chapters) {
+      using namespace std::chrono_literals;
+      std::this_thread::sleep_for(50ms);
+
+      auto pid = fork();
+      if (pid < 0) {
+        klib::error("Fork error");
+      } else if (pid == 0) {
+        klib::write_file(
+            chapter_title + ".txt", false,
+            boost::join(get_content(account, login_token, chapter_id), "\n"));
+        spdlog::info("{} ok", chapter_title);
+        std::exit(EXIT_SUCCESS);
+      }
+    }
+  }
+
+  klib::wait_for_child_process();
+  p.reset();
+
+  std::ofstream book_ofs(book_name);
+  book_ofs << author << "\n\n";
+  for (const auto &line : description) {
+    book_ofs << line << "\n";
+  }
+  book_ofs << "\n";
+
+  p = std::make_unique<klib::ChangeWorkingDir>("temp");
+  for (const auto &[volume, chapters] : volume_chapter) {
+    klib::ChangeWorkingDir change_working_dir(volume.second);
+    book_ofs << "[VOLUME] " << volume.second << "\n\n";
+
+    for (const auto &[chapter_id, chapter_title] : chapters) {
+      book_ofs << "[WEB] " << chapter_title << "\n\n";
+      book_ofs << klib::read_file(chapter_title + ".txt", false) << "\n\n";
+    }
+  }
 } catch (const std::exception &err) {
   klib::error(err.what());
 } catch (...) {
