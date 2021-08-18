@@ -283,7 +283,7 @@ int main(int argc, const char *argv[]) try {
   for (const auto &[volume_id, volume_name] :
        get_book_volume(account, login_token, book_id)) {
     auto chapters = get_chapters(account, login_token, volume_id);
-    spdlog::info("{} get chapters ok", volume_name);
+    spdlog::info("获取章节: {} ok", volume_name);
 
     volume_chapter.emplace_back(std::make_pair(volume_id, volume_name),
                                 chapters);
