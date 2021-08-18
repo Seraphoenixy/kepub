@@ -2,10 +2,10 @@
 
 #include <cstdint>
 #include <iostream>
+#include <map>
 #include <stdexcept>
 #include <string>
 #include <tuple>
-#include <utility>
 #include <vector>
 
 #include <klib/error.h>
@@ -58,9 +58,8 @@ std::string get_password() {
   return password;
 }
 
-klib::Response http_get(
-    const std::string &url,
-    const std::vector<std::pair<std::string, std::string>> &params) {
+klib::Response http_get(const std::string &url,
+                        const std::map<std::string, std::string> &params) {
   static klib::Request request;
   request.set_no_proxy();
   request.set_user_agent(user_agent);
