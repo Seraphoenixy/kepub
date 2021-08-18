@@ -187,6 +187,16 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("摔交", "摔跤");
   str.findAndReplace("万事具备", "万事俱备");
   str.findAndReplace("具乐部", "俱乐部");
+  str.findAndReplace("两败具伤", "两败俱伤");
+  str.findAndReplace("万念具灰", "万念俱灰");
+  str.findAndReplace("身心具疲", "身心俱疲");
+  str.findAndReplace("着称", "著称");
+  str.findAndReplace("色香味具全", "色香味俱全");
+  str.findAndReplace("形神具灭", "形神俱灭");
+  str.findAndReplace("玉石具焚", "玉石俱焚");
+  str.findAndReplace("与生具来", "与生俱来");
+  str.findAndReplace("了望", "瞭望");
+  str.findAndReplace("与日具增", "与日俱增");
 }
 
 Trans::~Trans() {
