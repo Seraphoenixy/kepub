@@ -1,3 +1,5 @@
+find_package(spdlog REQUIRED)
+
 add_executable(${DEMONOVEL_EXECUTABLE} demonovel.cpp)
 target_link_libraries(${DEMONOVEL_EXECUTABLE} PRIVATE ${LIBRARY}-shared
                                                       klib::klib)
@@ -18,5 +20,6 @@ target_link_libraries(${ADDITION_EXECUTABLE} PRIVATE ${LIBRARY}-shared
                                                      klib::klib)
 
 add_executable(${CIWEIMAO_EXECUTABLE} ciweimao.cpp)
-target_link_libraries(${CIWEIMAO_EXECUTABLE}
-                      PRIVATE ${LIBRARY}-shared klib::klib ${Boost_LIBRARIES})
+target_link_libraries(
+  ${CIWEIMAO_EXECUTABLE} PRIVATE ${LIBRARY}-shared klib::klib spdlog::spdlog
+                                 ${Boost_LIBRARIES})
