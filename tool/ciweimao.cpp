@@ -29,17 +29,22 @@ const std::string app_version = "2.8.101";
 const std::string device_token = "ciweimao_client";
 const std::string default_key = "zG2nSeEfSHfvTCHy5LCcqtBbQehKNLXn";
 const std::string user_agent = "Android com.kuangxiangciweimao.novel";
+constexpr std::int32_t ok = 100000;
 
-std::string decrypt(const std::string &str,
-                    const std::string &key = default_key) {
-  static std::vector<std::uint8_t> iv;
-  if (std::empty(iv)) {
-    iv.resize(16, 0);
-  }
+std::string decrypt(const std::string &str) {
+  static const auto decrypt_key = klib::sha_256_raw(default_key);
+  static const std::vector<std::uint8_t> iv = {0, 0, 0, 0, 0, 0, 0, 0,
+                                               0, 0, 0, 0, 0, 0, 0, 0};
 
-  auto decrypt_key = klib::sha_256_raw(key);
-  auto base64_decode_str = klib::base64_decode(str);
-  return klib::aes_256_cbc_decrypt(base64_decode_str, decrypt_key, iv);
+  return klib::aes_256_cbc_decrypt(klib::base64_decode(str), decrypt_key, iv);
+}
+
+std::string decrypt(const std::string &str, const std::string &key) {
+  static const std::vector<std::uint8_t> iv = {0, 0, 0, 0, 0, 0, 0, 0,
+                                               0, 0, 0, 0, 0, 0, 0, 0};
+
+  return klib::aes_256_cbc_decrypt(klib::base64_decode(str),
+                                   klib::sha_256_raw(key), iv);
 }
 
 std::string get_login_name() {
@@ -89,6 +94,11 @@ auto parse_json(const std::string &json) {
     klib::error("Json parse error: {}", error_code.message());
   }
 
+  std::string code = jv.at("code").as_string().c_str();
+  if (std::stoi(code) != ok) {
+    klib::error(jv.at("tip").as_string().c_str());
+  }
+
   return jv;
 }
 
@@ -105,7 +115,7 @@ std::pair<std::string, std::string> login(const std::string &login_name,
       jv.at("data").at("reader_info").at("account").as_string().c_str();
   std::string login_token = jv.at("data").at("login_token").as_string().c_str();
 
-  spdlog::info("Login successful, account: {}", account);
+  spdlog::info("登陆成功, 帐户: {}", account);
 
   return {account, login_token};
 }
@@ -136,8 +146,8 @@ std::tuple<std::string, std::string, std::vector<std::string>> get_book_info(
     kepub::push_back(description, kepub::trans_str(line), false);
   }
 
-  spdlog::info("Book name: {}", book_name);
-  spdlog::info("Author: {}", author);
+  spdlog::info("书名: {}", book_name);
+  spdlog::info("作者: {}", author);
 
   return {book_name, author, description};
 }
