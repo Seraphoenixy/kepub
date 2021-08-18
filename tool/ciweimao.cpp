@@ -188,8 +188,20 @@ std::vector<std::pair<std::string, std::string>> get_chapters(
   std::vector<std::pair<std::string, std::string>> result;
   auto chapter_list = jv.at("data").at("chapter_list").as_array();
   for (const auto &chapter : chapter_list) {
-    result.emplace_back(chapter.at("chapter_id").as_string().c_str(),
-                        chapter.at("chapter_title").as_string().c_str());
+    std::string chapter_id = chapter.at("chapter_id").as_string().c_str();
+    std::string chapter_title = chapter.at("chapter_title").as_string().c_str();
+    std::string is_valid = chapter.at("is_valid").as_string().c_str();
+    std::string auth_access = chapter.at("auth_access").as_string().c_str();
+
+    if (is_valid != "1") {
+      klib::warn("The chapter is not valid, id: {}, title: {}", chapter_id,
+                 chapter_title);
+    } else if (auth_access != "1") {
+      klib::warn("No authorized access, id: {}, title: {}", chapter_id,
+                 chapter_title);
+    } else {
+      result.emplace_back(chapter_id, chapter_title);
+    }
   }
 
   return result;
@@ -221,6 +233,17 @@ std::vector<std::string> get_content(const std::string &account,
                             {"chapter_id", chapter_id},
                             {"chapter_command", chapter_command}});
   auto jv = parse_json(decrypt(response.text()));
+
+  auto chapter_info = jv.at("data").at("chapter_info");
+  std::string chapter_title =
+      chapter_info.at("chapter_title").as_string().c_str();
+  std::string auth_access = chapter_info.at("auth_access").as_string().c_str();
+
+  if (auth_access != "1") {
+    klib::error("No authorized access, id: {}, title: {}", chapter_id,
+                chapter_title);
+  }
+
   std::string encrypt_content_str =
       jv.at("data").at("chapter_info").at("txt_content").as_string().c_str();
   auto content_str = decrypt(encrypt_content_str, chapter_command);
@@ -304,6 +327,7 @@ int main(int argc, const char *argv[]) try {
     }
   }
 
+  p.reset();
   std::filesystem::remove_all("temp");
 } catch (const std::exception &err) {
   klib::error(err.what());

@@ -5,8 +5,9 @@ target_link_libraries(${DEMONOVEL_EXECUTABLE} PRIVATE ${LIBRARY}-shared
                                                       klib::klib)
 
 add_executable(${ESJZONE_EXECUTABLE} esjzone.cpp)
-target_link_libraries(${ESJZONE_EXECUTABLE} PRIVATE ${LIBRARY}-shared
-                                                    pugixml::pugixml klib::klib)
+target_link_libraries(
+  ${ESJZONE_EXECUTABLE} PRIVATE ${LIBRARY}-shared pugixml::pugixml
+                                spdlog::spdlog klib::klib)
 
 add_executable(${MASIRO_EXECUTABLE} masiro.cpp)
 target_link_libraries(${MASIRO_EXECUTABLE} PRIVATE ${LIBRARY}-shared klib::klib)

@@ -1,10 +1,7 @@
-#include <wait.h>
-
 #include <chrono>
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
-#include <iostream>
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -17,6 +14,7 @@
 #include <klib/html.h>
 #include <klib/http.h>
 #include <klib/util.h>
+#include <spdlog/spdlog.h>
 #include <boost/algorithm/string.hpp>
 #include <pugixml.hpp>
 
@@ -204,17 +202,12 @@ int main(int argc, const char *argv[]) try {
       klib::write_file(
           title, false,
           boost::join(get_text(urls, options.connect_chinese_), "\n"));
-      std::clog << title << " ok" << std::endl;
+      spdlog::info("{} ok", title);
       std::exit(EXIT_SUCCESS);
     }
   }
 
-  std::int32_t status = 0;
-  while (waitpid(-1, &status, 0) > 0) {
-    if (!WIFEXITED(status) || WEXITSTATUS(status)) {
-      klib::error("Waitpid error: {}", status);
-    }
-  }
+  klib::wait_for_child_process();
 
   std::vector<std::pair<std::string, std::string>> v;
   for (const auto &[title, urls] : titles_and_urls) {
