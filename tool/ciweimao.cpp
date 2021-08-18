@@ -20,7 +20,7 @@
 
 namespace {
 
-const std::string app_version = "2.7.017";
+const std::string app_version = "2.8.101";
 const std::string device_token = "ciweimao_client";
 const std::string default_key = "zG2nSeEfSHfvTCHy5LCcqtBbQehKNLXn";
 const std::string user_agent = "Android com.kuangxiangciweimao.novel";
