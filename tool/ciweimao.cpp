@@ -313,7 +313,7 @@ int main(int argc, const char *argv[]) try {
   klib::wait_for_child_process();
   p.reset();
 
-  std::ofstream book_ofs(book_name);
+  std::ofstream book_ofs(book_name + ".txt");
   book_ofs << author << "\n\n";
   for (const auto &line : description) {
     book_ofs << line << "\n";
