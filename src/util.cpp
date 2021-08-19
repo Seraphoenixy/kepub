@@ -150,6 +150,8 @@ std::pair<std::string, Options> processing_cmd(std::int32_t argc,
   config.add_options()("no-cover", "do not generate cover");
   config.add_options()("no-compress", "do not compress");
   config.add_options()("postscript,p", "generate postscript");
+  config.add_options()("download-without-authorization,d",
+                       "download without authorization");
   config.add_options()(
       "illustration,i",
       boost::program_options::value<std::int32_t>(&options.illustration_num_)
@@ -217,6 +219,9 @@ std::pair<std::string, Options> processing_cmd(std::int32_t argc,
   }
   if (vm.contains("postscript")) {
     options.generate_postscript_ = true;
+  }
+  if (vm.contains("download-without-authorization")) {
+    options.download_without_authorization_ = true;
   }
 
   return {input_file, options};

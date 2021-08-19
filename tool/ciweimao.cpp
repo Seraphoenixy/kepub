@@ -137,6 +137,7 @@ std::tuple<std::string, std::string, std::vector<std::string>> get_book_info(
   std::string author =
       kepub::trans_str(book_info.at("author_name").as_string().c_str());
   std::string description_str = book_info.at("description").as_string().c_str();
+  std::string cover_url = book_info.at("cover").as_string().c_str();
 
   std::vector<std::string> temp;
   boost::split(temp, description_str, boost::is_any_of("\n"),
@@ -148,6 +149,7 @@ std::tuple<std::string, std::string, std::vector<std::string>> get_book_info(
 
   spdlog::info("书名: {}", book_name);
   spdlog::info("作者: {}", author);
+  spdlog::info("封面: {}", cover_url);
 
   return {book_name, author, description};
 }
@@ -178,7 +180,7 @@ std::vector<std::pair<std::string, std::string>> get_book_volume(
 
 std::vector<std::pair<std::string, std::string>> get_chapters(
     const std::string &account, const std::string &login_token,
-    const std::string &division_id) {
+    const std::string &division_id, bool download_without_authorization) {
   auto response = http_get(
       "https://app.hbooker.com/chapter/get_updated_chapter_by_division_id",
       {{"app_version", app_version},
@@ -200,7 +202,10 @@ std::vector<std::pair<std::string, std::string>> get_chapters(
     if (is_valid != "1") {
       klib::warn("The chapter is not valid, id: {}, title: {}", chapter_id,
                  chapter_title);
-    } else if (auth_access != "1") {
+      continue;
+    }
+
+    if (auth_access != "1" && !download_without_authorization) {
       klib::warn("No authorized access, id: {}, title: {}", chapter_id,
                  chapter_title);
     } else {
@@ -237,19 +242,10 @@ std::vector<std::string> get_content(const std::string &account,
                             {"chapter_id", chapter_id},
                             {"chapter_command", chapter_command}});
   auto jv = parse_json(decrypt(response.text()));
-
   auto chapter_info = jv.at("data").at("chapter_info");
-  std::string chapter_title =
-      kepub::trans_str(chapter_info.at("chapter_title").as_string().c_str());
-  std::string auth_access = chapter_info.at("auth_access").as_string().c_str();
-
-  if (auth_access != "1") {
-    klib::error("No authorized access, id: {}, title: {}", chapter_id,
-                chapter_title);
-  }
 
   std::string encrypt_content_str =
-      jv.at("data").at("chapter_info").at("txt_content").as_string().c_str();
+      chapter_info.at("txt_content").as_string().c_str();
   auto content_str = decrypt(encrypt_content_str, chapter_command);
 
   std::vector<std::string> temp;
@@ -282,7 +278,8 @@ int main(int argc, const char *argv[]) try {
       volume_chapter;
   for (const auto &[volume_id, volume_name] :
        get_book_volume(account, login_token, book_id)) {
-    auto chapters = get_chapters(account, login_token, volume_id);
+    auto chapters = get_chapters(account, login_token, volume_id,
+                                 options.download_without_authorization_);
     spdlog::info("获取章节: {} ok", volume_name);
 
     volume_chapter.emplace_back(std::make_pair(volume_id, volume_name),

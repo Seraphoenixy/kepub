@@ -17,6 +17,8 @@ struct Options {
 
   bool connect_chinese_ = false;
 
+  bool download_without_authorization_ = false;
+
   // for testing
   std::string uuid_;
   std::string date_;
