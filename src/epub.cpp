@@ -11,8 +11,6 @@
 #include <klib/archive.h>
 #include <klib/exception.h>
 #include <klib/util.h>
-#include <boost/uuid/uuid_generators.hpp>
-#include <boost/uuid/uuid_io.hpp>
 #include <pugixml.hpp>
 
 extern char font[];
@@ -376,8 +374,7 @@ void Epub::add_content(const std::string &volume_name, const std::string &title,
 
 void Epub::generate(bool archive) {
   if (std::empty(uuid_)) {
-    auto uuid = boost::uuids::random_generator()();
-    uuid_ = "urn:uuid:" + boost::uuids::to_string(uuid);
+    uuid_ = "urn:uuid:" + klib::uuid();
   }
 
   if (std::empty(date_)) {

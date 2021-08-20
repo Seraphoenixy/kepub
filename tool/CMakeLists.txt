@@ -26,5 +26,6 @@ target_link_libraries(
                                  ${Boost_LIBRARIES})
 
 add_executable(${SFACG_EXECUTABLE} sfacg.cpp)
-target_link_libraries(${SFACG_EXECUTABLE} PRIVATE ${LIBRARY}-shared klib::klib
-                                                  spdlog::spdlog)
+target_link_libraries(
+  ${SFACG_EXECUTABLE} PRIVATE ${LIBRARY}-shared klib::klib fmt::fmt
+                              spdlog::spdlog ${Boost_LIBRARIES})

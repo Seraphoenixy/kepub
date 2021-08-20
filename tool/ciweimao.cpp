@@ -55,7 +55,7 @@ klib::Response http_get(const std::string &url,
 
   auto response = request.get(url, params);
   if (response.status_code() != klib::Response::StatusCode::Ok) {
-    klib::error("HTTP get fail: {}", response.status_code());
+    klib::error("HTTP GET fail: {}", response.status_code());
   }
 
   return response;
