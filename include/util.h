@@ -43,4 +43,8 @@ std::pair<std::string, Options> processing_cmd(std::int32_t argc,
 
 void check_icu(UErrorCode status);
 
+std::string get_login_name();
+
+std::string get_password();
+
 }  // namespace kepub

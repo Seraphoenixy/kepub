@@ -1,10 +1,7 @@
-#include <unistd.h>
-
 #include <chrono>
 #include <cstdint>
 #include <filesystem>
 #include <fstream>
-#include <iostream>
 #include <map>
 #include <stdexcept>
 #include <string>
@@ -45,28 +42,6 @@ std::string decrypt(const std::string &str, const std::string &key) {
 
   return klib::aes_256_cbc_decrypt(klib::base64_decode(str),
                                    klib::sha_256_raw(key), iv);
-}
-
-std::string get_login_name() {
-  std::string login_name;
-
-  std::cout << "login name: ";
-  std::cin >> login_name;
-  if (std::empty(login_name)) {
-    klib::error("login name is empty");
-  }
-
-  return login_name;
-}
-
-std::string get_password() {
-  std::string password = getpass("password: ");
-
-  if (std::empty(password)) {
-    klib::error("password is empty");
-  }
-
-  return password;
 }
 
 klib::Response http_get(const std::string &url,
@@ -270,8 +245,8 @@ std::vector<std::string> get_content(const std::string &account,
 int main(int argc, const char *argv[]) try {
   auto [book_id, options] = kepub::processing_cmd(argc, argv);
 
-  auto login_name = get_login_name();
-  auto password = get_password();
+  auto login_name = kepub::get_login_name();
+  auto password = kepub::get_password();
 
   auto [account, login_token] = login(login_name, password);
   auto [book_name, author, description] =

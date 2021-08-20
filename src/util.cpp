@@ -1,9 +1,12 @@
 #include "util.h"
 
+#include <unistd.h>
+
 #include <cassert>
 #include <cctype>
 #include <cstdlib>
 #include <filesystem>
+#include <iostream>
 
 #include <fmt/core.h>
 #include <fmt/ostream.h>
@@ -231,6 +234,28 @@ void check_icu(UErrorCode status) {
   if (U_FAILURE(status)) {
     klib::error("{}", u_errorName(status));
   }
+}
+
+std::string get_login_name() {
+  std::string login_name;
+
+  std::cout << "login name: ";
+  std::cin >> login_name;
+  if (std::empty(login_name)) {
+    klib::error("login name is empty");
+  }
+
+  return login_name;
+}
+
+std::string get_password() {
+  std::string password = getpass("password: ");
+
+  if (std::empty(password)) {
+    klib::error("password is empty");
+  }
+
+  return password;
 }
 
 }  // namespace kepub
