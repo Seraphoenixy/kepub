@@ -30,6 +30,7 @@ Generate epub
 ## Font
 
 - [source-han-sans](https://github.com/adobe-fonts/source-han-sans)
+- [bookdownloader](https://github.com/SkyTNT/bookdownloader)
 
 ## Reference
 

@@ -24,3 +24,7 @@ add_executable(${CIWEIMAO_EXECUTABLE} ciweimao.cpp)
 target_link_libraries(
   ${CIWEIMAO_EXECUTABLE} PRIVATE ${LIBRARY}-shared klib::klib spdlog::spdlog
                                  ${Boost_LIBRARIES})
+
+add_executable(${SFACG_EXECUTABLE} sfacg.cpp)
+target_link_libraries(${SFACG_EXECUTABLE} PRIVATE ${LIBRARY}-shared klib::klib
+                                                  spdlog::spdlog)
