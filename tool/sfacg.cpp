@@ -47,6 +47,7 @@ auto parse_json(const std::string &json) {
   static boost::json::error_code error_code;
   static boost::json::monotonic_resource mr;
   auto jv = boost::json::parse(json, error_code, &mr);
+
   if (error_code) {
     klib::error("Json parse error: {}", error_code.message());
   }
@@ -66,13 +67,13 @@ klib::Response http_get(const std::string &url,
   auto response = request.get(
       url, params,
       {{"Authorization", authorization}, {"SFSecurity", sf_security()}});
-  if (response.status_code() != klib::Response::StatusCode::Ok) {
-    auto jv = parse_json(response.text());
 
-    klib::error("HTTP GET fail, httpCode: {}, errorCode: {}, msg: {}",
-                response.status_code(),
-                jv.at("status").at("errorCode").as_int64(),
-                jv.at("status").at("msg").as_string().c_str());
+  if (auto code = response.status_code();
+      code != klib::Response::StatusCode::Ok) {
+    auto status = parse_json(response.text()).at("status");
+    klib::error("HTTP GET fail, httpCode: {}, errorCode: {}, msg: {}", code,
+                status.at("errorCode").as_int64(),
+                status.at("msg").as_string().c_str());
   }
 
   return response;
@@ -90,13 +91,13 @@ klib::Response http_post(const std::string &url, const std::string &json) {
                                {{"Content-Type", "application/json"},
                                 {"Authorization", authorization},
                                 {"SFSecurity", sf_security()}});
-  if (response.status_code() != klib::Response::StatusCode::Ok) {
-    auto jv = parse_json(response.text());
 
-    klib::error("HTTP POST fail, httpCode: {}, errorCode: {}, msg: {}",
-                response.status_code(),
-                jv.at("status").at("errorCode").as_int64(),
-                jv.at("status").at("msg").as_string().c_str());
+  if (auto code = response.status_code();
+      code != klib::Response::StatusCode::Ok) {
+    auto status = parse_json(response.text()).at("status");
+    klib::error("HTTP POST fail, httpCode: {}, errorCode: {}, msg: {}", code,
+                status.at("errorCode").as_int64(),
+                status.at("msg").as_string().c_str());
   }
 
   return response;
@@ -127,6 +128,7 @@ std::tuple<std::string, std::string, std::vector<std::string>> get_book_info(
       data.at("expand").at("intro").as_string().c_str();
   std::string cover_url = data.at("novelCover").as_string().c_str();
 
+  // TODO use klib
   std::vector<std::string> temp;
   boost::split(temp, description_str, boost::is_any_of("\n"),
                boost::token_compress_on);
@@ -184,6 +186,7 @@ std::vector<std::string> get_content(std::int64_t chapter_id) {
   std::string content_str =
       jv.at("data").at("expand").at("content").as_string().c_str();
 
+  // TODO use klib
   std::vector<std::string> temp;
   boost::split(temp, content_str, boost::is_any_of("\n"),
                boost::token_compress_on);
@@ -206,9 +209,6 @@ int main(int argc, const char *argv[]) try {
   login(login_name, password);
   auto [book_name, author, description] = get_book_info(book_id);
   auto volume_chapter = get_volume_chapter(book_id);
-
-  // FIXME
-  get_content(3199432);
 
   auto p = std::make_unique<klib::ChangeWorkingDir>("temp");
   for (const auto &[volume_name, chapters] : volume_chapter) {

@@ -114,6 +114,7 @@ std::tuple<std::string, std::string, std::vector<std::string>> get_book_info(
   std::string description_str = book_info.at("description").as_string().c_str();
   std::string cover_url = book_info.at("cover").as_string().c_str();
 
+  // TODO use klib
   std::vector<std::string> temp;
   boost::split(temp, description_str, boost::is_any_of("\n"),
                boost::token_compress_on);
@@ -225,6 +226,7 @@ std::vector<std::string> get_content(const std::string &account,
       chapter_info.at("txt_content").as_string().c_str();
   auto content_str = decrypt(encrypt_content_str, chapter_command);
 
+  // TODO use klib
   std::vector<std::string> temp;
   boost::split(temp, content_str, boost::is_any_of("\n"),
                boost::token_compress_on);
@@ -252,8 +254,6 @@ int main(int argc, const char *argv[]) try {
   auto [book_name, author, description] =
       get_book_info(account, login_token, book_id);
 
-  auto p = std::make_unique<klib::ChangeWorkingDir>("temp");
-
   std::vector<std::pair<std::pair<std::string, std::string>,
                         std::vector<std::pair<std::string, std::string>>>>
       volume_chapter;
@@ -267,8 +267,8 @@ int main(int argc, const char *argv[]) try {
                                 chapters);
   }
 
+  auto p = std::make_unique<klib::ChangeWorkingDir>("temp");
   for (const auto &[volume, chapters] : volume_chapter) {
-    std::filesystem::create_directory(volume.second);
     klib::ChangeWorkingDir change_working_dir(volume.second);
 
     for (const auto &[chapter_id, chapter_title] : chapters) {
