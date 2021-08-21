@@ -30,11 +30,11 @@ Generate epub
 ## Font
 
 - [source-han-sans](https://github.com/adobe-fonts/source-han-sans)
-- [bookdownloader](https://github.com/SkyTNT/bookdownloader)
 
 ## Reference
 
 - [Cirno-go](https://github.com/zsakvo/Cirno-go)
+- [bookdownloader](https://github.com/SkyTNT/bookdownloader)
 
 ## Build
 
