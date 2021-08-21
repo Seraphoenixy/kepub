@@ -229,7 +229,7 @@ std::vector<std::string> get_content(const std::string &account,
   }
 
   if (auth_access != "1") {
-    kepub::push_back(content, "TODO", false);
+    content.emplace_back("TODO");
   }
 
   return content;
