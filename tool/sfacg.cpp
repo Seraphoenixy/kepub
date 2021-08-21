@@ -58,6 +58,25 @@ auto parse_json(const std::string &json) {
   return jv;
 }
 
+klib::Response http_get(const std::string &url) {
+  static klib::Request request;
+  request.set_no_proxy();
+  request.use_cookies(false);
+  request.set_browser_user_agent();
+#ifndef NDEBUG
+  request.verbose(true);
+#endif
+
+  auto response = request.get(url);
+
+  if (auto code = response.status_code();
+      code != klib::Response::StatusCode::Ok) {
+    klib::error("HTTP GET fail, httpCode: {}", code);
+  }
+
+  return response;
+}
+
 klib::Response http_get(
     const std::string &url,
     const std::unordered_map<std::string, std::string> &params,
@@ -81,24 +100,6 @@ klib::Response http_get(
                   status.at("errorCode").as_int64(),
                   status.at("msg").as_string().c_str());
     }
-  }
-
-  return response;
-}
-
-klib::Response http_get(const std::string &url) {
-  static klib::Request request;
-  request.set_no_proxy();
-  request.set_browser_user_agent();
-#ifndef NDEBUG
-  request.verbose(true);
-#endif
-
-  auto response = request.get(url);
-
-  if (auto code = response.status_code();
-      code != klib::Response::StatusCode::Ok) {
-    klib::error("HTTP GET fail, httpCode: {}", code);
   }
 
   return response;
@@ -202,7 +203,7 @@ std::vector<std::string> get_content_from_web(std::int64_t chapter_id) {
   auto response = http_get(
       fmt::format(FMT_COMPILE("https://book.sfacg.com/vip/c/{}/"), chapter_id));
 
-  auto xml = klib::html_tidy(response.text());
+  auto xml = klib::html_tidy(response.text(), true);
   pugi::xml_document doc;
   doc.load_string(xml.c_str());
 
@@ -268,9 +269,6 @@ int main(int argc, const char *argv[]) try {
   login(login_name, password);
   auto [book_name, author, description] = get_book_info(book_id);
   auto volume_chapter = get_volume_chapter(book_id);
-
-  get_content_from_web(4716734);
-  return 0;
 
   auto p = std::make_unique<klib::ChangeWorkingDir>("temp");
   for (const auto &[volume_name, chapters] : volume_chapter) {
