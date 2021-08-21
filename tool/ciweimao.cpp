@@ -2,11 +2,11 @@
 #include <cstdint>
 #include <filesystem>
 #include <fstream>
-#include <map>
 #include <stdexcept>
 #include <string>
 #include <thread>
 #include <tuple>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
@@ -44,8 +44,9 @@ std::string decrypt(const std::string &str, const std::string &key) {
                                    klib::sha_256_raw(key), iv);
 }
 
-klib::Response http_get(const std::string &url,
-                        const std::map<std::string, std::string> &params) {
+klib::Response http_get(
+    const std::string &url,
+    const std::unordered_map<std::string, std::string> &params) {
   static klib::Request request;
   request.set_no_proxy();
   request.set_user_agent(user_agent);
@@ -114,12 +115,8 @@ std::tuple<std::string, std::string, std::vector<std::string>> get_book_info(
   std::string description_str = book_info.at("description").as_string().c_str();
   std::string cover_url = book_info.at("cover").as_string().c_str();
 
-  // TODO use klib
-  std::vector<std::string> temp;
-  boost::split(temp, description_str, boost::is_any_of("\n"),
-               boost::token_compress_on);
   std::vector<std::string> description;
-  for (const auto &line : temp) {
+  for (const auto &line : klib::split_str(description_str, "\n")) {
     kepub::push_back(description, kepub::trans_str(line), false);
   }
 
@@ -226,12 +223,8 @@ std::vector<std::string> get_content(const std::string &account,
       chapter_info.at("txt_content").as_string().c_str();
   auto content_str = decrypt(encrypt_content_str, chapter_command);
 
-  // TODO use klib
-  std::vector<std::string> temp;
-  boost::split(temp, content_str, boost::is_any_of("\n"),
-               boost::token_compress_on);
   std::vector<std::string> content;
-  for (const auto &line : temp) {
+  for (const auto &line : klib::split_str(content_str, "\n")) {
     kepub::push_back(content, kepub::trans_str(line), false);
   }
 

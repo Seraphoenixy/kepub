@@ -9,21 +9,24 @@
 #include <string>
 #include <thread>
 #include <tuple>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
 #include <fmt/compile.h>
 #include <fmt/format.h>
 #include <klib/error.h>
+#include <klib/html.h>
 #include <klib/http.h>
 #include <klib/util.h>
 #include <spdlog/spdlog.h>
 #include <boost/algorithm/string.hpp>
 #include <boost/json.hpp>
+#include <pugixml.hpp>
 
-#include <iostream>
 #include "trans.h"
 #include "util.h"
+
 namespace {
 
 const std::string authorization =
@@ -55,8 +58,10 @@ auto parse_json(const std::string &json) {
   return jv;
 }
 
-klib::Response http_get(const std::string &url,
-                        const std::map<std::string, std::string> &params) {
+klib::Response http_get(
+    const std::string &url,
+    const std::unordered_map<std::string, std::string> &params,
+    bool no_check = false) {
   static klib::Request request;
   request.set_no_proxy();
   request.set_user_agent(user_agent);
@@ -68,12 +73,32 @@ klib::Response http_get(const std::string &url,
       url, params,
       {{"Authorization", authorization}, {"SFSecurity", sf_security()}});
 
+  if (!no_check) {
+    if (auto code = response.status_code();
+        code != klib::Response::StatusCode::Ok) {
+      auto status = parse_json(response.text()).at("status");
+      klib::error("HTTP GET fail, httpCode: {}, errorCode: {}, msg: {}", code,
+                  status.at("errorCode").as_int64(),
+                  status.at("msg").as_string().c_str());
+    }
+  }
+
+  return response;
+}
+
+klib::Response http_get(const std::string &url) {
+  static klib::Request request;
+  request.set_no_proxy();
+  request.set_browser_user_agent();
+#ifndef NDEBUG
+  request.verbose(true);
+#endif
+
+  auto response = request.get(url);
+
   if (auto code = response.status_code();
       code != klib::Response::StatusCode::Ok) {
-    auto status = parse_json(response.text()).at("status");
-    klib::error("HTTP GET fail, httpCode: {}, errorCode: {}, msg: {}", code,
-                status.at("errorCode").as_int64(),
-                status.at("msg").as_string().c_str());
+    klib::error("HTTP GET fail, httpCode: {}", code);
   }
 
   return response;
@@ -128,12 +153,8 @@ std::tuple<std::string, std::string, std::vector<std::string>> get_book_info(
       data.at("expand").at("intro").as_string().c_str();
   std::string cover_url = data.at("novelCover").as_string().c_str();
 
-  // TODO use klib
-  std::vector<std::string> temp;
-  boost::split(temp, description_str, boost::is_any_of("\n"),
-               boost::token_compress_on);
   std::vector<std::string> description;
-  for (const auto &line : temp) {
+  for (const auto &line : klib::split_str(description_str, "\n")) {
     kepub::push_back(description, kepub::trans_str(line), false);
   }
 
@@ -177,25 +198,63 @@ get_volume_chapter(const std::string &book_id) {
   return volume_chapter;
 }
 
-std::vector<std::string> get_content(std::int64_t chapter_id) {
-  auto response =
-      http_get("https://api.sfacg.com/Chaps/" + std::to_string(chapter_id),
-               {{"expand", "content"}});
-  auto jv = parse_json(response.text());
+std::vector<std::string> get_content_from_web(std::int64_t chapter_id) {
+  auto response = http_get(
+      fmt::format(FMT_COMPILE("https://book.sfacg.com/vip/c/{}/"), chapter_id));
 
-  std::string content_str =
-      jv.at("data").at("expand").at("content").as_string().c_str();
+  auto xml = klib::html_tidy(response.text());
+  pugi::xml_document doc;
+  doc.load_string(xml.c_str());
 
-  // TODO use klib
-  std::vector<std::string> temp;
-  boost::split(temp, content_str, boost::is_any_of("\n"),
-               boost::token_compress_on);
+  auto node =
+      doc.select_node(
+             "/html/body/div[@class='container']/div[@class='article-box "
+             "skin-white']/"
+             "div[@class='article-outer "
+             "width-middle']/div[@class='article-wrap']/"
+             "div[@class='article']/div[@class='article-content font16']")
+          .node();
+  std::string content_str = node.text().as_string();
+
   std::vector<std::string> content;
-  for (const auto &line : temp) {
+  for (const auto &line : klib::split_str(content_str, "   ")) {
     kepub::push_back(content, kepub::trans_str(line), false);
   }
 
   return content;
+}
+
+std::vector<std::string> get_content(std::int64_t chapter_id,
+                                     const std::string &chapter_title,
+                                     bool download_without_authorization) {
+  auto response =
+      http_get("https://api.sfacg.com/Chaps/" + std::to_string(chapter_id),
+               {{"expand", "content"}}, true);
+
+  if (auto code = response.status_code();
+      code == klib::Response::StatusCode::Ok) {
+    auto jv = parse_json(response.text());
+    auto content_str =
+        jv.at("data").at("expand").at("content").as_string().c_str();
+
+    std::vector<std::string> content;
+    for (const auto &line : klib::split_str(content_str, "\n")) {
+      kepub::push_back(content, kepub::trans_str(line), false);
+    }
+
+    return content;
+  } else if (code == 403) {
+    if (download_without_authorization) {
+      return get_content_from_web(chapter_id);
+    } else {
+      klib::warn("No authorized access, id: {}, title: {}", chapter_id,
+                 chapter_title);
+      return {};
+    }
+  } else {
+    klib::error("When get chapter {}(id: {}), HTTP GET fail, httpCode: {}",
+                chapter_title, chapter_id, code);
+  }
 }
 
 }  // namespace
@@ -210,6 +269,9 @@ int main(int argc, const char *argv[]) try {
   auto [book_name, author, description] = get_book_info(book_id);
   auto volume_chapter = get_volume_chapter(book_id);
 
+  get_content_from_web(4716734);
+  return 0;
+
   auto p = std::make_unique<klib::ChangeWorkingDir>("temp");
   for (const auto &[volume_name, chapters] : volume_chapter) {
     klib::ChangeWorkingDir change_working_dir(volume_name);
@@ -222,9 +284,19 @@ int main(int argc, const char *argv[]) try {
       if (pid < 0) {
         klib::error("Fork error");
       } else if (pid == 0) {
-        klib::write_file(chapter_title + ".txt", false,
-                         boost::join(get_content(chapter_id), "\n"));
-        spdlog::info("{} ok", chapter_title);
+        auto content = get_content(chapter_id, chapter_title,
+                                   options.download_without_authorization_);
+
+        if (!std::empty(content)) {
+          klib::write_file(chapter_title + ".txt", false,
+                           boost::join(content, "\n"));
+          spdlog::info("{} ok", chapter_title);
+        } else {
+          if (options.download_without_authorization_) {
+            klib::error("no content");
+          }
+        }
+
         std::exit(EXIT_SUCCESS);
       }
     }
@@ -246,8 +318,11 @@ int main(int argc, const char *argv[]) try {
     book_ofs << "[VOLUME] " << volume_name << "\n\n";
 
     for (const auto &[chapter_id, chapter_title] : chapters) {
-      book_ofs << "[WEB] " << chapter_title << "\n\n";
-      book_ofs << klib::read_file(chapter_title + ".txt", false) << "\n\n";
+      auto file_name = chapter_title + ".txt";
+      if (std::filesystem::exists(file_name)) {
+        book_ofs << "[WEB] " << chapter_title << "\n\n";
+        book_ofs << klib::read_file(file_name, false) << "\n\n";
+      }
     }
   }
 
