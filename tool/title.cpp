@@ -47,19 +47,28 @@ int main(int argc, const char *argv[]) try {
 
   auto i = std::begin(result);
   for (const auto &[title, content] : title_content) {
-    auto ref_line1 = content[0];
-    auto ref_line2 = content[1];
-    auto ref_line3 = content[2];
-    auto ref_line4 = content[3];
+    auto content_size = std::size(content);
+    const auto compare_line_num = content_size < 4 ? content_size : 4;
 
-    for (; i + 3 < std::end(result); ++i) {
-      if (ref_line1 == *i && ref_line2 == *(i + 1) && ref_line3 == *(i + 2) &&
-          ref_line4 == *(i + 3)) {
+    std::vector<std::string> compare_vec;
+    compare_vec.reserve(compare_line_num);
+    for (std::size_t index = 0; index < compare_line_num; ++index) {
+      compare_vec.push_back(content[index]);
+    }
+
+    for (; i + compare_line_num - 1 < std::end(result); ++i) {
+      std::vector<std::string> v;
+      v.reserve(compare_line_num);
+      for (std::size_t index = 0; index < compare_line_num; ++index) {
+        v.push_back(*(i + index));
+      }
+
+      if (compare_vec == v) {
         break;
       }
     }
 
-    if (i + 3 == std::end(result)) {
+    if (i + compare_line_num - 1 == std::end(result)) {
       klib::error("error: {}", title);
     } else {
       i = result.insert(i, "\n[WEB] " + title + "\n");

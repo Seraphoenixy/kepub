@@ -266,7 +266,7 @@ int main(int argc, const char *argv[]) try {
 
     for (const auto &[chapter_id, chapter_title] : chapters) {
       using namespace std::chrono_literals;
-      std::this_thread::sleep_for(50ms);
+      std::this_thread::sleep_for(100ms);
 
       auto pid = fork();
       if (pid < 0) {
