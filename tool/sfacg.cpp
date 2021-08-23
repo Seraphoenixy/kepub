@@ -255,8 +255,12 @@ std::vector<std::string> get_content(std::int64_t chapter_id,
       return {};
     }
   } else {
-    klib::error("When get chapter {}(id: {}), HTTP GET fail, httpCode: {}",
-                chapter_title, chapter_id, code);
+    auto status = parse_json(response.text()).at("status");
+    klib::error(
+        "When get chapter {}(id: {}), HTTP GET fail, httpCode: {}, errorCode: "
+        "{}, msg: {}",
+        chapter_title, chapter_id, code, status.at("errorCode").as_int64(),
+        status.at("msg").as_string().c_str());
   }
 }
 
