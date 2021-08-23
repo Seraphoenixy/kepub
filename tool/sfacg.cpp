@@ -59,7 +59,7 @@ auto parse_json(const std::string &json) {
 }
 
 klib::Response http_get(const std::string &url) {
-  static klib::Request request;
+  klib::Request request;
   request.set_no_proxy();
   request.use_cookies(false);
   request.set_browser_user_agent();
@@ -81,7 +81,7 @@ klib::Response http_get(
     const std::string &url,
     const std::unordered_map<std::string, std::string> &params,
     bool no_check = false) {
-  static klib::Request request;
+  klib::Request request;
   request.set_no_proxy();
   request.set_user_agent(user_agent);
 #ifndef NDEBUG
@@ -106,7 +106,7 @@ klib::Response http_get(
 }
 
 klib::Response http_post(const std::string &url, const std::string &json) {
-  static klib::Request request;
+  klib::Request request;
   request.set_no_proxy();
   request.set_user_agent(user_agent);
 #ifndef NDEBUG

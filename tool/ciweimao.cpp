@@ -47,7 +47,7 @@ std::string decrypt(const std::string &str, const std::string &key) {
 klib::Response http_get(
     const std::string &url,
     const std::unordered_map<std::string, std::string> &params) {
-  static klib::Request request;
+  klib::Request request;
   request.set_no_proxy();
   request.set_user_agent(user_agent);
 #ifndef NDEBUG
