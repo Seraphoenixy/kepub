@@ -215,9 +215,7 @@ std::vector<std::string> get_content(const std::string &account,
                             {"chapter_id", chapter_id},
                             {"chapter_command", chapter_command}});
   auto jv = parse_json(decrypt(response.text()));
-
   auto chapter_info = jv.at("data").at("chapter_info");
-  std::string auth_access = chapter_info.at("auth_access").as_string().c_str();
 
   std::string encrypt_content_str =
       chapter_info.at("txt_content").as_string().c_str();
@@ -226,10 +224,6 @@ std::vector<std::string> get_content(const std::string &account,
   std::vector<std::string> content;
   for (const auto &line : klib::split_str(content_str, "\n")) {
     kepub::push_back(content, kepub::trans_str(line), false);
-  }
-
-  if (auth_access != "1") {
-    content.emplace_back("TODO");
   }
 
   return content;
