@@ -246,7 +246,7 @@ std::vector<std::string> get_content(std::int64_t chapter_id,
     }
 
     return content;
-  } else if (code == 403) {
+  } else if (code == 401 || code == 403) {
     if (download_without_authorization) {
       return get_content_from_web(chapter_id);
     } else {
