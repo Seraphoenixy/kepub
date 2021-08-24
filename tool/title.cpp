@@ -51,14 +51,9 @@ int main(int argc, const char *argv[]) try {
     auto content_size = std::size(content);
     const auto compare_line_num = std::min(content_size, 4UL);
 
-    bool flag = false;
     std::vector<std::string> compare_vec;
     for (std::size_t index = 0; index < compare_line_num; ++index) {
       compare_vec.push_back(content[index]);
-    }
-    if (compare_vec.back().ends_with("...")) {
-      flag = true;
-      boost::erase_tail(compare_vec.back(), 3);
     }
 
     for (; i + compare_line_num - 1 < std::end(result); ++i) {
@@ -67,16 +62,10 @@ int main(int argc, const char *argv[]) try {
         v.push_back(*(i + index));
       }
 
-      if (flag) {
-        if (std::equal(std::begin(compare_vec), std::end(compare_vec) - 1,
-                       std::begin(v)) &&
-            v.back().starts_with(compare_vec.back())) {
-          break;
-        }
-      } else {
-        if (compare_vec == v) {
-          break;
-        }
+      if (std::equal(std::begin(compare_vec), std::end(compare_vec) - 1,
+                     std::begin(v)) &&
+          v.back().starts_with(compare_vec.back())) {
+        break;
       }
     }
 
@@ -91,7 +80,9 @@ int main(int argc, const char *argv[]) try {
 
   auto &first_line = result.front();
   // first '\n'
-  first_line.erase(std::begin(first_line));
+  if (first_line.starts_with('\n')) {
+    first_line.erase(std::begin(first_line));
+  }
 
   auto &last_line = result.back();
   last_line.push_back('\n');

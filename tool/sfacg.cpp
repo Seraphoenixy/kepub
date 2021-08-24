@@ -215,11 +215,22 @@ std::vector<std::string> get_content_from_web(std::int64_t chapter_id) {
              "width-middle']/div[@class='article-wrap']/"
              "div[@class='article']/div[@class='article-content font16']")
           .node();
-  std::string content_str = node.text().as_string();
+  std::string content_str = kepub::trans_str(node.text().as_string());
+
+  if (content_str.ends_with("...")) {
+    boost::erase_tail(content_str, 3);
+  }
 
   std::vector<std::string> content;
-  for (const auto &line : klib::split_str(content_str, "   ")) {
-    kepub::push_back(content, kepub::trans_str(line), false);
+  auto separate = std::string(3, ' ');
+
+  if (content_str.find(separate) == std::string::npos) {
+    boost::replace_all(content_str, "。", "。" + separate);
+    boost::replace_all(content_str, "”“", "”" + separate + "“");
+  }
+
+  for (const auto &line : klib::split_str(content_str, separate)) {
+    kepub::push_back(content, line, false);
   }
 
   return content;
