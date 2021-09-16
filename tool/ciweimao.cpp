@@ -47,7 +47,7 @@ std::string decrypt(const std::string &str, const std::string &key) {
 klib::Response http_get(
     const std::string &url,
     const std::unordered_map<std::string, std::string> &params) {
-  klib::Request request;
+  static klib::Request request;
   request.set_no_proxy();
   request.set_user_agent(user_agent);
 #ifndef NDEBUG
@@ -144,6 +144,7 @@ std::vector<std::pair<std::string, std::string>> get_book_volume(
     std::string division_id = division.at("division_id").as_string().c_str();
     std::string division_name =
         kepub::trans_str(division.at("division_name").as_string().c_str());
+    kepub::check_chapter_name(division_name);
 
     result.emplace_back(division_id, division_name);
   }
@@ -171,6 +172,8 @@ std::vector<std::pair<std::string, std::string>> get_chapters(
         kepub::trans_str(chapter.at("chapter_title").as_string().c_str());
     std::string is_valid = chapter.at("is_valid").as_string().c_str();
     std::string auth_access = chapter.at("auth_access").as_string().c_str();
+
+    kepub::check_chapter_name(chapter_title);
 
     if (is_valid != "1") {
       klib::warn("The chapter is not valid, id: {}, title: {}", chapter_id,

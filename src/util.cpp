@@ -258,4 +258,19 @@ std::string get_password() {
   return password;
 }
 
+// https://stackoverflow.com/questions/1976007/what-characters-are-forbidden-in-windows-and-linux-directory-names
+void check_chapter_name(std::string &str) {
+  boost::replace_all(str, "<", " ");
+  boost::replace_all(str, ">", " ");
+  boost::replace_all(str, ":", " ");
+  boost::replace_all(str, "\"", " ");
+  boost::replace_all(str, "/", " ");
+  boost::replace_all(str, "\\", " ");
+  boost::replace_all(str, "|", " ");
+  boost::replace_all(str, "?", " ");
+  boost::replace_all(str, "*", " ");
+
+  boost::trim(str);
+}
+
 }  // namespace kepub

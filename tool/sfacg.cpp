@@ -59,7 +59,7 @@ auto parse_json(const std::string &json) {
 }
 
 klib::Response http_get(const std::string &url) {
-  klib::Request request;
+  static klib::Request request;
   request.set_no_proxy();
   request.use_cookies(false);
   request.set_browser_user_agent();
@@ -81,7 +81,7 @@ klib::Response http_get(
     const std::string &url,
     const std::unordered_map<std::string, std::string> &params,
     bool no_check = false) {
-  klib::Request request;
+  static klib::Request request;
   request.set_no_proxy();
   request.set_user_agent(user_agent);
 #ifndef NDEBUG
@@ -106,7 +106,7 @@ klib::Response http_get(
 }
 
 klib::Response http_post(const std::string &url, const std::string &json) {
-  klib::Request request;
+  static klib::Request request;
   request.set_no_proxy();
   request.set_user_agent(user_agent);
 #ifndef NDEBUG
@@ -163,6 +163,11 @@ std::tuple<std::string, std::string, std::vector<std::string>> get_book_info(
   spdlog::info("作者: {}", author);
   spdlog::info("封面: {}", cover_url);
 
+  std::string cover_name = "cover.jpg";
+  response = http_get(cover_url);
+  response.save_to_file(cover_name, true);
+  spdlog::info("封面下载成功: {}", cover_name);
+
   return {book_name, author, description};
 }
 
@@ -182,6 +187,7 @@ get_volume_chapter(const std::string &book_id) {
   for (const auto &volume : volume_list) {
     std::string volume_name =
         kepub::trans_str(volume.at("title").as_string().c_str());
+    kepub::check_chapter_name(volume_name);
 
     std::vector<std::pair<std::int64_t, std::string>> chapters;
     auto chapter_list = volume.at("chapterList").as_array();
@@ -189,6 +195,8 @@ get_volume_chapter(const std::string &book_id) {
       auto chapter_id = chapter.at("chapId").as_int64();
       auto chapter_title =
           kepub::trans_str(chapter.at("title").as_string().c_str());
+      kepub::check_chapter_name(chapter_title);
+
       chapters.emplace_back(chapter_id, chapter_title);
     }
 

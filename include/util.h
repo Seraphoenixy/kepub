@@ -47,4 +47,6 @@ std::string get_login_name();
 
 std::string get_password();
 
+void check_chapter_name(std::string &str);
+
 }  // namespace kepub
