@@ -173,9 +173,23 @@ void append_texts(pugi::xml_document &doc,
     throw klib::RuntimeError("no div");
   }
 
+  std::string image_prefix = "[IMAGE] ";
+  auto image_prefix_size = std::size(image_prefix);
   for (const auto &text : texts) {
-    auto p = div.append_child("p");
-    p.text() = text.c_str();
+    if (text.starts_with(image_prefix)) {
+      auto image_num = text.substr(image_prefix_size);
+
+      auto d = div.append_child("div");
+      d.append_attribute("class") = "center";
+      auto img = d.append_child("img");
+      img.append_attribute("alt") = image_num.c_str();
+      img.append_attribute("src") = ("../Images/" + image_num + ".jpg").c_str();
+
+      div.append_child("p").append_child("br");
+    } else {
+      auto p = div.append_child("p");
+      p.text() = text.c_str();
+    }
   }
 }
 

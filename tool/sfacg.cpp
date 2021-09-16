@@ -286,7 +286,7 @@ std::vector<std::string> get_content(std::int64_t chapter_id,
         auto image_name = std::to_string(uid(gen)) + ".jpg";
         image.save_to_file(image_name, true);
 
-        line = "TODO 插图 " + image_name;
+        line = "TODO [IMAGE] " + image_name;
       }
     }
 
@@ -362,7 +362,7 @@ int main(int argc, const char *argv[]) try {
   book_ofs << "\n";
 
   std::int32_t image_count = 1;
-  std::string image_prefix = "TODO 插图 ";
+  std::string image_prefix = "TODO [IMAGE] ";
   auto image_prefix_size = std::size(image_prefix);
 
   p = std::make_unique<klib::ChangeWorkingDir>("temp");
@@ -379,7 +379,7 @@ int main(int argc, const char *argv[]) try {
         for (auto &line : content) {
           if (line.starts_with(image_prefix)) {
             auto image_name = line.substr(image_prefix_size);
-            line = "插图 " + kepub::num_to_str(image_count);
+            line = "[IMAGE] " + kepub::num_to_str(image_count);
 
             auto new_image_name = kepub::num_to_str(image_count++) + ".jpg";
             std::filesystem::rename(image_name, new_image_name);
