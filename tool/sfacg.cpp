@@ -5,6 +5,7 @@
 #include <ctime>
 #include <filesystem>
 #include <fstream>
+#include <random>
 #include <stdexcept>
 #include <string>
 #include <thread>
@@ -262,6 +263,33 @@ std::vector<std::string> get_content(std::int64_t chapter_id,
       kepub::push_back(content, kepub::trans_str(line), false);
     }
 
+    for (auto &line : content) {
+      if (line.starts_with("[img")) {
+        auto begin = line.find("https");
+        if (begin == std::string::npos) {
+          klib::error("no image url");
+        }
+
+        auto end = line.find("[/img]");
+        if (end == std::string::npos) {
+          klib::error("no image url");
+        }
+
+        auto image_url = line.substr(begin, end - begin);
+        boost::replace_all(image_url, "：", ":");
+
+        std::random_device rd;
+        std::default_random_engine gen(rd());
+        std::uniform_int_distribution uid;
+
+        auto image = http_get(image_url);
+        auto image_name = std::to_string(uid(gen)) + ".jpg";
+        image.save_to_file(image_name, true);
+
+        line = "TODO 插图 " + image_name;
+      }
+    }
+
     return content;
   } else if (code == 403) {
     if (download_without_authorization) {
@@ -333,6 +361,10 @@ int main(int argc, const char *argv[]) try {
   }
   book_ofs << "\n";
 
+  std::int32_t image_count = 1;
+  std::string image_prefix = "TODO 插图 ";
+  auto image_prefix_size = std::size(image_prefix);
+
   p = std::make_unique<klib::ChangeWorkingDir>("temp");
   for (const auto &[volume_name, chapters] : volume_chapter) {
     klib::ChangeWorkingDir change_working_dir(volume_name);
@@ -342,7 +374,22 @@ int main(int argc, const char *argv[]) try {
       auto file_name = chapter_title + ".txt";
       if (std::filesystem::exists(file_name)) {
         book_ofs << "[WEB] " << chapter_title << "\n\n";
-        book_ofs << klib::read_file(file_name, false) << "\n\n";
+        auto content = klib::read_file_line(file_name);
+
+        for (auto &line : content) {
+          if (line.starts_with(image_prefix)) {
+            auto image_name = line.substr(image_prefix_size);
+            line = "插图 " + kepub::num_to_str(image_count);
+
+            auto new_image_name = kepub::num_to_str(image_count++) + ".jpg";
+            std::filesystem::rename(image_name, new_image_name);
+            std::filesystem::copy(new_image_name, "../../" + new_image_name);
+          }
+        }
+
+        book_ofs << boost::join(content, "\n") << "\n\n";
+      } else {
+        klib::error("no file: {}", file_name);
       }
     }
   }

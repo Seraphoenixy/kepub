@@ -258,6 +258,19 @@ std::string get_password() {
   return password;
 }
 
+std::string num_to_str(std::int32_t i) {
+  assert(i > 0);
+
+  auto str = std::to_string(i);
+  if (i < 10) {
+    return "00" + str;
+  } else if (i < 100) {
+    return "0" + str;
+  } else {
+    return str;
+  }
+}
+
 // https://stackoverflow.com/questions/1976007/what-characters-are-forbidden-in-windows-and-linux-directory-names
 void check_chapter_name(std::string &str) {
   boost::replace_all(str, "<", " ");

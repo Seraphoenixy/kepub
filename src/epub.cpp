@@ -13,6 +13,8 @@
 #include <klib/util.h>
 #include <pugixml.hpp>
 
+#include "util.h"
+
 extern char font[];
 extern int font_size;
 
@@ -22,19 +24,6 @@ extern int style_size;
 namespace kepub {
 
 namespace {
-
-std::string num_to_str(std::int32_t i) {
-  assert(i > 0);
-
-  auto str = std::to_string(i);
-  if (i < 10) {
-    return "00" + str;
-  } else if (i < 100) {
-    return "0" + str;
-  } else {
-    return str;
-  }
-}
 
 std::string num_to_volume_name(std::int32_t i) {
   return "volume" + num_to_str(i) + ".xhtml";
