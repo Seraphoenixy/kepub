@@ -33,7 +33,7 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
       -o klib.deb
     sudo dpkg -i klib.deb
 
-  curl -L https://github.com/KaiserLancelot/kpkg/releases/download/v0.3.10/kpkg-v0.3.10-ubuntu-20.04.deb \
+  curl -L https://github.com/KaiserLancelot/kpkg/releases/download/v0.3.11/kpkg-v0.3.11-ubuntu-20.04.deb \
       -o kpkg.deb
   sudo dpkg -i kpkg.deb
 

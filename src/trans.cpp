@@ -205,6 +205,15 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("样样具全", "样样俱全");
   str.findAndReplace("一应具全", "一应俱全");
   str.findAndReplace("面面具到", "面面俱到");
+  str.findAndReplace("心胆具颤", "心胆俱颤");
+  str.findAndReplace("一荣具荣", "一荣俱荣");
+  str.findAndReplace("一损具损", "一损俱损");
+  str.findAndReplace("心力具疲", "心力俱疲");
+  str.findAndReplace("与时具进", "与时俱进");
+  str.findAndReplace("心胆具寒", "心胆俱寒");
+  str.findAndReplace("神魂具灭", "神魂俱灭");
+  str.findAndReplace("神形具灭", "神形俱灭");
+  str.findAndReplace("万籁具寂", "万籁俱寂");
   str.findAndReplace("五脏六腑具碎", "五脏六腑俱碎");
 
   str.findAndReplace("着称", "著称");
