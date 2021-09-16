@@ -388,8 +388,6 @@ int main(int argc, const char *argv[]) try {
         }
 
         book_ofs << boost::join(content, "\n") << "\n\n";
-      } else {
-        klib::error("no file: {}", file_name);
       }
     }
   }
