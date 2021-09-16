@@ -54,11 +54,13 @@ std::vector<std::string> get_children_text(const pugi::xml_node &node) {
 
 std::tuple<std::string, std::string, std::vector<std::string>,
            std::vector<std::pair<std::string, std::string>>>
-get_content(const std::string &url, bool connect_chinese) {
+get_content(const std::string &book_id, bool connect_chinese) {
   std::string book_name;
   std::string author;
   std::vector<std::string> description;
   std::vector<std::pair<std::string, std::string>> titles_and_urls;
+
+  auto url = "https://www.esjzone.cc/detail/" + book_id + ".html";
 
   klib::Request request;
   request.set_no_proxy();
@@ -185,9 +187,9 @@ std::vector<std::string> get_text(const std::string &url,
 }  // namespace
 
 int main(int argc, const char *argv[]) try {
-  auto [url, options] = kepub::processing_cmd(argc, argv);
+  auto [book_id, options] = kepub::processing_cmd(argc, argv);
   auto [book_name, author, description, titles_and_urls] =
-      get_content(url, options.connect_chinese_);
+      get_content(book_id, options.connect_chinese_);
 
   std::filesystem::create_directory(book_name);
   auto p = std::make_unique<klib::ChangeWorkingDir>(book_name);
