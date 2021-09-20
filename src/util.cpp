@@ -151,7 +151,6 @@ std::pair<std::string, Options> processing_cmd(std::int32_t argc,
   boost::program_options::options_description config("Configuration");
   config.add_options()("connect,c", "connect chinese");
   config.add_options()("no-cover", "do not generate cover");
-  config.add_options()("no-compress", "do not compress");
   config.add_options()("postscript,p", "generate postscript");
   config.add_options()("download-without-authorization,d",
                        "download without authorization");
@@ -165,6 +164,8 @@ std::pair<std::string, Options> processing_cmd(std::int32_t argc,
       boost::program_options::value<std::int32_t>(&options.image_num_)
           ->default_value(0),
       "generate image");
+
+  config.add_options()("no-compress", "do not compress(for testing)");
   config.add_options()(
       "date",
       boost::program_options::value<std::string>(&options.date_)

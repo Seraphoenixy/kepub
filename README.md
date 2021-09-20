@@ -55,6 +55,118 @@ sudo cmake --build build --config Release --target install
 sudo cmake --build build --config Release --target uninstall
 ```
 
+## Usage
+
+### xhtml
+
+Generate XHTML file according to the given TXT file
+
+```bash
+xhtml some.txt
+```
+
+Valid command line parameters:
+
+```bash
+-c [ --connect ]                      connect chinese
+```
+
+### addition
+
+Add new chapter to EPUB file
+
+When using, the current directory must have an EPUB file with the same name
+
+```bash
+addition book-name.txt
+```
+
+Txt files need to be preprocessed: each volume starts with [VOLUME] plus a space; each chapter starts with [WEB] plus a space; pictures start with [IMAGE] plus a space, followed by the picture number.
+
+Valid command line parameters:
+
+```bash
+-c [ --connect ]                      connect chinese
+```
+
+### masiro
+
+Generate EPUB file according to the given TXT file
+
+```bash
+masiro book-name.txt
+```
+
+Txt files need to be preprocessed: each volume starts with [VOLUME] plus a space; each chapter starts with [WEB] plus a space; pictures start with [IMAGE] plus a space, followed by the picture number.
+
+Valid command line parameters:
+
+```bash
+-c [ --connect ]                      connect chinese
+--no-cover                            do not generate cover
+-p [ --postscript ]                   generate postscript
+-i [ --illustration ] arg (=0)        generate illustration
+--image arg (=0)                      generate image
+```
+
+### demonovel
+
+Generate EPUB files based on TXT files from https://gitlab.com/demonovel/epub-txt/-/tree/master
+
+```bash
+demonovel book-name.txt
+```
+
+Valid command line parameters are the same as masiro
+
+### esjzone
+
+Crawl the novels on esjzone and generate TXT files, then you can use masiro to generate EPUB files
+
+The first command line parameter is book id
+
+```bash
+esjzone 1578022447
+```
+
+Valid command line parameters:
+
+```bash
+-c [ --connect ]                      connect chinese
+```
+
+### ciweimao
+
+Crawl the novels on ciweimao and generate TXT files, then you can use masiro to generate EPUB files
+
+The first command line parameter is book id
+
+```bash
+ciweimao 100194379
+```
+
+Valid command line parameters:
+
+```bash
+-d [ --download-without-authorization ]  download without authorization
+```
+
+### sfacg
+
+Crawl the novels on sfacg and generate TXT files, then you can use masiro to generate EPUB files
+
+The first command line parameter is book id
+
+```bash
+sfacg 263060
+```
+
+Valid command line parameters:
+
+```bash
+-d [ --download-without-authorization ]  download without authorization
+```
+
 ---
 
 Thanks to [JetBrains](https://www.jetbrains.com/) for donating product licenses to help develop this project <a href="https://www.jetbrains.com/"><img src="logo/jetbrains.svg" width="94" align="center" /></a>
