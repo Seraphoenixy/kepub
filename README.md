@@ -11,7 +11,7 @@
 
 ---
 
-Generate epub
+Crawl novels from esjzone, ciweimao and sfacg. Generate epub from txt file
 
 ## Environment
 
