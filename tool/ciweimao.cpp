@@ -23,7 +23,7 @@
 
 namespace {
 
-const std::string app_version = "2.8.101";
+const std::string app_version = "2.9.100";
 const std::string device_token = "ciweimao_client";
 const std::string default_key = "zG2nSeEfSHfvTCHy5LCcqtBbQehKNLXn";
 const std::string user_agent = "Android com.kuangxiangciweimao.novel";
@@ -153,10 +153,9 @@ std::vector<std::pair<std::string, std::string>> get_book_volume(
   return result;
 }
 
-oneapi::tbb::concurrent_vector<
-    std::tuple<std::string, std::string, std::string>>
+tbb::concurrent_vector<std::tuple<std::string, std::string, std::string>>
 get_chapters(const std::string &account, const std::string &login_token,
-             const std::string &division_id,
+             const std::string &division_id, const std::string &division_title,
              bool download_without_authorization) {
   auto response = http_get(
       "https://app.hbooker.com/chapter/get_updated_chapter_by_division_id",
@@ -167,8 +166,7 @@ get_chapters(const std::string &account, const std::string &login_token,
        {"division_id", division_id}});
   auto jv = parse_json(decrypt(response.text()));
 
-  oneapi::tbb::concurrent_vector<
-      std::tuple<std::string, std::string, std::string>>
+  tbb::concurrent_vector<std::tuple<std::string, std::string, std::string>>
       result;
   auto chapter_list = jv.at("data").at("chapter_list").as_array();
   for (const auto &chapter : chapter_list) {
@@ -194,6 +192,7 @@ get_chapters(const std::string &account, const std::string &login_token,
     }
   }
 
+  spdlog::info("获取章节: {} ok", division_title);
   return result;
 }
 
@@ -249,24 +248,24 @@ int main(int argc, const char *argv[]) try {
   auto password = kepub::get_password();
 
   std::string account, login_token;
-  std::tie(account, login_name) = login(login_name, password);
+  std::tie(account, login_token) = login(login_name, password);
+
   auto [book_name, author, description] =
       get_book_info(account, login_token, book_id);
 
-  oneapi::tbb::concurrent_vector<
-      std::pair<std::string, oneapi::tbb::concurrent_vector<std::tuple<
+  tbb::concurrent_vector<
+      std::pair<std::string, tbb::concurrent_vector<std::tuple<
                                  std::string, std::string, std::string>>>>
       volume_chapter;
   for (const auto &[volume_id, volume_name] :
        get_book_volume(account, login_token, book_id)) {
-    auto chapters = get_chapters(account, login_token, volume_id,
+    auto chapters = get_chapters(account, login_token, volume_id, volume_name,
                                  options.download_without_authorization_);
-    spdlog::info("获取章节: {} ok", volume_name);
 
     volume_chapter.emplace_back(volume_name, chapters);
   }
 
-  oneapi::tbb::task_group task_group;
+  tbb::task_group task_group;
   for (auto &[volume_name, chapters] : volume_chapter) {
     for (auto &chapter : chapters) {
       task_group.run([&] {
