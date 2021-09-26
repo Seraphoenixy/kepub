@@ -43,7 +43,7 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
   fi
   cd dependencies
 
-  kpkg install lcov catch2 fmt boost icu pugixml spdlog
+  kpkg install lcov catch2 fmt boost icu pugixml spdlog onetbb
   sudo ldconfig
 else
   echo "The system does not support: $OSTYPE"

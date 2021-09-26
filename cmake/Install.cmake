@@ -79,7 +79,7 @@ set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
 
 # https://cmake.org/cmake/help/latest/module/InstallRequiredSystemLibraries.html
 set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS
-    "/usr/local/lib/libicuuc.so.69.1;/usr/local/lib/libicui18n.so.69.1;/usr/local/lib/libicudata.so.69.1"
+    "/usr/local/lib/libtbb.so.12;/usr/local/lib/libicuuc.so.69.1;/usr/local/lib/libicui18n.so.69.1;/usr/local/lib/libicudata.so.69.1"
 )
 include(InstallRequiredSystemLibraries)
 
