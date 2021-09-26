@@ -67,7 +67,7 @@ klib::Response http_get(
   return response;
 }
 
-auto parse_json(const std::string &json) {
+auto parse_json(const std::string &json, bool check = true) {
   static boost::json::error_code error_code;
   static boost::json::monotonic_resource mr;
   auto jv = boost::json::parse(json, error_code, &mr);
@@ -75,9 +75,11 @@ auto parse_json(const std::string &json) {
     klib::error("Json parse error: {}", error_code.message());
   }
 
-  if (std::string code = jv.at("code").as_string().c_str();
-      std::stoi(code) != ok) {
-    klib::error(jv.at("tip").as_string().c_str());
+  if (check) {
+    if (std::string code = jv.at("code").as_string().c_str();
+        std::stoi(code) != ok) {
+      klib::error(jv.at("tip").as_string().c_str());
+    }
   }
 
   return jv;
@@ -94,7 +96,7 @@ bool show_user_info(const std::string &account,
 
   std::string reader_name =
       jv.at("data").at("reader_info").at("reader_name").as_string().c_str();
-  spdlog::info("Login successful, reader name: {}", reader_name);
+  spdlog::info("Use existing login token, reader name: {}", reader_name);
 
   return true;
 }
@@ -105,7 +107,7 @@ std::optional<std::pair<std::string, std::string>> try_read_token() {
   }
 
   auto json = klib::read_file(token_path, false);
-  auto obj = parse_json(decrypt(json)).as_object();
+  auto obj = parse_json(decrypt(json), false).as_object();
 
   std::string account = obj.at("account").as_string().c_str();
   std::string login_token = obj.at("login_token").as_string().c_str();
@@ -137,7 +139,9 @@ std::pair<std::string, std::string> login(const std::string &login_name,
       data.at("reader_info").at("account").as_string().c_str();
   std::string login_token = data.at("login_token").as_string().c_str();
 
-  show_user_info(account, login_token);
+  std::string reader_name =
+      data.at("reader_info").at("reader_name").as_string().c_str();
+  spdlog::info("Login successful, reader name: {}", reader_name);
 
   return {account, login_token};
 }
