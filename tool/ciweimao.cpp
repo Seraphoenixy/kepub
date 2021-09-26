@@ -239,8 +239,9 @@ std::vector<std::string> get_content(const std::string &account,
 int main(int argc, const char *argv[]) try {
   auto [book_id, options] = kepub::processing_cmd(argc, argv);
 
-  auto [account, login_token] =
-      login(kepub::get_login_name(), kepub::get_password());
+  auto login_name = kepub::get_login_name();
+  auto password = kepub::get_password();
+  auto [account, login_token] = login(login_name, password);
 
   auto [book_name, author, description] =
       get_book_info(account, login_token, book_id);
