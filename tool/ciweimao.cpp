@@ -22,8 +22,6 @@
 
 namespace {
 
-const std::string token_path = std::string(std::getenv("HOME")) + "/.ciweimao";
-
 constexpr std::int32_t ok = 100000;
 
 const std::string app_version = "2.9.100";
@@ -34,14 +32,16 @@ const std::string default_key = "zG2nSeEfSHfvTCHy5LCcqtBbQehKNLXn";
 const std::vector<std::uint8_t> iv = {0, 0, 0, 0, 0, 0, 0, 0,
                                       0, 0, 0, 0, 0, 0, 0, 0};
 
-std::string decrypt(const std::string &str) {
-  static const auto key = klib::sha_256_raw(default_key);
-  return klib::aes_256_cbc_decrypt(klib::base64_decode(str), key, iv);
-}
+const std::string token_path = std::string(std::getenv("HOME")) + "/.ciweimao";
 
 std::string encrypt(const std::string &str) {
   static const auto key = klib::sha_256_raw(default_key);
   return klib::base64_encode(klib::aes_256_cbc_encrypt(str, key, iv));
+}
+
+std::string decrypt(const std::string &str) {
+  static const auto key = klib::sha_256_raw(default_key);
+  return klib::aes_256_cbc_decrypt(klib::base64_decode(str), key, iv);
 }
 
 std::string decrypt(const std::string &str, const std::string &key) {
