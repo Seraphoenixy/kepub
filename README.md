@@ -26,7 +26,6 @@ Crawl novels from esjzone, ciweimao and sfacg. Generate epub from txt file
 - [boost](https://www.boost.org/)
 - [klib](https://github.com/KaiserLancelot/klib)
 - [spdlog](https://github.com/gabime/spdlog)
-- [oneTBB](https://github.com/oneapi-src/oneTBB)
 
 ## Font
 

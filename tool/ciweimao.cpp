@@ -1,6 +1,5 @@
 #include <chrono>
 #include <cstdint>
-#include <filesystem>
 #include <fstream>
 #include <stdexcept>
 #include <string>
@@ -13,7 +12,6 @@
 #include <klib/error.h>
 #include <klib/http.h>
 #include <klib/util.h>
-#include <oneapi/tbb.h>
 #include <spdlog/spdlog.h>
 #include <boost/algorithm/string.hpp>
 #include <boost/json.hpp>
@@ -23,24 +21,22 @@
 
 namespace {
 
+constexpr std::int32_t ok = 100000;
+
 const std::string app_version = "2.9.100";
 const std::string device_token = "ciweimao_client";
-const std::string default_key = "zG2nSeEfSHfvTCHy5LCcqtBbQehKNLXn";
 const std::string user_agent = "Android com.kuangxiangciweimao.novel";
-constexpr std::int32_t ok = 100000;
+
+const std::string default_key = "zG2nSeEfSHfvTCHy5LCcqtBbQehKNLXn";
+const std::vector<std::uint8_t> iv = {0, 0, 0, 0, 0, 0, 0, 0,
+                                      0, 0, 0, 0, 0, 0, 0, 0};
 
 std::string decrypt(const std::string &str) {
   static const auto decrypt_key = klib::sha_256_raw(default_key);
-  static const std::vector<std::uint8_t> iv = {0, 0, 0, 0, 0, 0, 0, 0,
-                                               0, 0, 0, 0, 0, 0, 0, 0};
-
   return klib::aes_256_cbc_decrypt(klib::base64_decode(str), decrypt_key, iv);
 }
 
 std::string decrypt(const std::string &str, const std::string &key) {
-  static const std::vector<std::uint8_t> iv = {0, 0, 0, 0, 0, 0, 0, 0,
-                                               0, 0, 0, 0, 0, 0, 0, 0};
-
   return klib::aes_256_cbc_decrypt(klib::base64_decode(str),
                                    klib::sha_256_raw(key), iv);
 }
@@ -48,14 +44,14 @@ std::string decrypt(const std::string &str, const std::string &key) {
 klib::Response http_get(
     const std::string &url,
     const std::unordered_map<std::string, std::string> &params) {
-  klib::Request request;
+  static klib::Request request;
   request.set_no_proxy();
   request.set_user_agent(user_agent);
 #ifndef NDEBUG
   request.verbose(true);
 #endif
 
-  auto response = request.get(url, params);
+  auto response = request.get(url, params, {}, false);
   if (response.status_code() != klib::Response::StatusCode::Ok) {
     klib::error("HTTP GET fail: {}", response.status_code());
   }
@@ -71,8 +67,8 @@ auto parse_json(const std::string &json) {
     klib::error("Json parse error: {}", error_code.message());
   }
 
-  std::string code = jv.at("code").as_string().c_str();
-  if (std::stoi(code) != ok) {
+  if (std::string code = jv.at("code").as_string().c_str();
+      std::stoi(code) != ok) {
     klib::error(jv.at("tip").as_string().c_str());
   }
 
@@ -140,12 +136,12 @@ std::vector<std::pair<std::string, std::string>> get_book_volume(
   auto jv = parse_json(decrypt(response.text()));
 
   std::vector<std::pair<std::string, std::string>> result;
+
   auto division_list = jv.at("data").at("division_list").as_array();
   for (const auto &division : division_list) {
     std::string division_id = division.at("division_id").as_string().c_str();
     std::string division_name =
         kepub::trans_str(division.at("division_name").as_string().c_str());
-    kepub::check_chapter_name(division_name);
 
     result.emplace_back(division_id, division_name);
   }
@@ -153,10 +149,10 @@ std::vector<std::pair<std::string, std::string>> get_book_volume(
   return result;
 }
 
-tbb::concurrent_vector<std::tuple<std::string, std::string, std::string>>
-get_chapters(const std::string &account, const std::string &login_token,
-             const std::string &division_id, const std::string &division_title,
-             bool download_without_authorization) {
+std::vector<std::tuple<std::string, std::string, std::string>> get_chapters(
+    const std::string &account, const std::string &login_token,
+    const std::string &division_id, const std::string &division_title,
+    bool download_without_authorization) {
   auto response = http_get(
       "https://app.hbooker.com/chapter/get_updated_chapter_by_division_id",
       {{"app_version", app_version},
@@ -166,8 +162,8 @@ get_chapters(const std::string &account, const std::string &login_token,
        {"division_id", division_id}});
   auto jv = parse_json(decrypt(response.text()));
 
-  tbb::concurrent_vector<std::tuple<std::string, std::string, std::string>>
-      result;
+  std::vector<std::tuple<std::string, std::string, std::string>> result;
+
   auto chapter_list = jv.at("data").at("chapter_list").as_array();
   for (const auto &chapter : chapter_list) {
     std::string chapter_id = chapter.at("chapter_id").as_string().c_str();
@@ -175,8 +171,6 @@ get_chapters(const std::string &account, const std::string &login_token,
         kepub::trans_str(chapter.at("chapter_title").as_string().c_str());
     std::string is_valid = chapter.at("is_valid").as_string().c_str();
     std::string auth_access = chapter.at("auth_access").as_string().c_str();
-
-    kepub::check_chapter_name(chapter_title);
 
     if (is_valid != "1") {
       klib::warn("The chapter is not valid, id: {}, title: {}", chapter_id,
@@ -193,6 +187,7 @@ get_chapters(const std::string &account, const std::string &login_token,
   }
 
   spdlog::info("获取章节: {} ok", division_title);
+
   return result;
 }
 
@@ -244,18 +239,15 @@ std::vector<std::string> get_content(const std::string &account,
 int main(int argc, const char *argv[]) try {
   auto [book_id, options] = kepub::processing_cmd(argc, argv);
 
-  auto login_name = kepub::get_login_name();
-  auto password = kepub::get_password();
-
-  std::string account, login_token;
-  std::tie(account, login_token) = login(login_name, password);
+  auto [account, login_token] =
+      login(kepub::get_login_name(), kepub::get_password());
 
   auto [book_name, author, description] =
       get_book_info(account, login_token, book_id);
 
-  tbb::concurrent_vector<
-      std::pair<std::string, tbb::concurrent_vector<std::tuple<
-                                 std::string, std::string, std::string>>>>
+  std::vector<
+      std::pair<std::string,
+                std::vector<std::tuple<std::string, std::string, std::string>>>>
       volume_chapter;
   for (const auto &[volume_id, volume_name] :
        get_book_volume(account, login_token, book_id)) {
@@ -265,18 +257,17 @@ int main(int argc, const char *argv[]) try {
     volume_chapter.emplace_back(volume_name, chapters);
   }
 
-  tbb::task_group task_group;
   for (auto &[volume_name, chapters] : volume_chapter) {
     for (auto &chapter : chapters) {
-      task_group.run([&] {
-        std::get<2>(chapter) =
-            boost::join(get_content(account, login_token, std::get<0>(chapter),
-                                    std::get<1>(chapter)),
-                        "\n");
-      });
+      using namespace std::chrono_literals;
+      std::this_thread::sleep_for(100ms);
+
+      std::get<2>(chapter) =
+          boost::join(get_content(account, login_token, std::get<0>(chapter),
+                                  std::get<1>(chapter)),
+                      "\n");
     }
   }
-  task_group.wait();
 
   std::ofstream book_ofs(book_name + ".txt");
   book_ofs << author << "\n\n";

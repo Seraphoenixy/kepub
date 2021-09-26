@@ -188,7 +188,6 @@ get_volume_chapter(const std::string &book_id) {
   for (const auto &volume : volume_list) {
     std::string volume_name =
         kepub::trans_str(volume.at("title").as_string().c_str());
-    kepub::check_chapter_name(volume_name);
 
     std::vector<std::pair<std::int64_t, std::string>> chapters;
     auto chapter_list = volume.at("chapterList").as_array();
@@ -196,7 +195,6 @@ get_volume_chapter(const std::string &book_id) {
       auto chapter_id = chapter.at("chapId").as_int64();
       auto chapter_title =
           kepub::trans_str(chapter.at("title").as_string().c_str());
-      kepub::check_chapter_name(chapter_title);
 
       chapters.emplace_back(chapter_id, chapter_title);
     }

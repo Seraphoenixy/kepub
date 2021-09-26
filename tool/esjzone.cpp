@@ -118,7 +118,6 @@ get_content(const std::string &book_id, bool connect_chinese) {
 
   for (const auto &child : node.children("a")) {
     auto title = kepub::trans_str(child.child("p").text().as_string());
-    kepub::check_chapter_name(title);
     if (std::empty(title)) {
       klib::error("the title is empty");
     }
