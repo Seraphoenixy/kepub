@@ -1,9 +1,10 @@
-#include <chrono>
 #include <cstdint>
+#include <cstdlib>
+#include <filesystem>
 #include <fstream>
+#include <optional>
 #include <stdexcept>
 #include <string>
-#include <thread>
 #include <tuple>
 #include <unordered_map>
 #include <utility>
@@ -21,6 +22,8 @@
 
 namespace {
 
+const std::string token_path = std::string(std::getenv("HOME")) + "/.ciweimao";
+
 constexpr std::int32_t ok = 100000;
 
 const std::string app_version = "2.9.100";
@@ -32,8 +35,13 @@ const std::vector<std::uint8_t> iv = {0, 0, 0, 0, 0, 0, 0, 0,
                                       0, 0, 0, 0, 0, 0, 0, 0};
 
 std::string decrypt(const std::string &str) {
-  static const auto decrypt_key = klib::sha_256_raw(default_key);
-  return klib::aes_256_cbc_decrypt(klib::base64_decode(str), decrypt_key, iv);
+  static const auto key = klib::sha_256_raw(default_key);
+  return klib::aes_256_cbc_decrypt(klib::base64_decode(str), key, iv);
+}
+
+std::string encrypt(const std::string &str) {
+  static const auto key = klib::sha_256_raw(default_key);
+  return klib::base64_encode(klib::aes_256_cbc_encrypt(str, key, iv));
 }
 
 std::string decrypt(const std::string &str, const std::string &key) {
@@ -75,6 +83,31 @@ auto parse_json(const std::string &json) {
   return jv;
 }
 
+std::optional<std::pair<std::string, std::string>> try_read_token() {
+  if (!std::filesystem::exists(token_path)) {
+    return {};
+  }
+
+  auto json = klib::read_file(token_path, false);
+
+  boost::json::error_code error_code;
+  auto jv = boost::json::parse(decrypt(json), error_code).as_object();
+  if (error_code) {
+    klib::error("Json parse error: {}", error_code.message());
+  }
+
+  return {{jv.at("account").as_string().c_str(),
+           jv.at("login_token").as_string().c_str()}};
+}
+
+void write_token(const std::string &account, const std::string &login_token) {
+  boost::json::object obj;
+  obj["account"] = account;
+  obj["login_token"] = login_token;
+
+  klib::write_file(token_path, false, encrypt(boost::json::serialize(obj)));
+}
+
 std::pair<std::string, std::string> login(const std::string &login_name,
                                           const std::string &password) {
   auto response = http_get("https://app.hbooker.com/signup/login",
@@ -88,7 +121,7 @@ std::pair<std::string, std::string> login(const std::string &login_name,
       jv.at("data").at("reader_info").at("account").as_string().c_str();
   std::string login_token = jv.at("data").at("login_token").as_string().c_str();
 
-  spdlog::info("登陆成功, 帐户: {}", account);
+  spdlog::info("Login successful, account: {}", account);
 
   return {account, login_token};
 }
@@ -117,9 +150,9 @@ std::tuple<std::string, std::string, std::vector<std::string>> get_book_info(
     kepub::push_back(description, kepub::trans_str(line), false);
   }
 
-  spdlog::info("书名: {}", book_name);
-  spdlog::info("作者: {}", author);
-  spdlog::info("封面: {}", cover_url);
+  spdlog::info("Book name: {}", book_name);
+  spdlog::info("Author: {}", author);
+  spdlog::info("Cover url: {}", cover_url);
 
   return {book_name, author, description};
 }
@@ -186,7 +219,7 @@ std::vector<std::tuple<std::string, std::string, std::string>> get_chapters(
     }
   }
 
-  spdlog::info("获取章节: {} ok", division_title);
+  spdlog::info("Successfully obtained sub-volume: {}", division_title);
 
   return result;
 }
@@ -229,7 +262,7 @@ std::vector<std::string> get_content(const std::string &account,
     kepub::push_back(content, kepub::trans_str(line), false);
   }
 
-  spdlog::info("{} ok", chapter_title);
+  spdlog::info("Successfully obtained chapter: {}", chapter_title);
 
   return content;
 }
@@ -239,9 +272,15 @@ std::vector<std::string> get_content(const std::string &account,
 int main(int argc, const char *argv[]) try {
   auto [book_id, options] = kepub::processing_cmd(argc, argv);
 
-  auto login_name = kepub::get_login_name();
-  auto password = kepub::get_password();
-  auto [account, login_token] = login(login_name, password);
+  std::string account, login_token;
+  if (auto token = try_read_token(); token.has_value()) {
+    std::tie(account, login_token) = *token;
+  } else {
+    auto login_name = kepub::get_login_name();
+    auto password = kepub::get_password();
+    std::tie(account, login_token) = login(login_name, password);
+    write_token(account, login_token);
+  }
 
   auto [book_name, author, description] =
       get_book_info(account, login_token, book_id);
@@ -260,9 +299,6 @@ int main(int argc, const char *argv[]) try {
 
   for (auto &[volume_name, chapters] : volume_chapter) {
     for (auto &chapter : chapters) {
-      using namespace std::chrono_literals;
-      std::this_thread::sleep_for(100ms);
-
       std::get<2>(chapter) =
           boost::join(get_content(account, login_token, std::get<0>(chapter),
                                   std::get<1>(chapter)),
