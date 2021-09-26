@@ -92,13 +92,19 @@ bool show_user_info(const std::string &account,
                             {"device_token", device_token},
                             {"account", account},
                             {"login_token", login_token}});
-  auto jv = parse_json(decrypt(response.text()));
+  auto jv = parse_json(decrypt(response.text()), false);
 
-  std::string reader_name =
-      jv.at("data").at("reader_info").at("reader_name").as_string().c_str();
-  spdlog::info("Use existing login token, reader name: {}", reader_name);
+  if (std::string code = jv.at("code").as_string().c_str();
+      std::stoi(code) != ok) {
+    // TODO
+    return false;
+  } else {
+    std::string reader_name =
+        jv.at("data").at("reader_info").at("reader_name").as_string().c_str();
+    spdlog::info("Use existing login token, reader name: {}", reader_name);
 
-  return true;
+    return true;
+  }
 }
 
 std::optional<std::pair<std::string, std::string>> try_read_token() {
