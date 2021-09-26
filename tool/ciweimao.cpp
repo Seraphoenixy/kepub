@@ -83,21 +83,36 @@ auto parse_json(const std::string &json) {
   return jv;
 }
 
+bool show_user_info(const std::string &account,
+                    const std::string &login_token) {
+  auto response = http_get("https://app.hbooker.com/reader/get_my_info",
+                           {{"app_version", app_version},
+                            {"device_token", device_token},
+                            {"account", account},
+                            {"login_token", login_token}});
+  auto jv = parse_json(decrypt(response.text()));
+
+  std::string reader_name =
+      jv.at("data").at("reader_info").at("reader_name").as_string().c_str();
+  spdlog::info("Login successful, reader name: {}", reader_name);
+
+  return true;
+}
+
 std::optional<std::pair<std::string, std::string>> try_read_token() {
   if (!std::filesystem::exists(token_path)) {
     return {};
   }
 
   auto json = klib::read_file(token_path, false);
+  auto obj = parse_json(decrypt(json)).as_object();
 
-  boost::json::error_code error_code;
-  auto jv = boost::json::parse(decrypt(json), error_code).as_object();
-  if (error_code) {
-    klib::error("Json parse error: {}", error_code.message());
-  }
+  std::string account = obj.at("account").as_string().c_str();
+  std::string login_token = obj.at("login_token").as_string().c_str();
 
-  return {{jv.at("account").as_string().c_str(),
-           jv.at("login_token").as_string().c_str()}};
+  show_user_info(account, login_token);
+
+  return {{account, login_token}};
 }
 
 void write_token(const std::string &account, const std::string &login_token) {
@@ -117,11 +132,12 @@ std::pair<std::string, std::string> login(const std::string &login_name,
                             {"passwd", password}});
   auto jv = parse_json(decrypt(response.text()));
 
+  auto data = jv.at("data").as_object();
   std::string account =
-      jv.at("data").at("reader_info").at("account").as_string().c_str();
-  std::string login_token = jv.at("data").at("login_token").as_string().c_str();
+      data.at("reader_info").at("account").as_string().c_str();
+  std::string login_token = data.at("login_token").as_string().c_str();
 
-  spdlog::info("Login successful, account: {}", account);
+  show_user_info(account, login_token);
 
   return {account, login_token};
 }
