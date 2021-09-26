@@ -196,13 +196,13 @@ std::vector<std::pair<std::string, std::string>> get_book_volume(
 
   std::vector<std::pair<std::string, std::string>> result;
 
-  auto division_list = jv.at("data").at("division_list").as_array();
-  for (const auto &division : division_list) {
-    std::string division_id = division.at("division_id").as_string().c_str();
-    std::string division_name =
-        kepub::trans_str(division.at("division_name").as_string().c_str());
+  auto volume_list = jv.at("data").at("division_list").as_array();
+  for (const auto &volume : volume_list) {
+    std::string volume_id = volume.at("division_id").as_string().c_str();
+    std::string volume_name =
+        kepub::trans_str(volume.at("division_name").as_string().c_str());
 
-    result.emplace_back(division_id, division_name);
+    result.emplace_back(volume_id, volume_name);
   }
 
   return result;
@@ -210,7 +210,7 @@ std::vector<std::pair<std::string, std::string>> get_book_volume(
 
 std::vector<std::tuple<std::string, std::string, std::string>> get_chapters(
     const std::string &account, const std::string &login_token,
-    const std::string &division_id, const std::string &division_title,
+    const std::string &volume_id, const std::string &volume_title,
     bool download_without_authorization) {
   auto response = http_get(
       "https://app.hbooker.com/chapter/get_updated_chapter_by_division_id",
@@ -218,7 +218,7 @@ std::vector<std::tuple<std::string, std::string, std::string>> get_chapters(
        {"device_token", device_token},
        {"account", account},
        {"login_token", login_token},
-       {"division_id", division_id}});
+       {"division_id", volume_id}});
   auto jv = parse_json(decrypt(response.text()));
 
   std::vector<std::tuple<std::string, std::string, std::string>> result;
@@ -245,7 +245,7 @@ std::vector<std::tuple<std::string, std::string, std::string>> get_chapters(
     }
   }
 
-  spdlog::info("Successfully obtained sub-volume: {}", division_title);
+  spdlog::info("Successfully obtained sub-volume: {}", volume_title);
 
   return result;
 }
