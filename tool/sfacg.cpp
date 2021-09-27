@@ -1,14 +1,7 @@
-#include <unistd.h>
-
-#include <chrono>
-#include <cstdint>
 #include <ctime>
-#include <filesystem>
-#include <fstream>
 #include <random>
 #include <stdexcept>
 #include <string>
-#include <thread>
 #include <tuple>
 #include <unordered_map>
 #include <utility>
@@ -81,7 +74,7 @@ klib::Response http_get(const std::string &url) {
 klib::Response http_get(
     const std::string &url,
     const std::unordered_map<std::string, std::string> &params,
-    bool no_check = false) {
+    bool check = true) {
   klib::Request request;
   request.set_no_proxy();
   request.set_user_agent(user_agent);
@@ -93,7 +86,7 @@ klib::Response http_get(
       url, params,
       {{"Authorization", authorization}, {"SFSecurity", sf_security()}});
 
-  if (!no_check) {
+  if (check) {
     if (auto code = response.status_code();
         code != klib::Response::StatusCode::Ok) {
       auto status = parse_json(response.text()).at("status");
@@ -130,15 +123,33 @@ klib::Response http_post(const std::string &url, const std::string &json) {
   return response;
 }
 
+bool show_user_info() {
+  auto response = http_get("https://api.sfacg.com/user", {}, false);
+  auto jv = parse_json(response.text());
+
+  if (response.status_code() == klib::Response::StatusCode::Unauthorized) {
+    klib::warn(jv.at("status").at("msg").as_string().c_str());
+    return false;
+  } else if (response.status_code() != klib::Response::StatusCode::Ok) {
+    klib::error(jv.at("status").at("msg").as_string().c_str());
+  } else {
+    std::string nick_name = jv.at("data").at("nickName").as_string().c_str();
+    spdlog::info("Use existing cookies, nick name: {}", nick_name);
+
+    return true;
+  }
+}
+
 void login(const std::string &login_name, const std::string &password) {
   boost::json::object obj;
   obj["username"] = login_name;
   obj["password"] = password;
+  http_post("https://api.sfacg.com/sessions", boost::json::serialize(obj));
 
-  auto response =
-      http_post("https://api.sfacg.com/sessions", boost::json::serialize(obj));
-
-  spdlog::info("登陆成功");
+  auto response = http_get("https://api.sfacg.com/user", {}, false);
+  auto jv = parse_json(response.text());
+  std::string nick_name = jv.at("data").at("nickName").as_string().c_str();
+  spdlog::info("Login successful, nick name: {}", nick_name);
 }
 
 std::tuple<std::string, std::string, std::vector<std::string>> get_book_info(
@@ -160,20 +171,21 @@ std::tuple<std::string, std::string, std::vector<std::string>> get_book_info(
     kepub::push_back(description, kepub::trans_str(line), false);
   }
 
-  spdlog::info("书名: {}", book_name);
-  spdlog::info("作者: {}", author);
-  spdlog::info("封面: {}", cover_url);
+  spdlog::info("Book name: {}", book_name);
+  spdlog::info("Author: {}", author);
+  spdlog::info("Cover url: {}", cover_url);
 
   std::string cover_name = "cover.jpg";
   response = http_get(cover_url);
   response.save_to_file(cover_name, true);
-  spdlog::info("封面下载成功: {}", cover_name);
+  spdlog::info("Cover downloaded successfully: {}", cover_name);
 
   return {book_name, author, description};
 }
 
 std::vector<
-    std::pair<std::string, std::vector<std::pair<std::int64_t, std::string>>>>
+    std::pair<std::string,
+              std::vector<std::tuple<std::string, std::string, std::string>>>>
 get_volume_chapter(const std::string &book_id) {
   auto response = http_get(
       fmt::format(FMT_COMPILE("https://api.sfacg.com/novels/{}/dirs"), book_id),
@@ -181,7 +193,8 @@ get_volume_chapter(const std::string &book_id) {
   auto jv = parse_json(response.text());
 
   std::vector<
-      std::pair<std::string, std::vector<std::pair<std::int64_t, std::string>>>>
+      std::pair<std::string,
+                std::vector<std::tuple<std::string, std::string, std::string>>>>
       volume_chapter;
 
   auto volume_list = jv.at("data").at("volumeList").as_array();
@@ -189,24 +202,24 @@ get_volume_chapter(const std::string &book_id) {
     std::string volume_name =
         kepub::trans_str(volume.at("title").as_string().c_str());
 
-    std::vector<std::pair<std::int64_t, std::string>> chapters;
+    std::vector<std::tuple<std::string, std::string, std::string>> chapters;
     auto chapter_list = volume.at("chapterList").as_array();
     for (const auto &chapter : chapter_list) {
-      auto chapter_id = chapter.at("chapId").as_int64();
+      std::string chapter_id = chapter.at("chapId").as_string().c_str();
       auto chapter_title =
           kepub::trans_str(chapter.at("title").as_string().c_str());
 
-      chapters.emplace_back(chapter_id, chapter_title);
+      chapters.emplace_back(chapter_id, chapter_title, "");
     }
-
-    spdlog::info("获取章节: {} ok", volume_name);
     volume_chapter.emplace_back(volume_name, chapters);
+
+    spdlog::info("Successfully obtained sub-volume: {} ok", volume_name);
   }
 
   return volume_chapter;
 }
 
-std::vector<std::string> get_content_from_web(std::int64_t chapter_id) {
+std::vector<std::string> get_content_from_web(const std::string &chapter_id) {
   auto response = http_get(
       fmt::format(FMT_COMPILE("https://book.sfacg.com/vip/c/{}/"), chapter_id));
 
@@ -243,12 +256,11 @@ std::vector<std::string> get_content_from_web(std::int64_t chapter_id) {
   return content;
 }
 
-std::vector<std::string> get_content(std::int64_t chapter_id,
+std::vector<std::string> get_content(const std::string &chapter_id,
                                      const std::string &chapter_title,
                                      bool download_without_authorization) {
-  auto response =
-      http_get("https://api.sfacg.com/Chaps/" + std::to_string(chapter_id),
-               {{"expand", "content"}}, true);
+  auto response = http_get("https://api.sfacg.com/Chaps/" + chapter_id,
+                           {{"expand", "content"}}, true);
 
   if (auto code = response.status_code();
       code == klib::Response::StatusCode::Ok) {
@@ -289,7 +301,7 @@ std::vector<std::string> get_content(std::int64_t chapter_id,
     }
 
     return content;
-  } else if (code == 403) {
+  } else if (code == klib::Response::Forbidden) {
     if (download_without_authorization) {
       return get_content_from_web(chapter_id);
     } else {
@@ -307,100 +319,38 @@ std::vector<std::string> get_content(std::int64_t chapter_id,
   }
 }
 
-bool show_user_info() {
-  auto response = http_get("https://api.sfacg.com/user", {});
-  auto jv = parse_json(response.text());
-
-  return true;
-}
-
-void try_use_cookies();
-
 }  // namespace
 
 int main(int argc, const char *argv[]) try {
   auto [book_id, options] = kepub::processing_cmd(argc, argv);
 
-  auto login_name = kepub::get_login_name();
-  auto password = kepub::get_password();
+  if (!show_user_info()) {
+    auto login_name = kepub::get_login_name();
+    auto password = kepub::get_password();
+    login(login_name, password);
+  }
 
-  login(login_name, password);
   auto [book_name, author, description] = get_book_info(book_id);
   auto volume_chapter = get_volume_chapter(book_id);
 
-  auto p = std::make_unique<klib::ChangeWorkingDir>("temp");
-  for (const auto &[volume_name, chapters] : volume_chapter) {
-    klib::ChangeWorkingDir change_working_dir(volume_name);
+  for (auto &[volume_name, chapters] : volume_chapter) {
+    for (auto &[chapter_id, chapter_title, content] : chapters) {
+      content =
+          boost::join(get_content(chapter_id, chapter_title,
+                                  options.download_without_authorization_),
+                      "\n");
 
-    for (const auto &[chapter_id, chapter_title] : chapters) {
-      using namespace std::chrono_literals;
-      std::this_thread::sleep_for(100ms);
-
-      auto pid = fork();
-      if (pid < 0) {
-        klib::error("Fork error");
-      } else if (pid == 0) {
-        auto content = get_content(chapter_id, chapter_title,
-                                   options.download_without_authorization_);
-
-        if (!std::empty(content)) {
-          klib::write_file(chapter_title + ".txt", false,
-                           boost::join(content, "\n"));
-          spdlog::info("{} ok", chapter_title);
-        } else {
-          if (options.download_without_authorization_) {
-            klib::error("no content");
-          }
+      if (!std::empty(content)) {
+        spdlog::info("Successfully obtained chapter: {}", chapter_title);
+      } else {
+        if (options.download_without_authorization_) {
+          klib::error("No content");
         }
-
-        std::exit(EXIT_SUCCESS);
       }
     }
   }
 
-  klib::wait_for_child_process();
-  p.reset();
-
-  std::ofstream book_ofs(book_name + ".txt");
-  book_ofs << author << "\n\n";
-  for (const auto &line : description) {
-    book_ofs << line << "\n";
-  }
-  book_ofs << "\n";
-
-  std::int32_t image_count = 1;
-  std::string image_prefix = "TODO [IMAGE] ";
-  auto image_prefix_size = std::size(image_prefix);
-
-  p = std::make_unique<klib::ChangeWorkingDir>("temp");
-  for (const auto &[volume_name, chapters] : volume_chapter) {
-    klib::ChangeWorkingDir change_working_dir(volume_name);
-    book_ofs << "[VOLUME] " << volume_name << "\n\n";
-
-    for (const auto &[chapter_id, chapter_title] : chapters) {
-      auto file_name = chapter_title + ".txt";
-      if (std::filesystem::exists(file_name)) {
-        book_ofs << "[WEB] " << chapter_title << "\n\n";
-        auto content = klib::read_file_line(file_name);
-
-        for (auto &line : content) {
-          if (line.starts_with(image_prefix)) {
-            auto image_name = line.substr(image_prefix_size);
-            line = "[IMAGE] " + kepub::num_to_str(image_count);
-
-            auto new_image_name = kepub::num_to_str(image_count++) + ".jpg";
-            std::filesystem::rename(image_name, new_image_name);
-            std::filesystem::copy(new_image_name, "../../" + new_image_name);
-          }
-        }
-
-        book_ofs << boost::join(content, "\n") << "\n\n";
-      }
-    }
-  }
-
-  p.reset();
-  std::filesystem::remove_all("temp");
+  kepub::generate_txt(book_name, author, description, volume_chapter);
 } catch (const std::exception &err) {
   klib::error(err.what());
 } catch (...) {

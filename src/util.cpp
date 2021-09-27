@@ -6,7 +6,9 @@
 #include <cctype>
 #include <cstdlib>
 #include <filesystem>
+#include <fstream>
 #include <iostream>
+#include <tuple>
 
 #include <fmt/core.h>
 #include <fmt/ostream.h>
@@ -269,6 +271,46 @@ std::string num_to_str(std::int32_t i) {
     return "0" + str;
   } else {
     return str;
+  }
+}
+
+void generate_txt(
+    const std::string &book_name, const std::string &author,
+    const std::vector<std::string> &description,
+    const std::vector<std::pair<
+        std::string,
+        std::vector<std::tuple<std::string, std::string, std::string>>>>
+        &volume_chapter) {
+  std::ofstream book_ofs(book_name + ".txt");
+  book_ofs << author << "\n\n";
+  for (const auto &line : description) {
+    book_ofs << line << "\n";
+  }
+  book_ofs << "\n";
+
+  std::int32_t image_count = 1;
+  std::string image_prefix = "TODO [IMAGE] ";
+  auto image_prefix_size = std::size(image_prefix);
+
+  for (const auto &[volume_name, chapters] : volume_chapter) {
+    book_ofs << "[VOLUME] " << volume_name << "\n\n";
+
+    for (const auto &[chapter_id, chapter_title, content] : chapters) {
+      book_ofs << "[WEB] " << chapter_title << "\n\n";
+
+      auto lines = klib::split_str(content, "\n");
+      for (auto &line : lines) {
+        if (line.starts_with(image_prefix)) {
+          auto image_name = line.substr(image_prefix_size);
+          line = "[IMAGE] " + kepub::num_to_str(image_count);
+
+          auto new_image_name = kepub::num_to_str(image_count++) + ".jpg";
+          std::filesystem::rename(image_name, new_image_name);
+        }
+      }
+
+      book_ofs << boost::join(lines, "\n") << "\n\n";
+    }
   }
 }
 

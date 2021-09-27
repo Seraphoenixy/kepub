@@ -329,29 +329,13 @@ int main(int argc, const char *argv[]) try {
   }
 
   for (auto &[volume_name, chapters] : volume_chapter) {
-    for (auto &chapter : chapters) {
-      std::get<2>(chapter) =
-          boost::join(get_content(account, login_token, std::get<0>(chapter),
-                                  std::get<1>(chapter)),
-                      "\n");
+    for (auto &[chapter_id, chapter_title, content] : chapters) {
+      content = boost::join(
+          get_content(account, login_token, chapter_id, chapter_title), "\n");
     }
   }
 
-  std::ofstream book_ofs(book_name + ".txt");
-  book_ofs << author << "\n\n";
-  for (const auto &line : description) {
-    book_ofs << line << "\n";
-  }
-  book_ofs << "\n";
-
-  for (const auto &[volume_name, chapters] : volume_chapter) {
-    book_ofs << "[VOLUME] " << volume_name << "\n\n";
-
-    for (const auto &[chapter_id, chapter_title, content] : chapters) {
-      book_ofs << "[WEB] " << chapter_title << "\n\n";
-      book_ofs << content << "\n\n";
-    }
-  }
+  kepub::generate_txt(book_name, author, description, volume_chapter);
 } catch (const std::exception &err) {
   klib::error(err.what());
 } catch (...) {
