@@ -23,6 +23,7 @@
 namespace {
 
 constexpr std::int32_t ok = 100000;
+constexpr std::int32_t login_expired = 200100;
 
 const std::string app_version = "2.9.100";
 const std::string device_token = "ciweimao_client";
@@ -95,9 +96,11 @@ bool show_user_info(const std::string &account,
   auto jv = parse_json(decrypt(response.text()), false);
 
   if (std::string code = jv.at("code").as_string().c_str();
-      std::stoi(code) != ok) {
-    // TODO
+      std::stoi(code) == login_expired) {
+    klib::warn(jv.at("tip").as_string().c_str());
     return false;
+  } else if (std::stoi(code) != ok) {
+    klib::error(jv.at("tip").as_string().c_str());
   } else {
     std::string reader_name =
         jv.at("data").at("reader_info").at("reader_name").as_string().c_str();
@@ -118,9 +121,11 @@ std::optional<std::pair<std::string, std::string>> try_read_token() {
   std::string account = obj.at("account").as_string().c_str();
   std::string login_token = obj.at("login_token").as_string().c_str();
 
-  show_user_info(account, login_token);
-
-  return {{account, login_token}};
+  if (show_user_info(account, login_token)) {
+    return {{account, login_token}};
+  } else {
+    return {};
+  }
 }
 
 void write_token(const std::string &account, const std::string &login_token) {
