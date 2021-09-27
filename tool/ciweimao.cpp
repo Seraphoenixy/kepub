@@ -59,7 +59,7 @@ klib::Response http_get(
   request.verbose(true);
 #endif
 
-  auto response = request.get(url, params, {}, false);
+  auto response = request.get(url, params);
   if (response.status_code() != klib::Response::StatusCode::Ok) {
     klib::error("HTTP GET fail: {}", response.status_code());
   }
