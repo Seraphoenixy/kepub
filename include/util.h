@@ -52,6 +52,11 @@ std::string num_to_str(std::int32_t i);
 void generate_txt(
     const std::string &book_name, const std::string &author,
     const std::vector<std::string> &description,
+    const std::vector<std::pair<std::string, std::string>> &chapters);
+
+void generate_txt(
+    const std::string &book_name, const std::string &author,
+    const std::vector<std::string> &description,
     const std::vector<std::pair<
         std::string,
         std::vector<std::tuple<std::string, std::string, std::string>>>>

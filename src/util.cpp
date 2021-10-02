@@ -282,6 +282,31 @@ std::string num_to_str(std::int32_t i) {
 void generate_txt(
     const std::string &book_name, const std::string &author,
     const std::vector<std::string> &description,
+    const std::vector<std::pair<std::string, std::string>> &chapters) {
+  std::ostringstream oss;
+
+  oss << author << "\n\n";
+  for (const auto &line : description) {
+    oss << line << "\n";
+  }
+  oss << "\n";
+
+  for (const auto &[chapter_title, content] : chapters) {
+    oss << "[WEB] " << chapter_title << "\n\n";
+    oss << content << "\n\n";
+  }
+
+  std::string str = oss.str();
+  // '\n'
+  str.pop_back();
+
+  std::ofstream book_ofs(book_name + ".txt");
+  book_ofs << str << std::flush;
+}
+
+void generate_txt(
+    const std::string &book_name, const std::string &author,
+    const std::vector<std::string> &description,
     const std::vector<std::pair<
         std::string,
         std::vector<std::tuple<std::string, std::string, std::string>>>>
