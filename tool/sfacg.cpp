@@ -53,7 +53,7 @@ auto parse_json(const std::string &json) {
 }
 
 klib::Response http_get(const std::string &url) {
-  klib::Request request;
+  static klib::Request request;
   request.set_no_proxy();
   request.use_cookies(false);
   request.set_browser_user_agent();
@@ -75,7 +75,7 @@ klib::Response http_get(
     const std::string &url,
     const std::unordered_map<std::string, std::string> &params,
     bool check = true) {
-  klib::Request request;
+  static klib::Request request;
   request.set_no_proxy();
   request.set_user_agent(user_agent);
 #ifndef NDEBUG
@@ -260,7 +260,7 @@ std::vector<std::string> get_content(const std::string &chapter_id,
                                      const std::string &chapter_title,
                                      bool download_without_authorization) {
   auto response = http_get("https://api.sfacg.com/Chaps/" + chapter_id,
-                           {{"expand", "content"}}, true);
+                           {{"expand", "content"}}, false);
 
   if (auto code = response.status_code();
       code == klib::Response::StatusCode::Ok) {
