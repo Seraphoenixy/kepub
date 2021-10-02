@@ -62,8 +62,7 @@ jobs:
 
       # https://github.com/softprops/action-gh-release
       - name: Release
-        # FIXME
-        uses: softprops/action-gh-release@59c3b4891632ff9a897f99a91d7bc557467a3a22
+        uses: softprops/action-gh-release@v1
         with:
           files: |
             build/kepub-v${{ env.RELEASE_VERSION }}-ubuntu-20.04.deb

@@ -14,8 +14,6 @@ Checks: "*,
   -zircon-*,
   -modernize-use-trailing-return-type"
 
-WarningsAsErrors: "clang-analyzer-*,clang-diagnostic-*"
-
 HeaderFilterRegex: ".*"
 
 # https://clang.llvm.org/extra/clang-tidy/checks/readability-identifier-naming.html

@@ -16,7 +16,7 @@ Crawl novels from esjzone, ciweimao and sfacg. Generate epub from txt file
 ## Environment
 
 - Ubuntu 20.04
-- GCC 11 or Clang 12
+- GCC 11 or Clang 13
 
 ## Dependency
 

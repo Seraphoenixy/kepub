@@ -36,17 +36,17 @@ endif()
 # ---------------------------------------------------------------------------------------
 # Generator
 # ---------------------------------------------------------------------------------------
-if(${CMAKE_GENERATOR} STREQUAL "Unix Makefiles")
+if(${CMAKE_GENERATOR} STREQUAL "Ninja")
   execute_process(
-    COMMAND make --version
+    COMMAND ninja --version
     OUTPUT_VARIABLE GENERATOR_VERSION
     OUTPUT_STRIP_TRAILING_WHITESPACE)
   string(REPLACE "\n" ";" GENERATOR_VERSION ${GENERATOR_VERSION})
   list(GET GENERATOR_VERSION 0 GENERATOR_VERSION)
 
-  message(STATUS "CMake Generator: ${GENERATOR_VERSION}")
+  message(STATUS "CMake Generator: Ninja ${GENERATOR_VERSION}")
 else()
-  message(FATAL_ERROR "The generator not support: ${CMAKE_GENERATOR}")
+  message(WARNING "The generator recommends using Ninja: ${CMAKE_GENERATOR}")
 endif()
 
 # ---------------------------------------------------------------------------------------
@@ -62,10 +62,10 @@ if(CMAKE_COMPILER_IS_GNUCXX)
   message(
     STATUS "Compiler: ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
 elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
-  if(${CMAKE_CXX_COMPILER_VERSION} VERSION_LESS 12.0.0)
+  if(${CMAKE_CXX_COMPILER_VERSION} VERSION_LESS 13.0.0)
     message(
       FATAL_ERROR
-        "Clang version must be at least 12.0.0, the current version is: ${CMAKE_CXX_COMPILER_VERSION}"
+        "Clang version must be at least 13.0.0, the current version is: ${CMAKE_CXX_COMPILER_VERSION}"
     )
   endif()
   message(

@@ -10,7 +10,7 @@
       "name": "gcc-debug",
       "displayName": "GCC Debug",
       "description": "The compiler is GCC, and the build type is Debug",
-      "generator": "Unix Makefiles",
+      "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/${presetName}",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
@@ -29,7 +29,7 @@
       "name": "gcc-release",
       "displayName": "GCC Release",
       "description": "The compiler is GCC, and the build type is Release",
-      "generator": "Unix Makefiles",
+      "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/${presetName}",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release",
@@ -46,7 +46,7 @@
       "name": "clang-debug",
       "displayName": "Clang Debug",
       "description": "The compiler is Clang, and the build type is Debug",
-      "generator": "Unix Makefiles",
+      "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/${presetName}",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
@@ -65,7 +65,7 @@
       "name": "clang-release",
       "displayName": "Clang Release",
       "description": "The compiler is clang, and the build type is Release",
-      "generator": "Unix Makefiles",
+      "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/${presetName}",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release",
