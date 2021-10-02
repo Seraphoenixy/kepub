@@ -37,6 +37,8 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("&nbsp;", " ");
   str.findAndReplace("\u00A0", " ");
 
+  str.findAndReplace("  ", " ");
+
   str.findAndReplace("&lt;", "<");
   str.findAndReplace("&gt;", ">");
   str.findAndReplace("&quot;", "\"");
@@ -187,6 +189,8 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("唿", "呼");
 
   str.findAndReplace("摔交", "摔跤");
+  str.findAndReplace("摔一交", "摔一跤");
+  str.findAndReplace("摔了一交", "摔了一跤");
 
   str.findAndReplace("具乐部", "俱乐部");
   str.findAndReplace("万事具备", "万事俱备");
@@ -214,6 +218,8 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("神魂具灭", "神魂俱灭");
   str.findAndReplace("神形具灭", "神形俱灭");
   str.findAndReplace("万籁具寂", "万籁俱寂");
+  str.findAndReplace("财色具获", "财色俱获");
+  str.findAndReplace("声色具厉", "声色俱厉");
   str.findAndReplace("五脏六腑具碎", "五脏六腑俱碎");
 
   str.findAndReplace("着称", "著称");
