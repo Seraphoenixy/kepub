@@ -8,6 +8,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <tuple>
 
 #include <fmt/core.h>
@@ -285,22 +286,24 @@ void generate_txt(
         std::string,
         std::vector<std::tuple<std::string, std::string, std::string>>>>
         &volume_chapter) {
-  std::ofstream book_ofs(book_name + ".txt");
-  book_ofs << author << "\n\n";
+  std::string str;
+  std::ostringstream oss(str);
+
+  oss << author << "\n\n";
   for (const auto &line : description) {
-    book_ofs << line << "\n";
+    oss << line << "\n";
   }
-  book_ofs << "\n";
+  oss << "\n";
 
   std::int32_t image_count = 1;
   std::string image_prefix = "TODO [IMAGE] ";
   auto image_prefix_size = std::size(image_prefix);
 
   for (const auto &[volume_name, chapters] : volume_chapter) {
-    book_ofs << "[VOLUME] " << volume_name << "\n\n";
+    oss << "[VOLUME] " << volume_name << "\n\n";
 
     for (const auto &[chapter_id, chapter_title, content] : chapters) {
-      book_ofs << "[WEB] " << chapter_title << "\n\n";
+      oss << "[WEB] " << chapter_title << "\n\n";
 
       auto lines = klib::split_str(content, "\n");
       for (auto &line : lines) {
@@ -313,9 +316,15 @@ void generate_txt(
         }
       }
 
-      book_ofs << boost::join(lines, "\n") << "\n\n";
+      oss << boost::join(lines, "\n") << "\n\n";
     }
   }
+
+  // '\n'
+  str.pop_back();
+
+  std::ofstream book_ofs(book_name + ".txt");
+  book_ofs << str << std::flush;
 }
 
 }  // namespace kepub
