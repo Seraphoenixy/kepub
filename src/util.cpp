@@ -286,8 +286,7 @@ void generate_txt(
         std::string,
         std::vector<std::tuple<std::string, std::string, std::string>>>>
         &volume_chapter) {
-  std::string str;
-  std::ostringstream oss(str);
+  std::ostringstream oss;
 
   oss << author << "\n\n";
   for (const auto &line : description) {
@@ -320,6 +319,7 @@ void generate_txt(
     }
   }
 
+  std::string str = oss.str();
   // '\n'
   str.pop_back();
 
