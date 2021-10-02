@@ -7,5 +7,5 @@ if(KEPUB_CLANG_TIDY)
     message(FATAL_ERROR "Can not find clang-tidy")
   endif()
 
-  # FIXME set(CMAKE_CXX_CLANG_TIDY "clang-tidy")
+  set(CMAKE_CXX_CLANG_TIDY "clang-tidy")
 endif()
