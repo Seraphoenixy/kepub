@@ -289,7 +289,7 @@ std::vector<std::string> get_content(const std::string &chapter_id,
         boost::replace_all(image_url, "：", ":");
 
         auto image = http_get(image_url);
-        auto image_name = std::to_string(image_count++);
+        auto image_name = kepub::num_to_str(image_count++);
         image.save_to_file(image_name + ".jpg", true);
 
         line = "[IMAGE] " + image_name;
