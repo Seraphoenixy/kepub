@@ -166,6 +166,8 @@ std::vector<std::string> get_content(const std::string &url,
 
 int main(int argc, const char *argv[]) try {
   auto [book_id, options] = kepub::processing_cmd(argc, argv);
+  kepub::check_is_book_id(book_id);
+
   auto [book_name, author, description, titles_and_urls] =
       get_info(book_id, options.connect_chinese_);
 

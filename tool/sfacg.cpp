@@ -319,6 +319,7 @@ std::vector<std::string> get_content(const std::string &chapter_id,
 
 int main(int argc, const char *argv[]) try {
   auto [book_id, options] = kepub::processing_cmd(argc, argv);
+  kepub::check_is_book_id(book_id);
 
   if (!show_user_info()) {
     auto login_name = kepub::get_login_name();

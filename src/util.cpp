@@ -2,6 +2,7 @@
 
 #include <unistd.h>
 
+#include <algorithm>
 #include <cassert>
 #include <cctype>
 #include <cstdlib>
@@ -63,6 +64,13 @@ void check_is_txt_file(const std::string &file_name) {
 
   if (std::filesystem::path(file_name).extension() != ".txt") {
     klib::error("Need a txt file: {}", file_name);
+  }
+}
+
+void check_is_book_id(const std::string &book_id) {
+  if (!std::all_of(std::begin(book_id), std::end(book_id),
+                   [](char c) { return std::isdigit(c); })) {
+    klib::error("Need a book id: {}", book_id);
   }
 }
 

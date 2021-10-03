@@ -302,6 +302,7 @@ std::vector<std::string> get_content(const std::string &account,
 
 int main(int argc, const char *argv[]) try {
   auto [book_id, options] = kepub::processing_cmd(argc, argv);
+  kepub::check_is_book_id(book_id);
 
   std::string account, login_token;
   if (auto token = try_read_token(); token.has_value()) {
