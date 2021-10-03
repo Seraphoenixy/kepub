@@ -319,28 +319,12 @@ void generate_txt(
   }
   oss << "\n";
 
-  std::int32_t image_count = 1;
-  std::string image_prefix = "TODO [IMAGE] ";
-  auto image_prefix_size = std::size(image_prefix);
-
   for (const auto &[volume_name, chapters] : volume_chapter) {
     oss << "[VOLUME] " << volume_name << "\n\n";
 
     for (const auto &[chapter_id, chapter_title, content] : chapters) {
       oss << "[WEB] " << chapter_title << "\n\n";
-
-      auto lines = klib::split_str(content, "\n");
-      for (auto &line : lines) {
-        if (line.starts_with(image_prefix)) {
-          auto image_name = line.substr(image_prefix_size);
-          line = "[IMAGE] " + kepub::num_to_str(image_count);
-
-          auto new_image_name = kepub::num_to_str(image_count++) + ".jpg";
-          std::filesystem::rename(image_name, new_image_name);
-        }
-      }
-
-      oss << boost::join(lines, "\n") << "\n\n";
+      oss << content << "\n\n";
     }
   }
 

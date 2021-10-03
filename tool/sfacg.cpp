@@ -1,5 +1,4 @@
 #include <ctime>
-#include <random>
 #include <stdexcept>
 #include <string>
 #include <tuple>
@@ -273,6 +272,7 @@ std::vector<std::string> get_content(const std::string &chapter_id,
       kepub::push_back(content, kepub::trans_str(line), false);
     }
 
+    static std::int32_t image_count = 1;
     for (auto &line : content) {
       if (line.starts_with("[img")) {
         auto begin = line.find("https");
@@ -288,15 +288,11 @@ std::vector<std::string> get_content(const std::string &chapter_id,
         auto image_url = line.substr(begin, end - begin);
         boost::replace_all(image_url, "：", ":");
 
-        std::random_device rd;
-        std::default_random_engine gen(rd());
-        std::uniform_int_distribution uid;
-
         auto image = http_get(image_url);
-        auto image_name = std::to_string(uid(gen)) + ".jpg";
-        image.save_to_file(image_name, true);
+        auto image_name = std::to_string(image_count++);
+        image.save_to_file(image_name + ".jpg", true);
 
-        line = "TODO [IMAGE] " + image_name;
+        line = "[IMAGE] " + image_name;
       }
     }
 
