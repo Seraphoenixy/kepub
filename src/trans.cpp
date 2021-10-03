@@ -197,7 +197,6 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("两败具伤", "两败俱伤");
   str.findAndReplace("万念具灰", "万念俱灰");
   str.findAndReplace("身心具疲", "身心俱疲");
-  str.findAndReplace("色香味具全", "色香味俱全");
   str.findAndReplace("形神具灭", "形神俱灭");
   str.findAndReplace("玉石具焚", "玉石俱焚");
   str.findAndReplace("与生具来", "与生俱来");
@@ -220,7 +219,15 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("万籁具寂", "万籁俱寂");
   str.findAndReplace("财色具获", "财色俱获");
   str.findAndReplace("声色具厉", "声色俱厉");
+  str.findAndReplace("人赃具获", "人赃俱获");
+  str.findAndReplace("身心具到", "身心俱到");
+  str.findAndReplace("色香味具全", "色香味俱全");
   str.findAndReplace("五脏六腑具碎", "五脏六腑俱碎");
+
+  str.findAndReplace("赤果果", "赤裸裸");
+  str.findAndReplace("赤果", "赤裸");
+  str.findAndReplace("果体", "裸体");
+  str.findAndReplace("果露", "裸露");
 
   str.findAndReplace("着称", "著称");
   str.findAndReplace("显着", "显著");
