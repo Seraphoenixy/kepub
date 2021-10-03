@@ -226,8 +226,6 @@ void custom_trans(icu::UnicodeString &str) {
 
   str.findAndReplace("赤果果", "赤裸裸");
   str.findAndReplace("赤果", "赤裸");
-  str.findAndReplace("果体", "裸体");
-  str.findAndReplace("果露", "裸露");
 
   str.findAndReplace("着称", "著称");
   str.findAndReplace("显着", "显著");
