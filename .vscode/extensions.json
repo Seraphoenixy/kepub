@@ -7,7 +7,7 @@
     "twxs.cmake",
     "ms-vscode.cmake-tools",
     "cheshirekow.cmake-format",
-    "cschlosser.doxdocgen",
-    "penagos.vgdb"
+    "vadimcn.vscode-lldb",
+    "cschlosser.doxdocgen"
   ]
 }

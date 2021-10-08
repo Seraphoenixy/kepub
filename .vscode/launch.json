@@ -2,9 +2,9 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "vgdb",
+      "type": "lldb",
       "request": "launch",
-      "name": "C/C++ Debug Launch",
+      "name": "Launch",
       "program": "${command:cmake.launchTargetPath}",
       "args": [],
       "cwd": "${command:cmake.launchTargetDirectory}"
