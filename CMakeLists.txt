@@ -67,7 +67,7 @@ include(CompilerOptions)
 find_package(fmt REQUIRED)
 find_package(pugixml REQUIRED)
 find_package(ICU REQUIRED COMPONENTS uc i18n)
-find_package(Boost REQUIRED COMPONENTS program_options json)
+find_package(Boost REQUIRED COMPONENTS json)
 find_package(klib REQUIRED)
 
 # ---------------------------------------------------------------------------------------

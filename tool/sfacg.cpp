@@ -9,6 +9,7 @@
 #include <fmt/compile.h>
 #include <fmt/format.h>
 #include <klib/error.h>
+#include <klib/hash_lib.h>
 #include <klib/html.h>
 #include <klib/http.h>
 #include <klib/util.h>
@@ -31,8 +32,10 @@ const std::string device_token = "AAC3B586-D131-32DE-942C-F5CCED55B45E";
 std::string sf_security() {
   std::string uuid = boost::to_upper_copy(klib::uuid());
   auto timestamp = std::time(nullptr);
-  std::string sign = boost::to_upper_copy(
-      klib::md5(uuid + std::to_string(timestamp) + device_token + "xw3#a12-x"));
+  std::string sign =
+      boost::to_upper_copy(klib::HashLib::md5(uuid + std::to_string(timestamp) +
+                                              device_token + "xw3#a12-x")
+                               .hex_digest());
 
   return fmt::format(
       FMT_COMPILE("nonce={}&timestamp={}&devicetoken={}&sign={}"), uuid,

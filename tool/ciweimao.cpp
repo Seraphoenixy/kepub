@@ -10,7 +10,9 @@
 #include <utility>
 #include <vector>
 
+#include <klib/crypto.h>
 #include <klib/error.h>
+#include <klib/hash_lib.h>
 #include <klib/http.h>
 #include <klib/util.h>
 #include <spdlog/spdlog.h>
@@ -30,24 +32,22 @@ const std::string device_token = "ciweimao_client";
 const std::string user_agent = "Android com.kuangxiangciweimao.novel";
 
 const std::string default_key = "zG2nSeEfSHfvTCHy5LCcqtBbQehKNLXn";
-const std::vector<std::uint8_t> iv = {0, 0, 0, 0, 0, 0, 0, 0,
-                                      0, 0, 0, 0, 0, 0, 0, 0};
 
 const std::string token_path = std::string(std::getenv("HOME")) + "/.ciweimao";
 
 std::string encrypt(const std::string &str) {
-  static const auto key = klib::sha_256_raw(default_key);
-  return klib::base64_encode(klib::aes_256_cbc_encrypt(str, key, iv));
+  static const auto key = klib::HashLib::sha_256(default_key).digest();
+  return klib::aes_256_encrypt_base64(str, key, false);
 }
 
 std::string decrypt(const std::string &str) {
-  static const auto key = klib::sha_256_raw(default_key);
-  return klib::aes_256_cbc_decrypt(klib::base64_decode(str), key, iv);
+  static const auto key = klib::HashLib::sha_256(default_key).digest();
+  return klib::aes_256_decrypt_base64(str, key, false);
 }
 
 std::string decrypt(const std::string &str, const std::string &key) {
-  return klib::aes_256_cbc_decrypt(klib::base64_decode(str),
-                                   klib::sha_256_raw(key), iv);
+  return klib::aes_256_decrypt_base64(str, klib::HashLib::sha_256(key).digest(),
+                                      false);
 }
 
 klib::Response http_get(

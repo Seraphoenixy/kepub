@@ -1,7 +1,7 @@
 #include "encoding.h"
 
 #include <klib/error.h>
-#include <klib/util.h>
+#include <klib/unicode.h>
 #include <unicode/ucsdet.h>
 #include <unicode/utypes.h>
 
