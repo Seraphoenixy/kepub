@@ -188,6 +188,10 @@ void custom_trans(icu::UnicodeString &str, bool translation) {
   str.findAndReplace("類", "类");
   str.findAndReplace("諷", "讽");
   str.findAndReplace("唿", "呼");
+  str.findAndReplace("噹", "当");
+  str.findAndReplace("沒", "没");
+  str.findAndReplace("別", "别");
+  str.findAndReplace("歿", "殁");
 
   str.findAndReplace("摔交", "摔跤");
   str.findAndReplace("摔一交", "摔一跤");

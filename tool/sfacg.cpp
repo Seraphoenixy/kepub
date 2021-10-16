@@ -110,10 +110,9 @@ klib::Response http_post(const std::string &url, const std::string &json) {
   request.verbose(true);
 #endif
 
-  auto response = request.post(url, json,
-                               {{"Content-Type", "application/json"},
-                                {"Authorization", authorization},
-                                {"SFSecurity", sf_security()}});
+  auto response = request.post(
+      url, json,
+      {{"Authorization", authorization}, {"SFSecurity", sf_security()}});
 
   if (auto code = response.status_code();
       code != klib::Response::StatusCode::Ok) {
@@ -215,8 +214,6 @@ get_volume_chapter(const std::string &book_id) {
       chapters.emplace_back(chapter_id, chapter_title, "");
     }
     volume_chapter.emplace_back(volume_name, chapters);
-
-    spdlog::info("Successfully obtained sub-volume: {} ok", volume_name);
   }
 
   return volume_chapter;
@@ -261,7 +258,7 @@ std::vector<std::string> get_content_from_web(const std::string &chapter_id) {
 
 std::vector<std::string> get_content(const std::string &chapter_id,
                                      const std::string &chapter_title,
-                                     bool download_without_authorization) {
+                                     bool download_unpurchased) {
   auto response = http_get("https://api.sfacg.com/Chaps/" + chapter_id,
                            {{"expand", "content"}}, false);
 
@@ -302,7 +299,7 @@ std::vector<std::string> get_content(const std::string &chapter_id,
 
     return content;
   } else if (code == klib::Response::Forbidden) {
-    if (download_without_authorization) {
+    if (download_unpurchased) {
       return get_content_from_web(chapter_id);
     } else {
       klib::warn("No authorized access, id: {}, title: {}", chapter_id,
@@ -347,18 +344,18 @@ int main(int argc, const char *argv[]) try {
   auto [book_name, author, description] = get_book_info(book_id);
   auto volume_chapter = get_volume_chapter(book_id);
 
+  std::int32_t chapter_count = 0;
+  for (const auto &[volume_name, chapters] : volume_chapter) {
+    chapter_count += std::size(chapters);
+  }
+
+  kepub::ProgressBar bar(book_name, chapter_count);
   for (auto &[volume_name, chapters] : volume_chapter) {
     for (auto &[chapter_id, chapter_title, content] : chapters) {
+      bar.set_postfix_text(chapter_title);
       content = boost::join(
           get_content(chapter_id, chapter_title, download_unpurchased), "\n");
-
-      if (!std::empty(content)) {
-        spdlog::info("Successfully obtained chapter: {}", chapter_title);
-      } else {
-        if (download_unpurchased) {
-          klib::error("No content");
-        }
-      }
+      bar.tick();
     }
   }
 
