@@ -233,10 +233,8 @@ void generate_txt(
     oss << "[VOLUME] " << volume_name << "\n\n";
 
     for (const auto &[chapter_id, chapter_title, content] : chapters) {
-      if (!std::empty(content)) {
-        oss << "[WEB] " << chapter_title << "\n\n";
-        oss << content << "\n\n";
-      }
+      oss << "[WEB] " << chapter_title << "\n\n";
+      oss << content << "\n\n";
     }
   }
 

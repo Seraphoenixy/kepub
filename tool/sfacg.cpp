@@ -188,7 +188,7 @@ std::tuple<std::string, std::string, std::vector<std::string>> get_book_info(
 std::vector<
     std::pair<std::string,
               std::vector<std::tuple<std::string, std::string, std::string>>>>
-get_volume_chapter(const std::string &book_id) {
+get_volume_chapter(const std::string &book_id, bool download_unpurchased) {
   auto response = http_get(
       fmt::format(FMT_COMPILE("https://api.sfacg.com/novels/{}/dirs"), book_id),
       {});
@@ -211,7 +211,16 @@ get_volume_chapter(const std::string &book_id) {
       auto chapter_title =
           kepub::trans_str(chapter.at("title").as_string().c_str(), false);
 
-      chapters.emplace_back(chapter_id, chapter_title, "");
+      auto need_fire_money = chapter.at("needFireMoney").as_int64();
+
+      if (need_fire_money > 0) {
+        klib::warn("No authorized access, id: {}, title: {}", chapter_id,
+                   chapter_title);
+      }
+
+      if (need_fire_money == 0 || download_unpurchased) {
+        chapters.emplace_back(chapter_id, chapter_title, "");
+      }
     }
     volume_chapter.emplace_back(volume_name, chapters);
   }
@@ -257,8 +266,7 @@ std::vector<std::string> get_content_from_web(const std::string &chapter_id) {
 }
 
 std::vector<std::string> get_content(const std::string &chapter_id,
-                                     const std::string &chapter_title,
-                                     bool download_unpurchased) {
+                                     const std::string &chapter_title) {
   auto response = http_get("https://api.sfacg.com/Chaps/" + chapter_id,
                            {{"expand", "content"}}, false);
 
@@ -299,14 +307,7 @@ std::vector<std::string> get_content(const std::string &chapter_id,
 
     return content;
   } else if (code == klib::Response::Forbidden) {
-    klib::warn("No authorized access, id: {}, title: {}", chapter_id,
-               chapter_title);
-
-    if (download_unpurchased) {
-      return get_content_from_web(chapter_id);
-    } else {
-      return {};
-    }
+    return get_content_from_web(chapter_id);
   } else {
     auto status = parse_json(response.text()).at("status");
     klib::error(
@@ -343,7 +344,7 @@ int main(int argc, const char *argv[]) try {
   }
 
   auto [book_name, author, description] = get_book_info(book_id);
-  auto volume_chapter = get_volume_chapter(book_id);
+  auto volume_chapter = get_volume_chapter(book_id, download_unpurchased);
 
   std::int32_t chapter_count = 0;
   for (const auto &[volume_name, chapters] : volume_chapter) {
@@ -354,8 +355,7 @@ int main(int argc, const char *argv[]) try {
   for (auto &[volume_name, chapters] : volume_chapter) {
     for (auto &[chapter_id, chapter_title, content] : chapters) {
       bar.set_postfix_text(chapter_title);
-      content = boost::join(
-          get_content(chapter_id, chapter_title, download_unpurchased), "\n");
+      content = boost::join(get_content(chapter_id, chapter_title), "\n");
       bar.tick();
     }
   }
