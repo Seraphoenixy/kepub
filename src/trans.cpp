@@ -31,7 +31,7 @@ class Trans {
   icu::Transliterator *fullwidth_halfwidth_;
 };
 
-void custom_trans(icu::UnicodeString &str, bool translation) {
+void custom_trans(icu::UnicodeString &str) {
   // https://en.wikipedia.org/wiki/Word_joiner
   str.findAndReplace("\uFEFF", " ");
 
@@ -192,6 +192,7 @@ void custom_trans(icu::UnicodeString &str, bool translation) {
   str.findAndReplace("沒", "没");
   str.findAndReplace("別", "别");
   str.findAndReplace("歿", "殁");
+  str.findAndReplace("羅", "罗");
 
   str.findAndReplace("摔交", "摔跤");
   str.findAndReplace("摔一交", "摔一跤");
@@ -229,6 +230,7 @@ void custom_trans(icu::UnicodeString &str, bool translation) {
   str.findAndReplace("身心具到", "身心俱到");
   str.findAndReplace("百废具兴", "百废俱兴");
   str.findAndReplace("五脏具全", "五脏俱全");
+  str.findAndReplace("与身具来", "与身俱来");
   str.findAndReplace("色香味具全", "色香味俱全");
   str.findAndReplace("五脏六腑具碎", "五脏六腑俱碎");
 
@@ -243,11 +245,10 @@ void custom_trans(icu::UnicodeString &str, bool translation) {
   str.findAndReplace("一分子", "一份子");
   str.findAndReplace("分道扬镖", "分道扬镳");
 
-  if (translation) {
-    str.findAndReplace("着称", "著称");
-    str.findAndReplace("显着", "显著");
-    str.findAndReplace("想著", "想着");
-  }
+  str.findAndReplace("着称", "著称");
+  str.findAndReplace("想著", "想着");
+  str.findAndReplace("执著", "执着");
+  str.findAndReplace("抚著", "抚着");
 }
 
 Trans::~Trans() {
@@ -269,7 +270,7 @@ std::string Trans::trans_str(const std::string &str, bool translation) const {
   }
 
   fullwidth_halfwidth_->transliterate(icu_str);
-  custom_trans(icu_str, translation);
+  custom_trans(icu_str);
 
   icu_str.trim();
 
