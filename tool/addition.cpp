@@ -29,7 +29,7 @@ int main(int argc, const char *argv[]) try {
                "Remove extra line breaks between Chinese");
 
   bool no_compress = false;
-  app.add_flag("--no_compress", no_compress, "Do not compress(for testing)");
+  app.add_flag("--no-compress", no_compress, "Do not compress(for testing)");
 
   CLI11_PARSE(app, argc, argv)
 

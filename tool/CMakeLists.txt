@@ -40,8 +40,3 @@ target_link_libraries(
           pugixml::pugixml
           ${Boost_LIBRARIES}
           CLI11::CLI11)
-
-add_executable(${TITLE_EXECUTABLE} title.cpp)
-target_link_libraries(
-  ${TITLE_EXECUTABLE} PRIVATE ${LIBRARY}-shared klib::klib ${Boost_LIBRARIES}
-                              CLI11::CLI11)
