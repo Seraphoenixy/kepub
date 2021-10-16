@@ -1,7 +1,7 @@
 find_package(spdlog REQUIRED)
 find_package(CLI11 REQUIRED)
-find_package(indicators REQUIRED)
 
+# TODO klib shared
 add_executable(${DEMONOVEL_EXECUTABLE} demonovel.cpp)
 target_link_libraries(${DEMONOVEL_EXECUTABLE} PRIVATE ${LIBRARY}-shared
                                                       klib::klib CLI11::CLI11)
@@ -10,7 +10,7 @@ add_executable(${ESJZONE_EXECUTABLE} esjzone.cpp)
 target_link_libraries(
   ${ESJZONE_EXECUTABLE}
   PRIVATE ${LIBRARY}-shared pugixml::pugixml spdlog::spdlog klib::klib
-          CLI11::CLI11 indicators::indicators)
+          ${Boost_LIBRARIES} CLI11::CLI11)
 
 add_executable(${MASIRO_EXECUTABLE} masiro.cpp)
 target_link_libraries(${MASIRO_EXECUTABLE} PRIVATE ${LIBRARY}-shared klib::klib
@@ -27,9 +27,8 @@ target_link_libraries(${ADDITION_EXECUTABLE} PRIVATE ${LIBRARY}-shared
 
 add_executable(${CIWEIMAO_EXECUTABLE} ciweimao.cpp)
 target_link_libraries(
-  ${CIWEIMAO_EXECUTABLE}
-  PRIVATE ${LIBRARY}-shared klib::klib spdlog::spdlog ${Boost_LIBRARIES}
-          CLI11::CLI11 indicators::indicators)
+  ${CIWEIMAO_EXECUTABLE} PRIVATE ${LIBRARY}-shared klib::klib spdlog::spdlog
+                                 ${Boost_LIBRARIES} CLI11::CLI11)
 
 add_executable(${SFACG_EXECUTABLE} sfacg.cpp)
 target_link_libraries(
@@ -40,9 +39,9 @@ target_link_libraries(
           spdlog::spdlog
           pugixml::pugixml
           ${Boost_LIBRARIES}
-          CLI11::CLI11
-          indicators::indicators)
+          CLI11::CLI11)
 
 add_executable(${TITLE_EXECUTABLE} title.cpp)
-target_link_libraries(${TITLE_EXECUTABLE} PRIVATE ${LIBRARY}-shared klib::klib
-                                                  CLI11::CLI11)
+target_link_libraries(
+  ${TITLE_EXECUTABLE} PRIVATE ${LIBRARY}-shared klib::klib ${Boost_LIBRARIES}
+                              CLI11::CLI11)

@@ -147,6 +147,11 @@ get_info(const std::string &book_id, bool translation) {
   spdlog::info("Author: {}", author);
   spdlog::info("Cover url: {}", cover_url);
 
+  std::string cover_name = "cover.jpg";
+  auto response = http_get(cover_url);
+  response.save_to_file(cover_name, true);
+  spdlog::info("Cover downloaded successfully: {}", cover_name);
+
   return {book_name, author, description, titles_and_urls};
 }
 
@@ -192,10 +197,8 @@ int main(int argc, const char *argv[]) try {
   std::vector<std::pair<std::string, std::string>> chapters;
   for (const auto &[title, urls] : titles_and_urls) {
     bar.set_postfix_text(title);
-
     chapters.emplace_back(title,
                           boost::join(get_content(urls, translation), "\n"));
-
     bar.tick();
   }
 
