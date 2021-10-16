@@ -16,11 +16,14 @@
 #include <klib/http.h>
 #include <klib/util.h>
 #include <spdlog/spdlog.h>
+#include <CLI/CLI.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/json.hpp>
 
+#include "progress_bar.h"
 #include "trans.h"
 #include "util.h"
+#include "version.h"
 
 namespace {
 
@@ -36,18 +39,17 @@ const std::string default_key = "zG2nSeEfSHfvTCHy5LCcqtBbQehKNLXn";
 const std::string token_path = std::string(std::getenv("HOME")) + "/.ciweimao";
 
 std::string encrypt(const std::string &str) {
-  static const auto key = klib::HashLib::sha_256(default_key).digest();
+  static const auto key = klib::sha_256(default_key);
   return klib::aes_256_encrypt_base64(str, key, false);
 }
 
 std::string decrypt(const std::string &str) {
-  static const auto key = klib::HashLib::sha_256(default_key).digest();
+  static const auto key = klib::sha_256(default_key);
   return klib::aes_256_decrypt_base64(str, key, false);
 }
 
 std::string decrypt(const std::string &str, const std::string &key) {
-  return klib::aes_256_decrypt_base64(str, klib::HashLib::sha_256(key).digest(),
-                                      false);
+  return klib::aes_256_decrypt_base64(str, klib::sha_256(key), false);
 }
 
 klib::Response http_get(
@@ -170,15 +172,15 @@ std::tuple<std::string, std::string, std::vector<std::string>> get_book_info(
 
   auto book_info = jv.at("data").at("book_info");
   std::string book_name =
-      kepub::trans_str(book_info.at("book_name").as_string().c_str());
+      kepub::trans_str(book_info.at("book_name").as_string().c_str(), false);
   std::string author =
-      kepub::trans_str(book_info.at("author_name").as_string().c_str());
+      kepub::trans_str(book_info.at("author_name").as_string().c_str(), false);
   std::string description_str = book_info.at("description").as_string().c_str();
   std::string cover_url = book_info.at("cover").as_string().c_str();
 
   std::vector<std::string> description;
   for (const auto &line : klib::split_str(description_str, "\n")) {
-    kepub::push_back(description, kepub::trans_str(line), false);
+    kepub::push_back(description, kepub::trans_str(line, false), false);
   }
 
   spdlog::info("Book name: {}", book_name);
@@ -205,7 +207,7 @@ std::vector<std::pair<std::string, std::string>> get_book_volume(
   for (const auto &volume : volume_list) {
     std::string volume_id = volume.at("division_id").as_string().c_str();
     std::string volume_name =
-        kepub::trans_str(volume.at("division_name").as_string().c_str());
+        kepub::trans_str(volume.at("division_name").as_string().c_str(), false);
 
     result.emplace_back(volume_id, volume_name);
   }
@@ -231,8 +233,8 @@ std::vector<std::tuple<std::string, std::string, std::string>> get_chapters(
   auto chapter_list = jv.at("data").at("chapter_list").as_array();
   for (const auto &chapter : chapter_list) {
     std::string chapter_id = chapter.at("chapter_id").as_string().c_str();
-    std::string chapter_title =
-        kepub::trans_str(chapter.at("chapter_title").as_string().c_str());
+    std::string chapter_title = kepub::trans_str(
+        chapter.at("chapter_title").as_string().c_str(), false);
     std::string is_valid = chapter.at("is_valid").as_string().c_str();
     std::string auth_access = chapter.at("auth_access").as_string().c_str();
 
@@ -271,8 +273,7 @@ std::string get_chapter_command(const std::string &account,
 
 std::vector<std::string> get_content(const std::string &account,
                                      const std::string &login_token,
-                                     const std::string &chapter_id,
-                                     const std::string &chapter_title) {
+                                     const std::string &chapter_id) {
   auto chapter_command = get_chapter_command(account, login_token, chapter_id);
   auto response = http_get("https://app.hbooker.com/chapter/get_cpt_ifm",
                            {{"app_version", app_version},
@@ -290,10 +291,8 @@ std::vector<std::string> get_content(const std::string &account,
 
   std::vector<std::string> content;
   for (const auto &line : klib::split_str(content_str, "\n")) {
-    kepub::push_back(content, kepub::trans_str(line), false);
+    kepub::push_back(content, kepub::trans_str(line, false), false);
   }
-
-  spdlog::info("Successfully obtained chapter: {}", chapter_title);
 
   return content;
 }
@@ -301,7 +300,19 @@ std::vector<std::string> get_content(const std::string &account,
 }  // namespace
 
 int main(int argc, const char *argv[]) try {
-  auto [book_id, options] = kepub::processing_cmd(argc, argv);
+  CLI::App app;
+  app.set_version_flag("-v,--version", kepub::version_str(argv[0]));
+
+  std::string book_id;
+  app.add_option("book-id", book_id, "The book id of the book to be downloaded")
+      ->required();
+
+  bool download_unpurchased = false;
+  app.add_flag("-d,--download-unpurchased", download_unpurchased,
+               "Download the beginning of the unpurchased chapter");
+
+  CLI11_PARSE(app, argc, argv)
+
   kepub::check_is_book_id(book_id);
 
   std::string account, login_token;
@@ -311,6 +322,7 @@ int main(int argc, const char *argv[]) try {
     auto login_name = kepub::get_login_name();
     auto password = kepub::get_password();
     std::tie(account, login_token) = login(login_name, password);
+    klib::cleanse(password);
     write_token(account, login_token);
   }
 
@@ -321,18 +333,23 @@ int main(int argc, const char *argv[]) try {
       std::pair<std::string,
                 std::vector<std::tuple<std::string, std::string, std::string>>>>
       volume_chapter;
+  std::int32_t chapter_count = 0;
   for (const auto &[volume_id, volume_name] :
        get_book_volume(account, login_token, book_id)) {
     auto chapters = get_chapters(account, login_token, volume_id, volume_name,
-                                 options.download_without_authorization_);
+                                 download_unpurchased);
+    chapter_count += std::size(chapters);
 
     volume_chapter.emplace_back(volume_name, chapters);
   }
 
+  kepub::ProgressBar bar(book_name, chapter_count);
   for (auto &[volume_name, chapters] : volume_chapter) {
     for (auto &[chapter_id, chapter_title, content] : chapters) {
-      content = boost::join(
-          get_content(account, login_token, chapter_id, chapter_title), "\n");
+      bar.set_postfix_text(chapter_title);
+      content =
+          boost::join(get_content(account, login_token, chapter_id), "\n");
+      bar.tick();
     }
   }
 

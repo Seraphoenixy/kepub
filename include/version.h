@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <string>
 
 #define KEPUB_VER_MAJOR 0
@@ -17,6 +18,11 @@
 namespace kepub {
 
 inline std::string kepub_version() { return KEPUB_VERSION_STRING; }
+
+std::string version_str(const std::string &argv0) {
+  return std::filesystem::path(argv0).filename().string() +
+         " version: " + kepub_version();
+}
 
 }  // namespace kepub
 

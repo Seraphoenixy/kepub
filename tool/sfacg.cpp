@@ -14,12 +14,15 @@
 #include <klib/http.h>
 #include <klib/util.h>
 #include <spdlog/spdlog.h>
+#include <CLI/CLI.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/json.hpp>
 #include <pugixml.hpp>
 
+#include "progress_bar.h"
 #include "trans.h"
 #include "util.h"
+#include "version.h"
 
 namespace {
 
@@ -32,10 +35,8 @@ const std::string device_token = "AAC3B586-D131-32DE-942C-F5CCED55B45E";
 std::string sf_security() {
   std::string uuid = boost::to_upper_copy(klib::uuid());
   auto timestamp = std::time(nullptr);
-  std::string sign =
-      boost::to_upper_copy(klib::HashLib::md5(uuid + std::to_string(timestamp) +
-                                              device_token + "xw3#a12-x")
-                               .hex_digest());
+  std::string sign = boost::to_upper_copy(klib::md5_hex(
+      uuid + std::to_string(timestamp) + device_token + "xw3#a12-x"));
 
   return fmt::format(
       FMT_COMPILE("nonce={}&timestamp={}&devicetoken={}&sign={}"), uuid,
@@ -161,16 +162,16 @@ std::tuple<std::string, std::string, std::vector<std::string>> get_book_info(
   auto data = parse_json(response.text()).at("data");
 
   std::string book_name =
-      kepub::trans_str(data.at("novelName").as_string().c_str());
+      kepub::trans_str(data.at("novelName").as_string().c_str(), false);
   std::string author =
-      kepub::trans_str(data.at("authorName").as_string().c_str());
+      kepub::trans_str(data.at("authorName").as_string().c_str(), false);
   std::string description_str =
       data.at("expand").at("intro").as_string().c_str();
   std::string cover_url = data.at("novelCover").as_string().c_str();
 
   std::vector<std::string> description;
   for (const auto &line : klib::split_str(description_str, "\n")) {
-    kepub::push_back(description, kepub::trans_str(line), false);
+    kepub::push_back(description, kepub::trans_str(line, false), false);
   }
 
   spdlog::info("Book name: {}", book_name);
@@ -202,14 +203,14 @@ get_volume_chapter(const std::string &book_id) {
   auto volume_list = jv.at("data").at("volumeList").as_array();
   for (const auto &volume : volume_list) {
     std::string volume_name =
-        kepub::trans_str(volume.at("title").as_string().c_str());
+        kepub::trans_str(volume.at("title").as_string().c_str(), false);
 
     std::vector<std::tuple<std::string, std::string, std::string>> chapters;
     auto chapter_list = volume.at("chapterList").as_array();
     for (const auto &chapter : chapter_list) {
       std::string chapter_id = std::to_string(chapter.at("chapId").as_int64());
       auto chapter_title =
-          kepub::trans_str(chapter.at("title").as_string().c_str());
+          kepub::trans_str(chapter.at("title").as_string().c_str(), false);
 
       chapters.emplace_back(chapter_id, chapter_title, "");
     }
@@ -237,7 +238,7 @@ std::vector<std::string> get_content_from_web(const std::string &chapter_id) {
              "width-middle']/div[@class='article-wrap']/"
              "div[@class='article']/div[@class='article-content font16']")
           .node();
-  std::string content_str = kepub::trans_str(node.text().as_string());
+  std::string content_str = kepub::trans_str(node.text().as_string(), false);
 
   if (content_str.ends_with("...")) {
     boost::erase_tail(content_str, 3);
@@ -272,7 +273,7 @@ std::vector<std::string> get_content(const std::string &chapter_id,
 
     std::vector<std::string> content;
     for (const auto &line : klib::split_str(content_str, "\n")) {
-      kepub::push_back(content, kepub::trans_str(line), false);
+      kepub::push_back(content, kepub::trans_str(line, false), false);
     }
 
     static std::int32_t image_count = 1;
@@ -321,13 +322,26 @@ std::vector<std::string> get_content(const std::string &chapter_id,
 }  // namespace
 
 int main(int argc, const char *argv[]) try {
-  auto [book_id, options] = kepub::processing_cmd(argc, argv);
+  CLI::App app;
+  app.set_version_flag("-v,--version", kepub::version_str(argv[0]));
+
+  std::string book_id;
+  app.add_option("book-id", book_id, "The book id of the book to be downloaded")
+      ->required();
+
+  bool download_unpurchased = false;
+  app.add_flag("-d,--download-unpurchased", download_unpurchased,
+               "Download the beginning of the unpurchased chapter");
+
+  CLI11_PARSE(app, argc, argv)
+
   kepub::check_is_book_id(book_id);
 
   if (!show_user_info()) {
     auto login_name = kepub::get_login_name();
     auto password = kepub::get_password();
     login(login_name, password);
+    klib::cleanse(password);
   }
 
   auto [book_name, author, description] = get_book_info(book_id);
@@ -335,15 +349,13 @@ int main(int argc, const char *argv[]) try {
 
   for (auto &[volume_name, chapters] : volume_chapter) {
     for (auto &[chapter_id, chapter_title, content] : chapters) {
-      content =
-          boost::join(get_content(chapter_id, chapter_title,
-                                  options.download_without_authorization_),
-                      "\n");
+      content = boost::join(
+          get_content(chapter_id, chapter_title, download_unpurchased), "\n");
 
       if (!std::empty(content)) {
         spdlog::info("Successfully obtained chapter: {}", chapter_title);
       } else {
-        if (options.download_without_authorization_) {
+        if (download_unpurchased) {
           klib::error("No content");
         }
       }

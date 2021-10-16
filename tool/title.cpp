@@ -7,15 +7,33 @@
 
 #include <klib/error.h>
 #include <klib/util.h>
+#include <CLI/CLI.hpp>
 #include <boost/algorithm/string.hpp>
 
 #include "trans.h"
 #include "util.h"
+#include "version.h"
 
 int main(int argc, const char *argv[]) try {
-  auto [file_name, options] = kepub::processing_cmd(argc, argv);
+  CLI::App app;
+  app.set_version_flag("-v,--version", kepub::version_str(argv[0]));
+
+  std::string file_name;
+  app.add_option("file", file_name, "TXT file to be processed")->required();
+
+  bool translation = false;
+  app.add_flag("-t,--translation", translation,
+               "Translate Traditional Chinese to Simplified Chinese");
+
+  bool connect_chinese = false;
+  app.add_flag("-c,--connect", connect_chinese,
+               "Remove extra line breaks between Chinese");
+
+  CLI11_PARSE(app, argc, argv)
+
   kepub::check_is_txt_file(file_name);
-  auto book_name = kepub::trans_str(std::filesystem::path(file_name).stem());
+  auto book_name =
+      kepub::trans_str(std::filesystem::path(file_name).stem(), translation);
 
   std::vector<std::pair<std::string, std::vector<std::string>>> title_content;
 
@@ -40,10 +58,10 @@ int main(int argc, const char *argv[]) try {
     }
   }
 
-  auto todo_vec = kepub::read_file_to_vec(file_name);
+  auto todo_vec = kepub::read_file_to_vec(file_name, translation);
   std::vector<std::string> result;
   for (const auto &line : todo_vec) {
-    kepub::push_back(result, line, options.connect_chinese_);
+    kepub::push_back(result, line, connect_chinese);
   }
 
   auto i = std::begin(result);

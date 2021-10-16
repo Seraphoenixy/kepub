@@ -15,7 +15,8 @@ void check_is_txt_file(const std::string &file_name);
 
 void check_is_book_id(const std::string &book_id);
 
-std::vector<std::string> read_file_to_vec(const std::string &file_name);
+std::vector<std::string> read_file_to_vec(const std::string &file_name,
+                                          bool translation);
 
 std::int32_t str_size(const std::string &str);
 

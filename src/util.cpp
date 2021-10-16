@@ -67,7 +67,8 @@ void check_is_book_id(const std::string &book_id) {
   }
 }
 
-std::vector<std::string> read_file_to_vec(const std::string &file_name) {
+std::vector<std::string> read_file_to_vec(const std::string &file_name,
+                                          bool translation) {
   auto data = klib::read_file(file_name, false);
 
   if (auto encoding = detect_encoding(data); encoding != "UTF-8") {
@@ -78,7 +79,7 @@ std::vector<std::string> read_file_to_vec(const std::string &file_name) {
   boost::split(result, data, boost::is_any_of("\n"), boost::token_compress_on);
 
   for (auto &item : result) {
-    item = trans_str(item);
+    item = trans_str(item, translation);
   }
 
   std::erase_if(result,

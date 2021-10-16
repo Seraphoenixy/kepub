@@ -21,7 +21,8 @@ class Trans {
   Trans &operator=(Trans &&) = delete;
 
   static const Trans &get();
-  [[nodiscard]] std::string trans_str(const std::string &str) const;
+  [[nodiscard]] std::string trans_str(const std::string &str,
+                                      bool translation) const;
 
  private:
   Trans();
@@ -188,6 +189,7 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("諷", "讽");
   str.findAndReplace("唿", "呼");
 
+  // TODO need ???
   str.findAndReplace("摔交", "摔跤");
   str.findAndReplace("摔一交", "摔一跤");
   str.findAndReplace("摔了一交", "摔了一跤");
@@ -221,6 +223,8 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("声色具厉", "声色俱厉");
   str.findAndReplace("人赃具获", "人赃俱获");
   str.findAndReplace("身心具到", "身心俱到");
+  str.findAndReplace("百废具兴", "百废俱兴");
+  str.findAndReplace("五脏具全", "五脏俱全");
   str.findAndReplace("色香味具全", "色香味俱全");
   str.findAndReplace("五脏六腑具碎", "五脏六腑俱碎");
 
@@ -250,10 +254,13 @@ const Trans &Trans::get() {
   return trans;
 }
 
-std::string Trans::trans_str(const std::string &str) const {
+std::string Trans::trans_str(const std::string &str, bool translation) const {
   icu::UnicodeString icu_str(str.c_str());
 
-  hant_hans_->transliterate(icu_str);
+  if (translation) {
+    hant_hans_->transliterate(icu_str);
+  }
+
   fullwidth_halfwidth_->transliterate(icu_str);
   custom_trans(icu_str);
 
@@ -277,8 +284,8 @@ Trans::Trans() {
 
 }  // namespace
 
-std::string trans_str(const std::string &str) {
-  return Trans::get().trans_str(str);
+std::string trans_str(const std::string &str, bool translation) {
+  return Trans::get().trans_str(str, translation);
 }
 
 }  // namespace kepub
