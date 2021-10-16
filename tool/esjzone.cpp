@@ -201,6 +201,9 @@ int main(int argc, const char *argv[]) try {
   CLI11_PARSE(app, argc, argv)
 
   kepub::check_is_book_id(book_id);
+  if (!std::empty(proxy)) {
+    spdlog::info("Use proxy: {}", proxy);
+  }
 
   auto [book_name, author, description, titles_and_urls] =
       get_info(book_id, translation, proxy);
