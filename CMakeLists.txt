@@ -90,7 +90,7 @@ target_link_libraries(
           fmt::fmt
           pugixml::pugixml
           indicators::indicators
-          klib::klib
+          klib::klib-shared
           ${Boost_LIBRARIES}
           ${ICU_LIBRARIES})
 set_target_properties(${LIBRARY} PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
@@ -108,7 +108,7 @@ target_link_libraries(
           fmt::fmt
           pugixml::pugixml
           indicators::indicators
-          klib::klib
+          klib::klib-shared
           ${Boost_LIBRARIES}
           ${ICU_LIBRARIES})
 set_target_properties(
