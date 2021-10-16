@@ -65,12 +65,6 @@ Generate XHTML file according to the given TXT file
 xhtml some.txt
 ```
 
-Valid command line parameters:
-
-```bash
--c [ --connect ]                      connect chinese
-```
-
 ### addition
 
 Add new chapter to EPUB file
@@ -83,12 +77,6 @@ addition book-name.txt
 
 Txt files need to be preprocessed: each volume starts with [VOLUME] plus a space; each chapter starts with [WEB] plus a space; pictures start with [IMAGE] plus a space, followed by the picture number.
 
-Valid command line parameters:
-
-```bash
--c [ --connect ]                      connect chinese
-```
-
 ### masiro
 
 Generate EPUB file according to the given TXT file
@@ -98,16 +86,6 @@ masiro book-name.txt
 ```
 
 Txt files need to be preprocessed: each volume starts with [VOLUME] plus a space; each chapter starts with [WEB] plus a space; pictures start with [IMAGE] plus a space, followed by the picture number.
-
-Valid command line parameters:
-
-```bash
--c [ --connect ]                      connect chinese
---no-cover                            do not generate cover
--p [ --postscript ]                   generate postscript
--i [ --illustration ] arg (=0)        generate illustration
---image arg (=0)                      generate image
-```
 
 ### demonovel
 
@@ -129,12 +107,6 @@ The first command line parameter is book id
 esjzone 1578022447
 ```
 
-Valid command line parameters:
-
-```bash
--c [ --connect ]                      connect chinese
-```
-
 ### ciweimao
 
 Crawl the novels on ciweimao and generate TXT files, then you can use masiro to generate EPUB files
@@ -145,12 +117,6 @@ The first command line parameter is book id
 ciweimao 100194379
 ```
 
-Valid command line parameters:
-
-```bash
--d [ --download-without-authorization ]  download without authorization
-```
-
 ### sfacg
 
 Crawl the novels on sfacg and generate TXT files, then you can use masiro to generate EPUB files
@@ -159,12 +125,6 @@ The first command line parameter is book id
 
 ```bash
 sfacg 263060
-```
-
-Valid command line parameters:
-
-```bash
--d [ --download-without-authorization ]  download without authorization
 ```
 
 ---
