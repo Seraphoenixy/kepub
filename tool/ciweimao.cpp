@@ -248,10 +248,12 @@ std::vector<std::tuple<std::string, std::string, std::string>> get_chapters(
       continue;
     }
 
-    if (auth_access != "1" && !download_unpurchased) {
+    if (auth_access != "1") {
       klib::warn("No authorized access, id: {}, title: {}", chapter_id,
                  chapter_title);
-    } else {
+    }
+
+    if (auth_access == "1" || download_unpurchased) {
       result.emplace_back(chapter_id, chapter_title, "");
     }
   }

@@ -299,11 +299,12 @@ std::vector<std::string> get_content(const std::string &chapter_id,
 
     return content;
   } else if (code == klib::Response::Forbidden) {
+    klib::warn("No authorized access, id: {}, title: {}", chapter_id,
+               chapter_title);
+
     if (download_unpurchased) {
       return get_content_from_web(chapter_id);
     } else {
-      klib::warn("No authorized access, id: {}, title: {}", chapter_id,
-                 chapter_title);
       return {};
     }
   } else {
