@@ -48,10 +48,14 @@ std::vector<std::string> get_children_content(const pugi::xml_node &node) {
   return result;
 }
 
-klib::Response http_get(const std::string &url) {
+klib::Response http_get(const std::string &url, const std::string &proxy) {
   static klib::Request request;
-  request.set_no_proxy();
   request.set_browser_user_agent();
+  if (!std::empty(proxy)) {
+    request.set_proxy(proxy);
+  } else {
+    request.set_no_proxy();
+  }
 #ifndef NDEBUG
   request.verbose(true);
 #endif
@@ -64,8 +68,8 @@ klib::Response http_get(const std::string &url) {
   return response;
 }
 
-pugi::xml_document get_xml(const std::string &url) {
-  auto response = http_get(url);
+pugi::xml_document get_xml(const std::string &url, const std::string &proxy) {
+  auto response = http_get(url, proxy);
 
   auto xml = klib::html_tidy(response.text(), true);
   pugi::xml_document doc;
@@ -76,8 +80,10 @@ pugi::xml_document get_xml(const std::string &url) {
 
 std::tuple<std::string, std::string, std::vector<std::string>,
            std::vector<std::pair<std::string, std::string>>>
-get_info(const std::string &book_id, bool translation) {
-  auto doc = get_xml("https://www.esjzone.cc/detail/" + book_id + ".html");
+get_info(const std::string &book_id, bool translation,
+         const std::string &proxy) {
+  auto doc =
+      get_xml("https://www.esjzone.cc/detail/" + book_id + ".html", proxy);
 
   auto node = doc.select_node(
                      "/html/body/div[@class='offcanvas-wrapper']/section/div/"
@@ -148,15 +154,16 @@ get_info(const std::string &book_id, bool translation) {
   spdlog::info("Cover url: {}", cover_url);
 
   std::string cover_name = "cover.jpg";
-  auto response = http_get(cover_url);
+  auto response = http_get(cover_url, proxy);
   response.save_to_file(cover_name, true);
   spdlog::info("Cover downloaded successfully: {}", cover_name);
 
   return {book_name, author, description, titles_and_urls};
 }
 
-std::vector<std::string> get_content(const std::string &url, bool translation) {
-  auto doc = get_xml(url);
+std::vector<std::string> get_content(const std::string &url, bool translation,
+                                     const std::string &proxy) {
+  auto doc = get_xml(url, proxy);
 
   auto node = doc.select_node(
                      "/html/body/div[@class='offcanvas-wrapper']/section/div/"
@@ -186,19 +193,24 @@ int main(int argc, const char *argv[]) try {
   app.add_flag("-t,--translation", translation,
                "Translate Traditional Chinese to Simplified Chinese");
 
+  std::string proxy;
+  app.add_flag("-p{socks5://127.0.0.1:1080},--proxy{socks5://127.0.0.1:1080}",
+               proxy, "Use proxy")
+      ->expected(0, 1);
+
   CLI11_PARSE(app, argc, argv)
 
   kepub::check_is_book_id(book_id);
 
   auto [book_name, author, description, titles_and_urls] =
-      get_info(book_id, translation);
+      get_info(book_id, translation, proxy);
 
   kepub::ProgressBar bar(book_name, std::size(titles_and_urls));
   std::vector<std::pair<std::string, std::string>> chapters;
   for (const auto &[title, urls] : titles_and_urls) {
     bar.set_postfix_text(title);
-    chapters.emplace_back(title,
-                          boost::join(get_content(urls, translation), "\n"));
+    chapters.emplace_back(
+        title, boost::join(get_content(urls, translation, proxy), "\n"));
     bar.tick();
   }
 
