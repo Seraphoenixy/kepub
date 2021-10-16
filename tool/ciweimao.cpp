@@ -54,7 +54,7 @@ std::string decrypt(const std::string &str, const std::string &key) {
 
 klib::Response http_get(
     const std::string &url,
-    const std::unordered_map<std::string, std::string> &params) {
+    const std::unordered_map<std::string, std::string> &params = {}) {
   static klib::Request request;
   request.set_no_proxy();
   request.set_user_agent(user_agent);
@@ -135,7 +135,7 @@ void write_token(const std::string &account, const std::string &login_token) {
   obj["account"] = account;
   obj["login_token"] = login_token;
 
-  klib::write_file(token_path, false, encrypt(boost::json::serialize(obj)));
+  klib::write_file(token_path, true, encrypt(boost::json::serialize(obj)));
 }
 
 std::pair<std::string, std::string> login(const std::string &login_name,
@@ -187,6 +187,11 @@ std::tuple<std::string, std::string, std::vector<std::string>> get_book_info(
   spdlog::info("Author: {}", author);
   spdlog::info("Cover url: {}", cover_url);
 
+  std::string cover_name = "cover.jpg";
+  response = http_get(cover_url);
+  response.save_to_file(cover_name, true);
+  spdlog::info("Cover downloaded successfully: {}", cover_name);
+
   return {book_name, author, description};
 }
 
@@ -217,8 +222,7 @@ std::vector<std::pair<std::string, std::string>> get_book_volume(
 
 std::vector<std::tuple<std::string, std::string, std::string>> get_chapters(
     const std::string &account, const std::string &login_token,
-    const std::string &volume_id, const std::string &volume_title,
-    bool download_without_authorization) {
+    const std::string &volume_id, bool download_unpurchased) {
   auto response = http_get(
       "https://app.hbooker.com/chapter/get_updated_chapter_by_division_id",
       {{"app_version", app_version},
@@ -244,15 +248,13 @@ std::vector<std::tuple<std::string, std::string, std::string>> get_chapters(
       continue;
     }
 
-    if (auth_access != "1" && !download_without_authorization) {
+    if (auth_access != "1" && !download_unpurchased) {
       klib::warn("No authorized access, id: {}, title: {}", chapter_id,
                  chapter_title);
     } else {
       result.emplace_back(chapter_id, chapter_title, "");
     }
   }
-
-  spdlog::info("Successfully obtained sub-volume: {}", volume_title);
 
   return result;
 }
@@ -336,8 +338,8 @@ int main(int argc, const char *argv[]) try {
   std::int32_t chapter_count = 0;
   for (const auto &[volume_id, volume_name] :
        get_book_volume(account, login_token, book_id)) {
-    auto chapters = get_chapters(account, login_token, volume_id, volume_name,
-                                 download_unpurchased);
+    auto chapters =
+        get_chapters(account, login_token, volume_id, download_unpurchased);
     chapter_count += std::size(chapters);
 
     volume_chapter.emplace_back(volume_name, chapters);

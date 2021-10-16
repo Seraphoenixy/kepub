@@ -11,7 +11,7 @@ ProgressBar::ProgressBar(const std::string &postfix_text,
            option::PostfixText(postfix_text),
            option::ForegroundColor(Color::green),
            option::FontStyles(std::vector<FontStyle>{FontStyle::bold}),
-           option::ShowPercentage(true), option::MaxProgress(max_progress)),
+           option::ShowPercentage(false), option::MaxProgress(max_progress)),
       max_progress_str_(std::to_string(max_progress)) {}
 
 void ProgressBar::set_postfix_text(const std::string &postfix_text) {
