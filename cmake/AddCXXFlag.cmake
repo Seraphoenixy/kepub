@@ -45,13 +45,13 @@ function(add_cxx_linker_flag FLAG)
 
   if(${MANGLED_FLAG})
     set(CMAKE_EXE_LINKER_FLAGS
-        "${CMAKE_CXX_FLAGS} ${FLAG}"
+        "${CMAKE_EXE_LINKER_FLAGS} ${FLAG}"
         PARENT_SCOPE)
     set(CMAKE_SHARED_LINKER_FLAGS
-        "${CMAKE_CXX_FLAGS} ${FLAG}"
+        "${CMAKE_SHARED_LINKER_FLAGS} ${FLAG}"
         PARENT_SCOPE)
     set(CMAKE_MODULE_LINKER_FLAGS
-        "${CMAKE_CXX_FLAGS} ${FLAG}"
+        "${CMAKE_MODULE_LINKER_FLAGS} ${FLAG}"
         PARENT_SCOPE)
   else()
     message(

@@ -29,11 +29,11 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
   sudo update-alternatives --install /usr/bin/llvm-cov llvm-cov /usr/bin/llvm-cov-13 400
   sudo update-alternatives --install /usr/bin/llvm-symbolizer llvm-symbolizer /usr/bin/llvm-symbolizer-13 400
 
-  curl -L https://github.com/KaiserLancelot/klib/releases/download/v0.6.2/klib-v0.6.2-ubuntu-20.04.deb \
+  curl -L https://github.com/KaiserLancelot/klib/releases/download/v0.6.4/klib-v0.6.4-ubuntu-20.04.deb \
       -o klib.deb
     sudo dpkg -i klib.deb
 
-  curl -L https://github.com/KaiserLancelot/kpkg/releases/download/v0.5.6/kpkg-v0.5.6-ubuntu-20.04.deb \
+  curl -L https://github.com/KaiserLancelot/kpkg/releases/download/v0.5.8/kpkg-v0.5.8-ubuntu-20.04.deb \
       -o kpkg.deb
   sudo dpkg -i kpkg.deb
 
