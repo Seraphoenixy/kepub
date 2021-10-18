@@ -66,9 +66,11 @@ include(CompilerOptions)
 find_package(fmt REQUIRED)
 find_package(pugixml REQUIRED)
 find_package(indicators REQUIRED)
-find_package(ICU REQUIRED COMPONENTS uc i18n)
-find_package(Boost REQUIRED COMPONENTS json)
+find_package(Boost REQUIRED COMPONENTS json CONFIG)
 find_package(klib REQUIRED)
+
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(icu-i18n REQUIRED IMPORTED_TARGET icu-i18n)
 
 # ---------------------------------------------------------------------------------------
 # Build epub file
@@ -92,7 +94,7 @@ target_link_libraries(
           indicators::indicators
           klib::klib
           ${Boost_LIBRARIES}
-          ${ICU_LIBRARIES})
+          PkgConfig::icu-i18n)
 set_target_properties(${LIBRARY} PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
 
 # ---------------------------------------------------------------------------------------
@@ -110,7 +112,7 @@ target_link_libraries(
           indicators::indicators
           klib::klib
           ${Boost_LIBRARIES}
-          ${ICU_LIBRARIES})
+          PkgConfig::icu-i18n)
 set_target_properties(
   ${LIBRARY}-shared
   PROPERTIES OUTPUT_NAME ${PROJECT_NAME}
