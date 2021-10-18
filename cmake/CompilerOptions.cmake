@@ -9,8 +9,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # ---------------------------------------------------------------------------------------
 # Static link
 # ---------------------------------------------------------------------------------------
-add_link_options("-static-libgcc")
-add_link_options("-static-libstdc++")
+add_cxx_linker_flag("-static-libgcc")
+add_cxx_linker_flag("-static-libstdc++")
 
 # ---------------------------------------------------------------------------------------
 # lld
@@ -22,7 +22,7 @@ if(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
     OUTPUT_STRIP_TRAILING_WHITESPACE)
   message(STATUS "Linker: ${LLD_VERSION}")
 
-  add_link_options("-fuse-ld=lld")
+  add_cxx_linker_flag("-fuse-ld=lld")
 else()
   execute_process(
     COMMAND ${CMAKE_LINKER} --version

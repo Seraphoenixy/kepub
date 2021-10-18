@@ -1,7 +1,6 @@
 #include "trans.h"
 
 #include <unicode/translit.h>
-#include <unicode/uclean.h>
 #include <unicode/unistr.h>
 #include <unicode/utypes.h>
 
@@ -254,7 +253,6 @@ void custom_trans(icu::UnicodeString &str) {
 Trans::~Trans() {
   delete hant_hans_;
   delete fullwidth_halfwidth_;
-  u_cleanup();
 }
 
 const Trans &Trans::get() {

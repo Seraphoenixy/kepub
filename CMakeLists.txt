@@ -81,6 +81,7 @@ file(GLOB_RECURSE EPUB_FILE CONFIGURE_DEPENDS "${KEPUB_SOURCE_DIR}/epub/*")
 file(COPY ${EPUB_FILE} DESTINATION ${KEPUB_BINARY_DIR})
 
 add_library(epub STATIC "${KEPUB_SOURCE_DIR}/src/epub.s")
+target_compile_options(epub PRIVATE "-Wno-unused-command-line-argument")
 
 # ---------------------------------------------------------------------------------------
 # Build static library

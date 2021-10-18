@@ -32,3 +32,29 @@ function(add_cxx_compiler_flag FLAG)
       FATAL_ERROR "Required flag '${FLAG}' is not supported by the compiler")
   endif()
 endfunction()
+
+function(add_cxx_linker_flag FLAG)
+  mangle_compiler_flag(${FLAG} MANGLED_FLAG)
+
+  # https://cmake.org/cmake/help/latest/module/CheckCXXCompilerFlag.html
+  # https://cmake.org/cmake/help/latest/module/CheckCXXSourceCompiles.html
+  set(OLD_CMAKE_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS})
+  set(CMAKE_REQUIRED_FLAGS "${CMAKE_REQUIRED_FLAGS} ${FLAG}")
+  check_cxx_compiler_flag(${FLAG} ${MANGLED_FLAG})
+  set(CMAKE_REQUIRED_FLAGS ${OLD_CMAKE_REQUIRED_FLAGS})
+
+  if(${MANGLED_FLAG})
+    set(CMAKE_EXE_LINKER_FLAGS
+        "${CMAKE_CXX_FLAGS} ${FLAG}"
+        PARENT_SCOPE)
+    set(CMAKE_SHARED_LINKER_FLAGS
+        "${CMAKE_CXX_FLAGS} ${FLAG}"
+        PARENT_SCOPE)
+    set(CMAKE_MODULE_LINKER_FLAGS
+        "${CMAKE_CXX_FLAGS} ${FLAG}"
+        PARENT_SCOPE)
+  else()
+    message(
+      FATAL_ERROR "Required flag '${FLAG}' is not supported by the compiler")
+  endif()
+endfunction()
