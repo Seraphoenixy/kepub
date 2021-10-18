@@ -14,4 +14,16 @@ if(KEPUB_VALGRIND)
       --leak-resolution=med --track-origins=yes --vgdb=no --tool=memcheck
       --gen-suppressions=all --error-exitcode=1 ./${TEST_EXECUTABLE}
     WORKING_DIRECTORY ${KEPUB_BINARY_DIR}/test/unit_test)
+
+  set(VALGRIND_CMD
+      ${VALGRIND_EXECUTABLE}
+      --leak-check=full
+      --show-leak-kinds=all
+      --leak-resolution=med
+      --track-origins=yes
+      --vgdb=no
+      --tool=memcheck
+      --gen-suppressions=all
+      --error-exitcode=1
+      ${KEPUB_BINARY_DIR}/tool/)
 endif()
