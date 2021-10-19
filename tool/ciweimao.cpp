@@ -19,6 +19,7 @@
 #include <CLI/CLI.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/json.hpp>
+#include <pugixml.hpp>
 
 #include "progress_bar.h"
 #include "trans.h"
@@ -296,6 +297,23 @@ std::vector<std::string> get_content(const std::string &account,
   std::vector<std::string> content;
   for (const auto &line : klib::split_str(content_str, "\n")) {
     kepub::push_back(content, kepub::trans_str(line, false), false);
+  }
+
+  static std::int32_t image_count = 1;
+  for (auto &line : content) {
+    if (line.starts_with("<img src")) {
+      pugi::xml_document doc;
+      doc.load_string(line.c_str());
+
+      std::string image_url = doc.child("img").attribute("src").as_string();
+      boost::replace_all(image_url, "：", ":");
+
+      auto image = http_get(image_url);
+      auto image_name = kepub::num_to_str(image_count++);
+      image.save_to_file(image_name + ".jpg", true);
+
+      line = "[IMAGE] " + image_name;
+    }
   }
 
   return content;

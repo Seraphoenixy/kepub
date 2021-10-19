@@ -26,8 +26,9 @@ target_link_libraries(${ADDITION_EXECUTABLE} PRIVATE ${LIBRARY}-shared
 
 add_executable(${CIWEIMAO_EXECUTABLE} ciweimao.cpp)
 target_link_libraries(
-  ${CIWEIMAO_EXECUTABLE} PRIVATE ${LIBRARY}-shared klib::klib spdlog::spdlog
-                                 ${Boost_LIBRARIES} CLI11::CLI11)
+  ${CIWEIMAO_EXECUTABLE}
+  PRIVATE ${LIBRARY}-shared klib::klib spdlog::spdlog ${Boost_LIBRARIES}
+          pugixml::pugixml CLI11::CLI11)
 
 add_executable(${SFACG_EXECUTABLE} sfacg.cpp)
 target_link_libraries(
