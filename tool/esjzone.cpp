@@ -194,7 +194,7 @@ int main(int argc, const char *argv[]) try {
                "Translate Traditional Chinese to Simplified Chinese");
 
   std::string proxy;
-  app.add_flag("-p{socks5://127.0.0.1:1080},--proxy{socks5://127.0.0.1:1080}",
+  app.add_flag("-p{http://127.0.0.1:1080},--proxy{http://127.0.0.1:1080}",
                proxy, "Use proxy")
       ->expected(0, 1);
 
