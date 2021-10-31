@@ -85,7 +85,7 @@ Generate EPUB file according to the given TXT file
 masiro book-name.txt
 ```
 
-Txt files need to be preprocessed: The author starts with [AUTHOR] and a newline character; the introduction starts with [INTRO] and a newline character; each volume starts with [VOLUME] plus a space; each chapter starts with [WEB] plus a space; pictures start with [IMAGE] plus a space, followed by the picture number.
+Txt files need to be preprocessed: the author starts with [AUTHOR] and a newline character; the introduction starts with [INTRO] and a newline character; each volume starts with [VOLUME] plus a space; each chapter starts with [WEB] plus a space; pictures start with [IMAGE] plus a space, followed by the picture number.
 
 ### demonovel
 
