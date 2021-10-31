@@ -92,9 +92,18 @@ int main(int argc, const char *argv[]) try {
     if (vec[i].starts_with(author_prefix)) {
       ++i;
 
+      if (!std::empty(author)) {
+        klib::warn("Author has been defined");
+      }
+
       author = vec[i];
     } else if (vec[i].starts_with(introduction_prefix)) {
       ++i;
+
+      if (!std::empty(introduction)) {
+        klib::warn("Introduction has been defined");
+        introduction.clear();
+      }
 
       for (; i < size && !(vec[i].starts_with(author_prefix) ||
                            vec[i].starts_with(introduction_prefix) ||
