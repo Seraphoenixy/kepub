@@ -47,6 +47,9 @@ int main(int argc, const char *argv[]) try {
   std::string date;
   app.add_option("--date", date, "Specify the date(for testing)");
 
+  bool do_not_remove_dir = false;
+  app.add_flag("--do-not-remove-dir", do_not_remove_dir, "Do not remove dir");
+
   CLI11_PARSE(app, argc, argv)
 
   kepub::check_is_txt_file(file_name);
@@ -78,18 +81,38 @@ int main(int argc, const char *argv[]) try {
   std::string volume_prefix = "[VOLUME] ";
   auto volume_prefix_size = std::size(volume_prefix);
 
-  for (std::size_t i = 0; i < size; ++i) {
-    if (vec[i].starts_with(volume_prefix)) {
-      volume_name = vec[i].substr(volume_prefix_size);
-      ++i;
-    }
+  std::string author;
+  std::string author_prefix = "[AUTHOR]";
 
-    if (vec[i].starts_with(title_prefix)) {
+  std::vector<std::string> introduction;
+  std::string introduction_prefix = "[INTRO]";
+
+  for (std::size_t i = 0; i < size; ++i) {
+    if (vec[i].starts_with(author_prefix)) {
+      ++i;
+
+      author = vec[i];
+    } else if (vec[i].starts_with(introduction_prefix)) {
+      ++i;
+
+      for (; i < size && !(vec[i].starts_with(author_prefix) ||
+                           vec[i].starts_with(introduction_prefix) ||
+                           vec[i].starts_with(title_prefix) ||
+                           vec[i].starts_with(volume_prefix));
+           ++i) {
+        kepub::push_back(introduction, vec[i], connect_chinese);
+      }
+      --i;
+    } else if (vec[i].starts_with(volume_prefix)) {
+      volume_name = vec[i].substr(volume_prefix_size);
+    } else if (vec[i].starts_with(title_prefix)) {
       auto title = vec[i].substr(title_prefix_size);
       ++i;
 
       std::vector<std::string> text;
-      for (; i < size && !(vec[i].starts_with(title_prefix) ||
+      for (; i < size && !(vec[i].starts_with(author_prefix) ||
+                           vec[i].starts_with(introduction_prefix) ||
+                           vec[i].starts_with(title_prefix) ||
                            vec[i].starts_with(volume_prefix));
            ++i) {
         kepub::push_back(text, vec[i], connect_chinese);
@@ -100,7 +123,55 @@ int main(int argc, const char *argv[]) try {
     }
   }
 
-  epub.generate(false);
+  if (!std::empty(author)) {
+    epub.set_author(author);
+  }
+  if (!std::empty(introduction)) {
+    epub.set_introduction(introduction);
+  }
+
+  bool cover_done = true;
+  if (!no_cover) {
+    std::string cover_name = "cover.jpg";
+
+    if (!std::filesystem::exists(cover_name)) {
+      klib::warn("No cover");
+      cover_done = false;
+    } else {
+      std::filesystem::copy(cover_name, std::filesystem::path(book_name) /
+                                            kepub::Epub::images_dir /
+                                            cover_name);
+    }
+  }
+
+  bool image_done = true;
+  if (image_num != 0) {
+    std::int32_t image_count = 0;
+
+    for (const auto &item :
+         std::filesystem::directory_iterator(std::filesystem::current_path())) {
+      if (item.is_regular_file() &&
+          item.path().filename().extension().string() == ".jpg") {
+        ++image_count;
+        std::filesystem::copy(item, std::filesystem::path(book_name) /
+                                        kepub::Epub::images_dir /
+                                        item.path().filename());
+      }
+    }
+
+    if (image_num != image_count) {
+      klib::warn("Incorrect number of image");
+      image_done = false;
+    }
+  }
+
+  bool compress = !std::empty(author) && !std::empty(introduction) &&
+                  cover_done && image_done;
+  epub.generate(compress);
+
+  if (!do_not_remove_dir && compress) {
+    std::filesystem::remove_all(book_name);
+  }
 } catch (const std::exception &err) {
   klib::error(err.what());
 } catch (...) {

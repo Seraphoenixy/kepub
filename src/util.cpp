@@ -208,7 +208,10 @@ void generate_txt(
     const std::vector<std::pair<std::string, std::string>> &chapters) {
   std::ostringstream oss;
 
+  oss << "[AUTHOR]" << '\n';
   oss << author << "\n\n";
+
+  oss << "[INTRO]" << '\n';
   for (const auto &line : description) {
     oss << line << "\n";
   }
@@ -236,7 +239,10 @@ void generate_txt(
         &volume_chapter) {
   std::ostringstream oss;
 
+  oss << "[AUTHOR]" << '\n';
   oss << author << "\n\n";
+
+  oss << "[INTRO]" << '\n';
   for (const auto &line : description) {
     oss << line << "\n";
   }
