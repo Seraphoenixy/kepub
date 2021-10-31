@@ -36,7 +36,7 @@ TEST_CASE("base generate", "[epub]") {
   REQUIRE(std::filesystem::file_size(kepub::Epub::font_path) == 17002512);
 
   REQUIRE(std::filesystem::exists(kepub::Epub::style_path));
-  REQUIRE(std::filesystem::file_size(kepub::Epub::style_path) == 5325);
+  REQUIRE(std::filesystem::file_size(kepub::Epub::style_path) == 5146);
 
   REQUIRE(std::filesystem::exists(kepub::Epub::introduction_path));
   REQUIRE(klib::read_file(kepub::Epub::introduction_path, false) ==
