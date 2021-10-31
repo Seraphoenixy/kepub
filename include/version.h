@@ -7,7 +7,7 @@
 
 #define KEPUB_VER_MINOR 10
 
-#define KEPUB_VER_PATCH 10
+#define KEPUB_VER_PATCH 11
 
 #define STRINGIZE2(s) #s
 #define STRINGIZE(s) STRINGIZE2(s)
@@ -19,7 +19,7 @@ namespace kepub {
 
 inline std::string kepub_version() { return KEPUB_VERSION_STRING; }
 
-std::string version_str(const std::string &argv0) {
+inline std::string version_str(const std::string &argv0) {
   return std::filesystem::path(argv0).filename().string() +
          " version: " + kepub_version();
 }

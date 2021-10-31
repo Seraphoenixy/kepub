@@ -39,7 +39,20 @@ bool end_with_chinese(const std::string &str) {
 }
 
 bool is_punct(char32_t c) {
-  return u_ispunct(c) || c == to_unicode("～") || c == to_unicode("ー");
+  return u_ispunct(c) || c == to_unicode("～") || c == to_unicode("ー") ||
+         c == to_unicode("♂") || c == to_unicode("♀") || c == to_unicode("◇");
+}
+
+std::string make_book_name_legal(const std::string &file_name) {
+  auto new_file_name = klib::make_file_or_dir_name_legal(file_name);
+  if (new_file_name != file_name) {
+    klib::warn(
+        "The title of the book is illegal, and the title of the book has been "
+        "changed from '{}' to '{}'",
+        file_name, new_file_name);
+  }
+
+  return new_file_name;
 }
 
 }  // namespace
@@ -210,7 +223,7 @@ void generate_txt(
   // '\n'
   str.pop_back();
 
-  std::ofstream book_ofs(book_name + ".txt");
+  std::ofstream book_ofs(make_book_name_legal(book_name) + ".txt");
   book_ofs << str << std::flush;
 }
 
@@ -242,7 +255,7 @@ void generate_txt(
   // '\n'
   str.pop_back();
 
-  std::ofstream book_ofs(book_name + ".txt");
+  std::ofstream book_ofs(make_book_name_legal(book_name) + ".txt");
   book_ofs << str << std::flush;
 }
 
