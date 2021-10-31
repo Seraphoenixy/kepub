@@ -48,8 +48,8 @@ int main(int argc, const char *argv[]) try {
   std::string date;
   app.add_option("--date", date, "Specify the date(for testing)");
 
-  bool do_not_remove_dir = false;
-  app.add_flag("--do-not-remove-dir", do_not_remove_dir, "Do not remove dir");
+  bool no_compress = false;
+  app.add_flag("--no-compress", no_compress, "Do not compress(for testing)");
 
   CLI11_PARSE(app, argc, argv)
 
@@ -162,10 +162,10 @@ int main(int argc, const char *argv[]) try {
     }
   }
 
-  bool compress = !std::empty(author) && !std::empty(introduction) &&
-                  cover_done && image_done;
+  bool book_done = !std::empty(author) && !std::empty(introduction) &&
+                   cover_done && image_done;
 
-  if (!do_not_remove_dir && compress) {
+  if (!no_compress && book_done) {
     klib::compress(book_name, klib::Algorithm::Zip, book_name + ".epub", false);
     std::filesystem::remove_all(book_name);
   }
