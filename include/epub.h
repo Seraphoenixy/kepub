@@ -30,7 +30,7 @@ class Epub {
   void add_content(const std::string &volume_name, const std::string &title,
                    const std::vector<std::string> &content);
 
-  void generate(bool archive = true);
+  void generate();
 
   static void append_chapter(
       const std::string &book_name,

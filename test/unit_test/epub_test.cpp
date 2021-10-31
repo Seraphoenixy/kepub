@@ -17,7 +17,7 @@ TEST_CASE("base generate", "[epub]") {
   epub.set_uuid("5208e6bb-5d25-45b0-a7fd-b97d79a85fd4");
   epub.set_date("2021-08-01");
 
-  REQUIRE_NOTHROW(epub.generate(false));
+  REQUIRE_NOTHROW(epub.generate());
   REQUIRE(std::filesystem::is_directory("test book1"));
 
   auto ptr = std::make_unique<klib::ChangeWorkingDir>("test book1");
@@ -159,7 +159,7 @@ TEST_CASE("generate postscript", "[epub]") {
   epub.set_uuid("5208e6bb-5d25-45b0-a7fd-b97d79a85fd4");
   epub.set_date("2021-08-01");
 
-  REQUIRE_NOTHROW(epub.generate(false));
+  REQUIRE_NOTHROW(epub.generate());
   REQUIRE(std::filesystem::is_directory("test book2"));
 
   auto ptr = std::make_unique<klib::ChangeWorkingDir>("test book2");
@@ -267,7 +267,7 @@ TEST_CASE("generate postscript and cover", "[epub]") {
   epub.set_uuid("5208e6bb-5d25-45b0-a7fd-b97d79a85fd4");
   epub.set_date("2021-08-01");
 
-  REQUIRE_NOTHROW(epub.generate(false));
+  REQUIRE_NOTHROW(epub.generate());
   REQUIRE(std::filesystem::is_directory("test book3"));
 
   auto ptr = std::make_unique<klib::ChangeWorkingDir>("test book3");
@@ -389,7 +389,7 @@ TEST_CASE("generate postscript, cover, illustration and image", "[epub]") {
   epub.set_uuid("5208e6bb-5d25-45b0-a7fd-b97d79a85fd4");
   epub.set_date("2021-08-01");
 
-  REQUIRE_NOTHROW(epub.generate(false));
+  REQUIRE_NOTHROW(epub.generate());
   REQUIRE(std::filesystem::is_directory("test book4"));
 
   auto ptr = std::make_unique<klib::ChangeWorkingDir>("test book4");
@@ -542,7 +542,7 @@ TEST_CASE("full generate", "[epub]") {
   epub.set_uuid("5208e6bb-5d25-45b0-a7fd-b97d79a85fd4");
   epub.set_date("2021-08-01");
 
-  REQUIRE_NOTHROW(epub.generate(false));
+  REQUIRE_NOTHROW(epub.generate());
   REQUIRE(std::filesystem::is_directory("test book5"));
 
   auto ptr = std::make_unique<klib::ChangeWorkingDir>("test book5");
@@ -718,7 +718,7 @@ TEST_CASE("sub-volume", "[epub]") {
   epub.set_uuid("5208e6bb-5d25-45b0-a7fd-b97d79a85fd4");
   epub.set_date("2021-08-01");
 
-  REQUIRE_NOTHROW(epub.generate(false));
+  REQUIRE_NOTHROW(epub.generate());
   REQUIRE(std::filesystem::is_directory("test book6"));
 
   auto ptr = std::make_unique<klib::ChangeWorkingDir>("test book6");
@@ -910,7 +910,7 @@ TEST_CASE("append", "[epub]") {
   epub.set_uuid("5208e6bb-5d25-45b0-a7fd-b97d79a85fd4");
   epub.set_date("2021-08-01");
 
-  REQUIRE_NOTHROW(epub.generate(false));
+  REQUIRE_NOTHROW(epub.generate());
   REQUIRE(std::filesystem::is_directory("test book7"));
 
   kepub::Epub::append_chapter(
@@ -1104,7 +1104,7 @@ TEST_CASE("append sub-volume", "[epub]") {
   epub.set_uuid("5208e6bb-5d25-45b0-a7fd-b97d79a85fd4");
   epub.set_date("2021-08-01");
 
-  REQUIRE_NOTHROW(epub.generate(false));
+  REQUIRE_NOTHROW(epub.generate());
   REQUIRE(std::filesystem::is_directory("test book8"));
 
   kepub::Epub::append_chapter("test book8",

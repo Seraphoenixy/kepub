@@ -8,7 +8,6 @@
 
 #include <fmt/chrono.h>
 #include <fmt/format.h>
-#include <klib/archive.h>
 #include <klib/exception.h>
 #include <klib/util.h>
 #include <pugixml.hpp>
@@ -375,7 +374,7 @@ void Epub::add_content(const std::string &volume_name, const std::string &title,
   content_.emplace_back(volume_name, title, content);
 }
 
-void Epub::generate(bool archive) {
+void Epub::generate() {
   if (std::empty(uuid_)) {
     uuid_ = "urn:uuid:" + klib::uuid();
   }
@@ -408,13 +407,6 @@ void Epub::generate(bool archive) {
   generate_content();
   generate_toc();
   generate_mimetype();
-
-  ptr.reset();
-
-  if (archive) {
-    klib::compress(book_name_, klib::Algorithm::Zip, book_name_ + ".epub",
-                   false);
-  }
 }
 
 void Epub::append_chapter(

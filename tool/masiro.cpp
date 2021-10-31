@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+#include <klib/archive.h>
 #include <klib/error.h>
 #include <CLI/CLI.hpp>
 
@@ -129,6 +130,7 @@ int main(int argc, const char *argv[]) try {
   if (!std::empty(introduction)) {
     epub.set_introduction(introduction);
   }
+  epub.generate();
 
   bool cover_done = true;
   if (!no_cover) {
@@ -146,30 +148,25 @@ int main(int argc, const char *argv[]) try {
 
   bool image_done = true;
   if (image_num != 0) {
-    std::int32_t image_count = 0;
+    for (std::int32_t i = 1; i <= image_num; ++i) {
+      auto jpg_name = kepub::num_to_str(i) + ".jpg";
 
-    for (const auto &item :
-         std::filesystem::directory_iterator(std::filesystem::current_path())) {
-      if (item.is_regular_file() &&
-          item.path().filename().extension().string() == ".jpg") {
-        ++image_count;
-        std::filesystem::copy(item, std::filesystem::path(book_name) /
-                                        kepub::Epub::images_dir /
-                                        item.path().filename());
+      if (!std::filesystem::exists(jpg_name)) {
+        klib::warn("Incorrect number of image");
+        image_done = false;
+        break;
       }
-    }
 
-    if (image_num != image_count) {
-      klib::warn("Incorrect number of image");
-      image_done = false;
+      std::filesystem::copy(jpg_name, std::filesystem::path(book_name) /
+                                          kepub::Epub::images_dir / jpg_name);
     }
   }
 
   bool compress = !std::empty(author) && !std::empty(introduction) &&
                   cover_done && image_done;
-  epub.generate(compress);
 
   if (!do_not_remove_dir && compress) {
+    klib::compress(book_name, klib::Algorithm::Zip, book_name + ".epub", false);
     std::filesystem::remove_all(book_name);
   }
 } catch (const std::exception &err) {
