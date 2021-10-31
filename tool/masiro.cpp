@@ -130,7 +130,9 @@ int main(int argc, const char *argv[]) try {
   if (!std::empty(introduction)) {
     epub.set_introduction(introduction);
   }
+
   epub.generate();
+  std::filesystem::remove(file_name);
 
   bool cover_done = true;
   if (!no_cover) {
@@ -143,6 +145,7 @@ int main(int argc, const char *argv[]) try {
       std::filesystem::copy(cover_name, std::filesystem::path(book_name) /
                                             kepub::Epub::images_dir /
                                             cover_name);
+      std::filesystem::remove(cover_name);
     }
   }
 
@@ -159,6 +162,7 @@ int main(int argc, const char *argv[]) try {
 
       std::filesystem::copy(jpg_name, std::filesystem::path(book_name) /
                                           kepub::Epub::images_dir / jpg_name);
+      std::filesystem::remove(jpg_name);
     }
   }
 
