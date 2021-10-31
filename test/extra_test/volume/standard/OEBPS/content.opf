@@ -11,7 +11,7 @@
     <manifest>
         <item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml" />
         <item id="style.css" href="Styles/style.css" media-type="text/css" />
-        <item id="SourceHanSansHWSC-Bold.otf" href="Fonts/SourceHanSansHWSC-Bold.otf" media-type="application/vnd.ms-opentype" />
+        <item id="SourceHanSansSC-Bold.otf" href="Fonts/SourceHanSansSC-Bold.otf" media-type="application/vnd.ms-opentype" />
         <item id="message.xhtml" href="Text/message.xhtml" media-type="application/xhtml+xml" />
         <item id="introduction.xhtml" href="Text/introduction.xhtml" media-type="application/xhtml+xml" />
         <item id="volume001.xhtml" href="Text/volume001.xhtml" media-type="application/xhtml+xml" />

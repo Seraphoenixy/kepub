@@ -46,7 +46,7 @@ class Epub {
 
   constexpr static std::string_view container_path = "META-INF/container.xml";
   constexpr static std::string_view font_path =
-      "OEBPS/Fonts/SourceHanSansHWSC-Bold.otf";
+      "OEBPS/Fonts/SourceHanSansSC-Bold.otf";
   constexpr static std::string_view style_path = "OEBPS/Styles/style.css";
   constexpr static std::string_view cover_path = "OEBPS/Text/cover.xhtml";
   constexpr static std::string_view introduction_path =

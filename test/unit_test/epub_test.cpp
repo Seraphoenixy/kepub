@@ -33,10 +33,10 @@ TEST_CASE("base generate", "[epub]") {
 )");
 
   REQUIRE(std::filesystem::exists(kepub::Epub::font_path));
-  REQUIRE(std::filesystem::file_size(kepub::Epub::font_path) == 16958696);
+  REQUIRE(std::filesystem::file_size(kepub::Epub::font_path) == 17002512);
 
   REQUIRE(std::filesystem::exists(kepub::Epub::style_path));
-  REQUIRE(std::filesystem::file_size(kepub::Epub::style_path) == 5333);
+  REQUIRE(std::filesystem::file_size(kepub::Epub::style_path) == 5325);
 
   REQUIRE(std::filesystem::exists(kepub::Epub::introduction_path));
   REQUIRE(klib::read_file(kepub::Epub::introduction_path, false) ==
@@ -92,7 +92,7 @@ TEST_CASE("base generate", "[epub]") {
     <manifest>
         <item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml" />
         <item id="style.css" href="Styles/style.css" media-type="text/css" />
-        <item id="SourceHanSansHWSC-Bold.otf" href="Fonts/SourceHanSansHWSC-Bold.otf" media-type="application/vnd.ms-opentype" />
+        <item id="SourceHanSansSC-Bold.otf" href="Fonts/SourceHanSansSC-Bold.otf" media-type="application/vnd.ms-opentype" />
         <item id="message.xhtml" href="Text/message.xhtml" media-type="application/xhtml+xml" />
         <item id="introduction.xhtml" href="Text/introduction.xhtml" media-type="application/xhtml+xml" />
     </manifest>
@@ -196,7 +196,7 @@ TEST_CASE("generate postscript", "[epub]") {
     <manifest>
         <item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml" />
         <item id="style.css" href="Styles/style.css" media-type="text/css" />
-        <item id="SourceHanSansHWSC-Bold.otf" href="Fonts/SourceHanSansHWSC-Bold.otf" media-type="application/vnd.ms-opentype" />
+        <item id="SourceHanSansSC-Bold.otf" href="Fonts/SourceHanSansSC-Bold.otf" media-type="application/vnd.ms-opentype" />
         <item id="message.xhtml" href="Text/message.xhtml" media-type="application/xhtml+xml" />
         <item id="introduction.xhtml" href="Text/introduction.xhtml" media-type="application/xhtml+xml" />
         <item id="postscript.xhtml" href="Text/postscript.xhtml" media-type="application/xhtml+xml" />
@@ -305,7 +305,7 @@ TEST_CASE("generate postscript and cover", "[epub]") {
     <manifest>
         <item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml" />
         <item id="style.css" href="Styles/style.css" media-type="text/css" />
-        <item id="SourceHanSansHWSC-Bold.otf" href="Fonts/SourceHanSansHWSC-Bold.otf" media-type="application/vnd.ms-opentype" />
+        <item id="SourceHanSansSC-Bold.otf" href="Fonts/SourceHanSansSC-Bold.otf" media-type="application/vnd.ms-opentype" />
         <item id="cover.jpg" href="Images/cover.jpg" media-type="image/jpeg" />
         <item id="cover.xhtml" href="Text/cover.xhtml" media-type="application/xhtml+xml" />
         <item id="message.xhtml" href="Text/message.xhtml" media-type="application/xhtml+xml" />
@@ -436,7 +436,7 @@ TEST_CASE("generate postscript, cover, illustration and image", "[epub]") {
     <manifest>
         <item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml" />
         <item id="style.css" href="Styles/style.css" media-type="text/css" />
-        <item id="SourceHanSansHWSC-Bold.otf" href="Fonts/SourceHanSansHWSC-Bold.otf" media-type="application/vnd.ms-opentype" />
+        <item id="SourceHanSansSC-Bold.otf" href="Fonts/SourceHanSansSC-Bold.otf" media-type="application/vnd.ms-opentype" />
         <item id="x001.jpg" href="Images/001.jpg" media-type="image/jpeg" />
         <item id="x002.jpg" href="Images/002.jpg" media-type="image/jpeg" />
         <item id="x003.jpg" href="Images/003.jpg" media-type="image/jpeg" />
@@ -588,7 +588,7 @@ TEST_CASE("full generate", "[epub]") {
     <manifest>
         <item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml" />
         <item id="style.css" href="Styles/style.css" media-type="text/css" />
-        <item id="SourceHanSansHWSC-Bold.otf" href="Fonts/SourceHanSansHWSC-Bold.otf" media-type="application/vnd.ms-opentype" />
+        <item id="SourceHanSansSC-Bold.otf" href="Fonts/SourceHanSansSC-Bold.otf" media-type="application/vnd.ms-opentype" />
         <item id="x001.jpg" href="Images/001.jpg" media-type="image/jpeg" />
         <item id="x002.jpg" href="Images/002.jpg" media-type="image/jpeg" />
         <item id="x003.jpg" href="Images/003.jpg" media-type="image/jpeg" />
@@ -764,7 +764,7 @@ TEST_CASE("sub-volume", "[epub]") {
     <manifest>
         <item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml" />
         <item id="style.css" href="Styles/style.css" media-type="text/css" />
-        <item id="SourceHanSansHWSC-Bold.otf" href="Fonts/SourceHanSansHWSC-Bold.otf" media-type="application/vnd.ms-opentype" />
+        <item id="SourceHanSansSC-Bold.otf" href="Fonts/SourceHanSansSC-Bold.otf" media-type="application/vnd.ms-opentype" />
         <item id="x001.jpg" href="Images/001.jpg" media-type="image/jpeg" />
         <item id="x002.jpg" href="Images/002.jpg" media-type="image/jpeg" />
         <item id="x003.jpg" href="Images/003.jpg" media-type="image/jpeg" />
@@ -959,7 +959,7 @@ TEST_CASE("append", "[epub]") {
     <manifest>
         <item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml" />
         <item id="style.css" href="Styles/style.css" media-type="text/css" />
-        <item id="SourceHanSansHWSC-Bold.otf" href="Fonts/SourceHanSansHWSC-Bold.otf" media-type="application/vnd.ms-opentype" />
+        <item id="SourceHanSansSC-Bold.otf" href="Fonts/SourceHanSansSC-Bold.otf" media-type="application/vnd.ms-opentype" />
         <item id="x001.jpg" href="Images/001.jpg" media-type="image/jpeg" />
         <item id="x002.jpg" href="Images/002.jpg" media-type="image/jpeg" />
         <item id="x003.jpg" href="Images/003.jpg" media-type="image/jpeg" />
@@ -1155,7 +1155,7 @@ TEST_CASE("append sub-volume", "[epub]") {
     <manifest>
         <item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml" />
         <item id="style.css" href="Styles/style.css" media-type="text/css" />
-        <item id="SourceHanSansHWSC-Bold.otf" href="Fonts/SourceHanSansHWSC-Bold.otf" media-type="application/vnd.ms-opentype" />
+        <item id="SourceHanSansSC-Bold.otf" href="Fonts/SourceHanSansSC-Bold.otf" media-type="application/vnd.ms-opentype" />
         <item id="x001.jpg" href="Images/001.jpg" media-type="image/jpeg" />
         <item id="x002.jpg" href="Images/002.jpg" media-type="image/jpeg" />
         <item id="x003.jpg" href="Images/003.jpg" media-type="image/jpeg" />

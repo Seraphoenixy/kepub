@@ -565,8 +565,8 @@ void Epub::generate_content() const {
   auto manifest = package.append_child("manifest");
   append_manifest_and_spine(manifest, "ncx", "toc.ncx");
   append_manifest_and_spine(manifest, "style.css", "Styles/style.css");
-  append_manifest_and_spine(manifest, "SourceHanSansHWSC-Bold.otf",
-                            "Fonts/SourceHanSansHWSC-Bold.otf");
+  append_manifest_and_spine(manifest, "SourceHanSansSC-Bold.otf",
+                            "Fonts/SourceHanSansSC-Bold.otf");
 
   for (std::int32_t i = 1; i <= image_num_; ++i) {
     append_manifest_and_spine(manifest, "x" + num_to_str(i) + ".jpg",

@@ -5,7 +5,7 @@
     .section .rodata
 
 font:
-    .incbin "SourceHanSansHWSC-Bold.otf"
+    .incbin "SourceHanSansSC-Bold.otf"
 font_end:
 font_size:
     .int font_end - font
