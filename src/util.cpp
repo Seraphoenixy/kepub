@@ -40,7 +40,8 @@ bool end_with_chinese(const std::string &str) {
 
 bool is_punct(char32_t c) {
   return u_ispunct(c) || c == to_unicode("～") || c == to_unicode("ー") ||
-         c == to_unicode("♂") || c == to_unicode("♀") || c == to_unicode("◇");
+         c == to_unicode("♂") || c == to_unicode("♀") || c == to_unicode("◇") ||
+         c == to_unicode("￮") || c == to_unicode("+") || c == to_unicode("=");
 }
 
 std::string make_book_name_legal(const std::string &file_name) {
@@ -115,10 +116,10 @@ std::int32_t str_size(const std::string &str) {
 
 void str_check(const std::string &str) {
   auto copy = str;
-  std::erase_if(copy, [](auto c) { return std::isalnum(c); });
+  std::erase_if(copy, [](char c) { return std::isalnum(c) || c == ' '; });
 
   for (auto c : klib::utf8_to_utf32(copy)) {
-    if (!u_isblank(c) && !klib::is_chinese(c) && !is_punct(c)) {
+    if (!klib::is_chinese(c) && !is_punct(c)) {
       std::string temp;
       UChar32 ch = c;
       klib::warn("Unknown character: {} in {}",

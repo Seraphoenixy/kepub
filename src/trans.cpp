@@ -38,6 +38,7 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("\u00A0", " ");
 
   str.findAndReplace("  ", " ");
+  str.findAndReplace("\t", "    ");
 
   str.findAndReplace("&lt;", "<");
   str.findAndReplace("&gt;", ">");
@@ -63,6 +64,10 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("￬", "↓");
   str.findAndReplace("￩", "←");
   str.findAndReplace("￫", "→");
+
+  str.findAndReplace("，，", "，");
+  str.findAndReplace("。。", "。");
+  str.findAndReplace("、、", "、");
 
   str.findAndReplace("妳", "你");
   str.findAndReplace("壊", "坏");
