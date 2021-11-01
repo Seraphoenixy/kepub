@@ -16,6 +16,7 @@ class Epub {
   void set_book_name(const std::string &book_name);
   void set_author(const std::string &author);
   void set_introduction(const std::vector<std::string> &introduction);
+  void set_postscript(const std::vector<std::string> &postscript);
 
   void set_generate_cover(bool generate_cover);
   void set_generate_postscript(bool generate_postscript);
@@ -76,6 +77,7 @@ class Epub {
   std::string book_name_ = "TODO";
   std::string author_ = "TODO";
   std::vector<std::string> introduction_ = {"TODO"};
+  std::vector<std::string> postscript_ = {"TODO"};
 
   bool generate_cover_ = false;
   bool generate_postscript_ = false;

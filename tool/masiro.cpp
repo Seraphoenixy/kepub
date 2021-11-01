@@ -88,6 +88,9 @@ int main(int argc, const char *argv[]) try {
   std::vector<std::string> introduction;
   std::string introduction_prefix = "[INTRO]";
 
+  std::vector<std::string> postscript;
+  std::string postscript_prefix = "[POST]";
+
   for (std::size_t i = 0; i < size; ++i) {
     if (vec[i].starts_with(author_prefix)) {
       ++i;
@@ -107,10 +110,28 @@ int main(int argc, const char *argv[]) try {
 
       for (; i < size && !(vec[i].starts_with(author_prefix) ||
                            vec[i].starts_with(introduction_prefix) ||
+                           vec[i].starts_with(postscript_prefix) ||
                            vec[i].starts_with(title_prefix) ||
                            vec[i].starts_with(volume_prefix));
            ++i) {
         kepub::push_back(introduction, vec[i], connect_chinese);
+      }
+      --i;
+    } else if (vec[i].starts_with(postscript_prefix)) {
+      ++i;
+
+      if (!std::empty(postscript)) {
+        klib::warn("Postscript has been defined");
+        postscript.clear();
+      }
+
+      for (; i < size && !(vec[i].starts_with(author_prefix) ||
+                           vec[i].starts_with(introduction_prefix) ||
+                           vec[i].starts_with(postscript_prefix) ||
+                           vec[i].starts_with(title_prefix) ||
+                           vec[i].starts_with(volume_prefix));
+           ++i) {
+        kepub::push_back(postscript, vec[i], connect_chinese);
       }
       --i;
     } else if (vec[i].starts_with(volume_prefix)) {
@@ -122,6 +143,7 @@ int main(int argc, const char *argv[]) try {
       std::vector<std::string> text;
       for (; i < size && !(vec[i].starts_with(author_prefix) ||
                            vec[i].starts_with(introduction_prefix) ||
+                           vec[i].starts_with(postscript_prefix) ||
                            vec[i].starts_with(title_prefix) ||
                            vec[i].starts_with(volume_prefix));
            ++i) {
@@ -139,6 +161,12 @@ int main(int argc, const char *argv[]) try {
   if (!std::empty(introduction)) {
     epub.set_introduction(introduction);
   }
+  if (generate_postscript && !std::empty(postscript)) {
+    epub.set_postscript(postscript);
+  }
+
+  bool postscript_done =
+      !generate_postscript || (generate_postscript && !std::empty(postscript));
 
   epub.generate();
 
@@ -173,7 +201,7 @@ int main(int argc, const char *argv[]) try {
   }
 
   bool book_done = !std::empty(author) && !std::empty(introduction) &&
-                   cover_done && image_done;
+                   postscript_done && cover_done && image_done;
 
   if (!no_compress && book_done) {
     klib::compress(book_name, klib::Algorithm::Zip, book_name + ".epub", false);

@@ -346,6 +346,10 @@ void Epub::set_introduction(const std::vector<std::string> &introduction) {
   introduction_ = introduction;
 }
 
+void Epub::set_postscript(const std::vector<std::string> &postscript) {
+  postscript_ = postscript;
+}
+
 void Epub::set_generate_cover(bool generate_cover) {
   generate_cover_ = generate_cover;
 }
@@ -512,6 +516,7 @@ void Epub::generate_message() const {
 void Epub::generate_postscript() const {
   if (generate_postscript_) {
     auto doc = generate_xhtml("后记", "", true);
+    append_texts(doc, postscript_);
     save_file(doc, Epub::postscript_path);
   }
 }
