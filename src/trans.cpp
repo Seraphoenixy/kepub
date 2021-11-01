@@ -37,8 +37,9 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("&nbsp;", " ");
   str.findAndReplace("\u00A0", " ");
 
+  str.findAndReplace("\t", " ");
+
   str.findAndReplace("  ", " ");
-  str.findAndReplace("\t", "    ");
 
   str.findAndReplace("&lt;", "<");
   str.findAndReplace("&gt;", ">");
@@ -46,14 +47,13 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("&apos;", "'");
   str.findAndReplace("&amp;", "&");
 
-  str.findAndReplace(";", "；");
-
   // https://zh.wikipedia.org/wiki/%E5%85%A8%E5%BD%A2%E5%92%8C%E5%8D%8A%E5%BD%A2
   str.findAndReplace("!", "！");
   str.findAndReplace("(", "（");
   str.findAndReplace(")", "）");
   str.findAndReplace(",", "，");
   str.findAndReplace(":", "：");
+  str.findAndReplace(";", "；");
   str.findAndReplace("?", "？");
   str.findAndReplace("｡", "。");
   str.findAndReplace("､", "、");

@@ -42,6 +42,9 @@ int main(int argc, const char *argv[]) try {
   bool generate_postscript = false;
   app.add_flag("-p,--postscript", generate_postscript, "Generate postscript");
 
+  bool remove = false;
+  app.add_flag("-r,--remove", remove, "Remove txt files and possible images");
+
   std::string uuid;
   app.add_option("--uuid", uuid, "Specify the uuid(for testing)");
 
@@ -169,6 +172,9 @@ int main(int argc, const char *argv[]) try {
       !generate_postscript || (generate_postscript && !std::empty(postscript));
 
   epub.generate();
+  if (remove) {
+    std::filesystem::remove(file_name);
+  }
 
   bool cover_done = true;
   if (!no_cover) {
@@ -181,6 +187,9 @@ int main(int argc, const char *argv[]) try {
       std::filesystem::copy(cover_name, std::filesystem::path(book_name) /
                                             kepub::Epub::images_dir /
                                             cover_name);
+      if (remove) {
+        std::filesystem::remove(cover_name);
+      }
     }
   }
 
@@ -197,6 +206,9 @@ int main(int argc, const char *argv[]) try {
 
       std::filesystem::copy(jpg_name, std::filesystem::path(book_name) /
                                           kepub::Epub::images_dir / jpg_name);
+      if (remove) {
+        std::filesystem::remove(jpg_name);
+      }
     }
   }
 
