@@ -323,7 +323,7 @@ std::vector<std::string> get_content(const std::string &account,
 
 int main(int argc, const char *argv[]) try {
   CLI::App app;
-  app.set_version_flag("-v,--version", kepub::version_str(argv[0]));
+  app.set_version_flag("-v,--version", kepub::version_str());
 
   std::string book_id;
   app.add_option("book-id", book_id, "The book id of the book to be downloaded")

@@ -21,11 +21,13 @@ Crawl novels from esjzone, ciweimao and sfacg. Generate epub from txt file
 ## Dependency
 
 - [fmt](https://github.com/fmtlib/fmt)
+- [spdlog](https://github.com/gabime/spdlog)
 - [pugixml](https://github.com/zeux/pugixml)
 - [icu](https://github.com/unicode-org/icu)
 - [boost](https://www.boost.org/)
+- [CLI11](https://github.com/CLIUtils/CLI11)
+- [indicators](https://github.com/p-ranav/indicators)
 - [klib](https://github.com/KaiserLancelot/klib)
-- [spdlog](https://github.com/gabime/spdlog)
 
 ## Font
 

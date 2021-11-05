@@ -7,24 +7,20 @@
 
 #define KEPUB_VER_MINOR 11
 
-#define KEPUB_VER_PATCH 6
+#define KEPUB_VER_PATCH 7
 
-#define STRINGIZE2(s) #s
-#define STRINGIZE(s) STRINGIZE2(s)
+#define KEPUB_VERSION \
+  (KEPUB_VER_MAJOR * 10000 + KEPUB_VER_MINOR * 100 + KEPUB_VER_PATCH)
 
-#define KEPUB_VERSION_STRING \
-  "v" STRINGIZE(KEPUB_VER_MAJOR) "." STRINGIZE(KEPUB_VER_MINOR) "." STRINGIZE(KEPUB_VER_PATCH)
+#define KEPUB_STRINGIZE2(s) #s
+#define KEPUB_STRINGIZE(s) KEPUB_STRINGIZE2(s)
+
+#define KEPUB_VERSION_STRING       \
+  KEPUB_STRINGIZE(KEPUB_VER_MAJOR) \
+  "." KEPUB_STRINGIZE(KEPUB_VER_MINOR) "." KEPUB_STRINGIZE(KEPUB_VER_PATCH)
 
 namespace kepub {
 
-inline std::string kepub_version() { return KEPUB_VERSION_STRING; }
-
-inline std::string version_str(const std::string &argv0) {
-  return std::filesystem::path(argv0).filename().string() +
-         " version: " + kepub_version();
-}
+std::string version_str();
 
 }  // namespace kepub
-
-#undef STRINGIZE2
-#undef STRINGIZE

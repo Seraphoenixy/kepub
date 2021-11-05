@@ -15,7 +15,7 @@
 
 int main(int argc, const char *argv[]) try {
   CLI::App app;
-  app.set_version_flag("-v,--version", kepub::version_str(argv[0]));
+  app.set_version_flag("-v,--version", kepub::version_str());
 
   std::string file_name;
   app.add_option("file", file_name, "TXT file to be processed")->required();
