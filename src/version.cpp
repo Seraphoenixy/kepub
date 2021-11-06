@@ -1,13 +1,7 @@
 #include "version.h"
 
-#include <sys/utsname.h>
-
-#include <cerrno>
-#include <cstring>
-
 #include <fmt/compile.h>
 #include <fmt/format.h>
-#include <klib/error.h>
 #include <klib/version.h>
 #include <spdlog/version.h>
 #include <unicode/uvernum.h>
@@ -25,9 +19,9 @@ std::string version_str() {
 
   result += "Libraries: ";
   result += fmt::format(FMT_COMPILE("klib/{} "), KLIB_VERSION_STRING);
-  result += fmt::format(FMT_COMPILE("CLI11/{} "), CLI11_VERSION);
   result += fmt::format(FMT_COMPILE("Boost/{}.{}.{} "), BOOST_VERSION / 100000,
                         BOOST_VERSION / 100 % 1000, BOOST_VERSION % 100);
+  result += fmt::format(FMT_COMPILE("CLI11/{} "), CLI11_VERSION);
   result += fmt::format(FMT_COMPILE("ICU/{}.{}.{} "), U_ICU_VERSION_MAJOR_NUM,
                         U_ICU_VERSION_MINOR_NUM, U_ICU_VERSION_PATCHLEVEL_NUM);
   result +=
@@ -50,24 +44,7 @@ std::string version_str() {
 #endif
   result += "\n";
 
-  result.append("Build time: ")
-      .append(__DATE__)
-      .append(" ")
-      .append(__TIME__)
-      .append("\n");
-
-  if (utsname name; !uname(&name)) {
-    if (!std::strstr(name.version, name.sysname) ||
-        !std::strstr(name.version, name.release) ||
-        !std::strstr(name.version, name.machine)) {
-      result += fmt::format(FMT_COMPILE("System: {} {} {} {}"), name.sysname,
-                            name.release, name.version, name.machine);
-    } else {
-      result += name.version;
-    }
-  } else {
-    klib::error(std::strerror(errno));
-  }
+  result.append("Build time: ").append(__DATE__).append(" ").append(__TIME__);
 
   return result;
 }
