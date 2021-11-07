@@ -98,7 +98,11 @@ target_link_libraries(
           klib::klib
           ${Boost_LIBRARIES}
           PkgConfig::icu-i18n)
-set_target_properties(${LIBRARY} PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
+set_target_properties(
+  ${LIBRARY}
+  PROPERTIES OUTPUT_NAME ${PROJECT_NAME}
+             POSITION_INDEPENDENT_CODE ON
+             INTERPROCEDURAL_OPTIMIZATION FALSE)
 
 # ---------------------------------------------------------------------------------------
 # Build shared library

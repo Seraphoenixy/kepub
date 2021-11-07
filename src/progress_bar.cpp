@@ -6,7 +6,7 @@ using namespace indicators;
 
 ProgressBar::ProgressBar(const std::string &postfix_text,
                          std::int32_t max_progress)
-    : bar_(option::BarWidth(50), option::Start("["), option::Fill("="),
+    : bar_(option::BarWidth(35), option::Start("["), option::Fill("="),
            option::Lead(">"), option::Remainder(" "), option::End("]"),
            option::PostfixText(postfix_text),
            option::ForegroundColor(Color::green),

@@ -12,7 +12,7 @@
 
 #include <klib/crypto.h>
 #include <klib/error.h>
-#include <klib/hash_lib.h>
+#include <klib/hash.h>
 #include <klib/http.h>
 #include <klib/util.h>
 #include <spdlog/spdlog.h>

@@ -9,7 +9,7 @@
 #include <fmt/compile.h>
 #include <fmt/format.h>
 #include <klib/error.h>
-#include <klib/hash_lib.h>
+#include <klib/hash.h>
 #include <klib/html.h>
 #include <klib/http.h>
 #include <klib/util.h>

@@ -44,6 +44,14 @@ jobs:
 
       - name: CPack
         run: |
+          strip --strip-debug --strip-unneeded libkepub*
+          strip --strip-debug --strip-unneeded tool/addition
+          strip --strip-debug --strip-unneeded tool/ciweimao
+          strip --strip-debug --strip-unneeded tool/demonovel
+          strip --strip-debug --strip-unneeded tool/esjzone
+          strip --strip-debug --strip-unneeded tool/masiro
+          strip --strip-debug --strip-unneeded tool/sfacg
+          strip --strip-debug --strip-unneeded tool/xhtml
           cpack
           mv kepub-${{ env.RELEASE_VERSION }}-Linux.deb \
           kepub-v${{ env.RELEASE_VERSION }}-ubuntu-20.04.deb
