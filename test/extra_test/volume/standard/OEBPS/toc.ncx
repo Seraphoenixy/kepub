@@ -873,13 +873,13 @@
             </navPoint>
             <navPoint id="navPoint-144" playOrder="144">
                 <navLabel>
-                    <text>第三卷15——other sdie， 姐姐大人就是姐姐大人</text>
+                    <text>第三卷15——other sdie，姐姐大人就是姐姐大人</text>
                 </navLabel>
                 <content src="Text/chapter139.xhtml" />
             </navPoint>
             <navPoint id="navPoint-145" playOrder="145">
                 <navLabel>
-                    <text>第三卷16——other sdie， 最后关头掉链子</text>
+                    <text>第三卷16——other sdie，最后关头掉链子</text>
                 </navLabel>
                 <content src="Text/chapter140.xhtml" />
             </navPoint>
@@ -891,7 +891,7 @@
             </navPoint>
             <navPoint id="navPoint-147" playOrder="147">
                 <navLabel>
-                    <text>第三卷18——other sdie， 关于我的奇怪舍友</text>
+                    <text>第三卷18——other sdie，关于我的奇怪舍友</text>
                 </navLabel>
                 <content src="Text/chapter142.xhtml" />
             </navPoint>
@@ -909,13 +909,13 @@
             </navPoint>
             <navPoint id="navPoint-150" playOrder="150">
                 <navLabel>
-                    <text>第三卷21——other sdie， 关于我的奇怪舍友2</text>
+                    <text>第三卷21——other sdie，关于我的奇怪舍友2</text>
                 </navLabel>
                 <content src="Text/chapter145.xhtml" />
             </navPoint>
             <navPoint id="navPoint-151" playOrder="151">
                 <navLabel>
-                    <text>第三卷22——other sdie， 关于我的奇怪舍……不，我周围奇怪的人3</text>
+                    <text>第三卷22——other sdie，关于我的奇怪舍……不，我周围奇怪的人3</text>
                 </navLabel>
                 <content src="Text/chapter146.xhtml" />
             </navPoint>

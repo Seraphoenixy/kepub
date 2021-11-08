@@ -1,5 +1,7 @@
 #include "trans.h"
 
+#include <string_view>
+
 #include <unicode/translit.h>
 #include <unicode/unistr.h>
 #include <unicode/utypes.h>
@@ -30,6 +32,15 @@ class Trans {
   icu::Transliterator *fullwidth_halfwidth_;
 };
 
+void replace_all_punct(icu::UnicodeString &str, const std::string &old_text,
+                       std::string_view new_text) {
+  std::string space = " ";
+
+  str.findAndReplace((space + old_text).c_str(), new_text.data());
+  str.findAndReplace((old_text + space).c_str(), new_text.data());
+  str.findAndReplace(old_text.c_str(), new_text.data());
+}
+
 void custom_trans(icu::UnicodeString &str) {
   // https://en.wikipedia.org/wiki/Word_joiner
   str.findAndReplace("\uFEFF", " ");
@@ -48,22 +59,31 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("&amp;", "&");
 
   // https://zh.wikipedia.org/wiki/%E5%85%A8%E5%BD%A2%E5%92%8C%E5%8D%8A%E5%BD%A2
-  str.findAndReplace("!", "！");
   str.findAndReplace("(", "（");
-  str.findAndReplace(")", "）");
-  str.findAndReplace(",", "，");
-  str.findAndReplace(":", "：");
-  str.findAndReplace(";", "；");
-  str.findAndReplace("?", "？");
-  str.findAndReplace("｡", "。");
-  str.findAndReplace("､", "、");
-  str.findAndReplace("･", "・");
-  str.findAndReplace("~", "～");
-  str.findAndReplace("ｰ", "ー");
-  str.findAndReplace("￪", "↑");
-  str.findAndReplace("￬", "↓");
-  str.findAndReplace("￩", "←");
-  str.findAndReplace("￫", "→");
+
+  replace_all_punct(str, "!", "！");
+  replace_all_punct(str, ")", "）");
+  replace_all_punct(str, ",", "，");
+  replace_all_punct(str, ":", "：");
+  replace_all_punct(str, ";", "；");
+  replace_all_punct(str, "?", "？");
+  replace_all_punct(str, "｡", "。");
+  replace_all_punct(str, "､", "、");
+  replace_all_punct(str, "･", "・");
+  replace_all_punct(str, "~", "～");
+  replace_all_punct(str, "ｰ", "ー");
+  replace_all_punct(str, "￪", "↑");
+  replace_all_punct(str, "￬", "↓");
+  replace_all_punct(str, "￩", "←");
+  replace_all_punct(str, "￫", "→");
+
+  replace_all_punct(str, "”", "”");
+  replace_all_punct(str, "♂", "♂");
+  replace_all_punct(str, "♀", "♀");
+  replace_all_punct(str, "◇", "◇");
+  replace_all_punct(str, "￮", "￮");
+  replace_all_punct(str, "+", "+");
+  replace_all_punct(str, "=", "=");
 
   str.findAndReplace("，，", "，");
   str.findAndReplace("。。", "。");
