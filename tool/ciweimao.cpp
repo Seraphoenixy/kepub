@@ -207,7 +207,7 @@ std::vector<std::pair<std::string, std::string>> get_book_volume(
                             {"book_id", book_id}});
   auto jv = parse_json(decrypt(response.text()));
 
-  std::vector<std::pair<std::string, std::string>> result;
+  std::vector<std::pair<std::string, std::string>> volumes;
 
   auto volume_list = jv.at("data").at("division_list").as_array();
   for (const auto &volume : volume_list) {
@@ -215,15 +215,15 @@ std::vector<std::pair<std::string, std::string>> get_book_volume(
     std::string volume_name =
         kepub::trans_str(volume.at("division_name").as_string().c_str(), false);
 
-    result.emplace_back(volume_id, volume_name);
+    volumes.emplace_back(volume_id, volume_name);
   }
 
-  return result;
+  return volumes;
 }
 
 std::vector<std::tuple<std::string, std::string, std::string>> get_chapters(
     const std::string &account, const std::string &login_token,
-    const std::string &volume_id, bool download_unpurchased) {
+    const std::string &volume_id, const std::string &volume_name) {
   auto response = http_get(
       "https://app.hbooker.com/chapter/get_updated_chapter_by_division_id",
       {{"app_version", app_version},
@@ -233,33 +233,31 @@ std::vector<std::tuple<std::string, std::string, std::string>> get_chapters(
        {"division_id", volume_id}});
   auto jv = parse_json(decrypt(response.text()));
 
-  std::vector<std::tuple<std::string, std::string, std::string>> result;
+  std::vector<std::tuple<std::string, std::string, std::string>> chapters;
 
   auto chapter_list = jv.at("data").at("chapter_list").as_array();
   for (const auto &chapter : chapter_list) {
     std::string chapter_id = chapter.at("chapter_id").as_string().c_str();
     std::string chapter_title = kepub::trans_str(
         chapter.at("chapter_title").as_string().c_str(), false);
-    std::string is_valid = chapter.at("is_valid").as_string().c_str();
-    std::string auth_access = chapter.at("auth_access").as_string().c_str();
 
+    std::string is_valid = chapter.at("is_valid").as_string().c_str();
     if (is_valid != "1") {
-      klib::warn("The chapter is not valid, id: {}, title: {}", chapter_id,
-                 chapter_title);
+      klib::warn("The chapter is not valid, id: {}, volume: {}, title: {}",
+                 chapter_id, volume_name, chapter_title);
       continue;
     }
 
+    std::string auth_access = chapter.at("auth_access").as_string().c_str();
     if (auth_access != "1") {
-      klib::warn("No authorized access, id: {}, title: {}", chapter_id,
-                 chapter_title);
-    }
-
-    if (auth_access == "1" || download_unpurchased) {
-      result.emplace_back(chapter_id, chapter_title, "");
+      klib::warn("No authorized access, id: {}, volume: {}, title: {}",
+                 chapter_id, volume_name, chapter_title);
+    } else {
+      chapters.emplace_back(chapter_id, chapter_title, "");
     }
   }
 
-  return result;
+  return chapters;
 }
 
 std::string get_chapter_command(const std::string &account,
@@ -329,10 +327,6 @@ int main(int argc, const char *argv[]) try {
   app.add_option("book-id", book_id, "The book id of the book to be downloaded")
       ->required();
 
-  bool download_unpurchased = false;
-  app.add_flag("-d,--download-unpurchased", download_unpurchased,
-               "Download the beginning of the unpurchased chapter");
-
   CLI11_PARSE(app, argc, argv)
 
   kepub::check_is_book_id(book_id);
@@ -358,11 +352,9 @@ int main(int argc, const char *argv[]) try {
   std::int32_t chapter_count = 0;
   for (const auto &[volume_id, volume_name] :
        get_book_volume(account, login_token, book_id)) {
-    auto chapters =
-        get_chapters(account, login_token, volume_id, download_unpurchased);
-    chapter_count += std::size(chapters);
-
+    auto chapters = get_chapters(account, login_token, volume_id, volume_name);
     volume_chapter.emplace_back(volume_name, chapters);
+    chapter_count += std::size(chapters);
   }
 
   kepub::ProgressBar bar(book_name, chapter_count);

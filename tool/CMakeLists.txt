@@ -32,11 +32,5 @@ target_link_libraries(
 
 add_executable(${SFACG_EXECUTABLE} sfacg.cpp)
 target_link_libraries(
-  ${SFACG_EXECUTABLE}
-  PRIVATE ${LIBRARY}-shared
-          klib::klib
-          fmt::fmt
-          spdlog::spdlog
-          pugixml::pugixml
-          ${Boost_LIBRARIES}
-          CLI11::CLI11)
+  ${SFACG_EXECUTABLE} PRIVATE ${LIBRARY}-shared klib::klib fmt::fmt
+                              spdlog::spdlog ${Boost_LIBRARIES} CLI11::CLI11)

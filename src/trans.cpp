@@ -41,6 +41,13 @@ void replace_all_punct(icu::UnicodeString &str, const std::string &old_text,
   str.findAndReplace(old_text.c_str(), new_text.data());
 }
 
+void replace_all_multi(icu::UnicodeString &str, const std::string &text) {
+  auto search_text = text + text;
+  while (str.indexOf(search_text.c_str()) != -1) {
+    str.findAndReplace(search_text.c_str(), text.c_str());
+  }
+}
+
 void custom_trans(icu::UnicodeString &str) {
   // https://en.wikipedia.org/wiki/Word_joiner
   str.findAndReplace("\uFEFF", " ");
@@ -50,7 +57,7 @@ void custom_trans(icu::UnicodeString &str) {
 
   str.findAndReplace("\t", " ");
 
-  str.findAndReplace("  ", " ");
+  replace_all_multi(str, " ");
 
   str.findAndReplace("&lt;", "<");
   str.findAndReplace("&gt;", ">");
@@ -59,6 +66,7 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("&amp;", "&");
 
   // https://zh.wikipedia.org/wiki/%E5%85%A8%E5%BD%A2%E5%92%8C%E5%8D%8A%E5%BD%A2
+  // TODO better replace
   str.findAndReplace("(", "（");
 
   replace_all_punct(str, "!", "！");
@@ -81,13 +89,14 @@ void custom_trans(icu::UnicodeString &str) {
   replace_all_punct(str, "♂", "♂");
   replace_all_punct(str, "♀", "♀");
   replace_all_punct(str, "◇", "◇");
-  replace_all_punct(str, "￮", "￮");
   replace_all_punct(str, "+", "+");
   replace_all_punct(str, "=", "=");
 
-  str.findAndReplace("，，", "，");
-  str.findAndReplace("。。", "。");
-  str.findAndReplace("、、", "、");
+  replace_all_multi(str, "，");
+  replace_all_multi(str, "。");
+  replace_all_multi(str, "、");
+  replace_all_multi(str, "‘");
+  replace_all_multi(str, "’");
 
   str.findAndReplace("妳", "你");
   str.findAndReplace("壊", "坏");

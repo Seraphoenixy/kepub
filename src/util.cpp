@@ -250,6 +250,10 @@ void generate_txt(
   oss << "\n";
 
   for (const auto &[volume_name, chapters] : volume_chapter) {
+    if (std::empty(chapters)) {
+      continue;
+    }
+
     oss << "[VOLUME] " << volume_name << "\n\n";
 
     for (const auto &[chapter_id, chapter_title, content] : chapters) {
