@@ -211,8 +211,8 @@ get_volume_chapter(const std::string &book_id) {
 
       auto need_fire_money = chapter.at("needFireMoney").as_int64();
       if (need_fire_money > 0) {
-        klib::warn("No authorized access, id: {}, volume: {}, title: {}",
-                   chapter_id, volume_name, chapter_title);
+        klib::warn("No authorized access, volume: {}, title: {}", volume_name,
+                   chapter_title);
       } else {
         chapters.emplace_back(chapter_id, chapter_title, "");
       }

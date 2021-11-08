@@ -35,16 +35,19 @@ class Trans {
 void replace_all_punct(icu::UnicodeString &str, const std::string &old_text,
                        std::string_view new_text) {
   std::string space = " ";
+  auto new_text_str = icu::UnicodeString::fromUTF8(new_text);
 
-  str.findAndReplace((space + old_text).c_str(), new_text.data());
-  str.findAndReplace((old_text + space).c_str(), new_text.data());
-  str.findAndReplace(old_text.c_str(), new_text.data());
+  str.findAndReplace((space + old_text).c_str(), new_text_str);
+  str.findAndReplace((old_text + space).c_str(), new_text_str);
+  str.findAndReplace(old_text.c_str(), new_text_str);
 }
 
 void replace_all_multi(icu::UnicodeString &str, const std::string &text) {
-  auto search_text = text + text;
-  while (str.indexOf(search_text.c_str()) != -1) {
-    str.findAndReplace(search_text.c_str(), text.c_str());
+  auto search_text = icu::UnicodeString::fromUTF8(text + text);
+  auto new_text = icu::UnicodeString::fromUTF8(text);
+
+  while (str.indexOf(search_text) != -1) {
+    str.findAndReplace(search_text, new_text);
   }
 }
 
@@ -65,8 +68,10 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("&apos;", "'");
   str.findAndReplace("&amp;", "&");
 
+  str.findAndReplace("⋯", "…");
+  str.findAndReplace("─", "—");
+
   // https://zh.wikipedia.org/wiki/%E5%85%A8%E5%BD%A2%E5%92%8C%E5%8D%8A%E5%BD%A2
-  // TODO better replace
   str.findAndReplace("(", "（");
 
   replace_all_punct(str, "!", "！");

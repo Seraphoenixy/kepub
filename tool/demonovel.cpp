@@ -58,12 +58,14 @@ int main(int argc, const char *argv[]) try {
       auto title = vec[i];
       i += 2;
 
-      std::vector<std::string> text;
+      std::vector<std::string> content;
       for (; i < size && !vec[i].starts_with("---------------END"); ++i) {
-        kepub::push_back(text, vec[i], connect_chinese);
+        auto line = vec[i];
+        kepub::str_check(line);
+        kepub::push_back(content, line, connect_chinese);
       }
 
-      epub.add_content(title, text);
+      epub.add_content(title, content);
     }
   }
 

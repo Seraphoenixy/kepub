@@ -37,14 +37,10 @@ int main(int argc, const char *argv[]) try {
   }
 
   pugi::xml_document doc;
-  std::int32_t count = 0;
   for (const auto &item : result) {
     kepub::str_check(item);
-    count += kepub::str_size(item);
     doc.append_child("p").text() = item.c_str();
   }
-
-  std::cout << "总字数：" << count << '\n';
 
   std::string out = std::filesystem::path(file_name).stem().string() + ".xhtml";
   doc.save_file(out.c_str(), "    ",

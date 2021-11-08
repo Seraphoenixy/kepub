@@ -102,18 +102,6 @@ std::vector<std::string> read_file_to_vec(const std::string &file_name,
   return result;
 }
 
-std::int32_t str_size(const std::string &str) {
-  std::int32_t result = 0;
-
-  for (auto c : klib::utf8_to_utf32(str)) {
-    if (klib::is_chinese(c)) {
-      ++result;
-    }
-  }
-
-  return result;
-}
-
 void str_check(const std::string &str) {
   auto copy = str;
   std::erase_if(copy, [](char c) { return std::isalnum(c) || c == ' '; });

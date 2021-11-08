@@ -1,7 +1,6 @@
 #include <cstdint>
 #include <cstdlib>
 #include <filesystem>
-#include <fstream>
 #include <optional>
 #include <stdexcept>
 #include <string>
@@ -250,8 +249,8 @@ std::vector<std::tuple<std::string, std::string, std::string>> get_chapters(
 
     std::string auth_access = chapter.at("auth_access").as_string().c_str();
     if (auth_access != "1") {
-      klib::warn("No authorized access, id: {}, volume: {}, title: {}",
-                 chapter_id, volume_name, chapter_title);
+      klib::warn("No authorized access, volume: {}, title: {}", volume_name,
+                 chapter_title);
     } else {
       chapters.emplace_back(chapter_id, chapter_title, "");
     }
