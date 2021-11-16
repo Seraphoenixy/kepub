@@ -10,8 +10,8 @@
 #include "trans.h"
 #include "util.h"
 
-std::string serialize_token(const std::string &account,
-                            const std::string &login_token) {
+std::string serialize(const std::string &account,
+                      const std::string &login_token) {
   return fmt::format(FMT_COMPILE(R"({{"account":"{}","login_token":"{}"}})"),
                      account, login_token);
 }
@@ -26,7 +26,7 @@ Token::Token(std::string json) {
 }
 
 JsonBase::JsonBase(std::string json) : json_(std::move(json)) {
-  json_.reserve(std::size(json) + simdjson::SIMDJSON_PADDING);
+  json_.reserve(std::size(json_) + simdjson::SIMDJSON_PADDING);
   doc_ = parser_.iterate(json_);
 
   code_ = std::stoi(std::string(doc_["code"].get_string().value()));
@@ -39,7 +39,10 @@ JsonBase::JsonBase(std::string json) : json_(std::move(json)) {
 }
 
 UserInfo::UserInfo(std::string json) : JsonBase(std::move(json)) {
-  nick_name_ = doc_["data"]["reader_info"]["reader_name"].get_string().value();
+  if (!login_expired()) {
+    nick_name_ =
+        doc_["data"]["reader_info"]["reader_name"].get_string().value();
+  }
 }
 
 LoginInfo::LoginInfo(std::string json) : JsonBase(std::move(json)) {

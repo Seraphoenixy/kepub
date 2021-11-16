@@ -24,7 +24,7 @@ add_executable(${ADDITION_EXECUTABLE} addition.cpp)
 target_link_libraries(${ADDITION_EXECUTABLE} PRIVATE ${LIBRARY}-shared
                                                      klib::klib CLI11::CLI11)
 
-add_executable(${CIWEIMAO_EXECUTABLE} ciweimao.cpp json.cpp)
+add_executable(${CIWEIMAO_EXECUTABLE} ciweimao/ciweimao.cpp ciweimao/json.cpp)
 target_link_libraries(
   ${CIWEIMAO_EXECUTABLE}
   PRIVATE ${LIBRARY}-shared
@@ -35,7 +35,7 @@ target_link_libraries(
           CLI11::CLI11
           simdjson::simdjson)
 
-add_executable(${SFACG_EXECUTABLE} sfacg.cpp json.cpp)
+add_executable(${SFACG_EXECUTABLE} sfacg/sfacg.cpp sfacg/json.cpp)
 target_link_libraries(
   ${SFACG_EXECUTABLE}
   PRIVATE ${LIBRARY}-shared

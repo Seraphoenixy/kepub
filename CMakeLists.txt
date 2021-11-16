@@ -66,7 +66,7 @@ include(CompilerOptions)
 find_package(fmt REQUIRED)
 find_package(pugixml REQUIRED)
 find_package(indicators REQUIRED)
-find_package(Boost REQUIRED COMPONENTS json CONFIG)
+find_package(Boost REQUIRED CONFIG)
 find_package(klib REQUIRED)
 find_package(simdjson REQUIRED)
 

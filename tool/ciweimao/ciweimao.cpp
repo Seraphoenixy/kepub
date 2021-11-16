@@ -1,5 +1,4 @@
 #include <cstdint>
-#include <cstdlib>
 #include <filesystem>
 #include <optional>
 #include <stdexcept>
@@ -79,7 +78,7 @@ bool show_user_info(const std::string &account,
   if (info.login_expired()) {
     return false;
   } else {
-    spdlog::info("Use existing login token, reader name: {}", info.nick_name());
+    spdlog::info("Use existing login token, nick name: {}", info.nick_name());
     return true;
   }
 }
@@ -103,8 +102,7 @@ std::optional<std::pair<std::string, std::string>> try_read_token() {
 }
 
 void write_token(const std::string &account, const std::string &login_token) {
-  klib::write_file(token_path, true,
-                   encrypt(serialize_token(account, login_token)));
+  klib::write_file(token_path, true, encrypt(serialize(account, login_token)));
 }
 
 std::pair<std::string, std::string> login(const std::string &login_name,
