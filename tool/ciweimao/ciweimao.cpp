@@ -1,3 +1,4 @@
+#include <clocale>
 #include <cstdint>
 #include <filesystem>
 #include <optional>
@@ -222,6 +223,8 @@ std::vector<std::string> get_content(const std::string &account,
 }  // namespace
 
 int main(int argc, const char *argv[]) try {
+  std::setlocale(LC_ALL, "en_US.UTF-8");
+
   CLI::App app;
   app.set_version_flag("-v,--version", kepub::version_str());
 
