@@ -24,13 +24,24 @@ add_executable(${ADDITION_EXECUTABLE} addition.cpp)
 target_link_libraries(${ADDITION_EXECUTABLE} PRIVATE ${LIBRARY}-shared
                                                      klib::klib CLI11::CLI11)
 
-add_executable(${CIWEIMAO_EXECUTABLE} ciweimao.cpp)
+add_executable(${CIWEIMAO_EXECUTABLE} ciweimao.cpp json.cpp)
 target_link_libraries(
   ${CIWEIMAO_EXECUTABLE}
-  PRIVATE ${LIBRARY}-shared klib::klib spdlog::spdlog ${Boost_LIBRARIES}
-          pugixml::pugixml CLI11::CLI11)
+  PRIVATE ${LIBRARY}-shared
+          klib::klib
+          spdlog::spdlog
+          ${Boost_LIBRARIES}
+          pugixml::pugixml
+          CLI11::CLI11
+          simdjson::simdjson)
 
-add_executable(${SFACG_EXECUTABLE} sfacg.cpp)
+add_executable(${SFACG_EXECUTABLE} sfacg.cpp json.cpp)
 target_link_libraries(
-  ${SFACG_EXECUTABLE} PRIVATE ${LIBRARY}-shared klib::klib fmt::fmt
-                              spdlog::spdlog ${Boost_LIBRARIES} CLI11::CLI11)
+  ${SFACG_EXECUTABLE}
+  PRIVATE ${LIBRARY}-shared
+          klib::klib
+          fmt::fmt
+          spdlog::spdlog
+          ${Boost_LIBRARIES}
+          CLI11::CLI11
+          simdjson::simdjson)

@@ -22,7 +22,7 @@ class Trans {
   Trans &operator=(Trans &&) = delete;
 
   static const Trans &get();
-  [[nodiscard]] std::string trans_str(const std::string &str,
+  [[nodiscard]] std::string trans_str(std::string_view str,
                                       bool translation) const;
 
  private:
@@ -299,8 +299,8 @@ const Trans &Trans::get() {
   return trans;
 }
 
-std::string Trans::trans_str(const std::string &str, bool translation) const {
-  icu::UnicodeString icu_str(str.c_str());
+std::string Trans::trans_str(std::string_view str, bool translation) const {
+  icu::UnicodeString icu_str(std::data(str), std::size(str));
 
   if (translation) {
     hant_hans_->transliterate(icu_str);
@@ -329,8 +329,16 @@ Trans::Trans() {
 
 }  // namespace
 
-std::string trans_str(const std::string &str, bool translation) {
+std::string trans_str(const char *str, bool translation) {
+  return trans_str(std::string_view(str), translation);
+}
+
+std::string trans_str(std::string_view str, bool translation) {
   return Trans::get().trans_str(str, translation);
+}
+
+std::string trans_str(const std::string &str, bool translation) {
+  return trans_str(std::string_view(str), translation);
 }
 
 }  // namespace kepub

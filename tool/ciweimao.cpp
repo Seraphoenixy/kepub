@@ -17,18 +17,15 @@
 #include <spdlog/spdlog.h>
 #include <CLI/CLI.hpp>
 #include <boost/algorithm/string.hpp>
-#include <boost/json.hpp>
 #include <pugixml.hpp>
 
+#include "json.h"
 #include "progress_bar.h"
 #include "trans.h"
 #include "util.h"
 #include "version.h"
 
 namespace {
-
-constexpr std::int32_t ok = 100000;
-constexpr std::int32_t login_expired = 200100;
 
 const std::string app_version = "2.9.100";
 const std::string device_token = "ciweimao_client";
@@ -70,24 +67,6 @@ klib::Response http_get(
   return response;
 }
 
-auto parse_json(const std::string &json, bool check = true) {
-  static boost::json::error_code error_code;
-  static boost::json::monotonic_resource mr;
-  auto jv = boost::json::parse(json, error_code, &mr);
-  if (error_code) {
-    klib::error("Json parse error: {}", error_code.message());
-  }
-
-  if (check) {
-    if (std::string code = jv.at("code").as_string().c_str();
-        std::stoi(code) != ok) {
-      klib::error(jv.at("tip").as_string().c_str());
-    }
-  }
-
-  return jv;
-}
-
 bool show_user_info(const std::string &account,
                     const std::string &login_token) {
   auto response = http_get("https://app.hbooker.com/reader/get_my_info",
@@ -95,19 +74,12 @@ bool show_user_info(const std::string &account,
                             {"device_token", device_token},
                             {"account", account},
                             {"login_token", login_token}});
-  auto jv = parse_json(decrypt(response.text()), false);
+  UserInfo info(decrypt(response.text()));
 
-  if (std::string code = jv.at("code").as_string().c_str();
-      std::stoi(code) == login_expired) {
-    klib::warn(jv.at("tip").as_string().c_str());
+  if (info.login_expired()) {
     return false;
-  } else if (std::stoi(code) != ok) {
-    klib::error(jv.at("tip").as_string().c_str());
   } else {
-    std::string reader_name =
-        jv.at("data").at("reader_info").at("reader_name").as_string().c_str();
-    spdlog::info("Use existing login token, reader name: {}", reader_name);
-
+    spdlog::info("Use existing login token, reader name: {}", info.nick_name());
     return true;
   }
 }
@@ -118,10 +90,10 @@ std::optional<std::pair<std::string, std::string>> try_read_token() {
   }
 
   auto json = klib::read_file(token_path, false);
-  auto obj = parse_json(decrypt(json), false).as_object();
+  Token token(decrypt(json));
 
-  std::string account = obj.at("account").as_string().c_str();
-  std::string login_token = obj.at("login_token").as_string().c_str();
+  auto account = token.account();
+  auto login_token = token.login_token();
 
   if (show_user_info(account, login_token)) {
     return {{account, login_token}};
@@ -131,11 +103,8 @@ std::optional<std::pair<std::string, std::string>> try_read_token() {
 }
 
 void write_token(const std::string &account, const std::string &login_token) {
-  boost::json::object obj;
-  obj["account"] = account;
-  obj["login_token"] = login_token;
-
-  klib::write_file(token_path, true, encrypt(boost::json::serialize(obj)));
+  klib::write_file(token_path, true,
+                   encrypt(serialize_token(account, login_token)));
 }
 
 std::pair<std::string, std::string> login(const std::string &login_name,
@@ -145,18 +114,10 @@ std::pair<std::string, std::string> login(const std::string &login_name,
                             {"device_token", device_token},
                             {"login_name", login_name},
                             {"passwd", password}});
-  auto jv = parse_json(decrypt(response.text()));
+  LoginInfo info(decrypt(response.text()));
 
-  auto data = jv.at("data").as_object();
-  std::string account =
-      data.at("reader_info").at("account").as_string().c_str();
-  std::string login_token = data.at("login_token").as_string().c_str();
-
-  std::string reader_name =
-      data.at("reader_info").at("reader_name").as_string().c_str();
-  spdlog::info("Login successful, reader name: {}", reader_name);
-
-  return {account, login_token};
+  spdlog::info("Login successful, reader name: {}", info.nick_name());
+  return {info.account(), info.login_token()};
 }
 
 std::tuple<std::string, std::string, std::vector<std::string>> get_book_info(
@@ -168,31 +129,18 @@ std::tuple<std::string, std::string, std::vector<std::string>> get_book_info(
                             {"account", account},
                             {"login_token", login_token},
                             {"book_id", book_id}});
-  auto jv = parse_json(decrypt(response.text()));
+  BookInfo info(decrypt(response.text()));
 
-  auto book_info = jv.at("data").at("book_info");
-  std::string book_name =
-      kepub::trans_str(book_info.at("book_name").as_string().c_str(), false);
-  std::string author =
-      kepub::trans_str(book_info.at("author_name").as_string().c_str(), false);
-  std::string description_str = book_info.at("description").as_string().c_str();
-  std::string cover_url = book_info.at("cover").as_string().c_str();
-
-  std::vector<std::string> description;
-  for (const auto &line : klib::split_str(description_str, "\n")) {
-    kepub::push_back(description, kepub::trans_str(line, false), false);
-  }
-
-  spdlog::info("Book name: {}", book_name);
-  spdlog::info("Author: {}", author);
-  spdlog::info("Cover url: {}", cover_url);
+  spdlog::info("Book name: {}", info.book_name());
+  spdlog::info("Author: {}", info.author());
+  spdlog::info("Cover url: {}", info.cover_url());
 
   std::string cover_name = "cover.jpg";
-  response = http_get(cover_url);
+  response = http_get(info.cover_url());
   response.save_to_file(cover_name, true);
   spdlog::info("Cover downloaded successfully: {}", cover_name);
 
-  return {book_name, author, description};
+  return {info.book_name(), info.author(), info.intro()};
 }
 
 std::vector<std::pair<std::string, std::string>> get_book_volume(
@@ -204,25 +152,12 @@ std::vector<std::pair<std::string, std::string>> get_book_volume(
                             {"account", account},
                             {"login_token", login_token},
                             {"book_id", book_id}});
-  auto jv = parse_json(decrypt(response.text()));
-
-  std::vector<std::pair<std::string, std::string>> volumes;
-
-  auto volume_list = jv.at("data").at("division_list").as_array();
-  for (const auto &volume : volume_list) {
-    std::string volume_id = volume.at("division_id").as_string().c_str();
-    std::string volume_name =
-        kepub::trans_str(volume.at("division_name").as_string().c_str(), false);
-
-    volumes.emplace_back(volume_id, volume_name);
-  }
-
-  return volumes;
+  return Volumes(decrypt(response.text())).volumes();
 }
 
 std::vector<std::tuple<std::string, std::string, std::string>> get_chapters(
     const std::string &account, const std::string &login_token,
-    const std::string &volume_id, const std::string &volume_name) {
+    const std::string &volume_id) {
   auto response = http_get(
       "https://app.hbooker.com/chapter/get_updated_chapter_by_division_id",
       {{"app_version", app_version},
@@ -230,33 +165,7 @@ std::vector<std::tuple<std::string, std::string, std::string>> get_chapters(
        {"account", account},
        {"login_token", login_token},
        {"division_id", volume_id}});
-  auto jv = parse_json(decrypt(response.text()));
-
-  std::vector<std::tuple<std::string, std::string, std::string>> chapters;
-
-  auto chapter_list = jv.at("data").at("chapter_list").as_array();
-  for (const auto &chapter : chapter_list) {
-    std::string chapter_id = chapter.at("chapter_id").as_string().c_str();
-    std::string chapter_title = kepub::trans_str(
-        chapter.at("chapter_title").as_string().c_str(), false);
-
-    std::string is_valid = chapter.at("is_valid").as_string().c_str();
-    if (is_valid != "1") {
-      klib::warn("The chapter is not valid, id: {}, volume: {}, title: {}",
-                 chapter_id, volume_name, chapter_title);
-      continue;
-    }
-
-    std::string auth_access = chapter.at("auth_access").as_string().c_str();
-    if (auth_access != "1") {
-      klib::warn("No authorized access, volume: {}, title: {}", volume_name,
-                 chapter_title);
-    } else {
-      chapters.emplace_back(chapter_id, chapter_title, "");
-    }
-  }
-
-  return chapters;
+  return Chapters(decrypt(response.text())).chapters();
 }
 
 std::string get_chapter_command(const std::string &account,
@@ -268,9 +177,7 @@ std::string get_chapter_command(const std::string &account,
                             {"account", account},
                             {"login_token", login_token},
                             {"chapter_id", chapter_id}});
-  auto jv = parse_json(decrypt(response.text()));
-
-  return jv.at("data").at("command").as_string().c_str();
+  return ChaptersCommand(decrypt(response.text())).command();
 }
 
 std::vector<std::string> get_content(const std::string &account,
@@ -284,20 +191,14 @@ std::vector<std::string> get_content(const std::string &account,
                             {"login_token", login_token},
                             {"chapter_id", chapter_id},
                             {"chapter_command", chapter_command}});
-  auto jv = parse_json(decrypt(response.text()));
-  auto chapter_info = jv.at("data").at("chapter_info");
-
-  std::string encrypt_content_str =
-      chapter_info.at("txt_content").as_string().c_str();
+  auto encrypt_content_str = Content(decrypt(response.text())).content();
   auto content_str = decrypt(encrypt_content_str, chapter_command);
 
-  std::vector<std::string> content;
-  for (const auto &line : klib::split_str(content_str, "\n")) {
-    kepub::push_back(content, kepub::trans_str(line, false), false);
-  }
-
   static std::int32_t image_count = 1;
-  for (auto &line : content) {
+  std::vector<std::string> content;
+  for (auto &line : klib::split_str(content_str, "\n")) {
+    line = kepub::trans_str(line, false);
+
     if (line.starts_with("<img src")) {
       pugi::xml_document doc;
       doc.load_string(line.c_str());
@@ -310,6 +211,10 @@ std::vector<std::string> get_content(const std::string &account,
       image.save_to_file(image_name + ".jpg", true);
 
       line = "[IMAGE] " + image_name;
+
+      content.push_back(line);
+    } else {
+      kepub::push_back(content, line, false);
     }
   }
 
@@ -351,7 +256,7 @@ int main(int argc, const char *argv[]) try {
   std::int32_t chapter_count = 0;
   for (const auto &[volume_id, volume_name] :
        get_book_volume(account, login_token, book_id)) {
-    auto chapters = get_chapters(account, login_token, volume_id, volume_name);
+    auto chapters = get_chapters(account, login_token, volume_id);
     volume_chapter.emplace_back(volume_name, chapters);
     chapter_count += std::size(chapters);
   }
