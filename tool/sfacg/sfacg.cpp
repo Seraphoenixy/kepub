@@ -131,12 +131,12 @@ std::vector<std::string> get_content(const std::string &chapter_id) {
     if (line.starts_with("[img")) {
       auto begin = line.find("https");
       if (begin == std::string::npos) {
-        klib::error("No image url");
+        klib::error(KLIB_CURR_LOC, "No image url");
       }
 
       auto end = line.find("[/img]");
       if (end == std::string::npos) {
-        klib::error("No image url");
+        klib::error(KLIB_CURR_LOC, "No image url");
       }
 
       auto image_url = line.substr(begin, end - begin);
@@ -199,7 +199,7 @@ int main(int argc, const char *argv[]) try {
 
   kepub::generate_txt(book_name, author, description, volume_chapter);
 } catch (const std::exception &err) {
-  klib::error(err.what());
+  klib::error(KLIB_CURR_LOC, err.what());
 } catch (...) {
-  klib::error("Unknown exception");
+  klib::error(KLIB_CURR_LOC, "Unknown exception");
 }

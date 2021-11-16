@@ -34,7 +34,7 @@ JsonBase::JsonBase(std::string json) : json_(std::move(json)) {
   if (login_expired()) {
     klib::warn(doc_["tip"].get_string().value());
   } else if (!ok()) {
-    klib::error(doc_["tip"].get_string().value());
+    klib::error(KLIB_CURR_LOC, doc_["tip"].get_string().value());
   }
 }
 

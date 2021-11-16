@@ -47,7 +47,7 @@ int main(int argc, const char *argv[]) try {
   doc.save_file(out.c_str(), "    ",
                 pugi::format_default | pugi::format_no_declaration);
 } catch (const std::exception &err) {
-  klib::error(err.what());
+  klib::error(KLIB_CURR_LOC, err.what());
 } catch (...) {
-  klib::error("Unknown exception");
+  klib::error(KLIB_CURR_LOC, "Unknown exception");
 }

@@ -74,7 +74,7 @@ int main(int argc, const char *argv[]) try {
 
   epub.generate();
 } catch (const std::exception &err) {
-  klib::error(err.what());
+  klib::error(KLIB_CURR_LOC, err.what());
 } catch (...) {
-  klib::error("Unknown exception");
+  klib::error(KLIB_CURR_LOC, "Unknown exception");
 }

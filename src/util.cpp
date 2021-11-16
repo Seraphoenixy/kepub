@@ -62,7 +62,7 @@ namespace kepub {
 
 void check_file_exist(const std::string &file_name) {
   if (!std::filesystem::is_regular_file(file_name)) {
-    klib::error("The file not exist: '{}'", file_name);
+    klib::error(KLIB_CURR_LOC, "The file not exist: '{}'", file_name);
   }
 }
 
@@ -70,14 +70,14 @@ void check_is_txt_file(const std::string &file_name) {
   check_file_exist(file_name);
 
   if (std::filesystem::path(file_name).extension() != ".txt") {
-    klib::error("Need a txt file: {}", file_name);
+    klib::error(KLIB_CURR_LOC, "Need a txt file: {}", file_name);
   }
 }
 
 void check_is_book_id(const std::string &book_id) {
   if (!std::all_of(std::begin(book_id), std::end(book_id),
                    [](char c) { return std::isdigit(c); })) {
-    klib::error("Need a book id: {}", book_id);
+    klib::error(KLIB_CURR_LOC, "Need a book id: {}", book_id);
   }
 }
 
@@ -86,7 +86,7 @@ std::vector<std::string> read_file_to_vec(const std::string &file_name,
   auto data = klib::read_file(file_name, false);
 
   if (!simdjson::validate_utf8(data)) {
-    klib::error("file '{}' encoding is not UTF-8", file_name);
+    klib::error(KLIB_CURR_LOC, "file '{}' encoding is not UTF-8", file_name);
   }
 
   std::vector<std::string> result;
@@ -152,7 +152,7 @@ void push_back(std::vector<std::string> &texts, const std::string &str,
 
 void check_icu(UErrorCode status) {
   if (U_FAILURE(status)) {
-    klib::error("{}", u_errorName(status));
+    klib::error(KLIB_CURR_LOC, "{}", u_errorName(status));
   }
 }
 
@@ -162,7 +162,7 @@ std::string get_login_name() {
   std::cout << "login name: ";
   std::cin >> login_name;
   if (std::empty(login_name)) {
-    klib::error("login name is empty");
+    klib::error(KLIB_CURR_LOC, "login name is empty");
   }
 
   return login_name;
@@ -172,7 +172,7 @@ std::string get_password() {
   std::string password = getpass("password: ");
 
   if (std::empty(password)) {
-    klib::error("password is empty");
+    klib::error(KLIB_CURR_LOC, "password is empty");
   }
 
   return password;

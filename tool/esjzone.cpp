@@ -43,7 +43,7 @@ std::vector<std::string> get_children_content(const pugi::xml_node &node) {
   }
 
   if (std::empty(result)) {
-    klib::error("get_children_text no data");
+    klib::error(KLIB_CURR_LOC, "get_children_text no data");
   }
 
   return result;
@@ -63,7 +63,7 @@ klib::Response http_get(const std::string &url, const std::string &proxy) {
 
   auto response = request.get(url);
   if (response.status_code() != klib::Response::StatusCode::Ok) {
-    klib::error("HTTP GET fail: {}", response.status_code());
+    klib::error(KLIB_CURR_LOC, "HTTP GET fail: {}", response.status_code());
   }
 
   return response;
@@ -222,7 +222,7 @@ int main(int argc, const char *argv[]) try {
 
   kepub::generate_txt(book_name, author, description, chapters);
 } catch (const std::exception &err) {
-  klib::error(err.what());
+  klib::error(KLIB_CURR_LOC, err.what());
 } catch (...) {
-  klib::error("Unknown exception");
+  klib::error(KLIB_CURR_LOC, "Unknown exception");
 }

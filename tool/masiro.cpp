@@ -225,7 +225,7 @@ int main(int argc, const char *argv[]) try {
     std::filesystem::remove_all(book_name);
   }
 } catch (const std::exception &err) {
-  klib::error(err.what());
+  klib::error(KLIB_CURR_LOC, err.what());
 } catch (...) {
-  klib::error("Unknown exception");
+  klib::error(KLIB_CURR_LOC, "Unknown exception");
 }

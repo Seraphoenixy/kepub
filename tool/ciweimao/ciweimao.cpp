@@ -61,7 +61,7 @@ klib::Response http_get(
 
   auto response = request.get(url, params);
   if (response.status_code() != klib::Response::StatusCode::Ok) {
-    klib::error("HTTP GET fail: {}", response.status_code());
+    klib::error(KLIB_CURR_LOC, "HTTP GET fail: {}", response.status_code());
   }
 
   return response;
@@ -274,7 +274,7 @@ int main(int argc, const char *argv[]) try {
 
   kepub::generate_txt(book_name, author, description, volume_chapter);
 } catch (const std::exception &err) {
-  klib::error(err.what());
+  klib::error(KLIB_CURR_LOC, err.what());
 } catch (...) {
-  klib::error("Unknown exception");
+  klib::error(KLIB_CURR_LOC, "Unknown exception");
 }
