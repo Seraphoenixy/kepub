@@ -1,13 +1,12 @@
 # kepub
 
-[![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/KaiserLancelot/kepub)
+[![Platform](https://img.shields.io/badge/Platform-Debian%2011-brightgreen)](https://www.debian.org/)
 [![Build](https://github.com/KaiserLancelot/kepub/actions/workflows/build.yml/badge.svg)](https://github.com/KaiserLancelot/kepub/actions/workflows/build.yml)
 [![Coverage Status](https://coveralls.io/repos/github/KaiserLancelot/kepub/badge.svg?branch=main)](https://coveralls.io/github/KaiserLancelot/kepub?branch=main)
 [![GitHub License](https://img.shields.io/github/license/KaiserLancelot/kepub)](https://github.com/KaiserLancelot/kepub/blob/main/LICENSE)
 [![996.icu](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu)
 [![GitHub Releases](https://img.shields.io/github/release/KaiserLancelot/kepub)](https://github.com/KaiserLancelot/kepub/releases/latest)
 [![GitHub Downloads](https://img.shields.io/github/downloads/KaiserLancelot/kepub/total)](https://github.com/KaiserLancelot/kepub/releases)
-[![Bugs](https://img.shields.io/github/issues/KaiserLancelot/kepub/bug)](https://github.com/KaiserLancelot/kepub/issues?q=is%3Aopen+is%3Aissue+label%3Abug)
 
 ---
 
@@ -15,19 +14,20 @@ Crawl novels from esjzone, ciweimao and sfacg. Generate epub from txt file
 
 ## Environment
 
-- Ubuntu 20.04
+- Debian 11
 - GCC 11 or Clang 13
 
 ## Dependency
 
+- [klib](https://github.com/KaiserLancelot/klib)
+- [Boost](https://www.boost.org/)
+- [CLI11](https://github.com/CLIUtils/CLI11)
 - [fmt](https://github.com/fmtlib/fmt)
 - [spdlog](https://github.com/gabime/spdlog)
+- [simdjson](https://github.com/simdjson/simdjson)
 - [pugixml](https://github.com/zeux/pugixml)
 - [icu](https://github.com/unicode-org/icu)
-- [boost](https://www.boost.org/)
-- [CLI11](https://github.com/CLIUtils/CLI11)
 - [indicators](https://github.com/p-ranav/indicators)
-- [klib](https://github.com/KaiserLancelot/klib)
 
 ## Font
 

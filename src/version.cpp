@@ -3,6 +3,7 @@
 #include <fmt/compile.h>
 #include <fmt/format.h>
 #include <klib/version.h>
+#include <simdjson.h>
 #include <spdlog/version.h>
 #include <unicode/uvernum.h>
 #include <CLI/Version.hpp>
@@ -22,15 +23,18 @@ std::string version_str() {
   result += fmt::format(FMT_COMPILE("Boost/{}.{}.{} "), BOOST_VERSION / 100000,
                         BOOST_VERSION / 100 % 1000, BOOST_VERSION % 100);
   result += fmt::format(FMT_COMPILE("CLI11/{} "), CLI11_VERSION);
-  result += fmt::format(FMT_COMPILE("ICU/{}.{}.{} "), U_ICU_VERSION_MAJOR_NUM,
-                        U_ICU_VERSION_MINOR_NUM, U_ICU_VERSION_PATCHLEVEL_NUM);
-  result +=
-      fmt::format(FMT_COMPILE("pugixml/{}.{}.{} "), PUGIXML_VERSION / 1000,
-                  PUGIXML_VERSION / 10 % 100, PUGIXML_VERSION % 10);
   result += fmt::format(FMT_COMPILE("fmt/{}.{}.{} "), FMT_VERSION / 10000,
                         FMT_VERSION / 100 % 100, FMT_VERSION % 100);
   result += fmt::format(FMT_COMPILE("spdlog/{}.{}.{} "), SPDLOG_VER_MAJOR,
                         SPDLOG_VER_MINOR, SPDLOG_VER_PATCH);
+  result += fmt::format(
+      FMT_COMPILE("simdjson/{}.{}.{} "), simdjson::SIMDJSON_VERSION_MAJOR,
+      simdjson::SIMDJSON_VERSION_MINOR, simdjson::SIMDJSON_VERSION_REVISION);
+  result +=
+      fmt::format(FMT_COMPILE("pugixml/{}.{}.{} "), PUGIXML_VERSION / 1000,
+                  PUGIXML_VERSION / 10 % 100, PUGIXML_VERSION % 10);
+  result += fmt::format(FMT_COMPILE("ICU/{}.{}.{} "), U_ICU_VERSION_MAJOR_NUM,
+                        U_ICU_VERSION_MINOR_NUM, U_ICU_VERSION_PATCHLEVEL_NUM);
   // NOTE
   result += "indicators/2.2.0\n";
 

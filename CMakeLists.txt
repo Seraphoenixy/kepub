@@ -68,6 +68,7 @@ find_package(pugixml REQUIRED)
 find_package(indicators REQUIRED)
 find_package(Boost REQUIRED COMPONENTS json CONFIG)
 find_package(klib REQUIRED)
+find_package(simdjson REQUIRED)
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(icu-i18n REQUIRED IMPORTED_TARGET icu-i18n)
@@ -94,6 +95,7 @@ target_link_libraries(
   PRIVATE epub
           fmt::fmt
           pugixml::pugixml
+          simdjson::simdjson
           indicators::indicators
           klib::klib
           ${Boost_LIBRARIES}
@@ -116,6 +118,7 @@ target_link_libraries(
   PRIVATE epub
           fmt::fmt
           pugixml::pugixml
+          simdjson::simdjson
           indicators::indicators
           klib::klib
           ${Boost_LIBRARIES}

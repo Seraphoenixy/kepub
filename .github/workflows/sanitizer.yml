@@ -4,9 +4,8 @@ on: [push, pull_request]
 
 jobs:
   build:
-    # https://docs.github.com/cn/actions/reference/workflow-syntax-for-github-actions
-    # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
+    container: kaiserlancelot/kenv:latest
     strategy:
       matrix:
         # https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html
@@ -20,20 +19,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      # https://github.com/actions/cache
-      - name: Get date
-        id: get-date
-        run: echo "::set-output name=date::$(/bin/date -u "+%Y%m")"
-        shell: bash
-
-      - name: Cache dependencies
-        uses: actions/cache@v2
-        with:
-          path: dependencies
-          key: ${{ steps.get-date.outputs.date }}
-
       - name: Install dependencies
-        run: sudo bash script/build.sh
+        run: bash script/build.sh
 
       - name: Configure
         run: |
@@ -50,8 +37,5 @@ jobs:
         run: ctest -C ${{ matrix.build_type }} -j"$(nproc)" --output-on-failure
         working-directory: build
         env:
-          # https://clang.llvm.org/docs/AddressSanitizer.html
           # FIXME fmt odr-violation
-          ASAN_OPTIONS: detect_stack_use_after_return=1:detect_odr_violation=0
-          # https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html
-          UBSAN_OPTIONS: print_stacktrace=1
+          ASAN_OPTIONS: detect_odr_violation=0
