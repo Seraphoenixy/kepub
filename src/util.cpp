@@ -14,11 +14,11 @@
 #include <klib/error.h>
 #include <klib/unicode.h>
 #include <klib/util.h>
+#include <simdjson.h>
 #include <unicode/uchar.h>
 #include <unicode/unistr.h>
 #include <boost/algorithm/string.hpp>
 
-#include "encoding.h"
 #include "trans.h"
 
 namespace {
@@ -85,8 +85,8 @@ std::vector<std::string> read_file_to_vec(const std::string &file_name,
                                           bool translation) {
   auto data = klib::read_file(file_name, false);
 
-  if (auto encoding = detect_encoding(data); encoding != "UTF-8") {
-    klib::error("file '{}' encoding is not UTF-8 ({})", file_name, encoding);
+  if (!simdjson::validate_utf8(data)) {
+    klib::error("file '{}' encoding is not UTF-8", file_name);
   }
 
   std::vector<std::string> result;
