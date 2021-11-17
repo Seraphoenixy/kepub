@@ -1,4 +1,3 @@
-#include <clocale>
 #include <stdexcept>
 #include <string>
 #include <tuple>
@@ -183,8 +182,6 @@ std::vector<std::string> get_content(const std::string &url, bool translation,
 }  // namespace
 
 int main(int argc, const char *argv[]) try {
-  std::setlocale(LC_ALL, "en_US.UTF-8");
-
   CLI::App app;
   app.set_version_flag("-v,--version", kepub::version_str());
 

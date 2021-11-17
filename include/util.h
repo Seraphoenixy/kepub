@@ -20,6 +20,8 @@ std::vector<std::string> read_file_to_vec(const std::string &file_name,
 
 void str_check(const std::string &str);
 
+void title_check(const std::string &title);
+
 void push_back(std::vector<std::string> &texts, const std::string &str,
                bool connect_chinese);
 

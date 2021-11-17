@@ -1,4 +1,3 @@
-#include <clocale>
 #include <cstddef>
 #include <filesystem>
 #include <stdexcept>
@@ -15,8 +14,6 @@
 #include "version.h"
 
 int main(int argc, const char *argv[]) try {
-  std::setlocale(LC_ALL, "en_US.UTF-8");
-
   CLI::App app;
   app.set_version_flag("-v,--version", kepub::version_str());
 
@@ -144,6 +141,7 @@ int main(int argc, const char *argv[]) try {
       volume_name = vec[i].substr(volume_prefix_size);
     } else if (vec[i].starts_with(title_prefix)) {
       auto title = vec[i].substr(title_prefix_size);
+      kepub::title_check(title);
       ++i;
 
       std::vector<std::string> content;

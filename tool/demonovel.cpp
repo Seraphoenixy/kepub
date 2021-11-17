@@ -1,4 +1,3 @@
-#include <clocale>
 #include <cstddef>
 #include <filesystem>
 #include <stdexcept>
@@ -14,8 +13,6 @@
 #include "version.h"
 
 int main(int argc, const char *argv[]) try {
-  std::setlocale(LC_ALL, "en_US.UTF-8");
-
   CLI::App app;
   app.set_version_flag("-v,--version", kepub::version_str());
 

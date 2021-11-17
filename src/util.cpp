@@ -116,6 +116,13 @@ void str_check(const std::string &str) {
   }
 }
 
+void title_check(const std::string &title) {
+  if (std::count_if(std::begin(title), std::end(title),
+                    [](char c) { return c == ' '; }) != 1) {
+    klib::warn("Irregular title format: {}", title);
+  }
+}
+
 void push_back(std::vector<std::string> &texts, const std::string &str,
                bool connect_chinese) {
   if (std::empty(str)) {
