@@ -54,6 +54,7 @@ klib::Response http_get(
   static klib::Request request;
   request.set_no_proxy();
   request.set_user_agent(user_agent);
+  request.set_accept_encoding("gzip, deflate");
 #ifndef NDEBUG
   request.verbose(true);
 #endif
