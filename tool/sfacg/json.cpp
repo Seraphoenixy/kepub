@@ -10,7 +10,7 @@
 
 std::string serialize(const std::string &login_name,
                       const std::string &password) {
-  return fmt::format(FMT_COMPILE(R"({{"username":"{}","password":"{}"}})"),
+  return fmt::format(FMT_COMPILE(R"({{"userName":"{}","passWord":"{}"}})"),
                      login_name, password);
 }
 

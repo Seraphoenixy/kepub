@@ -27,8 +27,8 @@
 namespace {
 
 const std::string app_version = "2.9.100";
-const std::string device_token = "ciweimao_client";
-const std::string user_agent = "Android com.kuangxiangciweimao.novel";
+const std::string device_token = "iPhone-ADDACF06-A9DD-482B-ADF5-ADE5B97438EE";
+const std::string user_agent = "HappyBook/2.9.1 (iPhone; iOS 15.1; Scale/3.00)";
 
 const std::string default_key = "zG2nSeEfSHfvTCHy5LCcqtBbQehKNLXn";
 
@@ -58,7 +58,9 @@ klib::Response http_get(
   request.verbose(true);
 #endif
 
-  auto response = request.get(url, params);
+  auto response = request.get(
+      url, params,
+      {{"Connection", "keep-alive"}, {"Accept-Language", "zh-Hans-CN;q=1"}});
   if (response.status_code() != klib::Response::StatusCode::Ok) {
     klib::error(KLIB_CURR_LOC, "HTTP GET fail: {}", response.status_code());
   }

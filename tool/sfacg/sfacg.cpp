@@ -25,11 +25,10 @@
 
 namespace {
 
-const std::string authorization =
-    "Basic YW5kcm9pZHVzZXI6MWEjJDUxLXl0Njk7KkFjdkBxeHE=";
-// TODO Updated version
-const std::string user_agent = "boluobao/4.3.20(android;22)/HomePage";
-const std::string device_token = "AAC3B586-D131-32DE-942C-F5CCED55B45E";
+const std::string authorization = "Basic YXBpdXNlcjozcyMxLXl0NmUqQWN2QHFlcg==";
+const std::string device_token = "1F6EF324-A916-4995-971D-3AA71813072B";
+const std::string user_agent =
+    "boluobao/4.7.88(iOS;15.1)/appStore/" + device_token;
 
 std::string sf_security() {
   std::string uuid = boost::to_upper_copy(klib::uuid());
@@ -52,9 +51,12 @@ klib::Response http_get(
   request.verbose(true);
 #endif
 
-  return request.get(
-      url, params,
-      {{"Authorization", authorization}, {"SFSecurity", sf_security()}});
+  return request.get(url, params,
+                     {{"Connection", "keep-alive"},
+                      {"Accept", "application/vnd.sfacg.api+json;version=1"},
+                      {"SFSecurity", sf_security()},
+                      {"Accept-Language", "zh-Hans-CN;q=1"},
+                      {"Authorization", authorization}});
 }
 
 klib::Response http_post(const std::string &url, const std::string &json) {
@@ -65,9 +67,12 @@ klib::Response http_post(const std::string &url, const std::string &json) {
   request.verbose(true);
 #endif
 
-  return request.post(
-      url, json,
-      {{"Authorization", authorization}, {"SFSecurity", sf_security()}});
+  return request.post(url, json,
+                      {{"Connection", "keep-alive"},
+                       {"Accept", "application/vnd.sfacg.api+json;version=1"},
+                       {"SFSecurity", sf_security()},
+                       {"Accept-Language", "zh-Hans-CN;q=1"},
+                       {"Authorization", authorization}});
 }
 
 bool show_user_info() {

@@ -29,7 +29,7 @@ JsonBase::JsonBase(std::string json) : json_(std::move(json)) {
   json_.reserve(std::size(json_) + simdjson::SIMDJSON_PADDING);
   doc_ = parser_.iterate(json_);
 
-  code_ = std::stoi(std::string(doc_["code"].get_string().value()));
+  code_ = doc_["code"].get_int64().value();
 
   if (login_expired()) {
     klib::warn(doc_["tip"].get_string().value());
@@ -90,14 +90,14 @@ Chapters::Chapters(std::string json) : JsonBase(std::move(json)) {
     auto chapter_title(
         kepub::trans_str(chapter["chapter_title"].get_string().value(), false));
 
-    std::string is_valid(chapter["is_valid"].get_string().value());
-    if (is_valid != "1") {
+    auto is_valid = chapter["is_valid"].get_int64().value();
+    if (is_valid != 1) {
       klib::warn("The chapter is not valid, title: {}", chapter_title);
       continue;
     }
 
-    std::string auth_access(chapter["auth_access"].get_string().value());
-    if (auth_access != "1") {
+    auto auth_access = chapter["auth_access"].get_int64().value();
+    if (auth_access != 1) {
       klib::warn("No authorized access, title: {}", chapter_title);
     } else {
       chapters_.emplace_back(chapter_id, chapter_title, "");
