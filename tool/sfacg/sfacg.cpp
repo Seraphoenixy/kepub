@@ -15,6 +15,7 @@
 #include <spdlog/spdlog.h>
 #include <CLI/CLI.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/core/ignore_unused.hpp>
 
 #include "json.h"
 #include "progress_bar.h"
@@ -82,9 +83,12 @@ bool show_user_info() {
 }
 
 void login(const std::string &login_name, const std::string &password) {
-  http_post("https://api.sfacg.com/sessions", serialize(login_name, password));
+  auto response = http_post("https://api.sfacg.com/sessions",
+                            serialize(login_name, password));
+  JsonBase json_base(response.text());
+  boost::ignore_unused(json_base);
 
-  auto response = http_get("https://api.sfacg.com/user");
+  response = http_get("https://api.sfacg.com/user");
   LoginInfo info(response.text());
   spdlog::info("Login successful, nick name: {}", info.nick_name());
 }

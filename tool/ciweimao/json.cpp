@@ -46,6 +46,10 @@ UserInfo::UserInfo(std::string json) : JsonBase(std::move(json)) {
 }
 
 LoginInfo::LoginInfo(std::string json) : JsonBase(std::move(json)) {
+  if (login_expired()) {
+    klib::error("Failed to login");
+  }
+
   auto data = doc_["data"];
   login_token_ = data["login_token"].get_string().value();
 

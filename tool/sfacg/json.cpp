@@ -38,6 +38,10 @@ UserInfo::UserInfo(std::string json) : JsonBase(std::move(json)) {
 }
 
 LoginInfo::LoginInfo(std::string json) : JsonBase(std::move(json)) {
+  if (login_expired()) {
+    klib::error("Failed to login");
+  }
+
   nick_name_ = doc_["data"]["nickName"].get_string().value();
 }
 
