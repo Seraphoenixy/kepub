@@ -129,7 +129,7 @@ get_volume_chapter(const std::string &book_id) {
 
 std::vector<std::string> get_content(const std::string &chapter_id) {
   auto response = http_get("https://api.sfacg.com/Chaps/" + chapter_id,
-                           {{"expand", "content"}});
+                           {{"chapsId", chapter_id}, {"expand", "content"}});
 
   auto content_str = Content(response.text()).content();
 
