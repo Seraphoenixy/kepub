@@ -34,7 +34,7 @@ std::string sf_security() {
   std::string uuid = boost::to_upper_copy(klib::uuid());
   auto timestamp = std::time(nullptr);
   std::string sign = boost::to_upper_copy(klib::md5_hex(
-      uuid + std::to_string(timestamp) + device_token + "xw3#a12-x"));
+      uuid + std::to_string(timestamp) + device_token + "td9#Kn_p7vUw"));
 
   return fmt::format(
       FMT_COMPILE("nonce={}&timestamp={}&devicetoken={}&sign={}"), uuid,
