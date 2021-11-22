@@ -47,7 +47,7 @@ UserInfo::UserInfo(std::string json) : JsonBase(std::move(json)) {
 
 LoginInfo::LoginInfo(std::string json) : JsonBase(std::move(json)) {
   if (login_expired()) {
-    klib::error("Failed to login");
+    klib::error(KLIB_CURR_LOC, "Failed to login");
   }
 
   auto data = doc_["data"];
