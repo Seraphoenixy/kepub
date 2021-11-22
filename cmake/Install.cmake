@@ -47,7 +47,7 @@ install(
           ${XHTML_EXECUTABLE}
           ${CIWEIMAO_EXECUTABLE}
           ${SFACG_EXECUTABLE}
-          ${LIBRARY}-shared
+          ${KEPUB_LIBRARY}-shared
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
@@ -62,7 +62,9 @@ set(CPACK_INSTALL_CMAKE_PROJECTS ${KEPUB_BINARY_DIR} ${PROJECT_NAME} ALL .)
 
 # https://cmake.org/cmake/help/latest/cpack_gen/deb.html
 set(CPACK_PACKAGE_CONTACT "kaiser <KaiserLancelot123@gmail.com>")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Generate epub")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY
+    "Crawl novels from esjzone, ciweimao and sfacg. Generate epub from txt file"
+)
 set(CPACK_PACKAGE_VERSION
     ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH})
 

@@ -32,7 +32,7 @@ message(STATUS "Build type: " ${CMAKE_BUILD_TYPE})
 # ---------------------------------------------------------------------------------------
 # Set variables
 # ---------------------------------------------------------------------------------------
-set(LIBRARY lib${PROJECT_NAME})
+set(KEPUB_LIBRARY lib${PROJECT_NAME})
 set(DEMONOVEL_EXECUTABLE demonovel)
 set(ESJZONE_EXECUTABLE esjzone)
 set(MASIRO_EXECUTABLE masiro)
@@ -40,13 +40,14 @@ set(XHTML_EXECUTABLE xhtml)
 set(ADDITION_EXECUTABLE addition)
 set(CIWEIMAO_EXECUTABLE ciweimao)
 set(SFACG_EXECUTABLE sfacg)
-set(TEST_EXECUTABLE ${PROJECT_NAME}-test)
+set(KEPUB_TEST_EXECUTABLE ${PROJECT_NAME}-test)
 
 set(KEPUB_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(KEPUB_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
 
 # https://cmake.org/cmake/help/latest/command/file.html#glob-recurse
-file(GLOB_RECURSE LIBRARY_SRC CONFIGURE_DEPENDS "${KEPUB_SOURCE_DIR}/src/*.cpp")
+file(GLOB_RECURSE KEPUB_LIBRARY_SRC CONFIGURE_DEPENDS
+     "${KEPUB_SOURCE_DIR}/src/*.cpp")
 
 # ---------------------------------------------------------------------------------------
 # Include CMake module
@@ -78,8 +79,9 @@ add_definitions(-DU_HIDE_INTERNAL_API -DU_HIDE_OBSOLETE_API
 # ---------------------------------------------------------------------------------------
 # Build epub file
 # ---------------------------------------------------------------------------------------
-file(GLOB_RECURSE EPUB_FILE CONFIGURE_DEPENDS "${KEPUB_SOURCE_DIR}/epub/*")
-file(COPY ${EPUB_FILE} DESTINATION ${KEPUB_BINARY_DIR})
+file(GLOB_RECURSE KEPUB_EPUB_FILE CONFIGURE_DEPENDS
+     "${KEPUB_SOURCE_DIR}/epub/*")
+file(COPY ${KEPUB_EPUB_FILE} DESTINATION ${KEPUB_BINARY_DIR})
 
 add_library(epub STATIC "${KEPUB_SOURCE_DIR}/src/epub.s")
 target_compile_options(epub PRIVATE "-Wno-unused-command-line-argument")
@@ -87,11 +89,12 @@ target_compile_options(epub PRIVATE "-Wno-unused-command-line-argument")
 # ---------------------------------------------------------------------------------------
 # Build static library
 # ---------------------------------------------------------------------------------------
-add_library(${LIBRARY} STATIC ${LIBRARY_SRC})
+add_library(${KEPUB_LIBRARY} STATIC ${KEPUB_LIBRARY_SRC})
 
-target_include_directories(${LIBRARY} PUBLIC "${KEPUB_SOURCE_DIR}/include")
+target_include_directories(${KEPUB_LIBRARY}
+                           PUBLIC "${KEPUB_SOURCE_DIR}/include")
 target_link_libraries(
-  ${LIBRARY}
+  ${KEPUB_LIBRARY}
   PRIVATE epub
           fmt::fmt
           pugixml::pugixml
@@ -101,7 +104,7 @@ target_link_libraries(
           ${Boost_LIBRARIES}
           PkgConfig::icu-i18n)
 set_target_properties(
-  ${LIBRARY}
+  ${KEPUB_LIBRARY}
   PROPERTIES OUTPUT_NAME ${PROJECT_NAME}
              POSITION_INDEPENDENT_CODE ON
              INTERPROCEDURAL_OPTIMIZATION FALSE)
@@ -109,12 +112,12 @@ set_target_properties(
 # ---------------------------------------------------------------------------------------
 # Build shared library
 # ---------------------------------------------------------------------------------------
-add_library(${LIBRARY}-shared SHARED ${LIBRARY_SRC})
+add_library(${KEPUB_LIBRARY}-shared SHARED ${KEPUB_LIBRARY_SRC})
 
-target_include_directories(${LIBRARY}-shared
+target_include_directories(${KEPUB_LIBRARY}-shared
                            PUBLIC "${KEPUB_SOURCE_DIR}/include")
 target_link_libraries(
-  ${LIBRARY}-shared
+  ${KEPUB_LIBRARY}-shared
   PRIVATE epub
           fmt::fmt
           pugixml::pugixml
@@ -124,7 +127,7 @@ target_link_libraries(
           ${Boost_LIBRARIES}
           PkgConfig::icu-i18n)
 set_target_properties(
-  ${LIBRARY}-shared
+  ${KEPUB_LIBRARY}-shared
   PROPERTIES OUTPUT_NAME ${PROJECT_NAME}
              VERSION ${KEPUB_VERSION}
              SOVERSION ${KEPUB_VERSION_MAJOR})
