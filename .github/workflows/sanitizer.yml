@@ -36,3 +36,6 @@ jobs:
       - name: Test
         run: ctest -C ${{ matrix.build_type }} -j"$(nproc)" --output-on-failure
         working-directory: build
+        env:
+          # FIXME fmt odr-violation
+          ASAN_OPTIONS: detect_odr_violation=0

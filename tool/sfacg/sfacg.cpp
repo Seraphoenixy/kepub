@@ -198,7 +198,7 @@ int main(int argc, const char *argv[]) try {
     chapter_count += std::size(chapters);
   }
 
-  spdlog::info("Start download");
+  spdlog::info("Start downloading novel content");
   kepub::ProgressBar bar(book_name, chapter_count);
   for (auto &[volume_name, chapters] : volume_chapter) {
     for (auto &[chapter_id, chapter_title, content] : chapters) {

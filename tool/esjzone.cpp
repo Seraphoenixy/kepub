@@ -208,7 +208,7 @@ int main(int argc, const char *argv[]) try {
   auto [book_name, author, description, titles_and_urls] =
       get_info(book_id, translation, proxy);
 
-  spdlog::info("Start download");
+  spdlog::info("Start downloading novel content");
   kepub::ProgressBar bar(book_name, std::size(titles_and_urls));
   std::vector<std::pair<std::string, std::string>> chapters;
   for (const auto &[title, urls] : titles_and_urls) {
