@@ -48,20 +48,25 @@ std::string decrypt(const std::string &str, const std::string &key) {
   return klib::aes_256_decrypt_base64(str, klib::sha_256(key), false);
 }
 
-klib::Response http_get(
+klib::Response http_get_rss(
     const std::string &url,
     const std::unordered_map<std::string, std::string> &params = {}) {
   static klib::Request request;
+
+  const static std::string user_agent_rss =
+      request.url_encode("刺猬猫阅读") +
+      "/2.9.100 CFNetwork/1325.0.1 Darwin/21.1.0";
+
   request.set_no_proxy();
-  request.set_user_agent(user_agent);
+  request.set_user_agent(user_agent_rss);
   request.set_accept_encoding("gzip, deflate");
 #ifndef NDEBUG
   request.verbose(true);
 #endif
 
-  auto response = request.get(
-      url, params,
-      {{"Connection", "keep-alive"}, {"Accept-Language", "zh-Hans-CN;q=1"}});
+  auto response =
+      request.get(url, params,
+                  {{"Connection", "keep-alive"}, {"Accept-Language", "zh-cn"}});
   if (!response.ok()) {
     klib::error(KLIB_CURR_LOC, "HTTP GET fail: {}", response.status_code());
   }
@@ -158,7 +163,7 @@ std::tuple<std::string, std::string, std::vector<std::string>> get_book_info(
   spdlog::info("Cover url: {}", info.cover_url());
 
   std::string cover_name = "cover.jpg";
-  response = http_get(info.cover_url());
+  response = http_get_rss(info.cover_url());
   response.save_to_file(cover_name, true);
   spdlog::info("Cover downloaded successfully: {}", cover_name);
 
@@ -228,7 +233,7 @@ std::vector<std::string> get_content(const std::string &account,
       std::string image_url = doc.child("img").attribute("src").as_string();
       boost::replace_all(image_url, "：", ":");
 
-      auto image = http_get(image_url);
+      auto image = http_get_rss(image_url);
       auto image_name = kepub::num_to_str(image_count++);
       image.save_to_file(image_name + ".jpg", true);
 
