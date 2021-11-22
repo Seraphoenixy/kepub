@@ -6,6 +6,7 @@
 
 #include <klib/archive.h>
 #include <klib/error.h>
+#include <spdlog/spdlog.h>
 #include <CLI/CLI.hpp>
 
 #include "epub.h"
@@ -94,6 +95,13 @@ int main(int argc, const char *argv[]) try {
   std::vector<std::string> postscript;
   std::string postscript_prefix = "[POST]";
 
+  auto is_prefix = [&](const std::string &line) {
+    return line.starts_with(author_prefix) ||
+           line.starts_with(introduction_prefix) ||
+           line.starts_with(postscript_prefix) ||
+           line.starts_with(title_prefix) || line.starts_with(volume_prefix);
+  };
+
   for (std::size_t i = 0; i < size; ++i) {
     if (vec[i].starts_with(author_prefix)) {
       ++i;
@@ -111,12 +119,7 @@ int main(int argc, const char *argv[]) try {
         introduction.clear();
       }
 
-      for (; i < size && !(vec[i].starts_with(author_prefix) ||
-                           vec[i].starts_with(introduction_prefix) ||
-                           vec[i].starts_with(postscript_prefix) ||
-                           vec[i].starts_with(title_prefix) ||
-                           vec[i].starts_with(volume_prefix));
-           ++i) {
+      for (; i < size && !is_prefix(vec[i]); ++i) {
         kepub::push_back(introduction, vec[i], connect_chinese);
       }
       --i;
@@ -128,12 +131,7 @@ int main(int argc, const char *argv[]) try {
         postscript.clear();
       }
 
-      for (; i < size && !(vec[i].starts_with(author_prefix) ||
-                           vec[i].starts_with(introduction_prefix) ||
-                           vec[i].starts_with(postscript_prefix) ||
-                           vec[i].starts_with(title_prefix) ||
-                           vec[i].starts_with(volume_prefix));
-           ++i) {
+      for (; i < size && !is_prefix(vec[i]); ++i) {
         kepub::push_back(postscript, vec[i], connect_chinese);
       }
       --i;
@@ -145,12 +143,7 @@ int main(int argc, const char *argv[]) try {
       ++i;
 
       std::vector<std::string> content;
-      for (; i < size && !(vec[i].starts_with(author_prefix) ||
-                           vec[i].starts_with(introduction_prefix) ||
-                           vec[i].starts_with(postscript_prefix) ||
-                           vec[i].starts_with(title_prefix) ||
-                           vec[i].starts_with(volume_prefix));
-           ++i) {
+      for (; i < size && !is_prefix(vec[i]); ++i) {
         auto line = vec[i];
         kepub::str_check(line);
         kepub::push_back(content, line, connect_chinese);
@@ -219,8 +212,14 @@ int main(int argc, const char *argv[]) try {
                    postscript_done && cover_done && image_done;
 
   if (!no_compress && book_done) {
+    spdlog::info("Start to compress and generate epub files");
     klib::compress(book_name, klib::Algorithm::Zip, book_name + ".epub", false);
     std::filesystem::remove_all(book_name);
+    spdlog::info("{} generate epub complete", book_name);
+  } else {
+    spdlog::info(
+        "An element is missing or an error occurs, and no compression is "
+        "performed");
   }
 } catch (const std::exception &err) {
   klib::error(KLIB_CURR_LOC, err.what());

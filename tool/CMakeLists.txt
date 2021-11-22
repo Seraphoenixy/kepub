@@ -8,8 +8,9 @@ target_link_libraries(
           ${Boost_LIBRARIES} CLI11::CLI11)
 
 add_executable(${KEPUB_EXECUTABLE} kepub.cpp)
-target_link_libraries(${KEPUB_EXECUTABLE} PRIVATE ${KEPUB_LIBRARY}-shared
-                                                  klib::klib CLI11::CLI11)
+target_link_libraries(
+  ${KEPUB_EXECUTABLE} PRIVATE ${KEPUB_LIBRARY}-shared spdlog::spdlog klib::klib
+                              CLI11::CLI11)
 
 add_executable(${ADDITION_EXECUTABLE} addition.cpp)
 target_link_libraries(${ADDITION_EXECUTABLE} PRIVATE ${KEPUB_LIBRARY}-shared
