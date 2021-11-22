@@ -60,6 +60,7 @@ int main(int argc, const char *argv[]) try {
   kepub::check_is_txt_file(file_name);
   auto book_name =
       kepub::trans_str(std::filesystem::path(file_name).stem(), translation);
+  spdlog::info("Book name: {}", book_name);
 
   kepub::Epub epub;
   epub.set_creator("kaiser");
@@ -94,6 +95,8 @@ int main(int argc, const char *argv[]) try {
 
   std::vector<std::string> postscript;
   std::string postscript_prefix = "[POST]";
+
+  std::int32_t word_count = 0;
 
   auto is_prefix = [&](const std::string &line) {
     return line.starts_with(author_prefix) ||
@@ -146,6 +149,7 @@ int main(int argc, const char *argv[]) try {
       for (; i < size && !is_prefix(vec[i]); ++i) {
         auto line = vec[i];
         kepub::str_check(line);
+        word_count += kepub::str_size(line);
         kepub::push_back(content, line, connect_chinese);
       }
       --i;
@@ -155,6 +159,7 @@ int main(int argc, const char *argv[]) try {
   }
 
   if (!std::empty(author)) {
+    spdlog::info("Author: {}", author);
     epub.set_author(author);
   }
   if (!std::empty(introduction)) {
@@ -171,6 +176,7 @@ int main(int argc, const char *argv[]) try {
   if (remove) {
     std::filesystem::remove(file_name);
   }
+  spdlog::info("Total words: {}", word_count);
 
   bool cover_done = true;
   if (!no_cover) {
