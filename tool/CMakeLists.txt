@@ -7,9 +7,9 @@ target_link_libraries(
   PRIVATE ${KEPUB_LIBRARY}-shared pugixml::pugixml spdlog::spdlog klib::klib
           ${Boost_LIBRARIES} CLI11::CLI11)
 
-add_executable(${MASIRO_EXECUTABLE} masiro.cpp)
-target_link_libraries(${MASIRO_EXECUTABLE} PRIVATE ${KEPUB_LIBRARY}-shared
-                                                   klib::klib CLI11::CLI11)
+add_executable(${KEPUB_EXECUTABLE} kepub.cpp)
+target_link_libraries(${KEPUB_EXECUTABLE} PRIVATE ${KEPUB_LIBRARY}-shared
+                                                  klib::klib CLI11::CLI11)
 
 add_executable(${ADDITION_EXECUTABLE} addition.cpp)
 target_link_libraries(${ADDITION_EXECUTABLE} PRIVATE ${KEPUB_LIBRARY}-shared

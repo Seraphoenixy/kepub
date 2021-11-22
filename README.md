@@ -66,19 +66,19 @@ addition book-name.txt
 
 Txt files need to be preprocessed: each volume starts with [VOLUME] plus a space; each chapter starts with [WEB] plus a space; pictures start with [IMAGE] plus a space, followed by the picture number.
 
-### masiro
+### kepub
 
 Generate EPUB file according to the given TXT file
 
 ```bash
-masiro book-name.txt
+kepub book-name.txt
 ```
 
 Txt files need to be preprocessed: the author starts with [AUTHOR] and a newline character; the introduction starts with [INTRO] and a newline character; the postscript starts with [POST] and a newline character; each volume starts with [VOLUME] plus a space; each chapter starts with [WEB] plus a space; pictures start with [IMAGE] plus a space, followed by the picture number.
 
 ### esjzone
 
-Crawl the novels on esjzone and generate TXT files, then you can use masiro to generate EPUB files
+Crawl the novels on esjzone and generate TXT files, then you can use kepub to generate EPUB files
 
 The first command line parameter is book id
 
@@ -88,7 +88,7 @@ esjzone 1578022447
 
 ### ciweimao
 
-Crawl the novels on ciweimao and generate TXT files, then you can use masiro to generate EPUB files
+Crawl the novels on ciweimao and generate TXT files, then you can use kepub to generate EPUB files
 
 The first command line parameter is book id
 
@@ -98,7 +98,7 @@ ciweimao 100194379
 
 ### sfacg
 
-Crawl the novels on sfacg and generate TXT files, then you can use masiro to generate EPUB files
+Crawl the novels on sfacg and generate TXT files, then you can use kepub to generate EPUB files
 
 The first command line parameter is book id
 

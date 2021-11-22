@@ -1,4 +1,4 @@
-add_subdirectory(masiro)
+add_subdirectory(kepub)
 add_subdirectory(addition)
 add_subdirectory(volume)
 add_subdirectory(addition_volume)

@@ -34,7 +34,7 @@ message(STATUS "Build type: " ${CMAKE_BUILD_TYPE})
 # ---------------------------------------------------------------------------------------
 set(KEPUB_LIBRARY lib${PROJECT_NAME})
 set(ESJZONE_EXECUTABLE esjzone)
-set(MASIRO_EXECUTABLE masiro)
+set(KEPUB_EXECUTABLE ${PROJECT_NAME})
 set(ADDITION_EXECUTABLE addition)
 set(CIWEIMAO_EXECUTABLE ciweimao)
 set(SFACG_EXECUTABLE sfacg)

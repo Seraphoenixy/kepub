@@ -35,7 +35,7 @@ jobs:
         working-directory: build
 
       - name: Run executable
-        run: masiro -v
+        run: kepub -v
 
       # https://github.com/softprops/action-gh-release
       - name: Release

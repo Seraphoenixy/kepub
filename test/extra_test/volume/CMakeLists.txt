@@ -1,9 +1,9 @@
 file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/魅魔的我.txt"
      DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
-add_test(NAME check_executable_volume COMMAND ${MASIRO_EXECUTABLE} -v)
+add_test(NAME check_executable_volume COMMAND ${KEPUB_EXECUTABLE} -v)
 add_test(NAME run_volume
-         COMMAND ${VALGRIND_CMD}${MASIRO_EXECUTABLE} 魅魔的我.txt --no-cover
+         COMMAND ${VALGRIND_CMD}${KEPUB_EXECUTABLE} 魅魔的我.txt --no-cover
                  --date=2021-05-29 --uuid=5208e6bb-5d25-45b0-a7fd-b97d79a85fd4)
 add_test(NAME diff_volume COMMAND diff -r ${CMAKE_CURRENT_SOURCE_DIR}/standard
                                   魅魔的我)

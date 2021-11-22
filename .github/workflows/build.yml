@@ -41,7 +41,7 @@ jobs:
 
       - name: Run executable
         if: ${{ matrix.build_type == 'Release' }}
-        run: masiro -v
+        run: kepub -v
 
       - name: Test
         run: ctest -C ${{ matrix.build_type }} -j"$(nproc)" --output-on-failure
