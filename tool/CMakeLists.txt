@@ -1,10 +1,6 @@
 find_package(spdlog REQUIRED)
 find_package(CLI11 REQUIRED)
 
-add_executable(${DEMONOVEL_EXECUTABLE} demonovel.cpp)
-target_link_libraries(${DEMONOVEL_EXECUTABLE} PRIVATE ${KEPUB_LIBRARY}-shared
-                                                      klib::klib CLI11::CLI11)
-
 add_executable(${ESJZONE_EXECUTABLE} esjzone.cpp)
 target_link_libraries(
   ${ESJZONE_EXECUTABLE}

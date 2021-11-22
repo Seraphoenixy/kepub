@@ -76,16 +76,6 @@ masiro book-name.txt
 
 Txt files need to be preprocessed: the author starts with [AUTHOR] and a newline character; the introduction starts with [INTRO] and a newline character; the postscript starts with [POST] and a newline character; each volume starts with [VOLUME] plus a space; each chapter starts with [WEB] plus a space; pictures start with [IMAGE] plus a space, followed by the picture number.
 
-### demonovel
-
-Generate EPUB files based on TXT files from https://gitlab.com/demonovel/epub-txt/-/tree/master
-
-```bash
-demonovel book-name.txt
-```
-
-Valid command line parameters are the same as masiro
-
 ### esjzone
 
 Crawl the novels on esjzone and generate TXT files, then you can use masiro to generate EPUB files
