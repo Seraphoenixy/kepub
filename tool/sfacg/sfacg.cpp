@@ -29,6 +29,8 @@ const std::string authorization = "Basic YXBpdXNlcjozcyMxLXl0NmUqQWN2QHFlcg==";
 const std::string device_token = "1F6EF324-A916-4995-971D-3AA71813072B";
 const std::string user_agent =
     "boluobao/4.7.88(iOS;15.1)/appStore/" + device_token;
+const std::string user_agent_rss =
+    "SFReader/4.7.88 (iPhone; iOS 15.1; Scale/3.00)";
 
 std::string sf_security() {
   std::string uuid = boost::to_upper_copy(klib::uuid());
@@ -58,6 +60,23 @@ klib::Response http_get(
                       {"SFSecurity", sf_security()},
                       {"Accept-Language", "zh-Hans-CN;q=1"},
                       {"Authorization", authorization}});
+}
+
+klib::Response http_get_rss(
+    const std::string &url,
+    const std::unordered_map<std::string, std::string> &params = {}) {
+  static klib::Request request;
+  request.set_no_proxy();
+  request.set_user_agent(user_agent_rss);
+  request.set_accept_encoding("gzip, deflate");
+#ifndef NDEBUG
+  request.verbose(true);
+#endif
+
+  return request.get(url, params,
+                     {{"Connection", "keep-alive"},
+                      {"Accept", "image/*,*/*;q=0.8"},
+                      {"Accept-Language", "zh-CN,zh-Hans;q=0.9"}});
 }
 
 klib::Response http_post(const std::string &url, const std::string &json) {
@@ -111,7 +130,7 @@ std::tuple<std::string, std::string, std::vector<std::string>> get_book_info(
   spdlog::info("Cover url: {}", info.cover_url());
 
   std::string cover_name = "cover.jpg";
-  response = http_get(info.cover_url());
+  response = http_get_rss(info.cover_url());
   response.save_to_file(cover_name, true);
   spdlog::info("Cover downloaded successfully: {}", cover_name);
 
@@ -152,7 +171,7 @@ std::vector<std::string> get_content(const std::string &chapter_id) {
       auto image_url = line.substr(begin, end - begin);
       boost::replace_all(image_url, "：", ":");
 
-      auto image = http_get(image_url);
+      auto image = http_get_rss(image_url);
       auto image_name = kepub::num_to_str(image_count++);
       image.save_to_file(image_name + ".jpg", true);
 
