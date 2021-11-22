@@ -116,6 +116,18 @@ void str_check(const std::string &str) {
   }
 }
 
+std::int32_t str_size(const std::string &str) {
+  std::int32_t count = 0;
+
+  for (auto c : klib::utf8_to_utf32(str)) {
+    if (klib::is_chinese(c)) {
+      ++count;
+    }
+  }
+
+  return count;
+}
+
 void title_check(const std::string &title) {
   if (std::count_if(std::begin(title), std::end(title),
                     [](char c) { return c == ' '; }) != 1) {

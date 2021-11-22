@@ -66,15 +66,17 @@ int main(int argc, const char *argv[]) try {
       auto title = vec[i].substr(title_prefix_size);
       ++i;
 
-      std::vector<std::string> text;
+      std::vector<std::string> content;
       for (; i < size && !(vec[i].starts_with(title_prefix) ||
                            vec[i].starts_with(volume_prefix));
            ++i) {
-        kepub::push_back(text, vec[i], connect_chinese);
+        auto line = vec[i];
+        kepub::str_check(line);
+        kepub::push_back(content, line, connect_chinese);
       }
       --i;
 
-      contents.emplace_back(volume_name, title, text);
+      contents.emplace_back(volume_name, title, content);
     }
   }
 

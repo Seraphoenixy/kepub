@@ -54,14 +54,6 @@ sudo cmake --build build --config Release --target uninstall
 
 ## Usage
 
-### xhtml
-
-Generate XHTML file according to the given TXT file
-
-```bash
-xhtml some.txt
-```
-
 ### addition
 
 Add new chapter to EPUB file

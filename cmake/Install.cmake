@@ -20,11 +20,6 @@ set_target_properties(
              INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 set_target_properties(
-  ${XHTML_EXECUTABLE}
-  PROPERTIES INSTALL_RPATH "$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
-             INSTALL_RPATH_USE_LINK_PATH TRUE)
-
-set_target_properties(
   ${ADDITION_EXECUTABLE}
   PROPERTIES INSTALL_RPATH "$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
              INSTALL_RPATH_USE_LINK_PATH TRUE)
@@ -44,7 +39,6 @@ install(
           ${DEMONOVEL_EXECUTABLE}
           ${ESJZONE_EXECUTABLE}
           ${MASIRO_EXECUTABLE}
-          ${XHTML_EXECUTABLE}
           ${CIWEIMAO_EXECUTABLE}
           ${SFACG_EXECUTABLE}
           ${KEPUB_LIBRARY}-shared

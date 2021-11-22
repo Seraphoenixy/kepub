@@ -1,4 +1,3 @@
-add_subdirectory(xhtml)
 add_subdirectory(masiro)
 add_subdirectory(demonovel)
 add_subdirectory(addition)

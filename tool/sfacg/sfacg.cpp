@@ -189,6 +189,8 @@ int main(int argc, const char *argv[]) try {
   }
 
   auto [book_name, author, description] = get_book_info(book_id);
+
+  spdlog::info("Get chapter information");
   auto volume_chapter = get_volume_chapter(book_id);
 
   std::int32_t chapter_count = 0;
@@ -196,6 +198,7 @@ int main(int argc, const char *argv[]) try {
     chapter_count += std::size(chapters);
   }
 
+  spdlog::info("Start download");
   kepub::ProgressBar bar(book_name, chapter_count);
   for (auto &[volume_name, chapters] : volume_chapter) {
     for (auto &[chapter_id, chapter_title, content] : chapters) {
@@ -206,6 +209,7 @@ int main(int argc, const char *argv[]) try {
   }
 
   kepub::generate_txt(book_name, author, description, volume_chapter);
+  spdlog::info("{} download complete", book_name);
 } catch (const std::exception &err) {
   klib::error(KLIB_CURR_LOC, err.what());
 } catch (...) {
