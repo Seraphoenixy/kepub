@@ -21,7 +21,7 @@ class ScopedInterpreter {
   explicit ScopedInterpreter(const char *argv0) {
     program_ = Py_DecodeLocale(argv0, nullptr);
     if (program_ == nullptr) {
-      klib::error("Cannot decode argv[0]: {}", argv0);
+      klib::error(KLIB_CURR_LOC, "Cannot decode argv[0]: {}", argv0);
     }
     Py_SetProgramName(program_);
 
@@ -32,7 +32,7 @@ class ScopedInterpreter {
     PyMem_RawFree(program_);
 
     if (Py_FinalizeEx() < 0) {
-      klib::error("Py_FinalizeEx() failed");
+      klib::error(KLIB_CURR_LOC, "Py_FinalizeEx() failed");
     }
   }
 
@@ -52,7 +52,7 @@ void to_subset_woff2(const char *argv0, std::string_view font_file,
   std::filesystem::rename(path, in_name);
 
 #ifdef KEPUB_SANITIZER
-  __lsan::ScopedDisabler disabler;
+  static __lsan::ScopedDisabler disabler;
 #endif
 
   static ScopedInterpreter guard(argv0);
@@ -67,11 +67,11 @@ font_tools.to_subset_woff2('{}','{}','{}')
 
   auto rc = PyRun_SimpleString(script.c_str());
   if (rc != 0) {
-    klib::error("Failed to cut and convert font");
+    klib::error(KLIB_CURR_LOC, "Failed to cut and convert font");
   }
 
   if (!std::filesystem::remove(in_name)) {
-    klib::error("Cannot delete file '{}'", in_name);
+    klib::error(KLIB_CURR_LOC, "Cannot delete file '{}'", in_name);
   }
 }
 

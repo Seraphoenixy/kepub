@@ -8,7 +8,5 @@ add_executable(${KEPUB_TEST_EXECUTABLE} ${TEST_SRC})
 target_link_libraries(${KEPUB_TEST_EXECUTABLE}
                       PRIVATE ${KEPUB_LIBRARY} Catch2::Catch2WithMain fmt::fmt)
 
-if(NOT KEPUB_VALGRIND)
-  include(Catch)
-  catch_discover_tests(${KEPUB_TEST_EXECUTABLE} REPORTER compact)
-endif()
+include(Catch)
+catch_discover_tests(${KEPUB_TEST_EXECUTABLE} REPORTER compact)

@@ -8,5 +8,3 @@ include(CMakeDependentOption)
 cmake_dependent_option(
   KEPUB_BUILD_COVERAGE "Build test with coverage information" OFF
   "BUILD_TESTING;KEPUB_BUILD_TEST" OFF)
-cmake_dependent_option(KEPUB_VALGRIND "Execute test with valgrind" OFF
-                       "BUILD_TESTING;KEPUB_BUILD_TEST" OFF)

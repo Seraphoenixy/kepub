@@ -77,15 +77,6 @@ endif()
 # ---------------------------------------------------------------------------------------
 # Option
 # ---------------------------------------------------------------------------------------
-if(KEPUB_SANITIZER AND KEPUB_VALGRIND)
-  message(
-    FATAL_ERROR "AddressSanitizer and valgrind cannot be used at the same time")
-endif()
-
 if(NOT (BUILD_TESTING AND KEPUB_BUILD_TEST) AND KEPUB_SANITIZER)
   message(FATAL_ERROR "Must build test when using AddressSanitizer")
-endif()
-
-if(NOT (BUILD_TESTING AND KEPUB_BUILD_TEST) AND KEPUB_VALGRIND)
-  message(FATAL_ERROR "Must build test when using valgrind")
 endif()
