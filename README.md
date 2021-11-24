@@ -21,10 +21,10 @@ Crawl novels from esjzone, ciweimao and sfacg. Generate epub from txt file
 
 - [klib](https://github.com/KaiserLancelot/klib)
 - [Boost](https://www.boost.org/)
+- [gsl-lite](https://github.com/gsl-lite/gsl-lite)
 - [CLI11](https://github.com/CLIUtils/CLI11)
 - [fmt](https://github.com/fmtlib/fmt)
 - [spdlog](https://github.com/gabime/spdlog)
-- [scope_guard](https://github.com/Neargye/scope_guard)
 - [simdjson](https://github.com/simdjson/simdjson)
 - [pugixml](https://github.com/zeux/pugixml)
 - [icu](https://github.com/unicode-org/icu)

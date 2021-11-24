@@ -80,7 +80,8 @@ int main(int argc, const char *argv[]) try {
     }
   }
 
-  kepub::Epub::append_chapter(book_name, contents);
+  kepub::Epub epub(argv[0]);
+  epub.append_chapter(book_name, contents);
 
   if (!no_compress) {
     klib::compress(book_name, klib::Algorithm::Zip, book_name + ".epub", false);

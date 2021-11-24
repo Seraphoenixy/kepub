@@ -68,13 +68,20 @@ find_package(indicators REQUIRED)
 find_package(Boost REQUIRED CONFIG)
 find_package(klib REQUIRED)
 find_package(simdjson REQUIRED)
-find_package(scope_guard REQUIRED)
+find_package(gsl-lite REQUIRED)
 
 find_package(Python COMPONENTS Development.Embed)
 add_definitions(-DPY_SSIZE_T_CLEAN)
 # FIXME
 if(KEPUB_SANITIZER)
   add_definitions(-DKEPUB_SANITIZER)
+endif()
+
+if(NOT (${CMAKE_BUILD_TYPE} STREQUAL "Debug"))
+  add_definitions(-DDBG_MACRO_DISABLE -DDBG_MACRO_NO_WARNING)
+endif()
+if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+  add_definitions(-Dgsl_CONFIG_CONTRACT_VIOLATION_THROWS)
 endif()
 
 find_package(PkgConfig REQUIRED)
@@ -106,7 +113,7 @@ target_link_libraries(
           pugixml::pugixml
           simdjson::simdjson
           indicators::indicators
-          scope_guard::scope_guard
+          gsl::gsl-lite-v1
           klib::klib
           Python::Python
           ${Boost_LIBRARIES}
@@ -131,7 +138,7 @@ target_link_libraries(
           pugixml::pugixml
           simdjson::simdjson
           indicators::indicators
-          scope_guard::scope_guard
+          gsl::gsl-lite-v1
           klib::klib
           Python::Python
           ${Boost_LIBRARIES}

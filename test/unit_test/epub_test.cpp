@@ -914,8 +914,8 @@ TEST_CASE("append", "[epub]") {
   REQUIRE_NOTHROW(epub.generate());
   REQUIRE(std::filesystem::is_directory("test book7"));
 
-  kepub::Epub::append_chapter(
-      "test book7", {{"", "title 4", {"abc 4"}}, {"", "title 5", {"abc 5"}}});
+  epub.append_chapter("test book7",
+                      {{"", "title 4", {"abc 4"}}, {"", "title 5", {"abc 5"}}});
 
   auto ptr = std::make_unique<klib::ChangeWorkingDir>("test book7");
 
@@ -1108,10 +1108,9 @@ TEST_CASE("append sub-volume", "[epub]") {
   REQUIRE_NOTHROW(epub.generate());
   REQUIRE(std::filesystem::is_directory("test book8"));
 
-  kepub::Epub::append_chapter("test book8",
-                              {{"", "title 4", {"abc 4"}},
-                               {"volume 3", "title 5", {"abc 5"}},
-                               {"volume 3", "title 6", {"abc 6"}}});
+  epub.append_chapter("test book8", {{"", "title 4", {"abc 4"}},
+                                     {"volume 3", "title 5", {"abc 5"}},
+                                     {"volume 3", "title 6", {"abc 6"}}});
 
   auto ptr = std::make_unique<klib::ChangeWorkingDir>("test book8");
 

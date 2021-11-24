@@ -6,7 +6,6 @@
 #include <fmt/compile.h>
 #include <fmt/format.h>
 #include <klib/error.h>
-#include <scope_guard.hpp>
 
 // TODO FIXME
 #ifdef KEPUB_SANITIZER
@@ -19,13 +18,26 @@ namespace {
 
 class ScopedInterpreter {
  public:
-  ScopedInterpreter() { Py_Initialize(); }
+  explicit ScopedInterpreter(const char *argv0) {
+    program_ = Py_DecodeLocale(argv0, nullptr);
+    if (program_ == nullptr) {
+      klib::error("Cannot decode argv[0]: {}", argv0);
+    }
+    Py_SetProgramName(program_);
+
+    Py_Initialize();
+  }
 
   ~ScopedInterpreter() {
+    PyMem_RawFree(program_);
+
     if (Py_FinalizeEx() < 0) {
       klib::error("Py_FinalizeEx() failed");
     }
   }
+
+ private:
+  wchar_t *program_ = nullptr;
 };
 
 }  // namespace
@@ -43,14 +55,7 @@ void to_subset_woff2(const char *argv0, std::string_view font_file,
   __lsan::ScopedDisabler disabler;
 #endif
 
-  auto program = Py_DecodeLocale(argv0, nullptr);
-  SCOPE_EXIT { PyMem_RawFree(program); };
-  if (program == nullptr) {
-    klib::error("Cannot decode argv[0]: {}", argv0);
-  }
-  Py_SetProgramName(program);
-
-  ScopedInterpreter guard;
+  static ScopedInterpreter guard(argv0);
 
   auto script = fmt::format(FMT_COMPILE(R"(
 import sys

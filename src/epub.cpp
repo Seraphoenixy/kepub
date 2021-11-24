@@ -6,10 +6,12 @@
 #include <filesystem>
 #include <memory>
 
+#include <dbg.h>
 #include <fmt/chrono.h>
 #include <fmt/format.h>
 #include <klib/exception.h>
 #include <klib/util.h>
+#include <gsl/gsl-lite.hpp>
 #include <pugixml.hpp>
 
 #include "font_tools.h"
@@ -429,6 +431,34 @@ void Epub::append_chapter(
   auto [first_chapter_id, first_volume_id] = deal_with_content(content);
   deal_with_toc(content, first_chapter_id, first_volume_id);
   deal_with_chapter(content, first_chapter_id);
+
+  pugi::xml_document doc;
+  doc.load_file(Epub::toc_path.data(), pugi::parse_default |
+                                           pugi::parse_declaration |
+                                           pugi::parse_doctype);
+
+  auto nav_map = doc.select_node("/ncx/navMap").node();
+  for (const auto &may_be_volume : nav_map.children("navPoint")) {
+    Expects(has_children(may_be_volume, "navLabel"));
+    font_words_ +=
+        may_be_volume.child("navLabel").child("text").text().as_string();
+
+    if (has_children(may_be_volume, "navPoint")) {
+      for (const auto &chapter : may_be_volume.children("navPoint")) {
+        Expects(has_children(chapter, "navLabel"));
+        font_words_ +=
+            chapter.child("navLabel").child("text").text().as_string();
+      }
+    }
+  }
+  dbg(font_words_);
+
+  for (const auto &item :
+       std::filesystem::directory_iterator(Epub::fonts_dir)) {
+    std::filesystem::remove(item);
+  }
+
+  generate_font();
 }
 
 void Epub::generate_container() const {
