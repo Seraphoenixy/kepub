@@ -12,6 +12,7 @@
 #include <klib/util.h>
 #include <pugixml.hpp>
 
+#include "font_tools.h"
 #include "util.h"
 
 extern char font[];
@@ -66,9 +67,9 @@ void append_manifest_and_spine(pugi::xml_node &manifest, const std::string &id,
     media_type = "application/x-dtbncx+xml";
   } else if (href.ends_with("css")) {
     media_type = "text/css";
-  } else if (href.ends_with("otf")) {
-    // https://www.oreilly.com/library/view/epub-3-best/9781449329129/ch04.html
-    media_type = "application/vnd.ms-opentype";
+  } else if (href.ends_with("woff2")) {
+    // https://idpf.github.io/epub-cmt/v3/
+    media_type = "font/woff2";
   } else {
     throw klib::RuntimeError("Unknown media type");
   }
@@ -329,7 +330,7 @@ void deal_with_chapter(
 
 }  // namespace
 
-Epub::Epub() {
+Epub::Epub(const char *argv0) : argv0_(argv0) {
   font_ = std::string_view(font, font_size);
   style_ = std::string_view(style, style_size);
 }
@@ -376,6 +377,8 @@ void Epub::add_content(const std::string &title,
 void Epub::add_content(const std::string &volume_name, const std::string &title,
                        const std::vector<std::string> &content) {
   content_.emplace_back(volume_name, title, content);
+  font_words_ += volume_name;
+  font_words_ += title;
 }
 
 void Epub::generate() {
@@ -449,6 +452,7 @@ void Epub::generate_font() const {
   }
 
   klib::write_file(Epub::font_path, true, font_);
+  to_subset_woff2(argv0_, Epub::font_path, font_words_);
 }
 
 void Epub::generate_style() const {
@@ -562,8 +566,8 @@ void Epub::generate_content() const {
   auto manifest = package.append_child("manifest");
   append_manifest_and_spine(manifest, "ncx", "toc.ncx");
   append_manifest_and_spine(manifest, "style.css", "Styles/style.css");
-  append_manifest_and_spine(manifest, "SourceHanSansSC-Bold.otf",
-                            "Fonts/SourceHanSansSC-Bold.otf");
+  append_manifest_and_spine(manifest, "SourceHanSansSC-Bold.woff2",
+                            "Fonts/SourceHanSansSC-Bold.woff2");
 
   for (std::int32_t i = 1; i <= image_num_; ++i) {
     append_manifest_and_spine(manifest, "x" + num_to_str(i) + ".jpg",

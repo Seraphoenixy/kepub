@@ -68,6 +68,14 @@ find_package(indicators REQUIRED)
 find_package(Boost REQUIRED CONFIG)
 find_package(klib REQUIRED)
 find_package(simdjson REQUIRED)
+find_package(scope_guard REQUIRED)
+
+find_package(Python COMPONENTS Development.Embed)
+add_definitions(-DPY_SSIZE_T_CLEAN)
+# FIXME
+if(KEPUB_SANITIZER)
+  add_definitions(-DKEPUB_SANITIZER)
+endif()
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(icu-i18n REQUIRED IMPORTED_TARGET icu-i18n)
@@ -98,7 +106,9 @@ target_link_libraries(
           pugixml::pugixml
           simdjson::simdjson
           indicators::indicators
+          scope_guard::scope_guard
           klib::klib
+          Python::Python
           ${Boost_LIBRARIES}
           PkgConfig::icu-i18n)
 set_target_properties(
@@ -121,7 +131,9 @@ target_link_libraries(
           pugixml::pugixml
           simdjson::simdjson
           indicators::indicators
+          scope_guard::scope_guard
           klib::klib
+          Python::Python
           ${Boost_LIBRARIES}
           PkgConfig::icu-i18n)
 set_target_properties(

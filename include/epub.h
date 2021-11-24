@@ -10,7 +10,7 @@ namespace kepub {
 
 class Epub {
  public:
-  Epub();
+  Epub(const char *argv0);
 
   void set_creator(const std::string &creator);
   void set_book_name(const std::string &book_name);
@@ -47,7 +47,7 @@ class Epub {
 
   constexpr static std::string_view container_path = "META-INF/container.xml";
   constexpr static std::string_view font_path =
-      "OEBPS/Fonts/SourceHanSansSC-Bold.otf";
+      "OEBPS/Fonts/SourceHanSansSC-Bold.woff2";
   constexpr static std::string_view style_path = "OEBPS/Styles/style.css";
   constexpr static std::string_view cover_path = "OEBPS/Text/cover.xhtml";
   constexpr static std::string_view introduction_path =
@@ -91,6 +91,9 @@ class Epub {
   std::string_view font_;
   std::vector<std::tuple<std::string, std::string, std::vector<std::string>>>
       content_;
+
+  const char *argv0_;
+  std::string font_words_ = "封面彩页简介制作信息制作者后记";
 };
 
 }  // namespace kepub
