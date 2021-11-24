@@ -65,7 +65,9 @@ font_tools.to_subset_woff2('{}','{}','{}')
     klib::error("Failed to cut and convert font");
   }
 
-  std::filesystem::remove(in_name);
+  if (!std::filesystem::remove(in_name)) {
+    klib::error("Cannot delete file '{}'", in_name);
+  }
 }
 
 }  // namespace kepub

@@ -10,7 +10,7 @@ namespace kepub {
 
 class Epub {
  public:
-  Epub(const char *argv0);
+  explicit Epub(const char *argv0);
 
   void set_creator(const std::string &creator);
   void set_book_name(const std::string &book_name);
@@ -93,7 +93,7 @@ class Epub {
       content_;
 
   const char *argv0_;
-  std::string font_words_ = "封面彩页简介制作信息制作者后记";
+  std::string font_words_ = "封面彩页简介制作信息后记0123456789";
 };
 
 }  // namespace kepub
