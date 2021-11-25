@@ -27,17 +27,16 @@ namespace {
 
 const std::string authorization = "Basic YXBpdXNlcjozcyMxLXl0NmUqQWN2QHFlcg==";
 const std::string device_token = "1F6EF324-A916-4995-971D-3AA71813072B";
-// TODO Update
 const std::string user_agent =
-    "boluobao/4.7.88(iOS;15.1)/appStore/" + device_token;
+    "boluobao/4.7.94(iOS;15.1)/appStore/" + device_token;
 const std::string user_agent_rss =
-    "SFReader/4.7.88 (iPhone; iOS 15.1; Scale/3.00)";
+    "SFReader/4.7.94 (iPhone; iOS 15.1; Scale/3.00)";
 
 std::string sf_security() {
-  std::string uuid = boost::to_upper_copy(klib::uuid());
+  std::string uuid = klib::uuid();
   auto timestamp = std::time(nullptr);
   std::string sign = boost::to_upper_copy(klib::md5_hex(
-      uuid + std::to_string(timestamp) + device_token + "td9#Kn_p7vUw"));
+      uuid + std::to_string(timestamp) + device_token + "FMLxgOdsfxmN!Dt4"));
 
   return fmt::format(
       FMT_COMPILE("nonce={}&timestamp={}&devicetoken={}&sign={}"), uuid,
