@@ -27,6 +27,7 @@ namespace {
 
 const std::string authorization = "Basic YXBpdXNlcjozcyMxLXl0NmUqQWN2QHFlcg==";
 const std::string device_token = "1F6EF324-A916-4995-971D-3AA71813072B";
+// TODO Update
 const std::string user_agent =
     "boluobao/4.7.88(iOS;15.1)/appStore/" + device_token;
 const std::string user_agent_rss =
