@@ -5,7 +5,9 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: kaiserlancelot/kenv:latest
+    container:
+      image: kaiserlancelot/kenv:latest
+      options: --cap-add SYS_ADMIN --device /dev/fuse --security-opt apparmor:unconfined
     strategy:
       matrix:
         compiler:

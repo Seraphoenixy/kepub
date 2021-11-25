@@ -8,7 +8,7 @@
 #include "epub.h"
 
 TEST_CASE("base generate", "[epub]") {
-  kepub::Epub epub(KEPUB_TEST_PROGRAM_NAME);
+  kepub::Epub epub;
   epub.set_creator("kaiser");
   epub.set_book_name("test book1");
   epub.set_author("test author");
@@ -149,7 +149,7 @@ TEST_CASE("base generate", "[epub]") {
 }
 
 TEST_CASE("generate postscript", "[epub]") {
-  kepub::Epub epub(KEPUB_TEST_PROGRAM_NAME);
+  kepub::Epub epub;
   epub.set_creator("kaiser");
   epub.set_book_name("test book2");
   epub.set_author("test author");
@@ -257,7 +257,7 @@ TEST_CASE("generate postscript", "[epub]") {
 }
 
 TEST_CASE("generate postscript and cover", "[epub]") {
-  kepub::Epub epub(KEPUB_TEST_PROGRAM_NAME);
+  kepub::Epub epub;
   epub.set_creator("kaiser");
   epub.set_book_name("test book3");
   epub.set_author("test author");
@@ -377,7 +377,7 @@ TEST_CASE("generate postscript and cover", "[epub]") {
 }
 
 TEST_CASE("generate postscript, cover, illustration and image", "[epub]") {
-  kepub::Epub epub(KEPUB_TEST_PROGRAM_NAME);
+  kepub::Epub epub;
   epub.set_creator("kaiser");
   epub.set_book_name("test book4");
   epub.set_author("test author");
@@ -526,7 +526,7 @@ TEST_CASE("generate postscript, cover, illustration and image", "[epub]") {
 }
 
 TEST_CASE("full generate", "[epub]") {
-  kepub::Epub epub(KEPUB_TEST_PROGRAM_NAME);
+  kepub::Epub epub;
   epub.set_creator("kaiser");
   epub.set_book_name("test book5");
   epub.set_author("test author");
@@ -702,7 +702,7 @@ TEST_CASE("full generate", "[epub]") {
 }
 
 TEST_CASE("sub-volume", "[epub]") {
-  kepub::Epub epub(KEPUB_TEST_PROGRAM_NAME);
+  kepub::Epub epub;
   epub.set_creator("kaiser");
   epub.set_book_name("test book6");
   epub.set_author("test author");
@@ -894,7 +894,7 @@ TEST_CASE("sub-volume", "[epub]") {
 }
 
 TEST_CASE("append", "[epub]") {
-  kepub::Epub epub(KEPUB_TEST_PROGRAM_NAME);
+  kepub::Epub epub;
   epub.set_creator("kaiser");
   epub.set_book_name("test book7");
   epub.set_author("test author");
@@ -1089,7 +1089,7 @@ TEST_CASE("append", "[epub]") {
 }
 
 TEST_CASE("append sub-volume", "[epub]") {
-  kepub::Epub epub(KEPUB_TEST_PROGRAM_NAME);
+  kepub::Epub epub;
   epub.set_creator("kaiser");
   epub.set_book_name("test book8");
   epub.set_author("test author");

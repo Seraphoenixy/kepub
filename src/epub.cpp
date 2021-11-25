@@ -1,20 +1,20 @@
 #include "epub.h"
 
 #include <cassert>
-#include <cstddef>
 #include <ctime>
 #include <filesystem>
 #include <memory>
 
 #include <dbg.h>
 #include <fmt/chrono.h>
+#include <fmt/compile.h>
 #include <fmt/format.h>
+#include <klib/error.h>
 #include <klib/exception.h>
 #include <klib/util.h>
 #include <gsl/gsl-lite.hpp>
 #include <pugixml.hpp>
 
-#include "font_tools.h"
 #include "util.h"
 
 extern char font[];
@@ -26,6 +26,24 @@ extern int style_size;
 namespace kepub {
 
 namespace {
+
+void to_subset_woff2(std::string_view font_file, const std::string &text) {
+  auto path = std::filesystem::path(font_file);
+  auto stem = path.filename().stem().string();
+  std::string in_name = path.parent_path() / (stem + ".otf");
+  std::string out_name = path.parent_path() / (stem + ".woff2");
+
+  std::filesystem::rename(path, in_name);
+
+  klib::exec(fmt::format(
+      FMT_COMPILE(
+          R"(pyftsubset --flavor=woff2 --output-file={} --text="{}" {})"),
+      out_name, text, in_name));
+
+  if (!std::filesystem::remove(in_name)) {
+    klib::error(KLIB_CURR_LOC, "Cannot delete file '{}'", in_name);
+  }
+}
 
 std::string num_to_volume_name(std::int32_t i) {
   return "volume" + num_to_str(i) + ".xhtml";
@@ -332,7 +350,7 @@ void deal_with_chapter(
 
 }  // namespace
 
-Epub::Epub(const char *argv0) : argv0_(argv0) {
+Epub::Epub() {
   font_ = std::string_view(font, font_size);
   style_ = std::string_view(style, style_size);
 }
@@ -482,7 +500,7 @@ void Epub::generate_font() const {
   }
 
   klib::write_file(Epub::font_path, true, font_);
-  to_subset_woff2(argv0_, Epub::font_path, font_words_);
+  to_subset_woff2(Epub::font_path, font_words_);
 }
 
 void Epub::generate_style() const {

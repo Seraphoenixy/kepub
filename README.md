@@ -28,12 +28,12 @@ Crawl novels from esjzone, ciweimao and sfacg. Generate epub from txt file
 - [simdjson](https://github.com/simdjson/simdjson)
 - [pugixml](https://github.com/zeux/pugixml)
 - [icu](https://github.com/unicode-org/icu)
-- [CPython](https://github.com/python/cpython)
 - [indicators](https://github.com/p-ranav/indicators)
 
 ## Font
 
 - [source-han-sans](https://github.com/adobe-fonts/source-han-sans)
+- [fonttools](https://github.com/fonttools/fonttools)
 
 ## Build
 

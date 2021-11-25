@@ -62,7 +62,7 @@ int main(int argc, const char *argv[]) try {
       kepub::trans_str(std::filesystem::path(file_name).stem(), translation);
   spdlog::info("Book name: {}", book_name);
 
-  kepub::Epub epub(argv[0]);
+  kepub::Epub epub;
   epub.set_creator("kaiser");
   epub.set_book_name(book_name);
   epub.set_generate_cover(!no_cover);

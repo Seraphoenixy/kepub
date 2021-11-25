@@ -5,7 +5,9 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: kaiserlancelot/kenv:latest
+    container:
+      image: kaiserlancelot/kenv:latest
+      options: --cap-add SYS_ADMIN --device /dev/fuse --security-opt apparmor:unconfined
     strategy:
       matrix:
         # https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html
@@ -36,8 +38,8 @@ jobs:
       - name: Install
         if: ${{ matrix.build_type == 'Release' }}
         run: |
-          cmake --build build --config ${{ matrix.build_type }} --target install
-          ldconfig
+          sudo cmake --build build --config ${{ matrix.build_type }} --target install
+          sudo ldconfig
 
       - name: Run executable
         if: ${{ matrix.build_type == 'Release' }}
@@ -49,4 +51,4 @@ jobs:
 
       - name: Uninstall
         if: ${{ matrix.build_type == 'Release' }}
-        run: cmake --build build --config ${{ matrix.build_type }} --target uninstall
+        run: sudo cmake --build build --config ${{ matrix.build_type }} --target uninstall

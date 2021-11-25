@@ -8,7 +8,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: kaiserlancelot/kenv:latest
+    container:
+      image: kaiserlancelot/kenv:latest
+      options: --cap-add SYS_ADMIN --device /dev/fuse --security-opt apparmor:unconfined
 
     steps:
       # https://github.com/actions/checkout
@@ -30,8 +32,8 @@ jobs:
 
       - name: Install
         run: |
-          dpkg -i kepub*.deb
-          ldconfig
+          sudo dpkg -i kepub*.deb
+          sudo ldconfig
         working-directory: build
 
       - name: Run executable

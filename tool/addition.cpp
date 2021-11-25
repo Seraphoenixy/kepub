@@ -80,7 +80,7 @@ int main(int argc, const char *argv[]) try {
     }
   }
 
-  kepub::Epub epub(argv[0]);
+  kepub::Epub epub;
   epub.append_chapter(book_name, contents);
 
   if (!no_compress) {

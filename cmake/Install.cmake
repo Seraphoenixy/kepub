@@ -57,9 +57,4 @@ set(CPACK_GENERATOR "TGZ;DEB")
 
 set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
 
-# https://cmake.org/cmake/help/latest/module/InstallRequiredSystemLibraries.html
-set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS
-    "/usr/local/lib/libpython3.9.so.1.0;/usr/local/lib/font_tools.so")
-include(InstallRequiredSystemLibraries)
-
 include(CPack)

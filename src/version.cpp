@@ -1,6 +1,5 @@
 #include "version.h"
 
-#include <Python.h>
 #include <fmt/compile.h>
 #include <fmt/format.h>
 #include <klib/version.h>
@@ -14,17 +13,6 @@
 #include <pugixml.hpp>
 
 namespace kepub {
-
-namespace {
-
-std::string get_python_version() {
-  std::string str = Py_GetVersion();
-
-  auto index = str.find('(');
-  return boost::trim_copy(str.substr(0, index));
-}
-
-}  // namespace
 
 std::string version_str() {
   std::string result;
@@ -51,7 +39,6 @@ std::string version_str() {
                   PUGIXML_VERSION / 10 % 100, PUGIXML_VERSION % 10);
   result += fmt::format(FMT_COMPILE("ICU/{}.{}.{} "), U_ICU_VERSION_MAJOR_NUM,
                         U_ICU_VERSION_MINOR_NUM, U_ICU_VERSION_PATCHLEVEL_NUM);
-  result += fmt::format(FMT_COMPILE("CPython/{} "), get_python_version());
   // NOTE
   result += "indicators/2.2.0\n";
 

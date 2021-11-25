@@ -70,13 +70,6 @@ find_package(klib REQUIRED)
 find_package(simdjson REQUIRED)
 find_package(gsl-lite REQUIRED)
 
-find_package(Python COMPONENTS Development.Embed)
-add_definitions(-DPY_SSIZE_T_CLEAN)
-# FIXME
-if(KEPUB_SANITIZER)
-  add_definitions(-DKEPUB_SANITIZER)
-endif()
-
 if(NOT (${CMAKE_BUILD_TYPE} STREQUAL "Debug"))
   add_definitions(-DDBG_MACRO_DISABLE -DDBG_MACRO_NO_WARNING)
 endif()
@@ -115,7 +108,6 @@ target_link_libraries(
           indicators::indicators
           gsl::gsl-lite-v1
           klib::klib
-          Python::Python
           ${Boost_LIBRARIES}
           PkgConfig::icu-i18n)
 set_target_properties(
@@ -140,7 +132,6 @@ target_link_libraries(
           indicators::indicators
           gsl::gsl-lite-v1
           klib::klib
-          Python::Python
           ${Boost_LIBRARIES}
           PkgConfig::icu-i18n)
 set_target_properties(

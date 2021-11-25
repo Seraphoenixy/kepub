@@ -73,10 +73,3 @@ elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
 else()
   message(FATAL_ERROR "The compiler does not support: ${CMAKE_CXX_COMPILER_ID}")
 endif()
-
-# ---------------------------------------------------------------------------------------
-# Option
-# ---------------------------------------------------------------------------------------
-if(NOT (BUILD_TESTING AND KEPUB_BUILD_TEST) AND KEPUB_SANITIZER)
-  message(FATAL_ERROR "Must build test when using AddressSanitizer")
-endif()
