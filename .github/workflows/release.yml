@@ -27,7 +27,7 @@ jobs:
         run: cmake --build build --config Release -j"$(nproc)"
 
       - name: CPack
-        run: cpack
+        run: sudo cpack
         working-directory: build
 
       - name: Install
