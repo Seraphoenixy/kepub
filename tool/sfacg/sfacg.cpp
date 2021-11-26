@@ -62,9 +62,7 @@ klib::Response http_get(
                       {"Authorization", authorization}});
 }
 
-klib::Response http_get_rss(
-    const std::string &url,
-    const std::unordered_map<std::string, std::string> &params = {}) {
+klib::Response http_get_rss(const std::string &url) {
   static klib::Request request;
   request.set_no_proxy();
   request.set_user_agent(user_agent_rss);
@@ -73,7 +71,7 @@ klib::Response http_get_rss(
   request.verbose(true);
 #endif
 
-  return request.get(url, params,
+  return request.get(url, {},
                      {{"Connection", "keep-alive"},
                       {"Accept", "image/*,*/*;q=0.8"},
                       {"Accept-Language", "zh-CN,zh-Hans;q=0.9"}});
@@ -209,7 +207,7 @@ int main(int argc, const char *argv[]) try {
 
   auto [book_name, author, description] = get_book_info(book_id);
 
-  spdlog::info("Get chapter information");
+  spdlog::info("Start getting chapter information");
   auto volume_chapter = get_volume_chapter(book_id);
 
   std::int32_t chapter_count = 0;
@@ -228,7 +226,7 @@ int main(int argc, const char *argv[]) try {
   }
 
   kepub::generate_txt(book_name, author, description, volume_chapter);
-  spdlog::info("{} download complete", book_name);
+  spdlog::info("Novel '{}' download completed", book_name);
 } catch (const std::exception &err) {
   klib::error(KLIB_CURR_LOC, err.what());
 } catch (...) {

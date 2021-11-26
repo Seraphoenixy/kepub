@@ -72,8 +72,7 @@ VolumeChapter::VolumeChapter(std::string json) : JsonBase(std::move(json)) {
 
       auto need_fire_money = chapter["needFireMoney"].get_int64().value();
       if (need_fire_money > 0) {
-        klib::warn("No authorized access, volume: {}, title: {}", volume_name,
-                   chapter_title);
+        klib::warn("No authorized access, title: {}", chapter_title);
       } else {
         chapters.emplace_back(chapter_id, chapter_title, "");
       }
