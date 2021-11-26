@@ -61,7 +61,7 @@ klib::Response http_get(const std::string &url, const std::string &proxy) {
 #endif
 
   auto response = request.get(url);
-  if (response.status_code() != klib::Response::StatusCode::Ok) {
+  if (!response.ok()) {
     klib::error(KLIB_CURR_LOC, "HTTP GET fail: {}", response.status_code());
   }
 
@@ -219,7 +219,7 @@ int main(int argc, const char *argv[]) try {
   }
 
   kepub::generate_txt(book_name, author, description, chapters);
-  spdlog::info("{} download complete", book_name);
+  spdlog::info("Novel '{}' download completed", book_name);
 } catch (const std::exception &err) {
   klib::error(KLIB_CURR_LOC, err.what());
 } catch (...) {
