@@ -41,7 +41,9 @@ bool end_with_chinese(const std::string &str) {
 bool is_punct(char32_t c) {
   return u_ispunct(c) || c == to_unicode("～") || c == to_unicode("ー") ||
          c == to_unicode("♂") || c == to_unicode("♀") || c == to_unicode("◇") ||
-         c == to_unicode("￮") || c == to_unicode("+") || c == to_unicode("=");
+         c == to_unicode("￮") || c == to_unicode("+") || c == to_unicode("=") ||
+         c == to_unicode("↑") || c == to_unicode("↓") || c == to_unicode("←") ||
+         c == to_unicode("→");
 }
 
 std::string make_book_name_legal(const std::string &file_name) {

@@ -183,7 +183,7 @@ int main(int argc, const char *argv[]) try {
     std::string cover_name = "cover.jpg";
 
     if (!std::filesystem::exists(cover_name)) {
-      klib::warn("No cover");
+      klib::warn("Can't find cover image: {}", cover_name);
       cover_done = false;
     } else {
       std::filesystem::copy(cover_name, std::filesystem::path(book_name) /
@@ -201,7 +201,7 @@ int main(int argc, const char *argv[]) try {
       auto jpg_name = kepub::num_to_str(i) + ".jpg";
 
       if (!std::filesystem::exists(jpg_name)) {
-        klib::warn("Incorrect number of image");
+        klib::warn("Can't find image: {}", jpg_name);
         image_done = false;
         break;
       }
@@ -221,11 +221,10 @@ int main(int argc, const char *argv[]) try {
     spdlog::info("Start to compress and generate epub files");
     klib::compress(book_name, klib::Algorithm::Zip, book_name + ".epub", false);
     std::filesystem::remove_all(book_name);
-    spdlog::info("{} generate epub complete", book_name);
+    spdlog::info("The epub of Novel '{}' was successfully generated",
+                 book_name);
   } else {
-    spdlog::info(
-        "An element is missing or an error occurs, and no compression is "
-        "performed");
+    spdlog::info("Some kind of error occurred, epub generation failed");
   }
 } catch (const std::exception &err) {
   klib::error(KLIB_CURR_LOC, err.what());
