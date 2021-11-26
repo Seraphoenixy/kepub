@@ -48,9 +48,7 @@ std::string decrypt(const std::string &str, const std::string &key) {
   return klib::aes_256_decrypt_base64(str, klib::sha_256(key), false);
 }
 
-klib::Response http_get_rss(
-    const std::string &url,
-    const std::unordered_map<std::string, std::string> &params = {}) {
+klib::Response http_get_rss(const std::string &url) {
   static klib::Request request;
 
   const static std::string user_agent_rss =
@@ -64,9 +62,8 @@ klib::Response http_get_rss(
   request.verbose(true);
 #endif
 
-  auto response =
-      request.get(url, params,
-                  {{"Connection", "keep-alive"}, {"Accept-Language", "zh-cn"}});
+  auto response = request.get(
+      url, {}, {{"Connection", "keep-alive"}, {"Accept-Language", "zh-cn"}});
   if (!response.ok()) {
     klib::error(KLIB_CURR_LOC, "HTTP GET fail: {}", response.status_code());
   }
@@ -74,9 +71,8 @@ klib::Response http_get_rss(
   return response;
 }
 
-klib::Response http_post(
-    const std::string &url,
-    const std::unordered_map<std::string, std::string> &data) {
+klib::Response http_post(const std::string &url,
+                         std::unordered_map<std::string, std::string> data) {
   static klib::Request request;
   request.set_no_proxy();
   request.set_user_agent(user_agent);
@@ -84,6 +80,9 @@ klib::Response http_post(
 #ifndef NDEBUG
   request.verbose(true);
 #endif
+
+  data.emplace("app_version", app_version);
+  data.emplace("device_token", device_token);
 
   auto response = request.post(
       url, data,
@@ -97,11 +96,9 @@ klib::Response http_post(
 
 bool show_user_info(const std::string &account,
                     const std::string &login_token) {
-  auto response = http_post("https://app.hbooker.com/reader/get_my_info",
-                            {{"app_version", app_version},
-                             {"device_token", device_token},
-                             {"account", account},
-                             {"login_token", login_token}});
+  auto response =
+      http_post("https://app.hbooker.com/reader/get_my_info",
+                {{"account", account}, {"login_token", login_token}});
   UserInfo info(decrypt(response.text()));
 
   if (info.login_expired()) {
@@ -137,10 +134,7 @@ void write_token(const std::string &account, const std::string &login_token) {
 std::pair<std::string, std::string> login(const std::string &login_name,
                                           const std::string &password) {
   auto response = http_post("https://app.hbooker.com/signup/login",
-                            {{"app_version", app_version},
-                             {"device_token", device_token},
-                             {"login_name", login_name},
-                             {"passwd", password}});
+                            {{"login_name", login_name}, {"passwd", password}});
   LoginInfo info(decrypt(response.text()));
 
   spdlog::info("Login successful, nick name: {}", info.nick_name());
@@ -151,9 +145,7 @@ std::tuple<std::string, std::string, std::vector<std::string>> get_book_info(
     const std::string &account, const std::string &login_token,
     const std::string &book_id) {
   auto response = http_post("https://app.hbooker.com/book/get_info_by_id",
-                            {{"app_version", app_version},
-                             {"device_token", device_token},
-                             {"account", account},
+                            {{"account", account},
                              {"login_token", login_token},
                              {"book_id", book_id}});
   BookInfo info(decrypt(response.text()));
@@ -174,9 +166,7 @@ std::vector<std::pair<std::string, std::string>> get_book_volume(
     const std::string &account, const std::string &login_token,
     const std::string &book_id) {
   auto response = http_post("https://app.hbooker.com/book/get_division_list",
-                            {{"app_version", app_version},
-                             {"device_token", device_token},
-                             {"account", account},
+                            {{"account", account},
                              {"login_token", login_token},
                              {"book_id", book_id}});
   return Volumes(decrypt(response.text())).volumes();
@@ -187,9 +177,7 @@ std::vector<std::tuple<std::string, std::string, std::string>> get_chapters(
     const std::string &volume_id) {
   auto response = http_post(
       "https://app.hbooker.com/chapter/get_updated_chapter_by_division_id",
-      {{"app_version", app_version},
-       {"device_token", device_token},
-       {"account", account},
+      {{"account", account},
        {"login_token", login_token},
        {"division_id", volume_id}});
   return Chapters(decrypt(response.text())).chapters();
@@ -199,9 +187,7 @@ std::string get_chapter_command(const std::string &account,
                                 const std::string &login_token,
                                 const std::string &chapter_id) {
   auto response = http_post("https://app.hbooker.com/chapter/get_chapter_cmd",
-                            {{"app_version", app_version},
-                             {"device_token", device_token},
-                             {"account", account},
+                            {{"account", account},
                              {"login_token", login_token},
                              {"chapter_id", chapter_id}});
   return ChaptersCommand(decrypt(response.text())).command();
@@ -212,9 +198,7 @@ std::vector<std::string> get_content(const std::string &account,
                                      const std::string &chapter_id) {
   auto chapter_command = get_chapter_command(account, login_token, chapter_id);
   auto response = http_post("https://app.hbooker.com/chapter/get_cpt_ifm",
-                            {{"app_version", app_version},
-                             {"device_token", device_token},
-                             {"account", account},
+                            {{"account", account},
                              {"login_token", login_token},
                              {"chapter_id", chapter_id},
                              {"chapter_command", chapter_command}});
@@ -276,7 +260,7 @@ int main(int argc, const char *argv[]) try {
   auto [book_name, author, description] =
       get_book_info(account, login_token, book_id);
 
-  spdlog::info("Get chapter information");
+  spdlog::info("Start getting chapter information");
   std::vector<
       std::pair<std::string,
                 std::vector<std::tuple<std::string, std::string, std::string>>>>
@@ -301,7 +285,7 @@ int main(int argc, const char *argv[]) try {
   }
 
   kepub::generate_txt(book_name, author, description, volume_chapter);
-  spdlog::info("{} download complete", book_name);
+  spdlog::info("Novel '{}' download completed", book_name);
 } catch (const std::exception &err) {
   klib::error(KLIB_CURR_LOC, err.what());
 } catch (...) {
