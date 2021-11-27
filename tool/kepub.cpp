@@ -1,4 +1,5 @@
 #include <cstddef>
+#include <cstdlib>
 #include <filesystem>
 #include <stdexcept>
 #include <string>
@@ -19,6 +20,13 @@ int main(int argc, const char *argv[]) try {
 
   std::string file_name;
   app.add_option("file", file_name, "TXT file to be processed")->required();
+
+  bool only_check = false;
+  app.add_flag("--only-check", only_check,
+               "Only check the content and title, do not generate epub");
+
+  bool no_check = false;
+  app.add_flag("--no-check", no_check, "Do not check the content and title");
 
   bool translation = false;
   app.add_flag("-t,--translation", translation,
@@ -144,13 +152,19 @@ int main(int argc, const char *argv[]) try {
       volume_name = vec[i].substr(volume_prefix_size);
     } else if (vec[i].starts_with(title_prefix)) {
       auto title = vec[i].substr(title_prefix_size);
-      kepub::title_check(title);
+      if (!no_check) {
+        kepub::title_check(title);
+      }
       ++i;
 
       std::vector<std::string> content;
       for (; i < size && !is_prefix(vec[i]); ++i) {
         auto line = vec[i];
-        kepub::str_check(line);
+
+        if (!no_check) {
+          kepub::str_check(line);
+        }
+
         word_count += kepub::str_size(line);
         kepub::push_back(content, line, connect_chinese);
       }
@@ -161,6 +175,11 @@ int main(int argc, const char *argv[]) try {
   }
 
   klib::info("Total words: {}", word_count);
+
+  if (only_check) {
+    klib::info("Novel '{}' check operation completed", book_name);
+    return EXIT_SUCCESS;
+  }
 
   if (!std::empty(author)) {
     epub.set_author(author);
