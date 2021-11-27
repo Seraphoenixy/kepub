@@ -109,7 +109,7 @@ void str_check(const std::string &str) {
   std::erase_if(copy, [](char c) { return std::isalnum(c) || c == ' '; });
 
   for (auto c : klib::utf8_to_utf32(copy)) {
-    if (!klib::is_chinese(c) && !is_punct(c)) {
+    if ((!klib::is_chinese(c) && !is_punct(c)) || c == to_unicode("\"")) {
       std::string temp;
       UChar32 ch = c;
       klib::warn("Unknown character: {} in {}",
