@@ -9,6 +9,7 @@
 #include <vector>
 
 #include <klib/crypto.h>
+#include <klib/exception.h>
 #include <klib/hash.h>
 #include <klib/http.h>
 #include <klib/log.h>
@@ -216,7 +217,15 @@ std::vector<std::string> get_content(const std::string &account,
       std::string image_url = doc.child("img").attribute("src").as_string();
       boost::replace_all(image_url, "：", ":");
 
-      auto image = http_get_rss(image_url);
+      klib::Response image;
+
+      try {
+        image = http_get_rss(image_url);
+      } catch (const klib::RuntimeError &err) {
+        klib::warn("{}: {}", err.what(), line);
+        continue;
+      }
+
       auto image_name = kepub::num_to_str(image_count++);
       image.save_to_file(image_name + ".jpg", true);
 

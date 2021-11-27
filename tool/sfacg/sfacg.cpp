@@ -8,6 +8,7 @@
 
 #include <fmt/compile.h>
 #include <fmt/format.h>
+#include <klib/exception.h>
 #include <klib/hash.h>
 #include <klib/http.h>
 #include <klib/log.h>
@@ -157,18 +158,28 @@ std::vector<std::string> get_content(const std::string &chapter_id) {
     if (line.starts_with("[img")) {
       auto begin = line.find("https");
       if (begin == std::string::npos) {
-        klib::error("No image url");
+        klib::warn("Invalid image URL: {}", line);
+        continue;
       }
 
       auto end = line.find("[/img]");
       if (end == std::string::npos) {
-        klib::error("No image url");
+        klib::warn("Invalid image URL: {}", line);
+        continue;
       }
 
       auto image_url = line.substr(begin, end - begin);
       boost::replace_all(image_url, "：", ":");
 
-      auto image = http_get_rss(image_url);
+      klib::Response image;
+
+      try {
+        image = http_get_rss(image_url);
+      } catch (const klib::RuntimeError &err) {
+        klib::warn("{}: {}", err.what(), line);
+        continue;
+      }
+
       auto image_name = kepub::num_to_str(image_count++);
       image.save_to_file(image_name + ".jpg", true);
 
