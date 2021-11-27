@@ -112,6 +112,7 @@ int main(int argc, const char *argv[]) try {
         klib::warn("Author has been defined");
       }
 
+      klib::info("Author: {}", author);
       author = vec[i];
     } else if (vec[i].starts_with(introduction_prefix)) {
       ++i;
@@ -157,8 +158,9 @@ int main(int argc, const char *argv[]) try {
     }
   }
 
+  klib::info("Total words: {}", word_count);
+
   if (!std::empty(author)) {
-    klib::info("Author: {}", author);
     epub.set_author(author);
   }
   if (!std::empty(introduction)) {
@@ -172,10 +174,6 @@ int main(int argc, const char *argv[]) try {
       !generate_postscript || (generate_postscript && !std::empty(postscript));
 
   epub.generate();
-  if (remove) {
-    std::filesystem::remove(file_name);
-  }
-  klib::info("Total words: {}", word_count);
 
   bool cover_done = true;
   if (!no_cover) {
@@ -211,6 +209,10 @@ int main(int argc, const char *argv[]) try {
         std::filesystem::remove(jpg_name);
       }
     }
+  }
+
+  if (remove) {
+    std::filesystem::remove(file_name);
   }
 
   bool book_done = !std::empty(author) && !std::empty(introduction) &&
