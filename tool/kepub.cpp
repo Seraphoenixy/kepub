@@ -43,7 +43,9 @@ int main(int argc, const char *argv[]) try {
   app.add_flag("-p,--postscript", generate_postscript, "Generate postscript");
 
   bool remove = false;
-  app.add_flag("-r,--remove", remove, "Remove txt files and possible images");
+  app.add_flag(
+      "-r,--remove", remove,
+      "When the generation is successful, delete the TXT file and picture");
 
   std::string uuid;
   app.add_option("--uuid", uuid, "Specify the uuid(for testing)");
@@ -176,19 +178,15 @@ int main(int argc, const char *argv[]) try {
   epub.generate();
 
   bool cover_done = true;
+  std::string cover_name = "cover.jpg";
   if (!no_cover) {
-    std::string cover_name = "cover.jpg";
-
-    if (!std::filesystem::exists(cover_name)) {
+    if (!std::filesystem::is_regular_file(cover_name)) {
       klib::warn("Can't find cover image: {}", cover_name);
       cover_done = false;
     } else {
       std::filesystem::copy(cover_name, std::filesystem::path(book_name) /
                                             kepub::Epub::images_dir /
                                             cover_name);
-      if (remove) {
-        std::filesystem::remove(cover_name);
-      }
     }
   }
 
@@ -197,7 +195,7 @@ int main(int argc, const char *argv[]) try {
     for (std::int32_t i = 1; i <= image_num; ++i) {
       auto jpg_name = kepub::num_to_str(i) + ".jpg";
 
-      if (!std::filesystem::exists(jpg_name)) {
+      if (!std::filesystem::is_regular_file(jpg_name)) {
         klib::warn("Can't find image: {}", jpg_name);
         image_done = false;
         break;
@@ -205,26 +203,32 @@ int main(int argc, const char *argv[]) try {
 
       std::filesystem::copy(jpg_name, std::filesystem::path(book_name) /
                                           kepub::Epub::images_dir / jpg_name);
-      if (remove) {
-        std::filesystem::remove(jpg_name);
-      }
     }
-  }
-
-  if (remove) {
-    std::filesystem::remove(file_name);
   }
 
   bool book_done = !std::empty(author) && !std::empty(introduction) &&
                    postscript_done && cover_done && image_done;
 
-  if (!no_compress && book_done) {
-    klib::info("Start to compress and generate epub files");
-    klib::compress(book_name, klib::Algorithm::Zip, book_name + ".epub", false);
-    std::filesystem::remove_all(book_name);
-    klib::info("The epub of Novel '{}' was successfully generated", book_name);
+  if (book_done) {
+    if (remove) {
+      kepub::remove_file_or_dir(file_name);
+      kepub::remove_file_or_dir(cover_name);
+      for (std::int32_t i = 1; i <= image_num; ++i) {
+        auto jpg_name = kepub::num_to_str(i) + ".jpg";
+        kepub::remove_file_or_dir(jpg_name);
+      }
+    }
+
+    if (!no_compress) {
+      klib::info("Start to compress and generate epub files");
+      klib::compress(book_name, klib::Algorithm::Zip, book_name + ".epub",
+                     false);
+      kepub::remove_file_or_dir(book_name);
+      klib::info("The epub of Novel '{}' was successfully generated",
+                 book_name);
+    }
   } else {
-    klib::info("Some kind of error occurred, epub generation failed");
+    klib::warn("Some kind of error occurred, epub generation failed");
   }
 } catch (const std::exception &err) {
   klib::error(err.what());

@@ -85,7 +85,7 @@ int main(int argc, const char *argv[]) try {
 
   if (!no_compress) {
     klib::compress(book_name, klib::Algorithm::Zip, book_name + ".epub", false);
-    std::filesystem::remove_all(book_name);
+    kepub::remove_file_or_dir(book_name);
   }
 } catch (const std::exception &err) {
   klib::error(err.what());

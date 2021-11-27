@@ -76,6 +76,24 @@ void check_is_txt_file(const std::string &file_name) {
   }
 }
 
+void remove_file_or_dir(const std::string &path) {
+  if (!std::filesystem::exists(path)) {
+    klib::error("The item does not exist: {}", path);
+  }
+
+  if (std::filesystem::is_regular_file(path)) {
+    if (!std::filesystem::remove(path)) {
+      klib::error("File deletion failed: {}", path);
+    }
+  } else if (std::filesystem::is_directory(path)) {
+    if (std::filesystem::remove_all(path) == 0) {
+      klib::error("Folder deletion failed: {}", path);
+    }
+  } else {
+    klib::error("Not a file or folder");
+  }
+}
+
 void check_is_book_id(const std::string &book_id) {
   if (!std::all_of(std::begin(book_id), std::end(book_id),
                    [](char c) { return std::isdigit(c); })) {

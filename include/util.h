@@ -13,6 +13,8 @@ void check_file_exist(const std::string &file_name);
 
 void check_is_txt_file(const std::string &file_name);
 
+void remove_file_or_dir(const std::string &path);
+
 void check_is_book_id(const std::string &book_id);
 
 std::vector<std::string> read_file_to_vec(const std::string &file_name,
