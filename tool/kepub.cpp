@@ -114,8 +114,8 @@ int main(int argc, const char *argv[]) try {
         klib::warn("Author has been defined");
       }
 
-      klib::info("Author: {}", author);
       author = vec[i];
+      klib::info("Author: {}", author);
     } else if (vec[i].starts_with(introduction_prefix)) {
       ++i;
 
@@ -224,7 +224,7 @@ int main(int argc, const char *argv[]) try {
       klib::compress(book_name, klib::Algorithm::Zip, book_name + ".epub",
                      false);
       kepub::remove_file_or_dir(book_name);
-      klib::info("The epub of Novel '{}' was successfully generated",
+      klib::info("The epub of novel '{}' was successfully generated",
                  book_name);
     }
   } else {
