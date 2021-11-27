@@ -6,7 +6,7 @@
 #include <vector>
 
 #include <klib/archive.h>
-#include <klib/error.h>
+#include <klib/log.h>
 #include <CLI/CLI.hpp>
 
 #include "epub.h"
@@ -88,7 +88,7 @@ int main(int argc, const char *argv[]) try {
     std::filesystem::remove_all(book_name);
   }
 } catch (const std::exception &err) {
-  klib::error(KLIB_CURR_LOC, err.what());
+  klib::error(err.what());
 } catch (...) {
-  klib::error(KLIB_CURR_LOC, "Unknown exception");
+  klib::error("Unknown exception");
 }

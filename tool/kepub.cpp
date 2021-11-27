@@ -5,8 +5,7 @@
 #include <vector>
 
 #include <klib/archive.h>
-#include <klib/error.h>
-#include <spdlog/spdlog.h>
+#include <klib/log.h>
 #include <CLI/CLI.hpp>
 
 #include "epub.h"
@@ -60,7 +59,7 @@ int main(int argc, const char *argv[]) try {
   kepub::check_is_txt_file(file_name);
   auto book_name =
       kepub::trans_str(std::filesystem::path(file_name).stem(), translation);
-  spdlog::info("Book name: {}", book_name);
+  klib::info("Book name: {}", book_name);
 
   kepub::Epub epub;
   epub.set_creator("kaiser");
@@ -159,7 +158,7 @@ int main(int argc, const char *argv[]) try {
   }
 
   if (!std::empty(author)) {
-    spdlog::info("Author: {}", author);
+    klib::info("Author: {}", author);
     epub.set_author(author);
   }
   if (!std::empty(introduction)) {
@@ -176,7 +175,7 @@ int main(int argc, const char *argv[]) try {
   if (remove) {
     std::filesystem::remove(file_name);
   }
-  spdlog::info("Total words: {}", word_count);
+  klib::info("Total words: {}", word_count);
 
   bool cover_done = true;
   if (!no_cover) {
@@ -218,16 +217,15 @@ int main(int argc, const char *argv[]) try {
                    postscript_done && cover_done && image_done;
 
   if (!no_compress && book_done) {
-    spdlog::info("Start to compress and generate epub files");
+    klib::info("Start to compress and generate epub files");
     klib::compress(book_name, klib::Algorithm::Zip, book_name + ".epub", false);
     std::filesystem::remove_all(book_name);
-    spdlog::info("The epub of Novel '{}' was successfully generated",
-                 book_name);
+    klib::info("The epub of Novel '{}' was successfully generated", book_name);
   } else {
-    spdlog::info("Some kind of error occurred, epub generation failed");
+    klib::info("Some kind of error occurred, epub generation failed");
   }
 } catch (const std::exception &err) {
-  klib::error(KLIB_CURR_LOC, err.what());
+  klib::error(err.what());
 } catch (...) {
-  klib::error(KLIB_CURR_LOC, "Unknown exception");
+  klib::error("Unknown exception");
 }

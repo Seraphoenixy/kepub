@@ -9,11 +9,10 @@
 #include <vector>
 
 #include <klib/crypto.h>
-#include <klib/error.h>
 #include <klib/hash.h>
 #include <klib/http.h>
+#include <klib/log.h>
 #include <klib/util.h>
-#include <spdlog/spdlog.h>
 #include <CLI/CLI.hpp>
 #include <boost/algorithm/string.hpp>
 #include <pugixml.hpp>
@@ -65,7 +64,7 @@ klib::Response http_get_rss(const std::string &url) {
   auto response = request.get(
       url, {}, {{"Connection", "keep-alive"}, {"Accept-Language", "zh-cn"}});
   if (!response.ok()) {
-    klib::error(KLIB_CURR_LOC, "HTTP GET fail: {}", response.status_code());
+    klib::error("HTTP GET fail: {}", response.status_code());
   }
 
   return response;
@@ -88,7 +87,7 @@ klib::Response http_post(const std::string &url,
       url, data,
       {{"Connection", "keep-alive"}, {"Accept-Language", "zh-Hans-CN;q=1"}});
   if (!response.ok()) {
-    klib::error(KLIB_CURR_LOC, "HTTP POST fail: {}", response.status_code());
+    klib::error("HTTP POST fail: {}", response.status_code());
   }
 
   return response;
@@ -104,7 +103,7 @@ bool show_user_info(const std::string &account,
   if (info.login_expired()) {
     return false;
   } else {
-    spdlog::info("Use existing login token, nick name: {}", info.nick_name());
+    klib::info("Use existing login token, nick name: {}", info.nick_name());
     return true;
   }
 }
@@ -137,7 +136,7 @@ std::pair<std::string, std::string> login(const std::string &login_name,
                             {{"login_name", login_name}, {"passwd", password}});
   LoginInfo info(decrypt(response.text()));
 
-  spdlog::info("Login successful, nick name: {}", info.nick_name());
+  klib::info("Login successful, nick name: {}", info.nick_name());
   return {info.account(), info.login_token()};
 }
 
@@ -150,14 +149,14 @@ std::tuple<std::string, std::string, std::vector<std::string>> get_book_info(
                              {"book_id", book_id}});
   BookInfo info(decrypt(response.text()));
 
-  spdlog::info("Book name: {}", info.book_name());
-  spdlog::info("Author: {}", info.author());
-  spdlog::info("Cover url: {}", info.cover_url());
+  klib::info("Book name: {}", info.book_name());
+  klib::info("Author: {}", info.author());
+  klib::info("Cover url: {}", info.cover_url());
 
   std::string cover_name = "cover.jpg";
   response = http_get_rss(info.cover_url());
   response.save_to_file(cover_name, true);
-  spdlog::info("Cover downloaded successfully: {}", cover_name);
+  klib::info("Cover downloaded successfully: {}", cover_name);
 
   return {info.book_name(), info.author(), info.intro()};
 }
@@ -260,7 +259,7 @@ int main(int argc, const char *argv[]) try {
   auto [book_name, author, description] =
       get_book_info(account, login_token, book_id);
 
-  spdlog::info("Start getting chapter information");
+  klib::info("Start getting chapter information");
   std::vector<
       std::pair<std::string,
                 std::vector<std::tuple<std::string, std::string, std::string>>>>
@@ -273,7 +272,7 @@ int main(int argc, const char *argv[]) try {
     chapter_count += std::size(chapters);
   }
 
-  spdlog::info("Start downloading novel content");
+  klib::info("Start downloading novel content");
   kepub::ProgressBar bar(book_name, chapter_count);
   for (auto &[volume_name, chapters] : volume_chapter) {
     for (auto &[chapter_id, chapter_title, content] : chapters) {
@@ -285,9 +284,9 @@ int main(int argc, const char *argv[]) try {
   }
 
   kepub::generate_txt(book_name, author, description, volume_chapter);
-  spdlog::info("Novel '{}' download completed", book_name);
+  klib::info("Novel '{}' download completed", book_name);
 } catch (const std::exception &err) {
-  klib::error(KLIB_CURR_LOC, err.what());
+  klib::error(err.what());
 } catch (...) {
-  klib::error(KLIB_CURR_LOC, "Unknown exception");
+  klib::error("Unknown exception");
 }

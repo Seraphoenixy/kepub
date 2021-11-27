@@ -9,8 +9,8 @@
 #include <fmt/chrono.h>
 #include <fmt/compile.h>
 #include <fmt/format.h>
-#include <klib/error.h>
 #include <klib/exception.h>
+#include <klib/log.h>
 #include <klib/util.h>
 #include <gsl/gsl-lite.hpp>
 #include <pugixml.hpp>
@@ -41,7 +41,7 @@ void to_subset_woff2(std::string_view font_file, const std::string &text) {
       out_name, text, in_name));
 
   if (!std::filesystem::remove(in_name)) {
-    klib::error(KLIB_CURR_LOC, "Cannot delete file '{}'", in_name);
+    klib::error("Cannot delete file '{}'", in_name);
   }
 }
 

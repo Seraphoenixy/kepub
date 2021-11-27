@@ -4,10 +4,9 @@
 #include <utility>
 #include <vector>
 
-#include <klib/error.h>
 #include <klib/html.h>
 #include <klib/http.h>
-#include <spdlog/spdlog.h>
+#include <klib/log.h>
 #include <CLI/CLI.hpp>
 #include <boost/algorithm/string.hpp>
 #include <pugixml.hpp>
@@ -42,7 +41,7 @@ std::vector<std::string> get_children_content(const pugi::xml_node &node) {
   }
 
   if (std::empty(result)) {
-    klib::error(KLIB_CURR_LOC, "get_children_text no data");
+    klib::error("get_children_text no data");
   }
 
   return result;
@@ -62,7 +61,7 @@ klib::Response http_get(const std::string &url, const std::string &proxy) {
 
   auto response = request.get(url);
   if (!response.ok()) {
-    klib::error(KLIB_CURR_LOC, "HTTP GET fail: {}", response.status_code());
+    klib::error("HTTP GET fail: {}", response.status_code());
   }
 
   return response;
@@ -149,14 +148,14 @@ get_info(const std::string &book_id, bool translation,
              .node();
   std::string cover_url = node.attribute("src").as_string();
 
-  spdlog::info("Book name: {}", book_name);
-  spdlog::info("Author: {}", author);
-  spdlog::info("Cover url: {}", cover_url);
+  klib::info("Book name: {}", book_name);
+  klib::info("Author: {}", author);
+  klib::info("Cover url: {}", cover_url);
 
   std::string cover_name = "cover.jpg";
   auto response = http_get(cover_url, proxy);
   response.save_to_file(cover_name, true);
-  spdlog::info("Cover downloaded successfully: {}", cover_name);
+  klib::info("Cover downloaded successfully: {}", cover_name);
 
   return {book_name, author, description, titles_and_urls};
 }
@@ -202,13 +201,13 @@ int main(int argc, const char *argv[]) try {
 
   kepub::check_is_book_id(book_id);
   if (!std::empty(proxy)) {
-    spdlog::info("Use proxy: {}", proxy);
+    klib::info("Use proxy: {}", proxy);
   }
 
   auto [book_name, author, description, titles_and_urls] =
       get_info(book_id, translation, proxy);
 
-  spdlog::info("Start downloading novel content");
+  klib::info("Start downloading novel content");
   kepub::ProgressBar bar(book_name, std::size(titles_and_urls));
   std::vector<std::pair<std::string, std::string>> chapters;
   for (const auto &[title, urls] : titles_and_urls) {
@@ -219,9 +218,9 @@ int main(int argc, const char *argv[]) try {
   }
 
   kepub::generate_txt(book_name, author, description, chapters);
-  spdlog::info("Novel '{}' download completed", book_name);
+  klib::info("Novel '{}' download completed", book_name);
 } catch (const std::exception &err) {
-  klib::error(KLIB_CURR_LOC, err.what());
+  klib::error(err.what());
 } catch (...) {
-  klib::error(KLIB_CURR_LOC, "Unknown exception");
+  klib::error("Unknown exception");
 }

@@ -2,7 +2,7 @@
 
 #include <fmt/compile.h>
 #include <fmt/format.h>
-#include <klib/error.h>
+#include <klib/log.h>
 #include <klib/util.h>
 
 #include "trans.h"
@@ -27,7 +27,7 @@ JsonBase::JsonBase(std::string json) : json_(std::move(json)) {
   if (login_expired()) {
     klib::warn(status["msg"].get_string().value());
   } else if (!ok()) {
-    klib::error(KLIB_CURR_LOC, status["msg"].get_string().value());
+    klib::error(status["msg"].get_string().value());
   }
 }
 
@@ -39,7 +39,7 @@ UserInfo::UserInfo(std::string json) : JsonBase(std::move(json)) {
 
 LoginInfo::LoginInfo(std::string json) : JsonBase(std::move(json)) {
   if (login_expired()) {
-    klib::error(KLIB_CURR_LOC, "Failed to login");
+    klib::error("Failed to login");
   }
 
   nick_name_ = doc_["data"]["nickName"].get_string().value();
