@@ -13,6 +13,7 @@
 #include <klib/http.h>
 #include <klib/log.h>
 #include <klib/util.h>
+#include <spdlog/spdlog.h>
 #include <CLI/CLI.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/core/ignore_unused.hpp>
@@ -101,7 +102,7 @@ bool show_user_info() {
   if (info.login_expired()) {
     return false;
   } else {
-    klib::info("Use existing cookies, nick name: {}", info.nick_name());
+    spdlog::info("Use existing cookies, nick name: {}", info.nick_name());
     return true;
   }
 }
@@ -114,7 +115,7 @@ void login(const std::string &login_name, const std::string &password) {
 
   response = http_get("https://api.sfacg.com/user");
   LoginInfo info(response.text());
-  klib::info("Login successful, nick name: {}", info.nick_name());
+  spdlog::info("Login successful, nick name: {}", info.nick_name());
 }
 
 std::tuple<std::string, std::string, std::vector<std::string>> get_book_info(
@@ -123,14 +124,14 @@ std::tuple<std::string, std::string, std::vector<std::string>> get_book_info(
                            {{"expand", "intro"}});
   BookInfo info(response.text());
 
-  klib::info("Book name: {}", info.book_name());
-  klib::info("Author: {}", info.author());
-  klib::info("Cover url: {}", info.cover_url());
+  spdlog::info("Book name: {}", info.book_name());
+  spdlog::info("Author: {}", info.author());
+  spdlog::info("Cover url: {}", info.cover_url());
 
   std::string cover_name = "cover.jpg";
   response = http_get_rss(info.cover_url());
   response.save_to_file(cover_name, true);
-  klib::info("Cover downloaded successfully: {}", cover_name);
+  spdlog::info("Cover downloaded successfully: {}", cover_name);
 
   return {info.book_name(), info.author(), info.intro()};
 }
@@ -217,7 +218,7 @@ int main(int argc, const char *argv[]) try {
 
   auto [book_name, author, description] = get_book_info(book_id);
 
-  klib::info("Start getting chapter information");
+  spdlog::info("Start getting chapter information");
   auto volume_chapter = get_volume_chapter(book_id);
 
   std::int32_t chapter_count = 0;
@@ -225,7 +226,7 @@ int main(int argc, const char *argv[]) try {
     chapter_count += std::size(chapters);
   }
 
-  klib::info("Start downloading novel content");
+  spdlog::info("Start downloading novel content");
   kepub::ProgressBar bar(book_name, chapter_count);
   for (auto &[volume_name, chapters] : volume_chapter) {
     for (auto &[chapter_id, chapter_title, content] : chapters) {
@@ -236,7 +237,7 @@ int main(int argc, const char *argv[]) try {
   }
 
   kepub::generate_txt(book_name, author, description, volume_chapter);
-  klib::info("Novel '{}' download completed", book_name);
+  spdlog::info("Novel '{}' download completed", book_name);
 } catch (const std::exception &err) {
   klib::error(err.what());
 } catch (...) {

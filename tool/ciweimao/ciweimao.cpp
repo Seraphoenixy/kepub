@@ -14,6 +14,7 @@
 #include <klib/http.h>
 #include <klib/log.h>
 #include <klib/util.h>
+#include <spdlog/spdlog.h>
 #include <CLI/CLI.hpp>
 #include <boost/algorithm/string.hpp>
 #include <pugixml.hpp>
@@ -104,7 +105,7 @@ bool show_user_info(const std::string &account,
   if (info.login_expired()) {
     return false;
   } else {
-    klib::info("Use existing login token, nick name: {}", info.nick_name());
+    spdlog::info("Use existing login token, nick name: {}", info.nick_name());
     return true;
   }
 }
@@ -137,7 +138,7 @@ std::pair<std::string, std::string> login(const std::string &login_name,
                             {{"login_name", login_name}, {"passwd", password}});
   LoginInfo info(decrypt(response.text()));
 
-  klib::info("Login successful, nick name: {}", info.nick_name());
+  spdlog::info("Login successful, nick name: {}", info.nick_name());
   return {info.account(), info.login_token()};
 }
 
@@ -150,14 +151,14 @@ std::tuple<std::string, std::string, std::vector<std::string>> get_book_info(
                              {"book_id", book_id}});
   BookInfo info(decrypt(response.text()));
 
-  klib::info("Book name: {}", info.book_name());
-  klib::info("Author: {}", info.author());
-  klib::info("Cover url: {}", info.cover_url());
+  spdlog::info("Book name: {}", info.book_name());
+  spdlog::info("Author: {}", info.author());
+  spdlog::info("Cover url: {}", info.cover_url());
 
   std::string cover_name = "cover.jpg";
   response = http_get_rss(info.cover_url());
   response.save_to_file(cover_name, true);
-  klib::info("Cover downloaded successfully: {}", cover_name);
+  spdlog::info("Cover downloaded successfully: {}", cover_name);
 
   return {info.book_name(), info.author(), info.intro()};
 }
@@ -268,7 +269,7 @@ int main(int argc, const char *argv[]) try {
   auto [book_name, author, description] =
       get_book_info(account, login_token, book_id);
 
-  klib::info("Start getting chapter information");
+  spdlog::info("Start getting chapter information");
   std::vector<
       std::pair<std::string,
                 std::vector<std::tuple<std::string, std::string, std::string>>>>
@@ -281,7 +282,7 @@ int main(int argc, const char *argv[]) try {
     chapter_count += std::size(chapters);
   }
 
-  klib::info("Start downloading novel content");
+  spdlog::info("Start downloading novel content");
   kepub::ProgressBar bar(book_name, chapter_count);
   for (auto &[volume_name, chapters] : volume_chapter) {
     for (auto &[chapter_id, chapter_title, content] : chapters) {
@@ -293,7 +294,7 @@ int main(int argc, const char *argv[]) try {
   }
 
   kepub::generate_txt(book_name, author, description, volume_chapter);
-  klib::info("Novel '{}' download completed", book_name);
+  spdlog::info("Novel '{}' download completed", book_name);
 } catch (const std::exception &err) {
   klib::error(err.what());
 } catch (...) {

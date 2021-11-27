@@ -12,6 +12,7 @@
 #include <klib/exception.h>
 #include <klib/log.h>
 #include <klib/util.h>
+#include <spdlog/spdlog.h>
 #include <gsl/gsl-lite.hpp>
 #include <pugixml.hpp>
 
@@ -499,7 +500,7 @@ void Epub::generate_font() const {
     throw klib::RuntimeError("The font is empty");
   }
 
-  klib::info("Start generating woff2 font");
+  spdlog::info("Start generating woff2 font");
   klib::write_file(Epub::font_path, true, font_);
   to_subset_woff2(Epub::font_path, font_words_);
 }
