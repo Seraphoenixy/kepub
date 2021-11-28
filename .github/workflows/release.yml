@@ -31,10 +31,7 @@ jobs:
         working-directory: build
 
       - name: Install
-        run: |
-          sudo dpkg -i kepub*.deb
-          sudo ldconfig
-        working-directory: build
+        run: sudo cmake --build build --config ${{ matrix.build_type }} --target install
 
       - name: Run executable
         run: kepub -v
@@ -44,5 +41,5 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
+            build/kepub*.tar.zst
             build/kepub*.deb
-            build/kepub*.tar.gz

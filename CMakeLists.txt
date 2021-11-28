@@ -1,7 +1,7 @@
 # ---------------------------------------------------------------------------------------
 # CMake version
 # ---------------------------------------------------------------------------------------
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.22)
 message(STATUS "CMake version: ${CMAKE_VERSION}")
 
 # ---------------------------------------------------------------------------------------
@@ -14,8 +14,9 @@ kepub_extract_version()
 
 project(
   kepub
+  LANGUAGES ASM CXX
   VERSION ${KEPUB_VERSION}
-  LANGUAGES ASM CXX)
+  HOMEPAGE_URL https://github.com/KaiserLancelot/kepub)
 
 message(STATUS "${PROJECT_NAME} version: ${KEPUB_VERSION}")
 
