@@ -32,6 +32,7 @@ jobs:
 
       - name: Install
         run: sudo dpkg -i kepub*.deb
+        working-directory: build
 
       - name: Run executable
         run: kepub -v
