@@ -68,7 +68,7 @@ set(CPACK_PACKAGE_VERSION
 # https://cmake.org/cmake/help/latest/cpack_gen/archive.html
 # https://cmake.org/cmake/help/latest/cpack_gen/deb.html
 set(CPACK_GENERATOR "TZST;DEB")
-set(CPACK_DEBIAN_COMPRESSION_TYPE "zstd")
+# FIXME set(CPACK_DEBIAN_COMPRESSION_TYPE "zstd")
 
 set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
 
