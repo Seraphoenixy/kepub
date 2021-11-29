@@ -191,7 +191,7 @@ void push_back(std::vector<std::string> &texts, const std::string &str,
   }
 
   if (texts.back().ends_with("，")) {
-    if (start_with_chinese(str) ||
+    if ((start_with_chinese(str) || std::isalnum(str.front())) ||
         (str.starts_with("—") || str.starts_with("“") || str.starts_with("｢") ||
          str.starts_with("「") || str.starts_with("『") ||
          str.starts_with("《") || str.starts_with("【") ||
@@ -210,7 +210,18 @@ void push_back(std::vector<std::string> &texts, const std::string &str,
     if (!end_with_punct(texts.back())) {
       texts.back().append(str);
     } else {
-      klib::warn("Punctuation may be wrong: {}", str);
+      if (str.starts_with("”") && str.ends_with("”")) {
+        auto icu_str = icu::UnicodeString::fromUTF8(str.c_str());
+        std::string temp;
+        temp = icu_str.tempSubString(1).toUTF8String(temp);
+        texts.push_back("“" + temp);
+        return;
+      }
+
+      if (!(str.starts_with("！") || str.starts_with("？"))) {
+        klib::warn("Punctuation may be wrong: {}", str);
+      }
+
       texts.push_back(str);
     }
   } else if (std::isalpha(texts.back().back()) && std::isalpha(str.front())) {
