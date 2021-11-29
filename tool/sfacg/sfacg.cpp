@@ -20,7 +20,6 @@
 
 #include "json.h"
 #include "progress_bar.h"
-#include "trans.h"
 #include "util.h"
 #include "version.h"
 
@@ -154,8 +153,6 @@ std::vector<std::string> get_content(const std::string &chapter_id) {
   static std::int32_t image_count = 1;
   std::vector<std::string> content;
   for (auto &line : klib::split_str(content_str, "\n")) {
-    line = kepub::trans_str(line, false);
-
     if (line.starts_with("[img")) {
       auto begin = line.find("https");
       if (begin == std::string::npos) {
@@ -170,10 +167,8 @@ std::vector<std::string> get_content(const std::string &chapter_id) {
       }
 
       auto image_url = line.substr(begin, end - begin);
-      boost::replace_all(image_url, "：", ":");
 
       klib::Response image;
-
       try {
         image = http_get_rss(image_url);
       } catch (const klib::RuntimeError &err) {
@@ -185,11 +180,9 @@ std::vector<std::string> get_content(const std::string &chapter_id) {
       image.save_to_file(image_name + ".jpg", true);
 
       line = "[IMAGE] " + image_name;
-
-      content.push_back(line);
-    } else {
-      kepub::push_back(content, line, false);
     }
+
+    kepub::push_back_no_connect(content, line);
   }
 
   return content;

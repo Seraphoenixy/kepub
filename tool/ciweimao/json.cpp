@@ -7,7 +7,6 @@
 #include <klib/log.h>
 #include <klib/util.h>
 
-#include "trans.h"
 #include "util.h"
 
 std::string serialize(const std::string &account,
@@ -61,24 +60,21 @@ LoginInfo::LoginInfo(std::string json) : JsonBase(std::move(json)) {
 BookInfo::BookInfo(std::string json) : JsonBase(std::move(json)) {
   auto book_info = doc_["data"]["book_info"];
 
-  book_name_ =
-      kepub::trans_str(book_info["book_name"].get_string().value(), false);
-  author_ =
-      kepub::trans_str(book_info["author_name"].get_string().value(), false);
+  book_name_ = book_info["book_name"].get_string().value();
+  author_ = book_info["author_name"].get_string().value();
   cover_url_ = book_info["cover"].get_string().value();
 
   std::string intro_str(book_info["description"].get_string().value());
 
   for (const auto &line : klib::split_str(intro_str, "\n")) {
-    kepub::push_back(intro_, kepub::trans_str(line, false), false);
+    kepub::push_back_no_connect(intro_, line);
   }
 }
 
 Volumes::Volumes(std::string json) : JsonBase(std::move(json)) {
   for (auto volume : doc_["data"]["division_list"].get_array()) {
     std::string volume_id(volume["division_id"].get_string().value());
-    std::string volume_name(
-        kepub::trans_str(volume["division_name"].get_string().value(), false));
+    std::string volume_name(volume["division_name"].get_string().value());
 
     volumes_.emplace_back(volume_id, volume_name);
   }
@@ -87,8 +83,7 @@ Volumes::Volumes(std::string json) : JsonBase(std::move(json)) {
 Chapters::Chapters(std::string json) : JsonBase(std::move(json)) {
   for (auto chapter : doc_["data"]["chapter_list"].get_array()) {
     std::string chapter_id(chapter["chapter_id"].get_string().value());
-    auto chapter_title(
-        kepub::trans_str(chapter["chapter_title"].get_string().value(), false));
+    std::string chapter_title(chapter["chapter_title"].get_string().value());
 
     auto is_valid = chapter["is_valid"].get_int64().value();
     if (is_valid != 1) {

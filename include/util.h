@@ -29,6 +29,9 @@ void title_check(const std::string &title);
 void push_back(std::vector<std::string> &texts, const std::string &str,
                bool connect_chinese);
 
+void push_back_no_connect(std::vector<std::string> &texts,
+                          const std::string &str);
+
 void check_icu(UErrorCode status);
 
 std::string get_login_name();

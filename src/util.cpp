@@ -163,12 +163,13 @@ std::int32_t str_size(const std::string &str) {
 }
 
 void title_check(const std::string &title) {
-  auto icu_str = icu::UnicodeString::fromUTF8(title.c_str());
+  icu::UnicodeString regex_str =
+      R"(第([零一二三四五六七八九十百千]|[0-9]){1,7}[章话] .+)";
+  auto input = icu::UnicodeString::fromUTF8(title.c_str());
 
   UErrorCode status = U_ZERO_ERROR;
   icu::RegexMatcher regex(
-      R"(第([零一二三四五六七八九十百千]|[0-9]){1,7}[章话] .+)", icu_str,
-      UREGEX_UWORD | UREGEX_ERROR_ON_UNKNOWN_ESCAPES, status);
+      regex_str, input, UREGEX_UWORD | UREGEX_ERROR_ON_UNKNOWN_ESCAPES, status);
   check_icu(status);
 
   auto ok = regex.matches(status);
@@ -225,6 +226,23 @@ void push_back(std::vector<std::string> &texts, const std::string &str,
   } else {
     texts.push_back(str);
   }
+}
+
+void push_back_no_connect(std::vector<std::string> &texts,
+                          const std::string &str) {
+  if (std::empty(str)) {
+    return;
+  }
+
+  auto icu_str = icu::UnicodeString::fromUTF8(str.c_str());
+  icu_str.trim();
+
+  if (icu_str.isEmpty()) {
+    return;
+  }
+
+  std::string temp;
+  texts.push_back(icu_str.toUTF8String(temp));
 }
 
 void check_icu(UErrorCode status) {

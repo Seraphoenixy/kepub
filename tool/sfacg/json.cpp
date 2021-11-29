@@ -5,7 +5,6 @@
 #include <klib/log.h>
 #include <klib/util.h>
 
-#include "trans.h"
 #include "util.h"
 
 std::string serialize(const std::string &login_name,
@@ -48,27 +47,25 @@ LoginInfo::LoginInfo(std::string json) : JsonBase(std::move(json)) {
 BookInfo::BookInfo(std::string json) : JsonBase(std::move(json)) {
   auto data = doc_["data"];
 
-  book_name_ = kepub::trans_str(data["novelName"].get_string().value(), false);
-  author_ = kepub::trans_str(data["authorName"].get_string().value(), false);
+  book_name_ = data["novelName"].get_string().value();
+  author_ = data["authorName"].get_string().value();
   cover_url_ = data["novelCover"].get_string().value();
 
   std::string intro_str(data["expand"]["intro"].get_string().value());
 
   for (const auto &line : klib::split_str(intro_str, "\n")) {
-    kepub::push_back(intro_, kepub::trans_str(line, false), false);
+    kepub::push_back_no_connect(intro_, line);
   }
 }
 
 VolumeChapter::VolumeChapter(std::string json) : JsonBase(std::move(json)) {
   for (auto volume : doc_["data"]["volumeList"].get_array()) {
-    auto volume_name =
-        kepub::trans_str(volume["title"].get_string().value(), false);
+    auto volume_name = volume["title"].get_string().value();
 
     std::vector<std::tuple<std::string, std::string, std::string>> chapters;
     for (auto chapter : volume["chapterList"].get_array()) {
       auto chapter_id = std::to_string(chapter["chapId"].get_int64());
-      auto chapter_title =
-          kepub::trans_str(chapter["title"].get_string().value(), false);
+      auto chapter_title = chapter["title"].get_string().value();
 
       auto need_fire_money = chapter["needFireMoney"].get_int64().value();
       if (need_fire_money > 0) {
