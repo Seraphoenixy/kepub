@@ -10,11 +10,13 @@
 #include <iostream>
 #include <sstream>
 #include <tuple>
+#include <unordered_set>
 
 #include <klib/log.h>
 #include <klib/unicode.h>
 #include <klib/util.h>
 #include <simdjson.h>
+#include <unicode/regex.h>
 #include <unicode/uchar.h>
 #include <unicode/unistr.h>
 #include <boost/algorithm/string.hpp>
@@ -127,11 +129,19 @@ std::vector<std::string> read_file_to_vec(const std::string &file_name,
 }
 
 void str_check(const std::string &str) {
+  static std::unordered_set<char32_t> set;
+
   auto copy = str;
   std::erase_if(copy, [](char c) { return std::isalnum(c) || c == ' '; });
 
   for (auto c : klib::utf8_to_utf32(copy)) {
     if ((!klib::is_chinese(c) && !is_punct(c)) || c == to_unicode("\"")) {
+      if (set.contains(c)) {
+        continue;
+      }
+
+      set.insert(c);
+
       std::string temp;
       UChar32 ch = c;
       klib::warn("Unknown character: {} in {}",
@@ -153,8 +163,18 @@ std::int32_t str_size(const std::string &str) {
 }
 
 void title_check(const std::string &title) {
-  if (std::count_if(std::begin(title), std::end(title),
-                    [](char c) { return c == ' '; }) != 1) {
+  auto icu_str = icu::UnicodeString::fromUTF8(title.c_str());
+
+  UErrorCode status = U_ZERO_ERROR;
+  icu::RegexMatcher regex(
+      R"(第([零一二三四五六七八九十百千]|[0-9]){1,7}[章话] .+)", icu_str,
+      UREGEX_UWORD | UREGEX_ERROR_ON_UNKNOWN_ESCAPES, status);
+  check_icu(status);
+
+  auto ok = regex.matches(status);
+  check_icu(status);
+
+  if (!ok) {
     klib::warn("Irregular title format: {}", title);
   }
 }

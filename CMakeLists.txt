@@ -80,7 +80,7 @@ endif()
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(icu-i18n REQUIRED IMPORTED_TARGET icu-i18n)
-add_definitions(-DU_HIDE_INTERNAL_API -DU_HIDE_OBSOLETE_API
+add_definitions(-DU_HIDE_INTERNAL_API -DU_HIDE_DRAFT_API -DU_HIDE_OBSOLETE_API
                 -DU_HIDE_DEPRECATED_API)
 
 # ---------------------------------------------------------------------------------------
