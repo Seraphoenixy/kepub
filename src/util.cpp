@@ -46,6 +46,10 @@ bool is_punct(char32_t c) {
          c == to_unicode("→");
 }
 
+bool end_with_punct(const std::string &str) {
+  return is_punct(klib::utf8_to_utf32(str).back());
+}
+
 std::string make_book_name_legal(const std::string &file_name) {
   auto new_file_name = klib::make_file_or_dir_name_legal(file_name);
   if (new_file_name != file_name) {
@@ -166,21 +170,35 @@ void push_back(std::vector<std::string> &texts, const std::string &str,
     return;
   }
 
-  if (texts.back().ends_with("，") || str.starts_with("，") ||
-      str.starts_with("。") || str.starts_with("”") || str.starts_with("｣") ||
-      str.starts_with("、") || str.starts_with("』") || str.starts_with("》") ||
-      str.starts_with("】") || str.starts_with("）")) {
-    texts.back().append(str);
+  if (texts.back().ends_with("，")) {
+    if (start_with_chinese(str) ||
+        (str.starts_with("—") || str.starts_with("“") ||
+         str.starts_with("「") || str.starts_with("『") ||
+         str.starts_with("《") || str.starts_with("【") ||
+         str.starts_with("（"))) {
+      texts.back().append(str);
+    } else {
+      klib::warn("Punctuation may be wrong: {}", str);
+      texts.push_back(str);
+    }
+  } else if (str.starts_with("！") || str.starts_with("？") ||
+             str.starts_with("，") || str.starts_with("。") ||
+             str.starts_with("、") || str.starts_with("”") ||
+             str.starts_with("｣") || str.starts_with("』") ||
+             str.starts_with("》") || str.starts_with("】") ||
+             str.starts_with("）")) {
+    if (!end_with_punct(texts.back())) {
+      texts.back().append(str);
+    } else {
+      klib::warn("Punctuation may be wrong: {}", str);
+      texts.push_back(str);
+    }
   } else if (std::isalpha(texts.back().back()) && std::isalpha(str.front())) {
     texts.back().append(" " + str);
   } else if (end_with_chinese(texts.back()) && std::isalpha(str.front())) {
     texts.back().append(" " + str);
   } else if (std::isalpha(texts.back().back()) && start_with_chinese(str)) {
     texts.back().append(" " + str);
-  } else if ((std::isalpha(texts.back().back()) ||
-              end_with_chinese(texts.back())) &&
-             (str.starts_with("！") || str.starts_with("？"))) {
-    texts.back().append(str);
   } else if (connect_chinese && end_with_chinese(texts.back()) &&
              start_with_chinese(str)) {
     texts.back().append(str);
