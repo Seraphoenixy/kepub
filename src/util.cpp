@@ -192,7 +192,7 @@ void push_back(std::vector<std::string> &texts, const std::string &str,
 
   if (texts.back().ends_with("，")) {
     if (start_with_chinese(str) ||
-        (str.starts_with("—") || str.starts_with("“") ||
+        (str.starts_with("—") || str.starts_with("“") || str.starts_with("｢") ||
          str.starts_with("「") || str.starts_with("『") ||
          str.starts_with("《") || str.starts_with("【") ||
          str.starts_with("（"))) {
@@ -204,9 +204,9 @@ void push_back(std::vector<std::string> &texts, const std::string &str,
   } else if (str.starts_with("！") || str.starts_with("？") ||
              str.starts_with("，") || str.starts_with("。") ||
              str.starts_with("、") || str.starts_with("”") ||
-             str.starts_with("｣") || str.starts_with("』") ||
-             str.starts_with("》") || str.starts_with("】") ||
-             str.starts_with("）")) {
+             str.starts_with("｣") || str.starts_with("」") ||
+             str.starts_with("』") || str.starts_with("》") ||
+             str.starts_with("】") || str.starts_with("）")) {
     if (!end_with_punct(texts.back())) {
       texts.back().append(str);
     } else {
