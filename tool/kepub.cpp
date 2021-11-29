@@ -134,7 +134,14 @@ int main(int argc, const char *argv[]) try {
       }
 
       for (; i < size && !is_prefix(vec[i]); ++i) {
-        kepub::push_back(introduction, vec[i], connect_chinese);
+        auto line = vec[i];
+
+        if (!no_check) {
+          kepub::str_check(line);
+        }
+
+        word_count += kepub::str_size(line);
+        kepub::push_back(introduction, line, connect_chinese);
       }
       --i;
     } else if (vec[i].starts_with(postscript_prefix)) {
@@ -146,7 +153,14 @@ int main(int argc, const char *argv[]) try {
       }
 
       for (; i < size && !is_prefix(vec[i]); ++i) {
-        kepub::push_back(postscript, vec[i], connect_chinese);
+        auto line = vec[i];
+
+        if (!no_check) {
+          kepub::str_check(line);
+        }
+
+        word_count += kepub::str_size(line);
+        kepub::push_back(postscript, line, connect_chinese);
       }
       --i;
     } else if (vec[i].starts_with(volume_prefix)) {
