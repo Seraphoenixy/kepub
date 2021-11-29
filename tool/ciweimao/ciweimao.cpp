@@ -208,6 +208,8 @@ std::vector<std::string> get_content(const std::string &account,
   static std::int32_t image_count = 1;
   std::vector<std::string> content;
   for (auto &line : klib::split_str(content_str, "\n")) {
+    line = kepub::trim(line);
+
     if (line.starts_with("<img src")) {
       pugi::xml_document doc;
       doc.load_string(line.c_str());

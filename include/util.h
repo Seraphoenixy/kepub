@@ -5,6 +5,7 @@
 #include <utility>
 #include <vector>
 
+#include <unicode/unistr.h>
 #include <unicode/utypes.h>
 
 namespace kepub {
@@ -31,6 +32,10 @@ void push_back(std::vector<std::string> &texts, const std::string &str,
 
 void push_back_no_connect(std::vector<std::string> &texts,
                           const std::string &str);
+
+std::string trim(const std::string &str);
+
+void replace_error_char(icu::UnicodeString &str);
 
 void check_icu(UErrorCode status);
 

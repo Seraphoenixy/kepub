@@ -18,7 +18,6 @@
 #include <simdjson.h>
 #include <unicode/regex.h>
 #include <unicode/uchar.h>
-#include <unicode/unistr.h>
 #include <boost/algorithm/string.hpp>
 
 #include "trans.h"
@@ -235,6 +234,7 @@ void push_back_no_connect(std::vector<std::string> &texts,
   }
 
   auto icu_str = icu::UnicodeString::fromUTF8(str.c_str());
+  replace_error_char(icu_str);
   icu_str.trim();
 
   if (icu_str.isEmpty()) {
@@ -243,6 +243,30 @@ void push_back_no_connect(std::vector<std::string> &texts,
 
   std::string temp;
   texts.push_back(icu_str.toUTF8String(temp));
+}
+
+std::string trim(const std::string &str) {
+  auto icu_str = icu::UnicodeString::fromUTF8(str.c_str());
+  icu_str.trim();
+
+  std::string temp;
+  return icu_str.toUTF8String(temp);
+}
+
+void replace_error_char(icu::UnicodeString &str) {
+  // https://en.wikipedia.org/wiki/Word_joiner
+  str.findAndReplace("\uFEFF", " ");
+
+  str.findAndReplace("&nbsp;", " ");
+  str.findAndReplace("\u00A0", " ");
+
+  str.findAndReplace("\t", " ");
+
+  str.findAndReplace("&lt;", "<");
+  str.findAndReplace("&gt;", ">");
+  str.findAndReplace("&quot;", "\"");
+  str.findAndReplace("&apos;", "'");
+  str.findAndReplace("&amp;", "&");
 }
 
 void check_icu(UErrorCode status) {

@@ -52,21 +52,9 @@ void replace_all_multi(icu::UnicodeString &str, const std::string &text) {
 }
 
 void custom_trans(icu::UnicodeString &str) {
-  // https://en.wikipedia.org/wiki/Word_joiner
-  str.findAndReplace("\uFEFF", " ");
-
-  str.findAndReplace("&nbsp;", " ");
-  str.findAndReplace("\u00A0", " ");
-
-  str.findAndReplace("\t", " ");
+  replace_error_char(str);
 
   replace_all_multi(str, " ");
-
-  str.findAndReplace("&lt;", "<");
-  str.findAndReplace("&gt;", ">");
-  str.findAndReplace("&quot;", "\"");
-  str.findAndReplace("&apos;", "'");
-  str.findAndReplace("&amp;", "&");
 
   str.findAndReplace("⋯", "…");
   str.findAndReplace("─", "—");
