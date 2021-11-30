@@ -57,56 +57,9 @@ sudo cmake --build build --config Release --target uninstall
 
 ## Usage
 
-### addition
-
-Add new chapter to EPUB file
-
-When using, the current directory must have an EPUB file with the same name
-
-```bash
-addition book-name.txt
-```
-
-Txt files need to be preprocessed: each volume starts with [VOLUME] plus a space; each chapter starts with [WEB] plus a space; pictures start with [IMAGE] plus a space, followed by the picture number.
-
-### kepub
-
-Generate EPUB file according to the given TXT file
-
-```bash
-kepub book-name.txt
-```
-
-Txt files need to be preprocessed: the author starts with [AUTHOR] and a newline character; the introduction starts with [INTRO] and a newline character; the postscript starts with [POST] and a newline character; each volume starts with [VOLUME] plus a space; each chapter starts with [WEB] plus a space; pictures start with [IMAGE] plus a space, followed by the picture number.
-
-### esjzone
-
-Crawl the novels on esjzone and generate TXT files, then you can use kepub to generate EPUB files
-
-The first command line parameter is book id
-
-```bash
-esjzone 1578022447
-```
-
-### ciweimao
-
-Crawl the novels on ciweimao and generate TXT files, then you can use kepub to generate EPUB files
-
-The first command line parameter is book id
-
-```bash
-ciweimao 100194379
-```
-
-### sfacg
-
-Crawl the novels on sfacg and generate TXT files, then you can use kepub to generate EPUB files
-
-The first command line parameter is book id
-
 ```bash
 sfacg 263060
+kepub book-name.txt
 ```
 
 ---

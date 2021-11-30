@@ -3,7 +3,6 @@
 #include <fmt/compile.h>
 #include <fmt/format.h>
 #include <klib/version.h>
-#include <opencc.h>
 #include <simdjson.h>
 #include <spdlog/version.h>
 #include <unicode/uvernum.h>
