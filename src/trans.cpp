@@ -2,11 +2,28 @@
 
 #include <string_view>
 
+#include <klib/util.h>
+#include <opencc.h>
 #include <unicode/translit.h>
 #include <unicode/unistr.h>
 #include <unicode/utypes.h>
 
 #include "util.h"
+
+extern char tw2s[];
+extern int tw2s_size;
+
+extern char TSPhrases[];
+extern int TSPhrases_size;
+
+extern char TWVariantsRevPhrases[];
+extern int TWVariantsRevPhrases_size;
+
+extern char TWVariantsRev[];
+extern int TWVariantsRev_size;
+
+extern char TSCharacters[];
+extern int TSCharacters_size;
 
 namespace kepub {
 
@@ -28,7 +45,6 @@ class Trans {
  private:
   Trans();
 
-  icu::Transliterator *hant_hans_;
   icu::Transliterator *fullwidth_halfwidth_;
 };
 
@@ -77,6 +93,8 @@ void custom_trans(icu::UnicodeString &str) {
   replace_all_punct(str, "￬", "↓");
   replace_all_punct(str, "￩", "←");
   replace_all_punct(str, "￫", "→");
+  replace_all_punct(str, "｢", "「");
+  replace_all_punct(str, "｣", "」");
 
   replace_all_punct(str, "”", "”");
   replace_all_punct(str, "♂", "♂");
@@ -219,68 +237,10 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("別", "别");
   str.findAndReplace("歿", "殁");
   str.findAndReplace("羅", "罗");
-
-  str.findAndReplace("摔交", "摔跤");
-  str.findAndReplace("摔一交", "摔一跤");
-  str.findAndReplace("摔了交", "摔了跤");
-  str.findAndReplace("摔了一交", "摔了一跤");
-
-  str.findAndReplace("具乐部", "俱乐部");
-  str.findAndReplace("万事具备", "万事俱备");
-  str.findAndReplace("两败具伤", "两败俱伤");
-  str.findAndReplace("万念具灰", "万念俱灰");
-  str.findAndReplace("身心具疲", "身心俱疲");
-  str.findAndReplace("形神具灭", "形神俱灭");
-  str.findAndReplace("玉石具焚", "玉石俱焚");
-  str.findAndReplace("与生具来", "与生俱来");
-  str.findAndReplace("与日具增", "与日俱增");
-  str.findAndReplace("声泪具下", "声泪俱下");
-  str.findAndReplace("灵魂具灭", "灵魂俱灭");
-  str.findAndReplace("涕泪具下", "涕泪俱下");
-  str.findAndReplace("肝胆具裂", "肝胆俱裂");
-  str.findAndReplace("样样具全", "样样俱全");
-  str.findAndReplace("一应具全", "一应俱全");
-  str.findAndReplace("面面具到", "面面俱到");
-  str.findAndReplace("心胆具颤", "心胆俱颤");
-  str.findAndReplace("一荣具荣", "一荣俱荣");
-  str.findAndReplace("一损具损", "一损俱损");
-  str.findAndReplace("心力具疲", "心力俱疲");
-  str.findAndReplace("与时具进", "与时俱进");
-  str.findAndReplace("心胆具寒", "心胆俱寒");
-  str.findAndReplace("神魂具灭", "神魂俱灭");
-  str.findAndReplace("神形具灭", "神形俱灭");
-  str.findAndReplace("万籁具寂", "万籁俱寂");
-  str.findAndReplace("财色具获", "财色俱获");
-  str.findAndReplace("声色具厉", "声色俱厉");
-  str.findAndReplace("人赃具获", "人赃俱获");
-  str.findAndReplace("身心具到", "身心俱到");
-  str.findAndReplace("百废具兴", "百废俱兴");
-  str.findAndReplace("五脏具全", "五脏俱全");
-  str.findAndReplace("与身具来", "与身俱来");
-  str.findAndReplace("色香味具全", "色香味俱全");
-  str.findAndReplace("五脏六腑具碎", "五脏六腑俱碎");
-
-  str.findAndReplace("赤果果", "赤裸裸");
-  str.findAndReplace("赤果", "赤裸");
-
-  str.findAndReplace("了望塔", "瞭望塔");
-  str.findAndReplace("了望台", "瞭望台");
-
-  str.findAndReplace("慰借", "慰藉");
-  str.findAndReplace("巡查", "巡察");
-  str.findAndReplace("一分子", "一份子");
-  str.findAndReplace("分道扬镖", "分道扬镳");
-
-  str.findAndReplace("着称", "著称");
-  str.findAndReplace("想著", "想着");
-  str.findAndReplace("执著", "执着");
-  str.findAndReplace("抚著", "抚着");
+  str.findAndReplace("幺", "么");
 }
 
-Trans::~Trans() {
-  delete hant_hans_;
-  delete fullwidth_halfwidth_;
-}
+Trans::~Trans() { delete fullwidth_halfwidth_; }
 
 const Trans &Trans::get() {
   static Trans trans;
@@ -288,12 +248,13 @@ const Trans &Trans::get() {
 }
 
 std::string Trans::trans_str(std::string_view str, bool translation) const {
-  icu::UnicodeString icu_str(std::data(str), std::size(str));
-
+  std::string std_str(str);
   if (translation) {
-    hant_hans_->transliterate(icu_str);
+    const static opencc::SimpleConverter converter("/tmp/tw2s.json");
+    std_str = converter.Convert(std_str);
   }
 
+  auto icu_str = icu::UnicodeString::fromUTF8(std_str.c_str());
   fullwidth_halfwidth_->transliterate(icu_str);
   custom_trans(icu_str);
 
@@ -304,12 +265,16 @@ std::string Trans::trans_str(std::string_view str, bool translation) const {
 }
 
 Trans::Trans() {
+  klib::write_file("/tmp/tw2s.json", false, tw2s, tw2s_size);
+  klib::write_file("/tmp/TSPhrases.ocd2", true, TSPhrases, TSPhrases_size);
+  klib::write_file("/tmp/TWVariantsRevPhrases.ocd2", true, TWVariantsRevPhrases,
+                   TWVariantsRevPhrases_size);
+  klib::write_file("/tmp/TWVariantsRev.ocd2", true, TWVariantsRev,
+                   TWVariantsRev_size);
+  klib::write_file("/tmp/TSCharacters.ocd2", true, TSCharacters,
+                   TSCharacters_size);
+
   UErrorCode status = U_ZERO_ERROR;
-
-  hant_hans_ =
-      icu::Transliterator::createInstance("Hant-Hans", UTRANS_FORWARD, status);
-  check_icu(status);
-
   fullwidth_halfwidth_ = icu::Transliterator::createInstance(
       "Fullwidth-Halfwidth", UTRANS_FORWARD, status);
   check_icu(status);
