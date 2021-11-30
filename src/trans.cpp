@@ -238,6 +238,7 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("歿", "殁");
   str.findAndReplace("羅", "罗");
   str.findAndReplace("幺", "么");
+  str.findAndReplace("颠复", "颠覆");
 }
 
 Trans::~Trans() { delete fullwidth_halfwidth_; }
