@@ -241,6 +241,8 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("別", "别");
   str.findAndReplace("歿", "殁");
   str.findAndReplace("羅", "罗");
+  str.findAndReplace("給", "给");
+  str.findAndReplace("頽", "颓");
 
   str.findAndReplace("幺", "么");
   str.findAndReplace("颠复", "颠覆");
