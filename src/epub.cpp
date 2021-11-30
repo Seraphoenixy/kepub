@@ -28,24 +28,6 @@ namespace kepub {
 
 namespace {
 
-void to_subset_woff2(std::string_view font_file, const std::string &text) {
-  auto path = std::filesystem::path(font_file);
-  auto stem = path.filename().stem().string();
-  std::string in_name = path.parent_path() / (stem + ".otf");
-  std::string out_name = path.parent_path() / (stem + ".woff2");
-
-  std::filesystem::rename(path, in_name);
-
-  klib::exec(fmt::format(
-      FMT_COMPILE(
-          R"(pyftsubset --flavor=woff2 --output-file={} --text="{}" {})"),
-      out_name, text, in_name));
-
-  if (!std::filesystem::remove(in_name)) {
-    klib::error("Cannot delete file '{}'", in_name);
-  }
-}
-
 std::string num_to_volume_name(std::int32_t i) {
   return "volume" + num_to_str(i) + ".xhtml";
 }
@@ -89,7 +71,7 @@ void append_manifest_and_spine(pugi::xml_node &manifest, const std::string &id,
   } else if (href.ends_with("css")) {
     media_type = "text/css";
   } else if (href.ends_with("woff2")) {
-    // https://idpf.github.io/epub-cmt/v3/
+    // https://www.w3.org/publishing/epub3/epub-spec.html#sec-cmt-supported
     media_type = "font/woff2";
   } else {
     throw klib::RuntimeError("Unknown media type");
@@ -472,11 +454,7 @@ void Epub::append_chapter(
   }
   dbg(font_words_);
 
-  for (const auto &item :
-       std::filesystem::directory_iterator(Epub::fonts_dir)) {
-    std::filesystem::remove(item);
-  }
-
+  remove_file_or_dir(font_path.data());
   generate_font();
 }
 
@@ -496,13 +474,13 @@ void Epub::generate_container() const {
 }
 
 void Epub::generate_font() const {
-  if (std::empty(font_)) {
-    throw klib::RuntimeError("The font is empty");
-  }
-
   spdlog::info("Start generating woff2 font");
-  klib::write_file(Epub::font_path, true, font_);
-  to_subset_woff2(Epub::font_path, font_words_);
+
+  klib::write_file(Epub::temp_font_path, true, font_);
+  klib::exec(fmt::format(
+      FMT_COMPILE(
+          R"(pyftsubset --flavor=woff2 --output-file={} --text="{}" {})"),
+      Epub::font_path, font_words_, Epub::temp_font_path));
 }
 
 void Epub::generate_style() const {

@@ -1,7 +1,5 @@
 #include "trans.h"
 
-#include <string_view>
-
 #include <klib/util.h>
 #include <opencc.h>
 #include <unicode/translit.h>
@@ -114,8 +112,6 @@ void custom_trans(icu::UnicodeString &str) {
   replace_all_multi(str, "，");
   replace_all_multi(str, "。");
   replace_all_multi(str, "、");
-  replace_all_multi(str, "‘");
-  replace_all_multi(str, "’");
 
   str.findAndReplace("妳", "你");
   str.findAndReplace("壊", "坏");

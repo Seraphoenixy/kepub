@@ -3,7 +3,6 @@
 #include <unistd.h>
 
 #include <algorithm>
-#include <cassert>
 #include <cctype>
 #include <filesystem>
 #include <fstream>
@@ -19,6 +18,7 @@
 #include <unicode/regex.h>
 #include <unicode/uchar.h>
 #include <boost/algorithm/string.hpp>
+#include <gsl/gsl-lite.hpp>
 
 #include "trans.h"
 
@@ -26,7 +26,7 @@ namespace {
 
 char32_t to_unicode(const std::string &str) {
   auto utf32 = klib::utf8_to_utf32(str);
-  assert(std::size(utf32) == 1);
+  Ensures(std::size(utf32) == 1);
 
   return utf32.front();
 }
@@ -210,14 +210,6 @@ void push_back(std::vector<std::string> &texts, const std::string &str,
     if (!end_with_punct(texts.back())) {
       texts.back().append(str);
     } else {
-      if (str.starts_with("”") && str.ends_with("”")) {
-        auto icu_str = icu::UnicodeString::fromUTF8(str.c_str());
-        std::string temp;
-        temp = icu_str.tempSubString(1).toUTF8String(temp);
-        texts.push_back("“" + temp);
-        return;
-      }
-
       if (!(str.starts_with("！") || str.starts_with("？"))) {
         klib::warn("Punctuation may be wrong: {}", str);
       }
@@ -309,7 +301,7 @@ std::string get_password() {
 }
 
 std::string num_to_str(std::int32_t i) {
-  assert(i > 0);
+  Expects(i > 0);
 
   auto str = std::to_string(i);
   if (i < 10) {
