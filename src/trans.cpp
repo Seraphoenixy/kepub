@@ -271,15 +271,14 @@ std::string Trans::trans_str(std::string_view str, bool translation) const {
 }
 
 Trans::Trans() {
-  write_file_if_not_exists("/tmp/tw2s.json", false, tw2s, tw2s_size);
-  write_file_if_not_exists("/tmp/TSPhrases.ocd2", true, TSPhrases,
-                           TSPhrases_size);
-  write_file_if_not_exists("/tmp/TWVariantsRevPhrases.ocd2", true,
-                           TWVariantsRevPhrases, TWVariantsRevPhrases_size);
-  write_file_if_not_exists("/tmp/TWVariantsRev.ocd2", true, TWVariantsRev,
-                           TWVariantsRev_size);
-  write_file_if_not_exists("/tmp/TSCharacters.ocd2", true, TSCharacters,
-                           TSCharacters_size);
+  klib::write_file("/tmp/tw2s.json", false, tw2s, tw2s_size);
+  klib::write_file("/tmp/TSPhrases.ocd2", true, TSPhrases, TSPhrases_size);
+  klib::write_file("/tmp/TWVariantsRevPhrases.ocd2", true, TWVariantsRevPhrases,
+                   TWVariantsRevPhrases_size);
+  klib::write_file("/tmp/TWVariantsRev.ocd2", true, TWVariantsRev,
+                   TWVariantsRev_size);
+  klib::write_file("/tmp/TSCharacters.ocd2", true, TSCharacters,
+                   TSCharacters_size);
 
   UErrorCode status = U_ZERO_ERROR;
   fullwidth_halfwidth_ = icu::Transliterator::createInstance(

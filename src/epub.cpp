@@ -475,7 +475,7 @@ void Epub::generate_container() const {
 void Epub::generate_font() const {
   spdlog::info("Start generating woff2 font");
 
-  write_file_if_not_exists(Epub::temp_font_path, true, font_);
+  klib::write_file(Epub::temp_font_path, true, font_);
   klib::exec(fmt::format(
       FMT_COMPILE(
           R"(pyftsubset --flavor=woff2 --output-file={} --text="{}" {})"),

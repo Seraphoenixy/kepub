@@ -34,12 +34,6 @@ void push_back(std::vector<std::string> &texts, const std::string &str,
 void push_back_no_connect(std::vector<std::string> &texts,
                           const std::string &str);
 
-void write_file_if_not_exists(std::string_view path, bool binary,
-                              std::string_view content);
-
-void write_file_if_not_exists(std::string_view path, bool binary,
-                              const char *str, std::size_t size);
-
 std::string trim(const std::string &str);
 
 void replace_error_char(icu::UnicodeString &str);
