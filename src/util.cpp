@@ -248,6 +248,20 @@ void push_back_no_connect(std::vector<std::string> &texts,
   texts.push_back(icu_str.toUTF8String(temp));
 }
 
+void write_file_if_not_exists(std::string_view path, bool binary,
+                              std::string_view content) {
+  klib::write_file(path.data(), binary, std::data(content), std::size(content));
+}
+
+void write_file_if_not_exists(std::string_view path, bool binary,
+                              const char *str, std::size_t size) {
+  if (std::filesystem::exists(path)) {
+    return;
+  }
+
+  klib::write_file(path.data(), binary, str, size);
+}
+
 std::string trim(const std::string &str) {
   auto icu_str = icu::UnicodeString::fromUTF8(str.c_str());
   icu_str.trim();

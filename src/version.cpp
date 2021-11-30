@@ -3,11 +3,11 @@
 #include <fmt/compile.h>
 #include <fmt/format.h>
 #include <klib/version.h>
+#include <opencc.h>
 #include <simdjson.h>
 #include <spdlog/version.h>
 #include <unicode/uvernum.h>
 #include <CLI/Version.hpp>
-#include <boost/algorithm/string.hpp>
 #include <boost/version.hpp>
 #include <gsl/gsl-lite.hpp>
 #include <pugixml.hpp>
@@ -39,6 +39,7 @@ std::string version_str() {
                   PUGIXML_VERSION / 10 % 100, PUGIXML_VERSION % 10);
   result += fmt::format(FMT_COMPILE("ICU/{}.{}.{} "), U_ICU_VERSION_MAJOR_NUM,
                         U_ICU_VERSION_MINOR_NUM, U_ICU_VERSION_PATCHLEVEL_NUM);
+  result += "OpenCC/1.1.3 ";
   // NOTE
   result += "indicators/2.2.0\n";
 

@@ -28,6 +28,7 @@ Crawl novels from esjzone, ciweimao and sfacg. Generate epub from txt file
 - [simdjson](https://github.com/simdjson/simdjson)
 - [pugixml](https://github.com/zeux/pugixml)
 - [icu](https://github.com/unicode-org/icu)
+- [OpenCC](https://github.com/BYVoid/OpenCC)
 - [indicators](https://github.com/p-ranav/indicators)
 
 ## Font
