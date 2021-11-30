@@ -194,8 +194,8 @@ void push_back(std::vector<std::string> &texts, const std::string &str,
     if ((start_with_chinese(str) || std::isalnum(str.front())) ||
         (str.starts_with("—") || str.starts_with("“") ||
          str.starts_with("「") || str.starts_with("『") ||
-         str.starts_with("《") || str.starts_with("【") ||
-         str.starts_with("（"))) {
+         str.starts_with("《") || str.starts_with("[") ||
+         str.starts_with("【") || str.starts_with("（"))) {
       texts.back().append(str);
     } else {
       klib::warn("Punctuation may be wrong: {}", str);
@@ -205,8 +205,8 @@ void push_back(std::vector<std::string> &texts, const std::string &str,
              str.starts_with("，") || str.starts_with("。") ||
              str.starts_with("、") || str.starts_with("”") ||
              str.starts_with("」") || str.starts_with("』") ||
-             str.starts_with("》") || str.starts_with("】") ||
-             str.starts_with("）")) {
+             str.starts_with("》") || str.starts_with("]") ||
+             str.starts_with("】") || str.starts_with("）")) {
     if (!end_with_punct(texts.back())) {
       texts.back().append(str);
     } else {

@@ -255,7 +255,7 @@
             </navPoint>
             <navPoint id="navPoint-41" playOrder="41">
                 <navLabel>
-                    <text>第三十七章 裂解 （上）</text>
+                    <text>第三十七章 裂解（上）</text>
                 </navLabel>
                 <content src="Text/chapter037.xhtml" />
             </navPoint>
