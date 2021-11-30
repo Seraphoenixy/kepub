@@ -16,3 +16,9 @@ TEST_CASE("title_check", "[util]") {
   REQUIRE_NOTHROW(kepub::title_check("第123话标题"));
   REQUIRE_NOTHROW(kepub::title_check("123话 标题"));
 }
+
+TEST_CASE("volume_name_check", "[util]") {
+  REQUIRE_NOTHROW(kepub::volume_name_check("第三十二卷 标标标标标标标标标"));
+  REQUIRE_NOTHROW(kepub::volume_name_check("第123话 标题标标标标"));
+  REQUIRE_NOTHROW(kepub::volume_name_check("第1卷 "));
+}

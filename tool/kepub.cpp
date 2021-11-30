@@ -165,6 +165,10 @@ int main(int argc, const char *argv[]) try {
       --i;
     } else if (vec[i].starts_with(volume_prefix)) {
       volume_name = vec[i].substr(volume_prefix_size);
+
+      if (!no_check) {
+        kepub::volume_name_check(volume_name);
+      }
     } else if (vec[i].starts_with(title_prefix)) {
       auto title = vec[i].substr(title_prefix_size);
       if (!no_check) {

@@ -22,6 +22,8 @@
 
 #include "trans.h"
 
+namespace kepub {
+
 namespace {
 
 char32_t to_unicode(const std::string &str) {
@@ -63,9 +65,22 @@ std::string make_book_name_legal(const std::string &file_name) {
   return new_file_name;
 }
 
-}  // namespace
+bool regex_match(const std::string &str, const std::string &regex) {
+  auto input = icu::UnicodeString::fromUTF8(str);
+  auto regex_str = icu::UnicodeString::fromUTF8(regex);
 
-namespace kepub {
+  UErrorCode status = U_ZERO_ERROR;
+  icu::RegexMatcher regex_matcher(
+      regex_str, input, UREGEX_UWORD | UREGEX_ERROR_ON_UNKNOWN_ESCAPES, status);
+  check_icu(status);
+
+  auto ok = regex_matcher.matches(status);
+  check_icu(status);
+
+  return ok;
+}
+
+}  // namespace
 
 void check_file_exist(const std::string &file_name) {
   if (!std::filesystem::is_regular_file(file_name)) {
@@ -161,20 +176,16 @@ std::int32_t str_size(const std::string &str) {
   return count;
 }
 
+void volume_name_check(const std::string &volume_name) {
+  if (!regex_match(volume_name,
+                   R"(第([一二三四五六七八九十]|[0-9]){1,3}卷 .+)")) {
+    klib::warn("Irregular volume name format: {}", volume_name);
+  }
+}
+
 void title_check(const std::string &title) {
-  icu::UnicodeString regex_str =
-      R"(第([零一二三四五六七八九十百千]|[0-9]){1,7}[章话] .+)";
-  auto input = icu::UnicodeString::fromUTF8(title.c_str());
-
-  UErrorCode status = U_ZERO_ERROR;
-  icu::RegexMatcher regex(
-      regex_str, input, UREGEX_UWORD | UREGEX_ERROR_ON_UNKNOWN_ESCAPES, status);
-  check_icu(status);
-
-  auto ok = regex.matches(status);
-  check_icu(status);
-
-  if (!ok) {
+  if (!regex_match(title,
+                   R"(第([零一二三四五六七八九十百千]|[0-9]){1,7}[章话] .+)")) {
     klib::warn("Irregular title format: {}", title);
   }
 }

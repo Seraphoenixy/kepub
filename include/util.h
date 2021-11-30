@@ -26,6 +26,8 @@ void str_check(const std::string &str);
 
 std::int32_t str_size(const std::string &str);
 
+void volume_name_check(const std::string &volume_name);
+
 void title_check(const std::string &title);
 
 void push_back(std::vector<std::string> &texts, const std::string &str,

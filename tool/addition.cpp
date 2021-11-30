@@ -62,6 +62,7 @@ int main(int argc, const char *argv[]) try {
   for (std::size_t i = 0; i < size; ++i) {
     if (vec[i].starts_with(volume_prefix)) {
       volume_name = vec[i].substr(volume_prefix_size);
+      kepub::volume_name_check(volume_name);
     } else if (vec[i].starts_with(title_prefix)) {
       auto title = vec[i].substr(title_prefix_size);
       ++i;

@@ -26,9 +26,9 @@
 
 namespace {
 
-const std::string app_version = "2.9.100";
+const std::string app_version = "2.9.207";
 const std::string device_token = "iPhone-ADDACF06-A9DD-482B-ADF5-ADE5B97438EE";
-const std::string user_agent = "HappyBook/2.9.1 (iPhone; iOS 15.1; Scale/3.00)";
+const std::string user_agent = "HappyBook/2.9.2 (iPhone; iOS 15.1; Scale/3.00)";
 
 const std::string default_key = "zG2nSeEfSHfvTCHy5LCcqtBbQehKNLXn";
 
@@ -53,7 +53,7 @@ klib::Response http_get_rss(const std::string &url) {
 
   const static std::string user_agent_rss =
       request.url_encode("刺猬猫阅读") +
-      "/2.9.100 CFNetwork/1325.0.1 Darwin/21.1.0";
+      "/2.9.207 CFNetwork/1325.0.1 Darwin/21.1.0";
 
   request.set_no_proxy();
   request.set_user_agent(user_agent_rss);
