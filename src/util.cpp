@@ -209,7 +209,8 @@ void push_back(std::vector<std::string> &texts, const std::string &str,
          str.starts_with("【") || str.starts_with("（"))) {
       texts.back().append(str);
     } else {
-      klib::warn("Punctuation may be wrong: {}", str);
+      klib::warn("Punctuation may be wrong: {}, previous row: {}", str,
+                 texts.back());
       texts.push_back(str);
     }
   } else if (str.starts_with("！") || str.starts_with("？") ||
