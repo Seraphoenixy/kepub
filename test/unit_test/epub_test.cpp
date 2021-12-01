@@ -9,7 +9,7 @@
 
 TEST_CASE("base generate", "[epub]") {
   kepub::Epub epub;
-  epub.set_creator("kaiser");
+  epub.set_creator("Kaiser");
   epub.set_book_name("test book1");
   epub.set_author("test author");
   epub.set_introduction({"test", "introduction"});
@@ -70,7 +70,7 @@ TEST_CASE("base generate", "[epub]") {
         <div>
             <h1 class="bold">制作信息</h1>
             <div class="cutline">
-                <p class="makerifm">制作者：kaiser</p>
+                <p class="makerifm">制作者：Kaiser</p>
             </div>
         </div>
     </body>
@@ -83,9 +83,9 @@ TEST_CASE("base generate", "[epub]") {
 <package version="2.0" unique-identifier="BookId" xmlns="http://www.idpf.org/2007/opf">
     <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
         <dc:title>test book1</dc:title>
-        <dc:creator opf:file-as="kaiser" opf:role="aut">test author</dc:creator>
+        <dc:creator opf:file-as="Kaiser" opf:role="aut">test author</dc:creator>
         <dc:language>zh-CN</dc:language>
-        <dc:rights>kaiser</dc:rights>
+        <dc:rights>Kaiser</dc:rights>
         <dc:date opf:event="modification" xmlns:opf="http://www.idpf.org/2007/opf">2021-08-01</dc:date>
         <dc:identifier id="BookId" opf:scheme="UUID">urn:uuid:5208e6bb-5d25-45b0-a7fd-b97d79a85fd4</dc:identifier>
     </metadata>
@@ -150,7 +150,7 @@ TEST_CASE("base generate", "[epub]") {
 
 TEST_CASE("generate postscript", "[epub]") {
   kepub::Epub epub;
-  epub.set_creator("kaiser");
+  epub.set_creator("Kaiser");
   epub.set_book_name("test book2");
   epub.set_author("test author");
   epub.set_introduction({"test", "introduction"});
@@ -188,9 +188,9 @@ TEST_CASE("generate postscript", "[epub]") {
 <package version="2.0" unique-identifier="BookId" xmlns="http://www.idpf.org/2007/opf">
     <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
         <dc:title>test book2</dc:title>
-        <dc:creator opf:file-as="kaiser" opf:role="aut">test author</dc:creator>
+        <dc:creator opf:file-as="Kaiser" opf:role="aut">test author</dc:creator>
         <dc:language>zh-CN</dc:language>
-        <dc:rights>kaiser</dc:rights>
+        <dc:rights>Kaiser</dc:rights>
         <dc:date opf:event="modification" xmlns:opf="http://www.idpf.org/2007/opf">2021-08-01</dc:date>
         <dc:identifier id="BookId" opf:scheme="UUID">urn:uuid:5208e6bb-5d25-45b0-a7fd-b97d79a85fd4</dc:identifier>
     </metadata>
@@ -258,7 +258,7 @@ TEST_CASE("generate postscript", "[epub]") {
 
 TEST_CASE("generate postscript and cover", "[epub]") {
   kepub::Epub epub;
-  epub.set_creator("kaiser");
+  epub.set_creator("Kaiser");
   epub.set_book_name("test book3");
   epub.set_author("test author");
   epub.set_introduction({"test", "introduction"});
@@ -296,9 +296,9 @@ TEST_CASE("generate postscript and cover", "[epub]") {
 <package version="2.0" unique-identifier="BookId" xmlns="http://www.idpf.org/2007/opf">
     <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
         <dc:title>test book3</dc:title>
-        <dc:creator opf:file-as="kaiser" opf:role="aut">test author</dc:creator>
+        <dc:creator opf:file-as="Kaiser" opf:role="aut">test author</dc:creator>
         <dc:language>zh-CN</dc:language>
-        <dc:rights>kaiser</dc:rights>
+        <dc:rights>Kaiser</dc:rights>
         <dc:date opf:event="modification" xmlns:opf="http://www.idpf.org/2007/opf">2021-08-01</dc:date>
         <dc:identifier id="BookId" opf:scheme="UUID">urn:uuid:5208e6bb-5d25-45b0-a7fd-b97d79a85fd4</dc:identifier>
         <meta name="cover" content="cover.jpg" />
@@ -378,7 +378,7 @@ TEST_CASE("generate postscript and cover", "[epub]") {
 
 TEST_CASE("generate postscript, cover, illustration and image", "[epub]") {
   kepub::Epub epub;
-  epub.set_creator("kaiser");
+  epub.set_creator("Kaiser");
   epub.set_book_name("test book4");
   epub.set_author("test author");
   epub.set_introduction({"test", "introduction"});
@@ -427,9 +427,9 @@ TEST_CASE("generate postscript, cover, illustration and image", "[epub]") {
 <package version="2.0" unique-identifier="BookId" xmlns="http://www.idpf.org/2007/opf">
     <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
         <dc:title>test book4</dc:title>
-        <dc:creator opf:file-as="kaiser" opf:role="aut">test author</dc:creator>
+        <dc:creator opf:file-as="Kaiser" opf:role="aut">test author</dc:creator>
         <dc:language>zh-CN</dc:language>
-        <dc:rights>kaiser</dc:rights>
+        <dc:rights>Kaiser</dc:rights>
         <dc:date opf:event="modification" xmlns:opf="http://www.idpf.org/2007/opf">2021-08-01</dc:date>
         <dc:identifier id="BookId" opf:scheme="UUID">urn:uuid:5208e6bb-5d25-45b0-a7fd-b97d79a85fd4</dc:identifier>
         <meta name="cover" content="cover.jpg" />
@@ -527,7 +527,7 @@ TEST_CASE("generate postscript, cover, illustration and image", "[epub]") {
 
 TEST_CASE("full generate", "[epub]") {
   kepub::Epub epub;
-  epub.set_creator("kaiser");
+  epub.set_creator("Kaiser");
   epub.set_book_name("test book5");
   epub.set_author("test author");
   epub.set_introduction({"test", "introduction"});
@@ -579,9 +579,9 @@ TEST_CASE("full generate", "[epub]") {
 <package version="2.0" unique-identifier="BookId" xmlns="http://www.idpf.org/2007/opf">
     <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
         <dc:title>test book5</dc:title>
-        <dc:creator opf:file-as="kaiser" opf:role="aut">test author</dc:creator>
+        <dc:creator opf:file-as="Kaiser" opf:role="aut">test author</dc:creator>
         <dc:language>zh-CN</dc:language>
-        <dc:rights>kaiser</dc:rights>
+        <dc:rights>Kaiser</dc:rights>
         <dc:date opf:event="modification" xmlns:opf="http://www.idpf.org/2007/opf">2021-08-01</dc:date>
         <dc:identifier id="BookId" opf:scheme="UUID">urn:uuid:5208e6bb-5d25-45b0-a7fd-b97d79a85fd4</dc:identifier>
         <meta name="cover" content="cover.jpg" />
@@ -703,7 +703,7 @@ TEST_CASE("full generate", "[epub]") {
 
 TEST_CASE("sub-volume", "[epub]") {
   kepub::Epub epub;
-  epub.set_creator("kaiser");
+  epub.set_creator("Kaiser");
   epub.set_book_name("test book6");
   epub.set_author("test author");
   epub.set_introduction({"test", "introduction"});
@@ -755,9 +755,9 @@ TEST_CASE("sub-volume", "[epub]") {
 <package version="2.0" unique-identifier="BookId" xmlns="http://www.idpf.org/2007/opf">
     <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
         <dc:title>test book6</dc:title>
-        <dc:creator opf:file-as="kaiser" opf:role="aut">test author</dc:creator>
+        <dc:creator opf:file-as="Kaiser" opf:role="aut">test author</dc:creator>
         <dc:language>zh-CN</dc:language>
-        <dc:rights>kaiser</dc:rights>
+        <dc:rights>Kaiser</dc:rights>
         <dc:date opf:event="modification" xmlns:opf="http://www.idpf.org/2007/opf">2021-08-01</dc:date>
         <dc:identifier id="BookId" opf:scheme="UUID">urn:uuid:5208e6bb-5d25-45b0-a7fd-b97d79a85fd4</dc:identifier>
         <meta name="cover" content="cover.jpg" />
@@ -895,7 +895,7 @@ TEST_CASE("sub-volume", "[epub]") {
 
 TEST_CASE("append", "[epub]") {
   kepub::Epub epub;
-  epub.set_creator("kaiser");
+  epub.set_creator("Kaiser");
   epub.set_book_name("test book7");
   epub.set_author("test author");
   epub.set_introduction({"test", "introduction"});
@@ -950,9 +950,9 @@ TEST_CASE("append", "[epub]") {
 <package version="2.0" unique-identifier="BookId" xmlns="http://www.idpf.org/2007/opf">
     <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
         <dc:title>test book7</dc:title>
-        <dc:creator opf:file-as="kaiser" opf:role="aut">test author</dc:creator>
+        <dc:creator opf:file-as="Kaiser" opf:role="aut">test author</dc:creator>
         <dc:language>zh-CN</dc:language>
-        <dc:rights>kaiser</dc:rights>
+        <dc:rights>Kaiser</dc:rights>
         <dc:date opf:event="modification" xmlns:opf="http://www.idpf.org/2007/opf">2021-08-01</dc:date>
         <dc:identifier id="BookId" opf:scheme="UUID">urn:uuid:5208e6bb-5d25-45b0-a7fd-b97d79a85fd4</dc:identifier>
         <meta name="cover" content="cover.jpg" />
@@ -1090,7 +1090,7 @@ TEST_CASE("append", "[epub]") {
 
 TEST_CASE("append sub-volume", "[epub]") {
   kepub::Epub epub;
-  epub.set_creator("kaiser");
+  epub.set_creator("Kaiser");
   epub.set_book_name("test book8");
   epub.set_author("test author");
   epub.set_introduction({"test", "introduction"});
@@ -1145,9 +1145,9 @@ TEST_CASE("append sub-volume", "[epub]") {
 <package version="2.0" unique-identifier="BookId" xmlns="http://www.idpf.org/2007/opf">
     <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
         <dc:title>test book8</dc:title>
-        <dc:creator opf:file-as="kaiser" opf:role="aut">test author</dc:creator>
+        <dc:creator opf:file-as="Kaiser" opf:role="aut">test author</dc:creator>
         <dc:language>zh-CN</dc:language>
-        <dc:rights>kaiser</dc:rights>
+        <dc:rights>Kaiser</dc:rights>
         <dc:date opf:event="modification" xmlns:opf="http://www.idpf.org/2007/opf">2021-08-01</dc:date>
         <dc:identifier id="BookId" opf:scheme="UUID">urn:uuid:5208e6bb-5d25-45b0-a7fd-b97d79a85fd4</dc:identifier>
         <meta name="cover" content="cover.jpg" />

@@ -73,7 +73,7 @@ int main(int argc, const char *argv[]) try {
   spdlog::info("Book name: {}", book_name);
 
   kepub::Epub epub;
-  epub.set_creator("kaiser");
+  epub.set_creator("Kaiser");
   epub.set_book_name(book_name);
   epub.set_generate_cover(!no_cover);
   epub.set_illustration_num(illustration_num);

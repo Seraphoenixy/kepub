@@ -2,9 +2,9 @@
 <package version="2.0" unique-identifier="BookId" xmlns="http://www.idpf.org/2007/opf">
     <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
         <dc:title>1578022447</dc:title>
-        <dc:creator opf:file-as="kaiser" opf:role="aut">百合图书</dc:creator>
+        <dc:creator opf:file-as="Kaiser" opf:role="aut">百合图书</dc:creator>
         <dc:language>zh-CN</dc:language>
-        <dc:rights>kaiser</dc:rights>
+        <dc:rights>Kaiser</dc:rights>
         <dc:date opf:event="modification" xmlns:opf="http://www.idpf.org/2007/opf">2021-11-30</dc:date>
         <dc:identifier id="BookId" opf:scheme="UUID">urn:uuid:72074299-583c-4b62-8bdf-18382b11622c</dc:identifier>
         <meta name="cover" content="cover.jpg" />
