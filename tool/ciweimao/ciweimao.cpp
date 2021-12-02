@@ -57,7 +57,7 @@ klib::Response http_get_rss(const std::string &url) {
 
   request.set_no_proxy();
   request.set_user_agent(user_agent_rss);
-  request.set_accept_encoding("gzip, deflate");
+  request.set_accept_encoding("gzip, deflate, br");
 #ifndef NDEBUG
   request.verbose(true);
 #endif
@@ -76,7 +76,7 @@ klib::Response http_post(const std::string &url,
   static klib::Request request;
   request.set_no_proxy();
   request.set_user_agent(user_agent);
-  request.set_accept_encoding("gzip, deflate");
+  request.set_accept_encoding("gzip, deflate, br");
 #ifndef NDEBUG
   request.verbose(true);
 #endif
