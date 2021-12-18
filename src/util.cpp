@@ -180,14 +180,20 @@ void volume_name_check(const std::string &volume_name) {
   if (!regex_match(volume_name,
                    R"(第([一二三四五六七八九十]|[0-9]){1,3}卷 .+)")) {
     klib::warn("Irregular volume name format: {}", volume_name);
+    return;
   }
+
+  str_check(volume_name);
 }
 
 void title_check(const std::string &title) {
   if (!regex_match(title,
                    R"(第([零一二三四五六七八九十百千]|[0-9]){1,7}[章话] .+)")) {
     klib::warn("Irregular title format: {}", title);
+    return;
   }
+
+  str_check(title);
 }
 
 void push_back(std::vector<std::string> &texts, const std::string &str,
