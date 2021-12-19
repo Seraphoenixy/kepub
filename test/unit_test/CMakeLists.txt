@@ -1,8 +1,9 @@
-file(GLOB_RECURSE TEST_SRC CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
+file(GLOB_RECURSE KEPUB_TEST_SRC CONFIGURE_DEPENDS
+     ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 
 find_package(Catch2 REQUIRED)
 
-add_executable(${KEPUB_TEST_EXECUTABLE} ${TEST_SRC})
+add_executable(${KEPUB_TEST_EXECUTABLE} ${MIMALLOC_OBJECT} ${KEPUB_TEST_SRC})
 target_link_libraries(${KEPUB_TEST_EXECUTABLE}
                       PRIVATE ${KEPUB_LIBRARY} Catch2::Catch2WithMain fmt::fmt)
 

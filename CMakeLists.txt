@@ -86,6 +86,11 @@ pkg_check_modules(marisa REQUIRED IMPORTED_TARGET marisa)
 add_definitions(-DU_HIDE_INTERNAL_API -DU_HIDE_DRAFT_API -DU_HIDE_OBSOLETE_API
                 -DU_HIDE_DEPRECATED_API)
 
+if(NOT KEPUB_SANITIZER)
+  message(STATUS "Use mimalloc")
+  set(MIMALLOC_OBJECT "/usr/local/lib/mimalloc.o")
+endif()
+
 # ---------------------------------------------------------------------------------------
 # Build epub file
 # ---------------------------------------------------------------------------------------
@@ -99,7 +104,7 @@ target_compile_options(epub PRIVATE "-Wno-unused-command-line-argument")
 # ---------------------------------------------------------------------------------------
 # Build static library
 # ---------------------------------------------------------------------------------------
-add_library(${KEPUB_LIBRARY} STATIC ${KEPUB_LIBRARY_SRC})
+add_library(${KEPUB_LIBRARY} STATIC ${MIMALLOC_OBJECT} ${KEPUB_LIBRARY_SRC})
 
 target_include_directories(${KEPUB_LIBRARY}
                            PUBLIC "${KEPUB_SOURCE_DIR}/include")
@@ -125,7 +130,8 @@ set_target_properties(
 # ---------------------------------------------------------------------------------------
 # Build shared library
 # ---------------------------------------------------------------------------------------
-add_library(${KEPUB_LIBRARY}-shared SHARED ${KEPUB_LIBRARY_SRC})
+add_library(${KEPUB_LIBRARY}-shared SHARED ${MIMALLOC_OBJECT}
+                                           ${KEPUB_LIBRARY_SRC})
 
 target_include_directories(${KEPUB_LIBRARY}-shared
                            PUBLIC "${KEPUB_SOURCE_DIR}/include")

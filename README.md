@@ -20,6 +20,7 @@ Crawl novels from esjzone, ciweimao and sfacg. Generate epub from txt file
 ## Dependency
 
 - [klib](https://github.com/KaiserLancelot/klib)
+- [mimalloc](https://github.com/microsoft/mimalloc)
 - [Boost](https://www.boost.org/)
 - [gsl-lite](https://github.com/gsl-lite/gsl-lite)
 - [CLI11](https://github.com/CLIUtils/CLI11)
