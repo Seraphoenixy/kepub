@@ -26,13 +26,6 @@ namespace kepub {
 
 namespace {
 
-char32_t to_unicode(const std::string &str) {
-  auto utf32 = klib::utf8_to_utf32(str);
-  Ensures(std::size(utf32) == 1);
-
-  return utf32.front();
-}
-
 bool start_with_chinese(const std::string &str) {
   return klib::is_chinese(klib::utf8_to_utf32(str).front());
 }
@@ -42,11 +35,13 @@ bool end_with_chinese(const std::string &str) {
 }
 
 bool is_punct(char32_t c) {
-  return u_ispunct(c) || c == to_unicode("～") || c == to_unicode("ー") ||
-         c == to_unicode("♂") || c == to_unicode("♀") || c == to_unicode("◇") ||
-         c == to_unicode("￮") || c == to_unicode("+") || c == to_unicode("=") ||
-         c == to_unicode("↑") || c == to_unicode("↓") || c == to_unicode("←") ||
-         c == to_unicode("→");
+  return u_ispunct(c) || c == klib::utf8_to_unicode("～") ||
+         c == klib::utf8_to_unicode("ー") || c == klib::utf8_to_unicode("♂") ||
+         c == klib::utf8_to_unicode("♀") || c == klib::utf8_to_unicode("◇") ||
+         c == klib::utf8_to_unicode("￮") || c == klib::utf8_to_unicode("+") ||
+         c == klib::utf8_to_unicode("=") || c == klib::utf8_to_unicode("↑") ||
+         c == klib::utf8_to_unicode("↓") || c == klib::utf8_to_unicode("←") ||
+         c == klib::utf8_to_unicode("→");
 }
 
 bool end_with_punct(const std::string &str) {
@@ -149,7 +144,8 @@ void str_check(const std::string &str) {
   std::erase_if(copy, [](char c) { return std::isalnum(c) || c == ' '; });
 
   for (auto c : klib::utf8_to_utf32(copy)) {
-    if ((!klib::is_chinese(c) && !is_punct(c)) || c == to_unicode("\"")) {
+    if ((!klib::is_chinese(c) && !is_punct(c)) ||
+        c == klib::utf8_to_unicode("\"")) {
       if (set.contains(c)) {
         continue;
       }

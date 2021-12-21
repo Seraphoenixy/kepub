@@ -4,6 +4,7 @@
 #include <utility>
 #include <vector>
 
+#include <klib/exception.h>
 #include <klib/html.h>
 #include <klib/http.h>
 #include <klib/log.h>
@@ -219,6 +220,8 @@ int main(int argc, const char *argv[]) try {
 
   kepub::generate_txt(book_name, author, description, chapters);
   spdlog::info("Novel '{}' download completed", book_name);
+} catch (const klib::Exception &err) {
+  klib::error(err.what());
 } catch (const std::exception &err) {
   klib::error(err.what());
 } catch (...) {

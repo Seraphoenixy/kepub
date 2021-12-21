@@ -289,6 +289,8 @@ int main(int argc, const char *argv[]) try {
 
   kepub::generate_txt(book_name, author, description, volume_chapter);
   spdlog::info("Novel '{}' download completed", book_name);
+} catch (const klib::Exception &err) {
+  klib::error(err.what());
 } catch (const std::exception &err) {
   klib::error(err.what());
 } catch (...) {

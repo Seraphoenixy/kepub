@@ -6,6 +6,7 @@
 #include <vector>
 
 #include <klib/archive.h>
+#include <klib/exception.h>
 #include <klib/log.h>
 #include <CLI/CLI.hpp>
 
@@ -88,6 +89,8 @@ int main(int argc, const char *argv[]) try {
     klib::compress(book_name, klib::Algorithm::Zip, book_name + ".epub", false);
     kepub::remove_file_or_dir(book_name);
   }
+} catch (const klib::Exception &err) {
+  klib::error(err.what());
 } catch (const std::exception &err) {
   klib::error(err.what());
 } catch (...) {

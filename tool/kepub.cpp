@@ -6,6 +6,7 @@
 #include <vector>
 
 #include <klib/archive.h>
+#include <klib/exception.h>
 #include <klib/log.h>
 #include <spdlog/spdlog.h>
 #include <CLI/CLI.hpp>
@@ -268,6 +269,8 @@ int main(int argc, const char *argv[]) try {
   } else {
     klib::warn("Some kind of error occurred, epub generation failed");
   }
+} catch (const klib::Exception &err) {
+  klib::error(err.what());
 } catch (const std::exception &err) {
   klib::error(err.what());
 } catch (...) {
