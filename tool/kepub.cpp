@@ -261,7 +261,7 @@ int main(int argc, const char *argv[]) try {
     if (!no_compress) {
       spdlog::info("Start to compress and generate epub files");
       klib::compress(book_name, klib::Algorithm::Zip, book_name + ".epub",
-                     false);
+                     false, 9);
       kepub::remove_file_or_dir(book_name);
       spdlog::info("The epub of novel '{}' was successfully generated",
                    book_name);
