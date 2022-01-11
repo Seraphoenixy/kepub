@@ -28,9 +28,9 @@ namespace {
 const std::string authorization = "Basic YXBpdXNlcjozcyMxLXl0NmUqQWN2QHFlcg==";
 const std::string device_token = "1F6EF324-A916-4995-971D-3AA71813072B";
 const std::string user_agent =
-    "boluobao/4.7.98(iOS;15.1)/appStore/" + device_token;
+    "boluobao/4.8.14(iOS;15.2)/appStore/" + device_token;
 const std::string user_agent_rss =
-    "SFReader/4.7.98 (iPhone; iOS 15.1; Scale/3.00)";
+    "SFReader/4.8.14 (iPhone; iOS 15.2; Scale/3.00)";
 
 std::string sf_security() {
   std::string uuid = klib::uuid();
