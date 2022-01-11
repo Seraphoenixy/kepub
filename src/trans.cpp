@@ -242,9 +242,22 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("羅", "罗");
   str.findAndReplace("給", "给");
   str.findAndReplace("頽", "颓");
+  str.findAndReplace("來", "来");
+  str.findAndReplace("裝", "装");
+  str.findAndReplace("燈", "灯");
+  str.findAndReplace("蓋", "盖");
+  str.findAndReplace("迴", "回");
+  str.findAndReplace("單", "单");
+  str.findAndReplace("勢", "势");
+  str.findAndReplace("結", "结");
+  str.findAndReplace("砲", "炮");
+  str.findAndReplace("採", "采");
 
   str.findAndReplace("幺", "么");
   str.findAndReplace("颠复", "颠覆");
+
+  str.findAndReplace("赤果果", "赤裸裸");
+  str.findAndReplace("赤果", "赤裸");
 }
 
 Trans::~Trans() { delete fullwidth_halfwidth_; }
