@@ -32,7 +32,7 @@ const std::string user_agent = "HappyBook/2.9.5 (iPhone; iOS 15.2; Scale/3.00)";
 
 const std::string default_key = "zG2nSeEfSHfvTCHy5LCcqtBbQehKNLXn";
 
-const std::string token_path = std::string(std::getenv("HOME")) + "/.ciweimao";
+const std::string token_path = "/tmp/.ciweimao";
 
 std::string encrypt(const std::string &str) {
   static const auto key = klib::sha_256(default_key);

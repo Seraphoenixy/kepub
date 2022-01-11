@@ -125,6 +125,7 @@ std::tuple<std::string, std::string, std::vector<std::string>> get_book_info(
 
   spdlog::info("Book name: {}", info.book_name());
   spdlog::info("Author: {}", info.author());
+  spdlog::info("Point: {}", info.point());
   spdlog::info("Cover url: {}", info.cover_url());
 
   std::string cover_name = "cover.jpg";

@@ -50,6 +50,7 @@ BookInfo::BookInfo(std::string json) : JsonBase(std::move(json)) {
   book_name_ = data["novelName"].get_string().value();
   author_ = data["authorName"].get_string().value();
   cover_url_ = data["novelCover"].get_string().value();
+  point_ = data["point"].get_double().value();
 
   std::string intro_str(data["expand"]["intro"].get_string().value());
 

@@ -64,11 +64,15 @@ class BookInfo : public JsonBase {
   [[nodiscard]] const std::vector<std::string> &intro() const { return intro_; }
   [[nodiscard]] const std::string &cover_url() const { return cover_url_; }
 
+  [[nodiscard]] double point() const { return point_; }
+
  private:
   std::string book_name_;
   std::string author_;
   std::vector<std::string> intro_;
   std::string cover_url_;
+
+  double point_;
 };
 
 class VolumeChapter : public JsonBase {

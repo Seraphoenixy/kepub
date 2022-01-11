@@ -8,7 +8,7 @@
 #include <simdjson.h>
 
 std::string serialize(const std::string &account,
-                            const std::string &login_token);
+                      const std::string &login_token);
 
 class Token {
  public:
