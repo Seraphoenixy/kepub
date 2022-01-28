@@ -409,7 +409,7 @@ rt {
 /*字体样式*/
 @font-face {
   font-family: "Source Han Sans SC";
-  src: url("../Fonts/SourceHanSansSC-Bold.otf");
+  src: url("../Fonts/SourceHanSansSC-Bold.woff2");
 }
 .bold {
   font-family: "Source Han Sans SC", serif;
