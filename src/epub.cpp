@@ -383,6 +383,32 @@ void Epub::add_content(const std::string &volume_name, const std::string &title,
   font_words_ += title;
 }
 
+void Epub::flush_font() {
+  pugi::xml_document doc;
+  doc.load_file(Epub::toc_path.data(), pugi::parse_default |
+                                           pugi::parse_declaration |
+                                           pugi::parse_doctype);
+
+  auto nav_map = doc.select_node("/ncx/navMap").node();
+  for (const auto &may_be_volume : nav_map.children("navPoint")) {
+    Expects(has_children(may_be_volume, "navLabel"));
+    font_words_ +=
+        may_be_volume.child("navLabel").child("text").text().as_string();
+
+    if (has_children(may_be_volume, "navPoint")) {
+      for (const auto &chapter : may_be_volume.children("navPoint")) {
+        Expects(has_children(chapter, "navLabel"));
+        font_words_ +=
+            chapter.child("navLabel").child("text").text().as_string();
+      }
+    }
+  }
+  dbg(font_words_);
+
+  remove_file_or_dir(font_path.data());
+  generate_font();
+}
+
 void Epub::generate() {
   if (std::empty(uuid_)) {
     uuid_ = "urn:uuid:" + klib::uuid();
@@ -432,29 +458,7 @@ void Epub::append_chapter(
   deal_with_toc(content, first_chapter_id, first_volume_id);
   deal_with_chapter(content, first_chapter_id);
 
-  pugi::xml_document doc;
-  doc.load_file(Epub::toc_path.data(), pugi::parse_default |
-                                           pugi::parse_declaration |
-                                           pugi::parse_doctype);
-
-  auto nav_map = doc.select_node("/ncx/navMap").node();
-  for (const auto &may_be_volume : nav_map.children("navPoint")) {
-    Expects(has_children(may_be_volume, "navLabel"));
-    font_words_ +=
-        may_be_volume.child("navLabel").child("text").text().as_string();
-
-    if (has_children(may_be_volume, "navPoint")) {
-      for (const auto &chapter : may_be_volume.children("navPoint")) {
-        Expects(has_children(chapter, "navLabel"));
-        font_words_ +=
-            chapter.child("navLabel").child("text").text().as_string();
-      }
-    }
-  }
-  dbg(font_words_);
-
-  remove_file_or_dir(font_path.data());
-  generate_font();
+  flush_font();
 }
 
 void Epub::generate_container() const {

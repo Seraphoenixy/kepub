@@ -13,6 +13,8 @@ namespace kepub {
 
 void check_file_exist(const std::string &file_name);
 
+void check_dir_exist(const std::string &dir_name);
+
 void check_is_txt_file(const std::string &file_name);
 
 void remove_file_or_dir(const std::string &path);

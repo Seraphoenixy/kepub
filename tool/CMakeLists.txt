@@ -39,3 +39,8 @@ target_link_libraries(
           ${Boost_LIBRARIES}
           CLI11::CLI11
           simdjson::simdjson)
+
+add_executable(${GEN_EPUB_EXECUTABLE} ${MIMALLOC_OBJECT} gen_epub.cpp)
+target_link_libraries(
+  ${GEN_EPUB_EXECUTABLE} PRIVATE ${KEPUB_LIBRARY}-shared klib::klib
+                                 spdlog::spdlog CLI11::CLI11)

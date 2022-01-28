@@ -8,6 +8,7 @@
 #include <klib/archive.h>
 #include <klib/exception.h>
 #include <klib/log.h>
+#include <spdlog/spdlog.h>
 #include <CLI/CLI.hpp>
 
 #include "epub.h"
@@ -86,6 +87,7 @@ int main(int argc, const char *argv[]) try {
   epub.append_chapter(book_name, contents);
 
   if (!no_compress) {
+    spdlog::info("Start to compress and generate epub files");
     klib::compress(book_name, klib::Algorithm::Zip, book_name + ".epub", false);
     kepub::remove_file_or_dir(book_name);
   }
