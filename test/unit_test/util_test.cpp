@@ -1,3 +1,6 @@
+#include <string>
+#include <vector>
+
 #include <catch2/catch.hpp>
 
 #include "util.h"
@@ -21,4 +24,12 @@ TEST_CASE("volume_name_check", "[util]") {
   REQUIRE_NOTHROW(kepub::volume_name_check("第三十二卷 标标标标标标标标标"));
   REQUIRE_NOTHROW(kepub::volume_name_check("第123话 标题标标标标"));
   REQUIRE_NOTHROW(kepub::volume_name_check("第1卷 "));
+}
+
+TEST_CASE("push_back_no_connect", "[util]") {
+  std::vector<std::string> texts;
+  std::string str = "第1卷\u000a";
+  kepub::push_back_no_connect(texts, str);
+
+  REQUIRE(texts.front() == "第1卷");
 }

@@ -68,6 +68,7 @@ void replace_all_multi(icu::UnicodeString &str, const std::string &text) {
 void custom_trans(icu::UnicodeString &str) {
   replace_error_char(str);
 
+  str.findAndReplace("\t", " ");
   replace_all_multi(str, " ");
 
   str.findAndReplace("⋯", "…");

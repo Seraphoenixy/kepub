@@ -75,6 +75,23 @@ bool regex_match(const std::string &str, const std::string &regex) {
   return ok;
 }
 
+// https://zh.wikipedia.org/wiki/%E6%8E%A7%E5%88%B6%E5%AD%97%E7%AC%A6
+std::vector<icu::UnicodeString> get_control_char() {
+  std::vector<icu::UnicodeString> control_char;
+
+  for (std::int32_t i = 0; i <= 31; ++i) {
+    control_char.push_back(icu::UnicodeString::fromUTF32(
+        reinterpret_cast<const UChar32 *>(&i), 1));
+  }
+
+  for (std::int32_t i = 127; i <= 159; ++i) {
+    control_char.push_back(icu::UnicodeString::fromUTF32(
+        reinterpret_cast<const UChar32 *>(&i), 1));
+  }
+
+  return control_char;
+}
+
 }  // namespace
 
 void check_file_exist(const std::string &file_name) {
@@ -272,18 +289,23 @@ std::string trim(const std::string &str) {
 
 void replace_error_char(icu::UnicodeString &str) {
   // https://en.wikipedia.org/wiki/Word_joiner
-  str.findAndReplace("\uFEFF", " ");
+  str.findAndReplace("\uFEFF", "");
 
+  // https://zh.wikipedia.org/wiki/%E4%B8%8D%E6%8D%A2%E8%A1%8C%E7%A9%BA%E6%A0%BC
   str.findAndReplace("&nbsp;", " ");
   str.findAndReplace("\u00A0", " ");
 
-  str.findAndReplace("\t", " ");
-
+  // https://pugixml.org/docs/manual.html#loading.options
   str.findAndReplace("&lt;", "<");
   str.findAndReplace("&gt;", ">");
   str.findAndReplace("&quot;", "\"");
   str.findAndReplace("&apos;", "'");
   str.findAndReplace("&amp;", "&");
+
+  static std::vector<icu::UnicodeString> control_char = get_control_char();
+  for (const auto &item : control_char) {
+    str.findAndReplace(item, "");
+  }
 }
 
 void check_icu(UErrorCode status) {
