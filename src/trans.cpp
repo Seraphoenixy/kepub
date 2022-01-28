@@ -86,6 +86,7 @@ void custom_trans(icu::UnicodeString &str) {
   replace_all_punct(str, "】", "】");
   replace_all_punct(str, "(", "（");
   replace_all_punct(str, ")", "）");
+  replace_all_punct(str, "…", "…");
 
   replace_all_punct(str, ",", "，");
   replace_all_punct(str, ":", "：");
@@ -252,6 +253,9 @@ void custom_trans(icu::UnicodeString &str) {
   str.findAndReplace("結", "结");
   str.findAndReplace("砲", "炮");
   str.findAndReplace("採", "采");
+  str.findAndReplace("財", "财");
+  str.findAndReplace("頂", "顶");
+  str.findAndReplace("倆", "俩");
 
   str.findAndReplace("幺", "么");
   str.findAndReplace("颠复", "颠覆");
