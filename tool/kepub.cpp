@@ -203,12 +203,22 @@ int main(int argc, const char *argv[]) try {
 
   if (!std::empty(author)) {
     epub.set_author(author);
+  } else {
+    klib::warn("No author information");
   }
+
   if (!std::empty(introduction)) {
     epub.set_introduction(introduction);
+  } else {
+    klib::warn("No introduction information");
   }
-  if (generate_postscript && !std::empty(postscript)) {
-    epub.set_postscript(postscript);
+
+  if (generate_postscript) {
+    if (!std::empty(postscript)) {
+      epub.set_postscript(postscript);
+    } else {
+      klib::warn("No postscript information");
+    }
   }
 
   bool postscript_done =

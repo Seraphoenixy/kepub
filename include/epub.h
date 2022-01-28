@@ -31,7 +31,7 @@ class Epub {
   void add_content(const std::string &volume_name, const std::string &title,
                    const std::vector<std::string> &content);
 
-  void flush_font();
+  void flush_font(const std::string &book_name = "");
 
   void generate();
 

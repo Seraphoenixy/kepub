@@ -24,7 +24,7 @@ int main(int argc, const char *argv[]) try {
   kepub::check_dir_exist(dir_name);
 
   kepub::Epub epub;
-  epub.flush_font();
+  epub.flush_font(dir_name);
 
   spdlog::info("Start to compress and generate epub files");
   klib::compress(dir_name, klib::Algorithm::Zip, dir_name + ".epub", false);

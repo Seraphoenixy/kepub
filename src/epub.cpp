@@ -383,7 +383,12 @@ void Epub::add_content(const std::string &volume_name, const std::string &title,
   font_words_ += title;
 }
 
-void Epub::flush_font() {
+void Epub::flush_font(const std::string &book_name) {
+  std::unique_ptr<klib::ChangeWorkingDir> ptr;
+  if (!std::empty(book_name)) {
+    ptr = std::make_unique<klib::ChangeWorkingDir>(book_name);
+  }
+
   pugi::xml_document doc;
   doc.load_file(Epub::toc_path.data(), pugi::parse_default |
                                            pugi::parse_declaration |
