@@ -63,6 +63,11 @@ sfacg 263060
 kepub book-name.txt
 ```
 
+## Reference
+
+- https://blog.csdn.net/qq_38851536/article/details/117828334
+
 ---
 
-Thanks to [JetBrains](https://www.jetbrains.com/) for donating product licenses to help develop this project <a href="https://www.jetbrains.com/"><img src="logo/jetbrains.svg" width="94" align="center" /></a>
+Thanks to [JetBrains](https://www.jetbrains.com/) for donating product licenses to help develop this
+project <a href="https://www.jetbrains.com/"><img src="logo/jetbrains.svg" width="94" align="center" /></a>

@@ -30,6 +30,11 @@ int main(int argc, const char *argv[]) try {
   app.add_flag("-c,--connect", connect_chinese,
                "Remove extra line breaks between Chinese");
 
+  bool remove = false;
+  app.add_flag("-r,--remove", remove,
+               "When the generation is successful, delete the TXT file and "
+               "backup epub file");
+
   bool no_compress = false;
   app.add_flag("--no-compress", no_compress, "Do not compress(for testing)");
 
@@ -39,13 +44,14 @@ int main(int argc, const char *argv[]) try {
 
   auto book_name = std::filesystem::path(file_name).stem().string();
   auto epub_name = book_name + ".epub";
+  auto backup_epub_name = book_name + "-back-up.epub";
   auto zip_name = book_name + ".zip";
   kepub::check_file_exist(epub_name);
 
   klib::decompress(epub_name, book_name);
 
   if (!no_compress) {
-    std::filesystem::rename(epub_name, book_name + "-back-up.epub");
+    std::filesystem::rename(epub_name, backup_epub_name);
   }
 
   std::vector<std::tuple<std::string, std::string, std::vector<std::string>>>
@@ -90,6 +96,11 @@ int main(int argc, const char *argv[]) try {
     spdlog::info("Start to compress and generate epub files");
     klib::compress(book_name, klib::Algorithm::Zip, book_name + ".epub", false);
     kepub::remove_file_or_dir(book_name);
+  }
+
+  if (remove) {
+    kepub::remove_file_or_dir(file_name);
+    kepub::remove_file_or_dir(backup_epub_name);
   }
 } catch (const klib::Exception &err) {
   klib::error(err.what());
