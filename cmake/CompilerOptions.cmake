@@ -21,23 +21,24 @@ add_cxx_linker_flag("-static-libstdc++")
 # ---------------------------------------------------------------------------------------
 # lld
 # ---------------------------------------------------------------------------------------
-if(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
+if(CMAKE_COMPILER_IS_GNUCXX)
   execute_process(
-    COMMAND ld.lld --version
-    OUTPUT_VARIABLE LLD_VERSION
-    OUTPUT_STRIP_TRAILING_WHITESPACE)
-  message(STATUS "Linker: ${LLD_VERSION}")
-
-  add_cxx_linker_flag("-fuse-ld=lld")
-else()
-  execute_process(
-    COMMAND ${CMAKE_LINKER} --version
+    COMMAND ld.gold --version
     OUTPUT_VARIABLE LINKER_VERSION
     OUTPUT_STRIP_TRAILING_WHITESPACE)
   string(REPLACE "\n" ";" LINKER_VERSION ${LINKER_VERSION})
   list(GET LINKER_VERSION 0 LINKER_VERSION)
-
   message(STATUS "Linker: ${LINKER_VERSION}")
+
+  add_cxx_linker_flag("-fuse-ld=gold")
+else()
+  execute_process(
+    COMMAND ld.lld --version
+    OUTPUT_VARIABLE LINKER_VERSION
+    OUTPUT_STRIP_TRAILING_WHITESPACE)
+  message(STATUS "Linker: ${LINKER_VERSION}")
+
+  add_cxx_linker_flag("-fuse-ld=lld")
 endif()
 
 # ---------------------------------------------------------------------------------------
@@ -47,10 +48,6 @@ add_cxx_compiler_flag("-Wall")
 add_cxx_compiler_flag("-Wextra")
 add_cxx_compiler_flag("-Wpedantic")
 add_cxx_compiler_flag("-Werror")
-
-if(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
-  add_cxx_compiler_flag("-Wno-error=unused-command-line-argument")
-endif()
 
 # ---------------------------------------------------------------------------------------
 # Link time optimization
@@ -80,6 +77,10 @@ endif()
 if((${CMAKE_BUILD_TYPE} STREQUAL "Release") OR (${CMAKE_BUILD_TYPE} STREQUAL
                                                 "MinSizeRel"))
   message(STATUS "Discard symbols and other data from object files")
+
+  if(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
+    add_cxx_compiler_flag("-Wno-error=unused-command-line-argument")
+  endif()
   add_cxx_linker_flag("-s")
 endif()
 

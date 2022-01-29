@@ -23,12 +23,18 @@ int main(int argc, const char *argv[]) try {
   app.add_flag("-r,--remove", remove,
                "When the generation is successful, delete the TXT file");
 
+  bool flush_font = false;
+  app.add_flag("-f,--flush-font", flush_font,
+               "Regenerate fonts based on titles");
+
   CLI11_PARSE(app, argc, argv)
 
   kepub::check_dir_exist(dir_name);
 
-  kepub::Epub epub;
-  epub.flush_font(dir_name);
+  if (flush_font) {
+    kepub::Epub epub;
+    epub.flush_font(dir_name);
+  }
 
   spdlog::info("Start to compress and generate epub files");
   klib::compress(dir_name, klib::Algorithm::Zip, dir_name + ".epub", false);
