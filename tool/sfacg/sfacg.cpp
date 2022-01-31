@@ -23,6 +23,11 @@
 #include "util.h"
 #include "version.h"
 
+#ifndef NDEBUG
+#include <backward.hpp>
+backward::SignalHandling sh;
+#endif
+
 namespace {
 
 const std::string authorization = "Basic YXBpdXNlcjozcyMxLXl0NmUqQWN2QHFlcg==";

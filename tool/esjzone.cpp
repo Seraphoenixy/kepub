@@ -18,6 +18,11 @@
 #include "util.h"
 #include "version.h"
 
+#ifndef NDEBUG
+#include <backward.hpp>
+backward::SignalHandling sh;
+#endif
+
 namespace {
 
 void get_node_content(pugi::xml_node node, std::string &str) {

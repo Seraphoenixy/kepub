@@ -15,6 +15,11 @@
 #include "util.h"
 #include "version.h"
 
+#ifndef NDEBUG
+#include <backward.hpp>
+backward::SignalHandling sh;
+#endif
+
 int main(int argc, const char *argv[]) try {
   CLI::App app;
   app.set_version_flag("-v,--version", kepub::version_str());

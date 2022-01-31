@@ -24,6 +24,11 @@
 #include "util.h"
 #include "version.h"
 
+#ifndef NDEBUG
+#include <backward.hpp>
+backward::SignalHandling sh;
+#endif
+
 namespace {
 
 const std::string app_version = "2.9.702";
