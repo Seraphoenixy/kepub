@@ -78,6 +78,7 @@ int main(int argc, const char *argv[]) try {
       kepub::volume_name_check(volume_name);
     } else if (vec[i].starts_with(title_prefix)) {
       auto title = vec[i].substr(title_prefix_size);
+      kepub::title_check(title);
       ++i;
 
       std::vector<std::string> content;
