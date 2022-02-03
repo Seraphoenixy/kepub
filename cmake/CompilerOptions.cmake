@@ -9,8 +9,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # ---------------------------------------------------------------------------------------
 # Machine
 # ---------------------------------------------------------------------------------------
-add_cxx_compiler_flag("-march=x86-64")
-add_cxx_compiler_flag("-mtune=generic")
+add_cxx_compiler_flag("-march=haswell")
+add_cxx_compiler_flag("-mtune=haswell")
 
 # ---------------------------------------------------------------------------------------
 # Static link

@@ -8,6 +8,7 @@
 #include <utility>
 #include <vector>
 
+#include <klib/base64.h>
 #include <klib/crypto.h>
 #include <klib/exception.h>
 #include <klib/hash.h>
@@ -40,17 +41,18 @@ const std::string default_key = "zG2nSeEfSHfvTCHy5LCcqtBbQehKNLXn";
 const std::string token_path = "/tmp/ciweimao";
 
 std::string encrypt(const std::string &str) {
-  static const auto key = klib::sha_256(default_key);
-  return klib::aes_256_encrypt_base64(str, key, false);
+  static const auto key = klib::sha256(default_key);
+  return klib::fast_base64_encode(klib::aes_256_encrypt(str, key, false));
 }
 
 std::string decrypt(const std::string &str) {
-  static const auto key = klib::sha_256(default_key);
-  return klib::aes_256_decrypt_base64(str, key, false);
+  static const auto key = klib::sha256(default_key);
+  return klib::aes_256_decrypt(klib::fast_base64_decode(str), key, false);
 }
 
 std::string decrypt(const std::string &str, const std::string &key) {
-  return klib::aes_256_decrypt_base64(str, klib::sha_256(key), false);
+  return klib::aes_256_decrypt(klib::fast_base64_decode(str), klib::sha256(key),
+                               false);
 }
 
 klib::Response http_get_rss(const std::string &url) {
