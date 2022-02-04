@@ -7,7 +7,7 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     -o klib.deb
   sudo dpkg -i klib.deb
 
-  curl -L https://github.com/KaiserLancelot/kpkg/releases/download/v0.13.2/pyftsubset -o pyftsubset
+  curl -L https://github.com/KaiserLancelot/kpkg/releases/download/v0.13.3/pyftsubset -o pyftsubset
   mv pyftsubset /usr/local/bin/pyftsubset
   chmod 755 /usr/local/bin/pyftsubset
 else
