@@ -1,6 +1,6 @@
 #include <cstddef>
+#include <exception>
 #include <filesystem>
-#include <stdexcept>
 #include <string>
 #include <tuple>
 #include <vector>

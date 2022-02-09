@@ -1,4 +1,4 @@
-#include <stdexcept>
+#include <exception>
 #include <string>
 
 #include <klib/archive.h>

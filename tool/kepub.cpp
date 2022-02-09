@@ -1,7 +1,7 @@
 #include <cstddef>
 #include <cstdlib>
+#include <exception>
 #include <filesystem>
-#include <stdexcept>
 #include <string>
 #include <vector>
 
