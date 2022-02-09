@@ -246,9 +246,9 @@ std::pair<std::int32_t, std::int32_t> deal_with_content(
     const std::vector<std::tuple<std::string, std::string,
                                  std::vector<std::string>>> &content) {
   pugi::xml_document doc;
-  doc.load_file(Epub::content_path, pugi::parse_default |
-                                        pugi::parse_declaration |
-                                        pugi::parse_doctype);
+  doc.load_file(Epub::content_path.data(), pugi::parse_default |
+                                               pugi::parse_declaration |
+                                               pugi::parse_doctype);
 
   auto manifest = doc.select_node("/package/manifest").node();
   auto first_chapter_id = last_num(doc, "chapter", ".xhtml") + 1;
@@ -306,8 +306,9 @@ void deal_with_toc(
                                  std::vector<std::string>>> &content,
     std::int32_t first_chapter_id, std::int32_t first_volume_id) {
   pugi::xml_document doc;
-  doc.load_file(Epub::toc_path, pugi::parse_default | pugi::parse_declaration |
-                                    pugi::parse_doctype);
+  doc.load_file(Epub::toc_path.data(), pugi::parse_default |
+                                           pugi::parse_declaration |
+                                           pugi::parse_doctype);
 
   auto nav_map = doc.select_node("/ncx/navMap").node();
   do_deal_with_toc(nav_map, first_chapter_id, first_volume_id, content);
@@ -389,8 +390,9 @@ void Epub::flush_font(const std::string &book_name) {
   }
 
   pugi::xml_document doc;
-  doc.load_file(Epub::toc_path, pugi::parse_default | pugi::parse_declaration |
-                                    pugi::parse_doctype);
+  doc.load_file(Epub::toc_path.data(), pugi::parse_default |
+                                           pugi::parse_declaration |
+                                           pugi::parse_doctype);
 
   auto nav_map = doc.select_node("/ncx/navMap").node();
   for (const auto &may_be_volume : nav_map.children("navPoint")) {
@@ -408,7 +410,7 @@ void Epub::flush_font(const std::string &book_name) {
   }
   dbg(font_words_);
 
-  remove_file_or_dir(font_path);
+  remove_file_or_dir(font_path.data());
   generate_font();
 }
 
@@ -473,7 +475,7 @@ void Epub::generate_container() const {
       "urn:oasis:names:tc:opendocument:xmlns:container";
 
   auto rootfile = container.append_child("rootfiles").append_child("rootfile");
-  rootfile.append_attribute("full-path") = content_path;
+  rootfile.append_attribute("full-path") = content_path.data();
   rootfile.append_attribute("media-type") = "application/oebps-package+xml";
 
   save_file(doc, container_path);
@@ -482,11 +484,7 @@ void Epub::generate_container() const {
 void Epub::generate_font() const {
   klib::info("Start generating woff2 font");
 
-  klib::write_file(Epub::temp_font_path, true, std::data(font_),
-                   std::size(font_));
-  Ensures(std::filesystem::exists(Epub::temp_font_path));
-  Ensures(std::filesystem::file_size(Epub::temp_font_path) == std::size(font_));
-
+  klib::write_file(Epub::temp_font_path, true, font_);
   klib::exec(fmt::format(
       FMT_COMPILE(
           R"(pyftsubset --flavor=woff2 --output-file={} --text="{}" {})"),
@@ -498,10 +496,7 @@ void Epub::generate_style() const {
     throw klib::RuntimeError("The style is empty");
   }
 
-  klib::write_file(Epub::style_path, false, std::data(style_),
-                   std::size(style_));
-  Ensures(std::filesystem::exists(Epub::style_path));
-  Ensures(std::filesystem::file_size(Epub::style_path) == std::size(style_));
+  klib::write_file(Epub::style_path, false, style_);
 }
 
 void Epub::generate_chapter() const { deal_with_chapter(content_, 1); }
