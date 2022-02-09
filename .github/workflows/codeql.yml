@@ -22,8 +22,6 @@ jobs:
         uses: github/codeql-action/init@v1
         with:
           languages: cpp
-          # https://docs.github.com/cn/code-security/secure-coding/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#running-additional-queries
-          queries: +security-and-quality
 
       - name: Configure
         run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release

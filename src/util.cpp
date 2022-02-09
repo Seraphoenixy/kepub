@@ -49,7 +49,7 @@ bool end_with_punct(const std::string &str) {
 }
 
 std::string make_book_name_legal(const std::string &file_name) {
-  auto new_file_name = klib::make_file_or_dir_name_legal(file_name);
+  auto new_file_name = klib::make_file_name_legal(file_name);
   if (new_file_name != file_name) {
     klib::warn(
         "The title of the book is illegal, and the title of the book has been "

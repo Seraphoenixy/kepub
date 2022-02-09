@@ -4,7 +4,6 @@
 #include <klib/archive.h>
 #include <klib/exception.h>
 #include <klib/log.h>
-#include <spdlog/spdlog.h>
 #include <CLI/CLI.hpp>
 
 #include "epub.h"
@@ -41,8 +40,9 @@ int main(int argc, const char *argv[]) try {
     epub.flush_font(dir_name);
   }
 
-  spdlog::info("Start to compress and generate epub files");
-  klib::compress(dir_name, klib::Algorithm::Zip, dir_name + ".epub", false);
+  klib::info("Start to compress and generate epub files");
+  klib::compress(dir_name, klib::Format::Zip, klib::Filter::Deflate,
+                 dir_name + ".epub", false);
 
   if (remove) {
     kepub::remove_file_or_dir(dir_name);

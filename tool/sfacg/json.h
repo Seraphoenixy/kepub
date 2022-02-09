@@ -17,11 +17,10 @@ class JsonBase {
   explicit JsonBase(std::string json);
 
   [[nodiscard]] bool ok() const {
-    return http_code_ == klib::Response::StatusCode::Ok && error_code_ == 200;
+    return http_code_ == 200 && error_code_ == 200;
   }
   [[nodiscard]] bool login_expired() const {
-    return http_code_ == klib::Response::StatusCode::Unauthorized &&
-           error_code_ == 502;
+    return http_code_ == 401 && error_code_ == 502;
   }
 
  protected:

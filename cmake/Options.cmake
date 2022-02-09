@@ -1,7 +1,6 @@
 option(KEPUB_BUILD_TEST "Build test" OFF)
 
 option(KEPUB_FORMAT "Format code using clang-format and cmake-format" OFF)
-option(KEPUB_CLANG_TIDY "Analyze code with clang-tidy" OFF)
 option(KEPUB_SANITIZER "Build with AddressSanitizer and UndefinedSanitizer" OFF)
 
 include(CMakeDependentOption)

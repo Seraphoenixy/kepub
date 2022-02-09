@@ -1,8 +1,0 @@
-{
-  "cmake.configureArgs": [
-    "-DKEPUB_BUILD_TEST=ON",
-    "-DKEPUB_FORMAT=ON",
-    "-DKEPUB_SANITIZER=ON",
-    "-DKEPUB_BUILD_COVERAGE=ON"
-  ]
-}

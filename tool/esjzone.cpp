@@ -8,7 +8,6 @@
 #include <klib/html.h>
 #include <klib/http.h>
 #include <klib/log.h>
-#include <spdlog/spdlog.h>
 #include <CLI/CLI.hpp>
 #include <boost/algorithm/string.hpp>
 #include <pugixml.hpp>
@@ -67,8 +66,12 @@ klib::Response http_get(const std::string &url, const std::string &proxy) {
 #endif
 
   auto response = request.get(url);
-  if (!response.ok()) {
-    klib::error("HTTP GET fail: {}", response.status_code());
+
+  auto status = response.status();
+  if (status != klib::HttpStatus::HTTP_STATUS_OK) {
+    klib::error("HTTP GET failed, code: {}, reason: {}, url: {}",
+                static_cast<std::int32_t>(status),
+                klib::http_status_str(status), url);
   }
 
   return response;
@@ -154,14 +157,14 @@ get_info(const std::string &book_id, bool translation,
              .node();
   std::string cover_url = node.attribute("src").as_string();
 
-  spdlog::info("Book name: {}", book_name);
-  spdlog::info("Author: {}", author);
-  spdlog::info("Cover url: {}", cover_url);
+  klib::info("Book name: {}", book_name);
+  klib::info("Author: {}", author);
+  klib::info("Cover url: {}", cover_url);
 
   std::string cover_name = "cover.jpg";
   auto response = http_get(cover_url, proxy);
-  response.save_to_file(cover_name, true);
-  spdlog::info("Cover downloaded successfully: {}", cover_name);
+  response.save_to_file(cover_name);
+  klib::info("Cover downloaded successfully: {}", cover_name);
 
   return {book_name, author, description, titles_and_urls};
 }
@@ -207,13 +210,13 @@ int main(int argc, const char *argv[]) try {
 
   kepub::check_is_book_id(book_id);
   if (!std::empty(proxy)) {
-    spdlog::info("Use proxy: {}", proxy);
+    klib::info("Use proxy: {}", proxy);
   }
 
   auto [book_name, author, description, titles_and_urls] =
       get_info(book_id, translation, proxy);
 
-  spdlog::info("Start downloading novel content");
+  klib::info("Start downloading novel content");
   kepub::ProgressBar bar(book_name, std::size(titles_and_urls));
   std::vector<std::pair<std::string, std::string>> chapters;
   for (const auto &[title, urls] : titles_and_urls) {
@@ -224,7 +227,7 @@ int main(int argc, const char *argv[]) try {
   }
 
   kepub::generate_txt(book_name, author, description, chapters);
-  spdlog::info("Novel '{}' download completed", book_name);
+  klib::info("Novel '{}' download completed", book_name);
 } catch (const klib::Exception &err) {
   klib::error(err.what());
 } catch (const std::exception &err) {

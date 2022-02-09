@@ -14,23 +14,7 @@ Crawl novels from esjzone, ciweimao and sfacg. Generate epub from txt file
 
 ## Environment
 
-- Debian 11
-- GCC 11 or Clang 13
-
-## Dependency
-
-- [klib](https://github.com/KaiserLancelot/klib)
-- [mimalloc](https://github.com/microsoft/mimalloc)
-- [Boost](https://www.boost.org/)
-- [gsl-lite](https://github.com/gsl-lite/gsl-lite)
-- [CLI11](https://github.com/CLIUtils/CLI11)
-- [fmt](https://github.com/fmtlib/fmt)
-- [spdlog](https://github.com/gabime/spdlog)
-- [simdjson](https://github.com/simdjson/simdjson)
-- [pugixml](https://github.com/zeux/pugixml)
-- [icu](https://github.com/unicode-org/icu)
-- [OpenCC](https://github.com/BYVoid/OpenCC)
-- [indicators](https://github.com/p-ranav/indicators)
+- [kenv](https://github.com/KaiserLancelot/kenv)
 
 ## Font
 
