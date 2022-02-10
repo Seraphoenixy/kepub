@@ -1,16 +1,18 @@
 #include "json.h"
 
-#include <fmt/compile.h>
-#include <fmt/format.h>
 #include <klib/log.h>
 #include <klib/util.h>
+#include <boost/json.hpp>
 
 #include "util.h"
 
 std::string serialize(const std::string &login_name,
                       const std::string &password) {
-  return fmt::format(FMT_COMPILE(R"({{"userName":"{}","passWord":"{}"}})"),
-                     login_name, password);
+  boost::json::object obj;
+  obj["userName"] = login_name;
+  obj["passWord"] = password;
+
+  return boost::json::serialize(obj);
 }
 
 JsonBase::JsonBase(std::string json) : json_(std::move(json)) {

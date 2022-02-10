@@ -24,6 +24,8 @@ backward::SignalHandling sh;
 
 namespace {
 
+klib::Request request;
+
 void get_node_content(pugi::xml_node node, std::string &str) {
   if (node.children().begin() == node.children().end()) {
     str += node.text().as_string();
@@ -54,7 +56,6 @@ std::vector<std::string> get_children_content(const pugi::xml_node &node) {
 }
 
 klib::Response http_get(const std::string &url, const std::string &proxy) {
-  static klib::Request request;
   request.set_browser_user_agent();
   if (!std::empty(proxy)) {
     request.set_proxy(proxy);

@@ -39,6 +39,8 @@ const std::string default_key = "zG2nSeEfSHfvTCHy5LCcqtBbQehKNLXn";
 
 const std::string token_path = "/tmp/ciweimao";
 
+klib::Request request;
+
 std::string encrypt(const std::string &str) {
   static const auto key = klib::sha256(default_key);
   return klib::fast_base64_encode(klib::aes_256_encrypt(str, key));
@@ -60,8 +62,6 @@ std::string decrypt_no_iv(const std::string &str, const std::string &key) {
 }
 
 klib::Response http_get_rss(const std::string &url) {
-  static klib::Request request;
-
   const static std::string user_agent_rss =
       request.url_encode("刺猬猫阅读") +
       "/2.9.702 CFNetwork/1329 Darwin/21.3.0";
@@ -88,7 +88,6 @@ klib::Response http_get_rss(const std::string &url) {
 
 klib::Response http_post(const std::string &url,
                          std::unordered_map<std::string, std::string> data) {
-  static klib::Request request;
   request.set_no_proxy();
   request.set_user_agent(user_agent);
   request.set_accept_encoding("gzip, deflate, br");

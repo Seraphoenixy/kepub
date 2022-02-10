@@ -2,17 +2,19 @@
 
 #include <utility>
 
-#include <fmt/compile.h>
-#include <fmt/format.h>
 #include <klib/log.h>
 #include <klib/util.h>
+#include <boost/json.hpp>
 
 #include "util.h"
 
 std::string serialize(const std::string &account,
                       const std::string &login_token) {
-  return fmt::format(FMT_COMPILE(R"({{"account":"{}","login_token":"{}"}})"),
-                     account, login_token);
+  boost::json::object obj;
+  obj["account"] = account;
+  obj["login_token"] = login_token;
+
+  return boost::json::serialize(obj);
 }
 
 Token::Token(std::string json) {

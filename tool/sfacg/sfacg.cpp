@@ -36,6 +36,8 @@ const std::string user_agent =
 const std::string user_agent_rss =
     "SFReader/4.8.24 (iPhone; iOS 15.3; Scale/3.00)";
 
+klib::Request request;
+
 std::string sf_security() {
   std::string uuid = klib::uuid();
   auto timestamp = std::time(nullptr);
@@ -50,7 +52,6 @@ std::string sf_security() {
 klib::Response http_get(
     const std::string &url,
     const std::unordered_map<std::string, std::string> &params = {}) {
-  static klib::Request request;
   request.set_no_proxy();
   request.set_user_agent(user_agent);
   request.set_accept_encoding("gzip, deflate, br");
@@ -67,7 +68,6 @@ klib::Response http_get(
 }
 
 klib::Response http_get_rss(const std::string &url) {
-  static klib::Request request;
   request.set_no_proxy();
   request.set_user_agent(user_agent_rss);
   request.set_accept_encoding("gzip, deflate, br");
@@ -82,7 +82,6 @@ klib::Response http_get_rss(const std::string &url) {
 }
 
 klib::Response http_post(const std::string &url, const std::string &json) {
-  klib::Request request;
   request.set_no_proxy();
   request.set_user_agent(user_agent);
   request.set_accept_encoding("gzip, deflate, br");
