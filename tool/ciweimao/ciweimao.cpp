@@ -4,21 +4,18 @@
 #include <optional>
 #include <string>
 #include <tuple>
-#include <unordered_map>
 #include <utility>
 #include <vector>
 
-#include <klib/base64.h>
-#include <klib/crypto.h>
 #include <klib/exception.h>
-#include <klib/hash.h>
-#include <klib/http.h>
 #include <klib/log.h>
 #include <klib/util.h>
 #include <CLI/CLI.hpp>
 #include <boost/algorithm/string.hpp>
 #include <pugixml.hpp>
 
+#include "aes.h"
+#include "http.h"
 #include "json.h"
 #include "progress_bar.h"
 #include "util.h"
@@ -31,86 +28,7 @@ backward::SignalHandling sh;
 
 namespace {
 
-const std::string app_version = "2.9.702";
-const std::string device_token = "iPhone-ADDACF06-A9DD-482B-ADF5-ADE5B97438EE";
-const std::string user_agent = "HappyBook/2.9.7 (iPhone; iOS 15.3; Scale/3.00)";
-
-const std::string default_key = "zG2nSeEfSHfvTCHy5LCcqtBbQehKNLXn";
-
 const std::string token_path = "/tmp/ciweimao";
-
-klib::Request request;
-
-std::string encrypt(const std::string &str) {
-  static const auto key = klib::sha256(default_key);
-  return klib::fast_base64_encode(klib::aes_256_encrypt(str, key));
-}
-
-std::string decrypt(const std::string &str) {
-  static const auto key = klib::sha256(default_key);
-  return klib::aes_256_decrypt(klib::fast_base64_decode(str), key);
-}
-
-std::string decrypt_no_iv(const std::string &str) {
-  static const auto key = klib::sha256(default_key);
-  return klib::aes_256_decrypt_no_iv(klib::fast_base64_decode(str), key);
-}
-
-std::string decrypt_no_iv(const std::string &str, const std::string &key) {
-  return klib::aes_256_decrypt_no_iv(klib::fast_base64_decode(str),
-                                     klib::sha256(key));
-}
-
-klib::Response http_get_rss(const std::string &url) {
-  const static std::string user_agent_rss =
-      request.url_encode("刺猬猫阅读") +
-      "/2.9.702 CFNetwork/1329 Darwin/21.3.0";
-
-  request.set_no_proxy();
-  request.set_user_agent(user_agent_rss);
-  request.set_accept_encoding("gzip, deflate, br");
-#ifndef NDEBUG
-  request.verbose(true);
-#endif
-
-  auto response = request.get(
-      url, {}, {{"Connection", "keep-alive"}, {"Accept-Language", "zh-cn"}});
-
-  auto status = response.status();
-  if (status != klib::HttpStatus::HTTP_STATUS_OK) {
-    klib::error("HTTP GET failed, code: {}, reason: {}, url: {}",
-                static_cast<std::int32_t>(status),
-                klib::http_status_str(status), url);
-  }
-
-  return response;
-}
-
-klib::Response http_post(const std::string &url,
-                         std::unordered_map<std::string, std::string> data) {
-  request.set_no_proxy();
-  request.set_user_agent(user_agent);
-  request.set_accept_encoding("gzip, deflate, br");
-#ifndef NDEBUG
-  request.verbose(true);
-#endif
-
-  data.emplace("app_version", app_version);
-  data.emplace("device_token", device_token);
-
-  auto response = request.post(
-      url, data,
-      {{"Connection", "keep-alive"}, {"Accept-Language", "zh-Hans-CN;q=1"}});
-
-  auto status = response.status();
-  if (status != klib::HttpStatus::HTTP_STATUS_OK) {
-    klib::error("HTTP POST failed, code: {}, reason: {}, url: {}",
-                static_cast<std::int32_t>(status),
-                klib::http_status_str(status), url);
-  }
-
-  return response;
-}
 
 bool show_user_info(const std::string &account,
                     const std::string &login_token) {
@@ -129,6 +47,7 @@ bool show_user_info(const std::string &account,
 
 std::optional<std::pair<std::string, std::string>> try_read_token() {
   if (!std::filesystem::exists(token_path)) {
+    klib::warn("Login required to access this resource");
     return {};
   }
 
