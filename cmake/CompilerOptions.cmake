@@ -1,5 +1,8 @@
 include(AddCXXFlag)
 
+# ---------------------------------------------------------------------------------------
+# C++ standard
+# ---------------------------------------------------------------------------------------
 # https://cmake.org/cmake/help/latest/prop_tgt/CXX_STANDARD.html
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -7,10 +10,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # ---------------------------------------------------------------------------------------
-# Machine
+# Warning
 # ---------------------------------------------------------------------------------------
-add_cxx_compiler_flag("-march=haswell")
-add_cxx_compiler_flag("-mtune=haswell")
+add_cxx_compiler_flag("-Wall")
+add_cxx_compiler_flag("-Wextra")
+add_cxx_compiler_flag("-Wpedantic")
+add_cxx_compiler_flag("-Werror")
+
+if(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
+  add_cxx_compiler_flag("-Wno-error=unused-command-line-argument")
+endif()
 
 # ---------------------------------------------------------------------------------------
 # Static link
@@ -19,18 +28,16 @@ add_cxx_linker_flag("-static-libgcc")
 add_cxx_linker_flag("-static-libstdc++")
 
 # ---------------------------------------------------------------------------------------
-# lld
+# Linker
 # ---------------------------------------------------------------------------------------
 if(CMAKE_COMPILER_IS_GNUCXX)
   execute_process(
-    COMMAND ld.gold --version
+    COMMAND ld --version
     OUTPUT_VARIABLE LINKER_VERSION
     OUTPUT_STRIP_TRAILING_WHITESPACE)
   string(REPLACE "\n" ";" LINKER_VERSION ${LINKER_VERSION})
   list(GET LINKER_VERSION 0 LINKER_VERSION)
   message(STATUS "Linker: ${LINKER_VERSION}")
-
-  add_cxx_linker_flag("-fuse-ld=gold")
 else()
   execute_process(
     COMMAND ld.lld --version
@@ -42,12 +49,31 @@ else()
 endif()
 
 # ---------------------------------------------------------------------------------------
-# Warning
+# General options
 # ---------------------------------------------------------------------------------------
-add_cxx_compiler_flag("-Wall")
-add_cxx_compiler_flag("-Wextra")
-add_cxx_compiler_flag("-Wpedantic")
-add_cxx_compiler_flag("-Werror")
+add_cxx_compiler_flag("-pipe")
+
+add_cxx_compiler_flag("-march=haswell")
+add_cxx_compiler_flag("-mtune=haswell")
+
+add_cxx_compiler_flag("-fno-plt")
+
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+# ---------------------------------------------------------------------------------------
+# Optimization
+# ---------------------------------------------------------------------------------------
+if((${CMAKE_BUILD_TYPE} STREQUAL "Release") OR (${CMAKE_BUILD_TYPE} STREQUAL
+                                                "MinSizeRel"))
+  add_cxx_compiler_flag("-fno-math-errno")
+  add_cxx_compiler_flag("-fno-trapping-math")
+  add_cxx_compiler_flag("-fno-semantic-interposition")
+
+  if(CMAKE_COMPILER_IS_GNUCXX)
+    add_cxx_compiler_flag("-fipa-pta")
+    add_cxx_compiler_flag("-fgraphite-identity")
+  endif()
+endif()
 
 # ---------------------------------------------------------------------------------------
 # Link time optimization
@@ -72,15 +98,11 @@ else()
 endif()
 
 # ---------------------------------------------------------------------------------------
-# strip
+# Strip
 # ---------------------------------------------------------------------------------------
 if((${CMAKE_BUILD_TYPE} STREQUAL "Release") OR (${CMAKE_BUILD_TYPE} STREQUAL
                                                 "MinSizeRel"))
   message(STATUS "Discard symbols and other data from object files")
-
-  if(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
-    add_cxx_compiler_flag("-Wno-error=unused-command-line-argument")
-  endif()
   add_cxx_linker_flag("-s")
 endif()
 

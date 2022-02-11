@@ -122,11 +122,7 @@ target_link_libraries(
           PkgConfig::icu-i18n
           PkgConfig::opencc
           PkgConfig::marisa)
-set_target_properties(
-  ${KEPUB_LIBRARY}
-  PROPERTIES OUTPUT_NAME ${PROJECT_NAME}
-             POSITION_INDEPENDENT_CODE ON
-             INTERPROCEDURAL_OPTIMIZATION FALSE)
+set_target_properties(${KEPUB_LIBRARY} PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
 
 # ---------------------------------------------------------------------------------------
 # Build shared library
