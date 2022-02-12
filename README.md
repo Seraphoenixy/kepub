@@ -16,11 +16,6 @@ Crawl novels from esjzone, ciweimao and sfacg. Generate epub from txt file
 
 - [kenv](https://github.com/KaiserLancelot/kenv)
 
-## Font
-
-- [source-han-sans](https://github.com/adobe-fonts/source-han-sans)
-- [fonttools](https://github.com/fonttools/fonttools)
-
 ## Build
 
 ```bash
