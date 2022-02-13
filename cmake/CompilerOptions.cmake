@@ -30,15 +30,9 @@ add_cxx_linker_flag("-static-libstdc++")
 # ---------------------------------------------------------------------------------------
 # Linker
 # ---------------------------------------------------------------------------------------
-if(CMAKE_COMPILER_IS_GNUCXX)
-  execute_process(
-    COMMAND ld --version
-    OUTPUT_VARIABLE LINKER_VERSION
-    OUTPUT_STRIP_TRAILING_WHITESPACE)
-  string(REPLACE "\n" ";" LINKER_VERSION ${LINKER_VERSION})
-  list(GET LINKER_VERSION 0 LINKER_VERSION)
-  message(STATUS "Linker: ${LINKER_VERSION}")
-else()
+if((${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+   OR (${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
+   OR (CMAKE_CXX_COMPILER_ID STREQUAL "Clang"))
   execute_process(
     COMMAND ld.lld --version
     OUTPUT_VARIABLE LINKER_VERSION
@@ -46,6 +40,14 @@ else()
   message(STATUS "Linker: ${LINKER_VERSION}")
 
   add_cxx_linker_flag("-fuse-ld=lld")
+else()
+  execute_process(
+    COMMAND ld --version
+    OUTPUT_VARIABLE LINKER_VERSION
+    OUTPUT_STRIP_TRAILING_WHITESPACE)
+  string(REPLACE "\n" ";" LINKER_VERSION ${LINKER_VERSION})
+  list(GET LINKER_VERSION 0 LINKER_VERSION)
+  message(STATUS "Linker: ${LINKER_VERSION}")
 endif()
 
 # ---------------------------------------------------------------------------------------
