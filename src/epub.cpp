@@ -12,7 +12,7 @@
 #include <klib/exception.h>
 #include <klib/log.h>
 #include <klib/util.h>
-#include <gsl/gsl-lite.hpp>
+#include <gsl/assert>
 #include <pugixml.hpp>
 
 #include "util.h"

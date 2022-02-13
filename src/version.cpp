@@ -9,7 +9,6 @@
 #include <unicode/uvernum.h>
 #include <CLI/Version.hpp>
 #include <boost/version.hpp>
-#include <gsl/gsl-lite.hpp>
 #include <pugixml.hpp>
 
 namespace kepub {
@@ -27,8 +26,8 @@ std::string version_str() {
                   MI_MALLOC_VERSION / 10 % 10, MI_MALLOC_VERSION % 10);
   result += fmt::format(FMT_COMPILE("Boost/{}.{}.{} "), BOOST_VERSION / 100000,
                         BOOST_VERSION / 100 % 1000, BOOST_VERSION % 100);
-  result += fmt::format(FMT_COMPILE("gsl-lite/{}.{}.{} "), gsl_lite_MAJOR,
-                        gsl_lite_MINOR, gsl_lite_PATCH);
+  // NOTE
+  result += fmt::format("GSL/4.0.0 ");
   result += fmt::format(FMT_COMPILE("CLI11/{} "), CLI11_VERSION);
   result += fmt::format(FMT_COMPILE("fmt/{}.{}.{} "), FMT_VERSION / 10000,
                         FMT_VERSION / 100 % 100, FMT_VERSION % 100);

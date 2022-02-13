@@ -18,7 +18,7 @@
 #include <unicode/regex.h>
 #include <unicode/uchar.h>
 #include <boost/algorithm/string.hpp>
-#include <gsl/gsl-lite.hpp>
+#include <gsl/assert>
 
 #include "trans.h"
 

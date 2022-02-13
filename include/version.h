@@ -6,7 +6,7 @@
 
 #define KEPUB_VER_MINOR 15
 
-#define KEPUB_VER_PATCH 11
+#define KEPUB_VER_PATCH 12
 
 #define KEPUB_STRINGIZE2(s) #s
 #define KEPUB_STRINGIZE(s) KEPUB_STRINGIZE2(s)

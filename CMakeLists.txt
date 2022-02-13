@@ -69,14 +69,11 @@ find_package(indicators REQUIRED)
 find_package(Boost REQUIRED CONFIG)
 find_package(klib REQUIRED)
 find_package(simdjson REQUIRED)
-find_package(gsl-lite REQUIRED)
+find_package(Microsoft.GSL REQUIRED)
 
 add_definitions(-DDBG_MACRO_NO_WARNING)
 if(NOT (${CMAKE_BUILD_TYPE} STREQUAL "Debug"))
   add_definitions(-DDBG_MACRO_DISABLE)
-endif()
-if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-  add_definitions(-Dgsl_CONFIG_CONTRACT_VIOLATION_THROWS)
 endif()
 
 find_package(PkgConfig REQUIRED)
@@ -116,7 +113,7 @@ target_link_libraries(
           pugixml::pugixml
           simdjson::simdjson
           indicators::indicators
-          gsl::gsl-lite-v1
+          Microsoft.GSL::GSL
           klib::klib
           ${Boost_LIBRARIES}
           PkgConfig::icu-i18n
@@ -139,7 +136,7 @@ target_link_libraries(
           pugixml::pugixml
           simdjson::simdjson
           indicators::indicators
-          gsl::gsl-lite-v1
+          Microsoft.GSL::GSL
           klib::klib
           ${Boost_LIBRARIES}
           PkgConfig::icu-i18n
