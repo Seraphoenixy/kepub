@@ -38,9 +38,8 @@ int main(int argc, const char *argv[]) try {
   app.add_flag("-t,--translation", translation,
                "Translate Traditional Chinese to Simplified Chinese");
 
-  bool connect_chinese = false;
-  app.add_flag("-c,--connect", connect_chinese,
-               "Remove extra line breaks between Chinese");
+  bool connect = false;
+  app.add_flag("-c,--connect", connect, "Remove extra line breaks");
 
   bool no_cover = false;
   app.add_flag("--no-cover", no_cover, "Do not generate cover");
@@ -146,7 +145,7 @@ int main(int argc, const char *argv[]) try {
         }
 
         word_count += kepub::str_size(line);
-        kepub::push_back(introduction, line, connect_chinese);
+        kepub::push_back(introduction, line, connect);
       }
       --i;
     } else if (vec[i].starts_with(postscript_prefix)) {
@@ -165,7 +164,7 @@ int main(int argc, const char *argv[]) try {
         }
 
         word_count += kepub::str_size(line);
-        kepub::push_back(postscript, line, connect_chinese);
+        kepub::push_back(postscript, line, connect);
       }
       --i;
     } else if (vec[i].starts_with(volume_prefix)) {
@@ -190,7 +189,7 @@ int main(int argc, const char *argv[]) try {
         }
 
         word_count += kepub::str_size(line);
-        kepub::push_back(content, line, connect_chinese);
+        kepub::push_back(content, line, connect);
       }
       --i;
 

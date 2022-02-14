@@ -216,7 +216,7 @@ void title_check(const std::string &title) {
 }
 
 void push_back(std::vector<std::string> &texts, const std::string &str,
-               bool connect_chinese) {
+               bool connect) {
   if (std::empty(str)) {
     return;
   }
@@ -253,13 +253,16 @@ void push_back(std::vector<std::string> &texts, const std::string &str,
 
       texts.push_back(str);
     }
-  } else if (std::isalpha(texts.back().back()) && std::isalpha(str.front())) {
+  } else if (connect && std::isalpha(texts.back().back()) &&
+             std::isalpha(str.front())) {
     texts.back().append(" " + str);
-  } else if (end_with_chinese(texts.back()) && std::isalpha(str.front())) {
+  } else if (connect && end_with_chinese(texts.back()) &&
+             std::isalpha(str.front())) {
     texts.back().append(" " + str);
-  } else if (std::isalpha(texts.back().back()) && start_with_chinese(str)) {
+  } else if (connect && std::isalpha(texts.back().back()) &&
+             start_with_chinese(str)) {
     texts.back().append(" " + str);
-  } else if (connect_chinese && end_with_chinese(texts.back()) &&
+  } else if (connect && end_with_chinese(texts.back()) &&
              start_with_chinese(str)) {
     texts.back().append(str);
   } else {

@@ -32,7 +32,7 @@ void volume_name_check(const std::string &volume_name);
 void title_check(const std::string &title);
 
 void push_back(std::vector<std::string> &texts, const std::string &str,
-               bool connect_chinese);
+               bool connect);
 
 void push_back_no_connect(std::vector<std::string> &texts,
                           const std::string &str);
