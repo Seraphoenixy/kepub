@@ -6,11 +6,14 @@
 
 namespace {
 
+klib::Request request;
+
 const std::string app_version = "2.9.702";
 const std::string device_token = "iPhone-ADDACF06-A9DD-482B-ADF5-ADE5B97438EE";
-const std::string user_agent = "HappyBook/2.9.7 (iPhone; iOS 15.3; Scale/3.00)";
-
-klib::Request request;
+const std::string user_agent =
+    "HappyBook/2.9.7 (iPhone; iOS 15.3.1; Scale/3.00)";
+const static std::string user_agent_rss =
+    request.url_encode("刺猬猫阅读") + "/2.9.702 CFNetwork/1329 Darwin/21.3.0";
 
 void report_http_error(klib::HttpStatus status, const std::string &url) {
   klib::error("HTTP GET failed, code: {}, reason: {}, url: {}",
@@ -21,10 +24,6 @@ void report_http_error(klib::HttpStatus status, const std::string &url) {
 }  // namespace
 
 klib::Response http_get_rss(const std::string &url) {
-  const static std::string user_agent_rss =
-      request.url_encode("刺猬猫阅读") +
-      "/2.9.702 CFNetwork/1329 Darwin/21.3.0";
-
   request.set_no_proxy();
   request.set_user_agent(user_agent_rss);
   request.set_accept_encoding("gzip, deflate, br");
