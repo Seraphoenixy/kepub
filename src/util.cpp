@@ -35,13 +35,25 @@ bool end_with_chinese(const std::string &str) {
 }
 
 bool is_punct(char32_t c) {
-  return u_ispunct(c) || c == klib::utf8_to_unicode("～") ||
-         c == klib::utf8_to_unicode("ー") || c == klib::utf8_to_unicode("♂") ||
-         c == klib::utf8_to_unicode("♀") || c == klib::utf8_to_unicode("◇") ||
-         c == klib::utf8_to_unicode("￮") || c == klib::utf8_to_unicode("+") ||
-         c == klib::utf8_to_unicode("=") || c == klib::utf8_to_unicode("↑") ||
-         c == klib::utf8_to_unicode("↓") || c == klib::utf8_to_unicode("←") ||
-         c == klib::utf8_to_unicode("→");
+  static std::vector<char32_t> puncts{
+      klib::utf8_to_unicode("～"), klib::utf8_to_unicode("ー"),
+      klib::utf8_to_unicode("♂"),  klib::utf8_to_unicode("♀"),
+      klib::utf8_to_unicode("◇"),  klib::utf8_to_unicode("￮"),
+      klib::utf8_to_unicode("+"),  klib::utf8_to_unicode("="),
+      klib::utf8_to_unicode("↑"),  klib::utf8_to_unicode("↓"),
+      klib::utf8_to_unicode("←"),  klib::utf8_to_unicode("→")};
+
+  if (u_ispunct(c)) {
+    return true;
+  }
+
+  for (auto punct : puncts) {
+    if (c == punct) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 bool end_with_punct(const std::string &str) {
@@ -297,19 +309,21 @@ std::string trim(const std::string &str) {
 }
 
 void replace_error_char(icu::UnicodeString &str) {
-  // https://en.wikipedia.org/wiki/Word_joiner
-  str.findAndReplace("\uFEFF", "");
-
-  // https://zh.wikipedia.org/wiki/%E4%B8%8D%E6%8D%A2%E8%A1%8C%E7%A9%BA%E6%A0%BC
-  str.findAndReplace("&nbsp;", " ");
-  str.findAndReplace("\u00A0", " ");
-
-  // https://pugixml.org/docs/manual.html#loading.options
-  str.findAndReplace("&lt;", "<");
-  str.findAndReplace("&gt;", ">");
-  str.findAndReplace("&quot;", "\"");
-  str.findAndReplace("&apos;", "'");
-  str.findAndReplace("&amp;", "&");
+  static std::vector<std::pair<icu::UnicodeString, icu::UnicodeString>> map{
+      // https://en.wikipedia.org/wiki/Word_joiner
+      {"\uFEFF", ""},
+      // https://zh.wikipedia.org/wiki/%E4%B8%8D%E6%8D%A2%E8%A1%8C%E7%A9%BA%E6%A0%BC
+      {"&nbsp;", " "},
+      {"\u00A0", " "},
+      // https://pugixml.org/docs/manual.html#loading.options
+      {"&lt;", "<"},
+      {"&gt;", ">"},
+      {"&quot;", "\""},
+      {"&apos;", "'"},
+      {"&amp;", "&"}};
+  for (const auto &[from, to] : map) {
+    str.findAndReplace(from, to);
+  }
 
   static std::vector<icu::UnicodeString> control_char = get_control_char();
   for (const auto &item : control_char) {

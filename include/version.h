@@ -2,11 +2,11 @@
 
 #include <string>
 
-#define KEPUB_VER_MAJOR 0
+#define KEPUB_VER_MAJOR 1
 
-#define KEPUB_VER_MINOR 15
+#define KEPUB_VER_MINOR 0
 
-#define KEPUB_VER_PATCH 15
+#define KEPUB_VER_PATCH 0
 
 #define KEPUB_STRINGIZE2(s) #s
 #define KEPUB_STRINGIZE(s) KEPUB_STRINGIZE2(s)
