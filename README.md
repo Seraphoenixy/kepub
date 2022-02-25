@@ -42,10 +42,6 @@ sfacg 263060
 kepub book-name.txt
 ```
 
-## Reference
-
-- https://blog.csdn.net/qq_38851536/article/details/117828334
-
 ## Roadmap
 
 - Refactor the code
