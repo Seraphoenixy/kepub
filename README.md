@@ -38,7 +38,7 @@ sudo cmake --build build --config Release --target uninstall
 ## Usage
 
 ```bash
-sfacg 263060
+sfacg book-id
 kepub book-name.txt
 ```
 
