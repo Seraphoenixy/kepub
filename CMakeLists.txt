@@ -69,6 +69,7 @@ find_package(pugixml REQUIRED)
 find_package(indicators REQUIRED)
 find_package(Boost REQUIRED CONFIG)
 find_package(klib REQUIRED)
+find_package(simdjson REQUIRED)
 find_package(Microsoft.GSL REQUIRED)
 
 add_definitions(-DDBG_MACRO_NO_WARNING)
@@ -115,6 +116,7 @@ target_link_libraries(
           Microsoft.GSL::GSL
           klib::klib
           ${Boost_LIBRARIES}
+          simdjson::simdjson
           PkgConfig::icu-i18n
           PkgConfig::opencc
           PkgConfig::marisa)
@@ -137,6 +139,7 @@ target_link_libraries(
           Microsoft.GSL::GSL
           klib::klib
           ${Boost_LIBRARIES}
+          simdjson::simdjson
           PkgConfig::icu-i18n
           PkgConfig::opencc
           PkgConfig::marisa)
