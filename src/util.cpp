@@ -87,23 +87,6 @@ bool regex_match(const std::string &str, const std::string &regex) {
   return ok;
 }
 
-// https://zh.wikipedia.org/wiki/%E6%8E%A7%E5%88%B6%E5%AD%97%E7%AC%A6
-std::vector<icu::UnicodeString> get_control_char() {
-  std::vector<icu::UnicodeString> control_char;
-
-  for (std::int32_t i = 0; i <= 31; ++i) {
-    control_char.push_back(icu::UnicodeString::fromUTF32(
-        reinterpret_cast<const UChar32 *>(&i), 1));
-  }
-
-  for (std::int32_t i = 127; i <= 159; ++i) {
-    control_char.push_back(icu::UnicodeString::fromUTF32(
-        reinterpret_cast<const UChar32 *>(&i), 1));
-  }
-
-  return control_char;
-}
-
 }  // namespace
 
 void check_file_exist(const std::string &file_name) {
@@ -323,11 +306,6 @@ void replace_error_char(icu::UnicodeString &str) {
       {"&amp;", "&"}};
   for (const auto &[from, to] : map) {
     str.findAndReplace(from, to);
-  }
-
-  static std::vector<icu::UnicodeString> control_char = get_control_char();
-  for (const auto &item : control_char) {
-    str.findAndReplace(item, "");
   }
 }
 
