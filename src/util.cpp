@@ -14,7 +14,6 @@
 #include <klib/log.h>
 #include <klib/unicode.h>
 #include <klib/util.h>
-#include <simdjson.h>
 #include <unicode/regex.h>
 #include <unicode/uchar.h>
 #include <boost/algorithm/string.hpp>
@@ -138,7 +137,7 @@ std::vector<std::string> read_file_to_vec(const std::string &file_name,
                                           bool translation) {
   auto data = klib::read_file(file_name, false);
 
-  if (!simdjson::validate_utf8(data)) {
+  if (!klib::validate_utf8(data)) {
     klib::error("file '{}' encoding is not UTF-8", file_name);
   }
 

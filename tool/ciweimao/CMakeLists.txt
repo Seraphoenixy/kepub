@@ -1,4 +1,5 @@
 find_package(CLI11 REQUIRED)
+find_package(simdjson REQUIRED)
 find_package(Boost CONFIG REQUIRED COMPONENTS json)
 
 add_executable(${CIWEIMAO_EXECUTABLE} ${MIMALLOC_OBJECT} ciweimao.cpp json.cpp
