@@ -34,6 +34,7 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release",
         "KEPUB_BUILD_TEST": "ON",
+        "KEPUB_BUILD_BENCH": "ON",
         "KEPUB_FORMAT": "ON"
       },
       "vendor": {
@@ -70,6 +71,7 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release",
         "KEPUB_BUILD_TEST": "ON",
+        "KEPUB_BUILD_BENCH": "ON",
         "KEPUB_FORMAT": "ON"
       },
       "vendor": {
