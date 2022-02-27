@@ -119,15 +119,14 @@ std::vector<std::string> read_file_to_vec(const std::string &file_name,
                                           bool translation) {
   auto str = klib::read_file(file_name, false);
 
-  if (!klib::validate_utf8(str)) {
-    klib::error("file '{}' encoding is not UTF-8", file_name);
-  }
-
   std::vector<std::string> result;
   boost::split(result, str, boost::is_any_of("\n"), boost::token_compress_on);
 
   for (auto &item : result) {
     item = trans_str(item, translation);
+    if (!klib::validate_utf8(item)) {
+      klib::error("Invalid UTF-8: {}", item);
+    }
   }
 
   std::erase_if(result,
