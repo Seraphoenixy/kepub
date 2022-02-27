@@ -31,9 +31,6 @@ int main(int argc, const char *argv[]) try {
   app.add_flag("--only-check", only_check,
                "Only check the content and title, do not generate epub");
 
-  bool no_check = false;
-  app.add_flag("--no-check", no_check, "Do not check the content and title");
-
   bool translation = false;
   app.add_flag("-t,--translation", translation,
                "Translate Traditional Chinese to Simplified Chinese");
@@ -139,10 +136,7 @@ int main(int argc, const char *argv[]) try {
 
       for (; i < size && !is_prefix(vec[i]); ++i) {
         auto line = vec[i];
-
-        if (!no_check) {
-          kepub::str_check(line);
-        }
+        kepub::str_check(line);
 
         word_count += kepub::str_size(line);
         kepub::push_back(introduction, line, connect);
@@ -158,10 +152,7 @@ int main(int argc, const char *argv[]) try {
 
       for (; i < size && !is_prefix(vec[i]); ++i) {
         auto line = vec[i];
-
-        if (!no_check) {
-          kepub::str_check(line);
-        }
+        kepub::str_check(line);
 
         word_count += kepub::str_size(line);
         kepub::push_back(postscript, line, connect);
@@ -169,24 +160,16 @@ int main(int argc, const char *argv[]) try {
       --i;
     } else if (vec[i].starts_with(volume_prefix)) {
       volume_name = vec[i].substr(volume_prefix_size);
-
-      if (!no_check) {
-        kepub::volume_name_check(volume_name);
-      }
+      kepub::volume_name_check(volume_name);
     } else if (vec[i].starts_with(title_prefix)) {
       auto title = vec[i].substr(title_prefix_size);
-      if (!no_check) {
-        kepub::title_check(title);
-      }
+      kepub::title_check(title);
       ++i;
 
       std::vector<std::string> content;
       for (; i < size && !is_prefix(vec[i]); ++i) {
         auto line = vec[i];
-
-        if (!no_check) {
-          kepub::str_check(line);
-        }
+        kepub::str_check(line);
 
         word_count += kepub::str_size(line);
         kepub::push_back(content, line, connect);
