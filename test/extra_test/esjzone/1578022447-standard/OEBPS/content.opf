@@ -242,6 +242,7 @@
         <item id="chapter223.xhtml" href="Text/chapter223.xhtml" media-type="application/xhtml+xml" />
         <item id="chapter224.xhtml" href="Text/chapter224.xhtml" media-type="application/xhtml+xml" />
         <item id="chapter225.xhtml" href="Text/chapter225.xhtml" media-type="application/xhtml+xml" />
+        <item id="chapter226.xhtml" href="Text/chapter226.xhtml" media-type="application/xhtml+xml" />
     </manifest>
     <spine toc="ncx">
         <itemref idref="cover.xhtml" />
@@ -472,6 +473,7 @@
         <itemref idref="chapter223.xhtml" />
         <itemref idref="chapter224.xhtml" />
         <itemref idref="chapter225.xhtml" />
+        <itemref idref="chapter226.xhtml" />
     </spine>
     <guide>
         <reference type="cover" title="Cover" href="Text/cover.xhtml" />

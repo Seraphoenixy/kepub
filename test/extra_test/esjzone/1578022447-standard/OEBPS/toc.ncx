@@ -400,7 +400,7 @@
         </navPoint>
         <navPoint id="navPoint-65" playOrder="65">
             <navLabel>
-                <text>第一卷62——尾声&amp;极密资料</text>
+                <text>第一卷62——尾声＆极密资料</text>
             </navLabel>
             <content src="Text/chapter062.xhtml" />
         </navPoint>
@@ -1381,6 +1381,12 @@
                 <text>第四卷39——心境变化</text>
             </navLabel>
             <content src="Text/chapter225.xhtml" />
+        </navPoint>
+        <navPoint id="navPoint-229" playOrder="229">
+            <navLabel>
+                <text>第四卷40——other sdie，胜利的方程式（不对）</text>
+            </navLabel>
+            <content src="Text/chapter226.xhtml" />
         </navPoint>
     </navMap>
 </ncx>
