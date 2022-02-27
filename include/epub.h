@@ -23,6 +23,7 @@ class Epub {
   void set_illustration_num(std::int32_t illustration_num);
   void set_image_num(std::int32_t image_num);
 
+  void font_subset(bool flag);
   void set_uuid(const std::string &uuid);
   void set_date(const std::string &date);
 
@@ -97,6 +98,7 @@ class Epub {
       content_;
 
   std::string font_words_ = "封面彩页简介制作信息后记0123456789";
+  bool font_subset_ = true;
 };
 
 }  // namespace kepub

@@ -38,6 +38,10 @@ int main(int argc, const char *argv[]) try {
                "When the generation is successful, delete the TXT file and "
                "backup epub file");
 
+  bool no_font_subset = false;
+  app.add_flag("--no-font-subset", no_font_subset,
+               "Do not use pyftsubset(for testing)");
+
   bool no_compress = false;
   app.add_flag("--no-compress", no_compress, "Do not compress(for testing)");
 
@@ -94,6 +98,7 @@ int main(int argc, const char *argv[]) try {
   }
 
   kepub::Epub epub;
+  epub.font_subset(!no_font_subset);
   epub.append_chapter(book_name, contents);
 
   if (!no_compress) {

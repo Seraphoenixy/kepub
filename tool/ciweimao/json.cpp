@@ -69,7 +69,7 @@ BookInfo::BookInfo(std::string json) : JsonBase(std::move(json)) {
   std::string intro_str(book_info["description"].get_string().value());
 
   for (const auto &line : klib::split_str(intro_str, "\n")) {
-    kepub::push_back_no_connect(intro_, line);
+    kepub::push_back(intro_, line);
   }
 }
 

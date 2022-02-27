@@ -101,8 +101,8 @@ get_info(const std::string &book_id, bool translation,
 
   std::vector<std::string> description;
   for (const auto &child : node.children()) {
-    kepub::push_back_no_connect(
-        description, kepub::trans_str(child.text().as_string(), translation));
+    kepub::push_back(description,
+                     kepub::trans_str(child.text().as_string(), translation));
   }
 
   node = doc.select_node(
@@ -157,7 +157,7 @@ std::vector<std::string> get_content(const std::string &url, bool translation,
 
   std::vector<std::string> result;
   for (const auto &line : get_children_content(node)) {
-    kepub::push_back_no_connect(result, kepub::trans_str(line, translation));
+    kepub::push_back(result, kepub::trans_str(line, translation));
   }
 
   return result;

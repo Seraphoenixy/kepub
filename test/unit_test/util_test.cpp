@@ -26,10 +26,10 @@ TEST_CASE("volume_name_check", "[util]") {
   REQUIRE_NOTHROW(kepub::volume_name_check("第1卷 "));
 }
 
-TEST_CASE("push_back_no_connect", "[util]") {
+TEST_CASE("push_back", "[util]") {
   std::vector<std::string> texts;
   std::string str = "第1卷\u000a";
-  kepub::push_back_no_connect(texts, str);
+  kepub::push_back(texts, str);
 
   REQUIRE(texts.front() == "第1卷");
 }

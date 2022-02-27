@@ -367,6 +367,8 @@ void Epub::set_illustration_num(std::int32_t illustration_num) {
 
 void Epub::set_image_num(std::int32_t image_num) { image_num_ = image_num; }
 
+void Epub::font_subset(bool flag) { font_subset_ = flag; }
+
 void Epub::set_uuid(const std::string &uuid) { uuid_ = "urn:uuid:" + uuid; }
 
 void Epub::set_date(const std::string &date) { date_ = date; }
@@ -482,13 +484,17 @@ void Epub::generate_container() const {
 }
 
 void Epub::generate_font() const {
-  klib::info("Start generating woff2 font");
+  if (font_subset_) {
+    klib::info("Start generating woff2 font");
 
-  klib::write_file(Epub::temp_font_path, true, font_);
-  klib::exec(fmt::format(
-      FMT_COMPILE(
-          R"(pyftsubset --flavor=woff2 --output-file={} --text="{}" {})"),
-      Epub::font_path, font_words_, Epub::temp_font_path));
+    klib::write_file(Epub::temp_font_path, true, font_);
+    klib::exec(fmt::format(
+        FMT_COMPILE(
+            R"(pyftsubset --flavor=woff2 --output-file={} --text="{}" {})"),
+        Epub::font_path, font_words_, Epub::temp_font_path));
+  } else {
+    klib::write_file(Epub::font_path, true, font_);
+  }
 }
 
 void Epub::generate_style() const {

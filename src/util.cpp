@@ -26,37 +26,19 @@ namespace kepub {
 namespace {
 
 bool start_with_chinese(const std::string &str) {
-  return klib::is_chinese(klib::utf8_to_utf32(str).front());
+  return klib::is_chinese(klib::first_code_point(str));
 }
 
 bool end_with_chinese(const std::string &str) {
-  return klib::is_chinese(klib::utf8_to_utf32(str).back());
+  return klib::is_chinese(klib::last_code_point(str));
 }
 
-bool is_punct(char32_t c) {
-  static std::vector<char32_t> puncts{
-      klib::utf8_to_unicode("～"), klib::utf8_to_unicode("ー"),
-      klib::utf8_to_unicode("♂"),  klib::utf8_to_unicode("♀"),
-      klib::utf8_to_unicode("◇"),  klib::utf8_to_unicode("￮"),
-      klib::utf8_to_unicode("+"),  klib::utf8_to_unicode("="),
-      klib::utf8_to_unicode("↑"),  klib::utf8_to_unicode("↓"),
-      klib::utf8_to_unicode("←"),  klib::utf8_to_unicode("→")};
-
-  if (u_ispunct(c)) {
-    return true;
-  }
-
-  for (auto punct : puncts) {
-    if (c == punct) {
-      return true;
-    }
-  }
-
-  return false;
+bool is_punctuation(char32_t code_point) {
+  return code_point == U'◇' || klib::is_chinese_punctuation(code_point);
 }
 
-bool end_with_punct(const std::string &str) {
-  return is_punct(klib::utf8_to_utf32(str).back());
+bool end_with_punctuation(const std::string &str) {
+  return klib::is_chinese_punctuation(klib::last_code_point(str));
 }
 
 std::string make_book_name_legal(const std::string &file_name) {
@@ -135,14 +117,19 @@ void check_is_book_id(const std::string &book_id) {
 
 std::vector<std::string> read_file_to_vec(const std::string &file_name,
                                           bool translation) {
-  auto data = klib::read_file(file_name, false);
+  auto str = klib::read_file(file_name, false);
 
-  if (!klib::validate_utf8(data)) {
+  if (!klib::validate_utf8(str)) {
     klib::error("file '{}' encoding is not UTF-8", file_name);
   }
 
+  if (translation) {
+    static const Converter converter;
+    str = converter.convert(str);
+  }
+
   std::vector<std::string> result;
-  boost::split(result, data, boost::is_any_of("\n"), boost::token_compress_on);
+  boost::split(result, str, boost::is_any_of("\n"), boost::token_compress_on);
 
   for (auto &item : result) {
     item = trans_str(item, translation);
@@ -161,18 +148,15 @@ void str_check(const std::string &str) {
   std::erase_if(copy, [](char c) { return std::isalnum(c) || c == ' '; });
 
   for (auto c : klib::utf8_to_utf32(copy)) {
-    if ((!klib::is_chinese(c) && !is_punct(c)) ||
-        c == klib::utf8_to_unicode("\"")) {
+    if (!klib::is_chinese(c) && !is_punctuation(c)) {
       if (set.contains(c)) {
         continue;
       }
 
       set.insert(c);
 
-      std::string temp;
-      UChar32 ch = c;
       klib::warn("Unknown character: {} in {}",
-                 icu::UnicodeString::fromUTF32(&ch, 1).toUTF8String(temp), str);
+                 klib::utf32_to_utf8(std::u32string(&c, 1)), str);
     }
   }
 }
@@ -238,7 +222,7 @@ void push_back(std::vector<std::string> &texts, const std::string &str,
              str.starts_with("」") || str.starts_with("』") ||
              str.starts_with("》") || str.starts_with("]") ||
              str.starts_with("】") || str.starts_with("）")) {
-    if (!end_with_punct(texts.back())) {
+    if (!end_with_punctuation(texts.back())) {
       texts.back().append(str);
     } else {
       if (!(str.starts_with("！") || str.starts_with("？"))) {
@@ -264,47 +248,9 @@ void push_back(std::vector<std::string> &texts, const std::string &str,
   }
 }
 
-void push_back_no_connect(std::vector<std::string> &texts,
-                          const std::string &str) {
-  if (std::empty(str)) {
-    return;
-  }
-
-  auto icu_str = icu::UnicodeString::fromUTF8(str.c_str());
-  replace_error_char(icu_str);
-  icu_str.trim();
-
-  if (icu_str.isEmpty()) {
-    return;
-  }
-
-  std::string temp;
-  texts.push_back(icu_str.toUTF8String(temp));
-}
-
-std::string trim(const std::string &str) {
-  auto icu_str = icu::UnicodeString::fromUTF8(str.c_str());
-  icu_str.trim();
-
-  std::string temp;
-  return icu_str.toUTF8String(temp);
-}
-
-void replace_error_char(icu::UnicodeString &str) {
-  static std::vector<std::pair<icu::UnicodeString, icu::UnicodeString>> map{
-      // https://en.wikipedia.org/wiki/Word_joiner
-      {"\uFEFF", ""},
-      // https://zh.wikipedia.org/wiki/%E4%B8%8D%E6%8D%A2%E8%A1%8C%E7%A9%BA%E6%A0%BC
-      {"&nbsp;", " "},
-      {"\u00A0", " "},
-      // https://pugixml.org/docs/manual.html#loading.options
-      {"&lt;", "<"},
-      {"&gt;", ">"},
-      {"&quot;", "\""},
-      {"&apos;", "'"},
-      {"&amp;", "&"}};
-  for (const auto &[from, to] : map) {
-    str.findAndReplace(from, to);
+void push_back(std::vector<std::string> &texts, const std::string &str) {
+  if (auto std_str = klib::trim_copy(str); !std::empty(std_str)) {
+    texts.push_back(std::move(std_str));
   }
 }
 

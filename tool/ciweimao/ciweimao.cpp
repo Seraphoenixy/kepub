@@ -9,6 +9,7 @@
 
 #include <klib/exception.h>
 #include <klib/log.h>
+#include <klib/unicode.h>
 #include <klib/util.h>
 #include <CLI/CLI.hpp>
 #include <boost/algorithm/string.hpp>
@@ -145,7 +146,7 @@ std::vector<std::string> get_content(const std::string &account,
   static std::int32_t image_count = 1;
   std::vector<std::string> content;
   for (auto &line : klib::split_str(content_str, "\n")) {
-    line = kepub::trim(line);
+    klib::trim(line);
 
     if (line.starts_with("<img src")) {
       pugi::xml_document doc;
@@ -166,7 +167,7 @@ std::vector<std::string> get_content(const std::string &account,
       line = "[IMAGE] " + image_name;
     }
 
-    kepub::push_back_no_connect(content, line);
+    kepub::push_back(content, line);
   }
 
   return content;

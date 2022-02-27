@@ -8,6 +8,7 @@
 #include <fmt/format.h>
 #include <klib/exception.h>
 #include <klib/log.h>
+#include <klib/unicode.h>
 #include <klib/util.h>
 #include <CLI/CLI.hpp>
 #include <boost/algorithm/string.hpp>
@@ -86,7 +87,7 @@ std::vector<std::string> get_content(const std::string &chapter_id) {
   static std::int32_t image_count = 1;
   std::vector<std::string> content;
   for (auto &line : klib::split_str(content_str, "\n")) {
-    line = kepub::trim(line);
+    klib::trim(line);
 
     if (line.starts_with("[img")) {
       auto begin = line.find("https");
@@ -117,7 +118,7 @@ std::vector<std::string> get_content(const std::string &chapter_id) {
       line = "[IMAGE] " + image_name;
     }
 
-    kepub::push_back_no_connect(content, line);
+    kepub::push_back(content, line);
   }
 
   return content;
