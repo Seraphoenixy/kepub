@@ -123,11 +123,6 @@ std::vector<std::string> read_file_to_vec(const std::string &file_name,
     klib::error("file '{}' encoding is not UTF-8", file_name);
   }
 
-  if (translation) {
-    static const Converter converter;
-    str = converter.convert(str);
-  }
-
   std::vector<std::string> result;
   boost::split(result, str, boost::is_any_of("\n"), boost::token_compress_on);
 

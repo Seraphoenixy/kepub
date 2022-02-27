@@ -26,6 +26,25 @@ namespace kepub {
 
 namespace {
 
+class Converter {
+ public:
+  Converter() {
+    klib::write_file("/tmp/tw2s.json", false, tw2s, tw2s_size);
+    klib::write_file("/tmp/TSPhrases.ocd2", true, TSPhrases, TSPhrases_size);
+    klib::write_file("/tmp/TWVariantsRevPhrases.ocd2", true,
+                     TWVariantsRevPhrases, TWVariantsRevPhrases_size);
+    klib::write_file("/tmp/TWVariantsRev.ocd2", true, TWVariantsRev,
+                     TWVariantsRev_size);
+    klib::write_file("/tmp/TSCharacters.ocd2", true, TSCharacters,
+                     TSCharacters_size);
+  }
+
+  [[nodiscard]] std::string convert(const std::string &str) const {
+    const static opencc::SimpleConverter converter("/tmp/tw2s.json");
+    return converter.Convert(str);
+  }
+};
+
 std::u32string custom_trans(const std::u32string &str, bool translation) {
   std::u32string result;
   result.reserve(std::size(str));
@@ -87,17 +106,20 @@ std::u32string custom_trans(const std::u32string &str, bool translation) {
         result.push_back(U'（');
       } else if (code_point == U')') {
         result.push_back(U'）');
-      } else if (code_point == U'。' || code_point == U'，' ||
-                 code_point == U'、') {
-        if (!std::empty(result)) {
-          if (auto back = result.back();
-              back == U'。' || back == U'，' || back == U'、') {
-            result.pop_back();
-            result.push_back(U'。');
-            continue;
-          }
+      } else if (code_point == U'。') {
+        if (!std::empty(result) && result.back() == U'。') {
+          continue;
         }
-
+        result.push_back(code_point);
+      } else if (code_point == U'，') {
+        if (!std::empty(result) && result.back() == U'，') {
+          continue;
+        }
+        result.push_back(code_point);
+      } else if (code_point == U'、') {
+        if (!std::empty(result) && result.back() == U'、') {
+          continue;
+        }
         result.push_back(code_point);
       } else {
         result.push_back(code_point);
@@ -169,32 +191,22 @@ std::string do_trans_str(const std::u32string &str, bool translation) {
 
 }  // namespace
 
-Converter::Converter() {
-  klib::write_file("/tmp/tw2s.json", false, tw2s, tw2s_size);
-  klib::write_file("/tmp/TSPhrases.ocd2", true, TSPhrases, TSPhrases_size);
-  klib::write_file("/tmp/TWVariantsRevPhrases.ocd2", true, TWVariantsRevPhrases,
-                   TWVariantsRevPhrases_size);
-  klib::write_file("/tmp/TWVariantsRev.ocd2", true, TWVariantsRev,
-                   TWVariantsRev_size);
-  klib::write_file("/tmp/TSCharacters.ocd2", true, TSCharacters,
-                   TSCharacters_size);
-}
-
-std::string Converter::convert(const std::string &str) const {
-  const static opencc::SimpleConverter converter("/tmp/tw2s.json");
-  return converter.Convert(str);
-}
-
 std::string trans_str(const char *str, bool translation) {
   return trans_str(std::string_view(str), translation);
 }
 
 std::string trans_str(std::string_view str, bool translation) {
-  return do_trans_str(klib::utf8_to_utf32(std::data(str)), translation);
+  return trans_str(std::string(std::data(str), std::size(str)), translation);
 }
 
 std::string trans_str(const std::string &str, bool translation) {
-  return do_trans_str(klib::utf8_to_utf32(str), translation);
+  std::string std_str(std::data(str), std::size(str));
+  if (translation) {
+    static const Converter converter;
+    std_str = converter.convert(std_str);
+  }
+
+  return do_trans_str(klib::utf8_to_utf32(std_str), translation);
 }
 
 }  // namespace kepub
