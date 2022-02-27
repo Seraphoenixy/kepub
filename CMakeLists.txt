@@ -78,12 +78,8 @@ if(NOT (${CMAKE_BUILD_TYPE} STREQUAL "Debug"))
 endif()
 
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(icu-i18n REQUIRED IMPORTED_TARGET icu-i18n)
 pkg_check_modules(opencc REQUIRED IMPORTED_TARGET opencc)
 pkg_check_modules(marisa REQUIRED IMPORTED_TARGET marisa)
-
-add_definitions(-DU_HIDE_INTERNAL_API -DU_HIDE_DRAFT_API -DU_HIDE_OBSOLETE_API
-                -DU_HIDE_DEPRECATED_API)
 
 if(NOT KEPUB_SANITIZER)
   message(STATUS "Use mimalloc")
@@ -117,7 +113,6 @@ target_link_libraries(
           klib::klib
           ${Boost_LIBRARIES}
           simdjson::simdjson
-          PkgConfig::icu-i18n
           PkgConfig::opencc
           PkgConfig::marisa)
 set_target_properties(${KEPUB_LIBRARY} PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
@@ -140,7 +135,6 @@ target_link_libraries(
           klib::klib
           ${Boost_LIBRARIES}
           simdjson::simdjson
-          PkgConfig::icu-i18n
           PkgConfig::opencc
           PkgConfig::marisa)
 set_target_properties(

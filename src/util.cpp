@@ -7,15 +7,13 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <regex>
 #include <sstream>
-#include <tuple>
 #include <unordered_set>
 
 #include <klib/log.h>
 #include <klib/unicode.h>
 #include <klib/util.h>
-#include <unicode/regex.h>
-#include <unicode/uchar.h>
 #include <boost/algorithm/string.hpp>
 #include <gsl/assert>
 
@@ -51,21 +49,6 @@ std::string make_book_name_legal(const std::string &file_name) {
   }
 
   return new_file_name;
-}
-
-bool regex_match(const std::string &str, const std::string &regex) {
-  auto input = icu::UnicodeString::fromUTF8(str);
-  auto regex_str = icu::UnicodeString::fromUTF8(regex);
-
-  UErrorCode status = U_ZERO_ERROR;
-  icu::RegexMatcher regex_matcher(
-      regex_str, input, UREGEX_UWORD | UREGEX_ERROR_ON_UNKNOWN_ESCAPES, status);
-  check_icu(status);
-
-  auto ok = regex_matcher.matches(status);
-  check_icu(status);
-
-  return ok;
 }
 
 }  // namespace
@@ -168,8 +151,11 @@ std::int32_t str_size(const std::string &str) {
 }
 
 void volume_name_check(const std::string &volume_name) {
-  if (!regex_match(volume_name,
-                   R"(第([一二三四五六七八九十]|[0-9]){1,3}卷 .+)")) {
+  static const std::wregex regex(
+      LR"(第([一二三四五六七八九十]|[0-9]){1,3}卷 .+)",
+      std::regex_constants::optimize);
+
+  if (!std::regex_match(klib::utf8_to_utf32_w(volume_name), regex)) {
     klib::warn("Irregular volume name format: {}", volume_name);
     return;
   }
@@ -178,8 +164,11 @@ void volume_name_check(const std::string &volume_name) {
 }
 
 void title_check(const std::string &title) {
-  if (!regex_match(title,
-                   R"(第([零一二三四五六七八九十百千]|[0-9]){1,7}[章话] .+)")) {
+  static const std::wregex regex(
+      LR"(第([零一二三四五六七八九十百千]|[0-9]){1,7}[章] .+)",
+      std::regex_constants::optimize);
+
+  if (!std::regex_match(klib::utf8_to_utf32_w(title), regex)) {
     klib::warn("Irregular title format: {}", title);
     return;
   }
@@ -245,12 +234,6 @@ void push_back(std::vector<std::string> &texts, const std::string &str,
 void push_back(std::vector<std::string> &texts, const std::string &str) {
   if (auto std_str = klib::trim_copy(str); !std::empty(std_str)) {
     texts.push_back(std::move(std_str));
-  }
-}
-
-void check_icu(UErrorCode status) {
-  if (U_FAILURE(status)) {
-    klib::error("{}", u_errorName(status));
   }
 }
 

@@ -6,7 +6,6 @@
 #include <mimalloc.h>
 #include <simdjson.h>
 #include <spdlog/version.h>
-#include <unicode/uvernum.h>
 #include <CLI/Version.hpp>
 #include <boost/version.hpp>
 #include <pugixml.hpp>
@@ -39,8 +38,6 @@ std::string version_str() {
   result +=
       fmt::format(FMT_COMPILE("pugixml/{}.{}.{} "), PUGIXML_VERSION / 1000,
                   PUGIXML_VERSION / 10 % 100, PUGIXML_VERSION % 10);
-  result += fmt::format(FMT_COMPILE("ICU/{}.{}.{} "), U_ICU_VERSION_MAJOR_NUM,
-                        U_ICU_VERSION_MINOR_NUM, U_ICU_VERSION_PATCHLEVEL_NUM);
   result += "OpenCC/1.1.3 ";
   // NOTE
   result += "indicators/2.2.0\n";

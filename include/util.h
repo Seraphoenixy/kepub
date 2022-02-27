@@ -2,10 +2,9 @@
 
 #include <cstdint>
 #include <string>
+#include <tuple>
 #include <utility>
 #include <vector>
-
-#include <unicode/utypes.h>
 
 namespace kepub {
 
@@ -34,8 +33,6 @@ void push_back(std::vector<std::string> &texts, const std::string &str,
                bool connect);
 
 void push_back(std::vector<std::string> &texts, const std::string &str);
-
-void check_icu(UErrorCode status);
 
 std::string get_login_name();
 
