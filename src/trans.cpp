@@ -57,13 +57,11 @@ std::u32string custom_trans(const std::u32string &str, bool translation) {
     }
 
     if (klib::is_whitespace(code_point)) {
-      // e.g. foo foo
       if (!std::empty(result) && !klib::is_chinese_punctuation(result.back())) {
         result.push_back(space);
       }
     } else if (klib::is_chinese_punctuation(code_point) ||
                klib::is_english_punctuation(code_point)) {
-      // e.g. foo ，
       if (!std::empty(result) && result.back() == space) [[unlikely]] {
         result.pop_back();
       }
