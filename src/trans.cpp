@@ -58,9 +58,7 @@ std::u32string custom_trans(const std::u32string &str, bool translation) {
 
     if (klib::is_whitespace(code_point)) {
       // e.g. foo foo
-      if (!std::empty(result) &&
-          !klib::is_chinese_punctuation(
-              static_cast<std::int32_t>(result.back()))) {
+      if (!std::empty(result) && !klib::is_chinese_punctuation(result.back())) {
         result.push_back(space);
       }
     } else if (klib::is_chinese_punctuation(code_point) ||
