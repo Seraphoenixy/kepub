@@ -8,9 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container:
-      image: kaiserlancelot/kenv:latest
-      options: --cap-add SYS_ADMIN --device /dev/fuse --security-opt apparmor:unconfined
+    container: kaiserlancelot/kenv:latest
 
     steps:
       # https://github.com/actions/checkout

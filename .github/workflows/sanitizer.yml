@@ -5,9 +5,7 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
-    container:
-      image: kaiserlancelot/kenv:latest
-      options: --cap-add SYS_ADMIN --device /dev/fuse --security-opt apparmor:unconfined
+    container: kaiserlancelot/kenv:latest
     strategy:
       matrix:
         # https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html
