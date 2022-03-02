@@ -24,11 +24,11 @@ namespace kepub {
 namespace {
 
 bool start_with_chinese(const std::string &str) {
-  return klib::is_chinese(klib::first_code_point(str));
+  return klib::is_cjk(klib::first_code_point(str));
 }
 
 bool end_with_chinese(const std::string &str) {
-  return klib::is_chinese(klib::last_code_point(str));
+  return klib::is_cjk(klib::last_code_point(str));
 }
 
 bool is_punctuation(char32_t code_point) {
@@ -125,7 +125,7 @@ void str_check(const std::string &str) {
   std::erase_if(copy, [](char c) { return std::isalnum(c) || c == ' '; });
 
   for (auto c : klib::utf8_to_utf32(copy)) {
-    if (!klib::is_chinese(c) && !is_punctuation(c)) {
+    if (!klib::is_cjk(c) && !is_punctuation(c)) {
       if (set.contains(c)) {
         continue;
       }
@@ -142,7 +142,7 @@ std::int32_t str_size(const std::string &str) {
   std::int32_t count = 0;
 
   for (auto c : klib::utf8_to_utf32(str)) {
-    if (klib::is_chinese(c)) {
+    if (klib::is_cjk(c)) {
       ++count;
     }
   }

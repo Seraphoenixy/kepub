@@ -52,7 +52,7 @@ std::u32string custom_trans(const std::u32string &str, bool translation) {
   constexpr auto space = U' ';
   for (auto code_point : str) {
     // https://en.wikipedia.org/wiki/Word_joiner
-    if (code_point == U'\uFEFF') [[unlikely]] {
+    if (code_point == U'\uFEFF' || klib::is_control(code_point)) [[unlikely]] {
       continue;
     }
 
