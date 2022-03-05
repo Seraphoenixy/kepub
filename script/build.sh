@@ -3,13 +3,9 @@
 set -e
 
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-  curl -L https://github.com/KaiserLancelot/klib/releases/download/v1.3.1/klib-1.3.1-Linux.deb \
+  curl -L https://github.com/KaiserLancelot/klib/releases/download/v1.4.0/klib-1.4.0-Linux.deb \
     -o klib.deb
   sudo dpkg -i klib.deb
-
-  curl -L https://github.com/KaiserLancelot/kpkg/releases/download/v1.1.0/pyftsubset -o pyftsubset
-  mv pyftsubset /usr/local/bin/pyftsubset
-  chmod 755 /usr/local/bin/pyftsubset
 else
   echo "The system does not support: $OSTYPE"
   exit 1

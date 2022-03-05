@@ -4,7 +4,7 @@ file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/263060.txt"
 add_test(NAME check_executable_sfacg_kepub COMMAND ${KEPUB_EXECUTABLE} -v)
 add_test(
   NAME run_sfacg_kepub
-  COMMAND ${KEPUB_EXECUTABLE} 263060.txt --no-font-subset --date=2021-11-01
+  COMMAND ${KEPUB_EXECUTABLE} 263060.txt --date=2021-11-01
           --uuid=3d33e282-e707-4e19-90d5-ba8cadf248fd --no-compress --image 124)
 add_test(NAME remove_images_sfacg_kepub COMMAND rm -rf 263060/OEBPS/Images)
 add_test(NAME diff_sfacg_kepub

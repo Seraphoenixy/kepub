@@ -57,10 +57,6 @@ int main(int argc, const char *argv[]) try {
       "-r,--remove", remove,
       "When the generation is successful, delete the TXT file and picture");
 
-  bool no_font_subset = false;
-  app.add_flag("--no-font-subset", no_font_subset,
-               "Do not use pyftsubset(for testing)");
-
   std::string uuid;
   app.add_option("--uuid", uuid, "Specify the uuid(for testing)");
 
@@ -91,7 +87,6 @@ int main(int argc, const char *argv[]) try {
   if (!std::empty(date)) {
     epub.set_date(date);
   }
-  epub.font_subset(!no_font_subset);
 
   auto vec = kepub::read_file_to_vec(file_name, translation);
   auto size = std::size(vec);

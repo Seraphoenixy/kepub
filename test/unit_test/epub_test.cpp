@@ -14,7 +14,6 @@ TEST_CASE("base generate", "[epub]") {
   epub.set_author("test author");
   epub.set_introduction({"test", "introduction"});
 
-  epub.font_subset(false);
   epub.set_uuid("5208e6bb-5d25-45b0-a7fd-b97d79a85fd4");
   epub.set_date("2021-08-01");
 
@@ -34,7 +33,7 @@ TEST_CASE("base generate", "[epub]") {
 )");
 
   REQUIRE(std::filesystem::exists(kepub::Epub::font_path));
-  REQUIRE(std::filesystem::file_size(kepub::Epub::font_path) == 12118232);
+  REQUIRE(std::filesystem::file_size(kepub::Epub::font_path) == 4576);
 
   REQUIRE(std::filesystem::exists(kepub::Epub::style_path));
   REQUIRE(std::filesystem::file_size(kepub::Epub::style_path) == 5148);
@@ -157,7 +156,6 @@ TEST_CASE("generate postscript", "[epub]") {
   epub.set_introduction({"test", "introduction"});
   epub.set_generate_postscript(true);
 
-  epub.font_subset(false);
   epub.set_uuid("5208e6bb-5d25-45b0-a7fd-b97d79a85fd4");
   epub.set_date("2021-08-01");
 
@@ -267,7 +265,6 @@ TEST_CASE("generate postscript and cover", "[epub]") {
   epub.set_generate_postscript(true);
   epub.set_generate_cover(true);
 
-  epub.font_subset(false);
   epub.set_uuid("5208e6bb-5d25-45b0-a7fd-b97d79a85fd4");
   epub.set_date("2021-08-01");
 
@@ -390,7 +387,6 @@ TEST_CASE("generate postscript, cover, illustration and image", "[epub]") {
   epub.set_illustration_num(3);
   epub.set_image_num(6);
 
-  epub.font_subset(false);
   epub.set_uuid("5208e6bb-5d25-45b0-a7fd-b97d79a85fd4");
   epub.set_date("2021-08-01");
 
@@ -544,7 +540,6 @@ TEST_CASE("full generate", "[epub]") {
   epub.add_content("title 2", {"abc 2"});
   epub.add_content("title 3", {"abc 3"});
 
-  epub.font_subset(false);
   epub.set_uuid("5208e6bb-5d25-45b0-a7fd-b97d79a85fd4");
   epub.set_date("2021-08-01");
 
@@ -721,7 +716,6 @@ TEST_CASE("sub-volume", "[epub]") {
   epub.add_content("volume 1", "title 2", {"abc 2"});
   epub.add_content("volume 2", "title 3", {"abc 3"});
 
-  epub.font_subset(false);
   epub.set_uuid("5208e6bb-5d25-45b0-a7fd-b97d79a85fd4");
   epub.set_date("2021-08-01");
 
@@ -914,7 +908,6 @@ TEST_CASE("append", "[epub]") {
   epub.add_content("title 2", {"abc 2"});
   epub.add_content("title 3", {"abc 3"});
 
-  epub.font_subset(false);
   epub.set_uuid("5208e6bb-5d25-45b0-a7fd-b97d79a85fd4");
   epub.set_date("2021-08-01");
 
@@ -1109,7 +1102,6 @@ TEST_CASE("append sub-volume", "[epub]") {
   epub.add_content("volume 1", "title 2", {"abc 2"});
   epub.add_content("volume 2", "title 3", {"abc 3"});
 
-  epub.font_subset(false);
   epub.set_uuid("5208e6bb-5d25-45b0-a7fd-b97d79a85fd4");
   epub.set_date("2021-08-01");
 

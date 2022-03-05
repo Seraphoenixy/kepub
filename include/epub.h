@@ -23,7 +23,6 @@ class Epub {
   void set_illustration_num(std::int32_t illustration_num);
   void set_image_num(std::int32_t image_num);
 
-  void font_subset(bool flag);
   void set_uuid(const std::string &uuid);
   void set_date(const std::string &date);
 
@@ -52,7 +51,7 @@ class Epub {
   constexpr static std::string_view font_path =
       "OEBPS/Fonts/SourceHanSansSC-Bold.woff2";
   constexpr static std::string_view temp_font_path =
-      "/tmp/SourceHanSansSC-Bold.woff2";
+      "/tmp/SourceHanSansSC-Bold.ttf";
   constexpr static std::string_view style_path = "OEBPS/Styles/style.css";
   constexpr static std::string_view cover_path = "OEBPS/Text/cover.xhtml";
   constexpr static std::string_view introduction_path =
@@ -98,7 +97,6 @@ class Epub {
       content_;
 
   std::string font_words_ = "封面彩页简介制作信息后记0123456789";
-  bool font_subset_ = true;
 };
 
 }  // namespace kepub

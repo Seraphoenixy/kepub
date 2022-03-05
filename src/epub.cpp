@@ -10,7 +10,9 @@
 #include <fmt/compile.h>
 #include <fmt/format.h>
 #include <klib/exception.h>
+#include <klib/font.h>
 #include <klib/log.h>
+#include <klib/unicode.h>
 #include <klib/util.h>
 #include <gsl/assert>
 #include <pugixml.hpp>
@@ -367,8 +369,6 @@ void Epub::set_illustration_num(std::int32_t illustration_num) {
 
 void Epub::set_image_num(std::int32_t image_num) { image_num_ = image_num; }
 
-void Epub::font_subset(bool flag) { font_subset_ = flag; }
-
 void Epub::set_uuid(const std::string &uuid) { uuid_ = "urn:uuid:" + uuid; }
 
 void Epub::set_date(const std::string &date) { date_ = date; }
@@ -484,17 +484,13 @@ void Epub::generate_container() const {
 }
 
 void Epub::generate_font() const {
-  if (font_subset_) {
-    klib::info("Start generating woff2 font");
+  klib::info("Start generating woff2 font");
 
-    klib::write_file(Epub::temp_font_path, true, font_);
-    klib::exec(fmt::format(
-        FMT_COMPILE(
-            R"(pyftsubset --flavor=woff2 --output-file={} --text="{}" {})"),
-        Epub::font_path, font_words_, Epub::temp_font_path));
-  } else {
-    klib::write_file(Epub::font_path, true, font_);
-  }
+  klib::write_file(Epub::temp_font_path, true, font_);
+  auto ttf_font = klib::ttf_subset(std::data(Epub::temp_font_path),
+                                   klib::utf8_to_utf32(font_words_));
+  auto woff2_font = klib::ttf_to_woff2(ttf_font);
+  klib::write_file(Epub::font_path, true, woff2_font);
 }
 
 void Epub::generate_style() const {

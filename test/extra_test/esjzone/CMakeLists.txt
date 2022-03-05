@@ -2,10 +2,9 @@ file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/1578022447.txt"
      DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 add_test(NAME check_executable_esjzone_kepub COMMAND ${KEPUB_EXECUTABLE} -v)
-add_test(
-  NAME run_esjzone_kepub
-  COMMAND ${KEPUB_EXECUTABLE} 1578022447.txt --no-font-subset --date=2021-11-30
-          --uuid=72074299-583c-4b62-8bdf-18382b11622c --no-compress)
+add_test(NAME run_esjzone_kepub
+         COMMAND ${KEPUB_EXECUTABLE} 1578022447.txt --date=2021-11-30
+                 --uuid=72074299-583c-4b62-8bdf-18382b11622c --no-compress)
 add_test(NAME remove_images_esjzone_kepub COMMAND rm -rf
                                                   1578022447/OEBPS/Images)
 add_test(NAME diff_esjzone_kepub
