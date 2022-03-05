@@ -47,7 +47,6 @@ kepub book-name.txt
 - Refactor the code
 - EPUB 3
   - https://github.com/w3c/epub-specs
-  - https://github.com/w3c/epubcheck
 - WebP
   - https://github.com/webmproject/libwebp
 - Markdown format
