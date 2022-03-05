@@ -46,13 +46,13 @@ std::string get_date() {
 }
 
 void save_file(const pugi::xml_document &doc, std::string_view path) {
-  if (!doc.save_file(path.data(), "    ")) {
+  if (!doc.save_file(std::data(path), "    ")) {
     throw klib::RuntimeError("can not save: {}", path);
   }
 }
 
 bool has_children(const pugi::xml_node &node, std::string_view name) {
-  auto children = node.children(name.data());
+  auto children = node.children(std::data(name));
   return children.begin() != children.end();
 }
 
@@ -248,9 +248,9 @@ std::pair<std::int32_t, std::int32_t> deal_with_content(
     const std::vector<std::tuple<std::string, std::string,
                                  std::vector<std::string>>> &content) {
   pugi::xml_document doc;
-  doc.load_file(Epub::content_path.data(), pugi::parse_default |
-                                               pugi::parse_declaration |
-                                               pugi::parse_doctype);
+  doc.load_file(std::data(Epub::content_path), pugi::parse_default |
+                                                   pugi::parse_declaration |
+                                                   pugi::parse_doctype);
 
   auto manifest = doc.select_node("/package/manifest").node();
   auto first_chapter_id = last_num(doc, "chapter", ".xhtml") + 1;
@@ -308,9 +308,9 @@ void deal_with_toc(
                                  std::vector<std::string>>> &content,
     std::int32_t first_chapter_id, std::int32_t first_volume_id) {
   pugi::xml_document doc;
-  doc.load_file(Epub::toc_path.data(), pugi::parse_default |
-                                           pugi::parse_declaration |
-                                           pugi::parse_doctype);
+  doc.load_file(std::data(Epub::toc_path), pugi::parse_default |
+                                               pugi::parse_declaration |
+                                               pugi::parse_doctype);
 
   auto nav_map = doc.select_node("/ncx/navMap").node();
   do_deal_with_toc(nav_map, first_chapter_id, first_volume_id, content);
@@ -392,9 +392,9 @@ void Epub::flush_font(const std::string &book_name) {
   }
 
   pugi::xml_document doc;
-  doc.load_file(Epub::toc_path.data(), pugi::parse_default |
-                                           pugi::parse_declaration |
-                                           pugi::parse_doctype);
+  doc.load_file(std::data(Epub::toc_path), pugi::parse_default |
+                                               pugi::parse_declaration |
+                                               pugi::parse_doctype);
 
   auto nav_map = doc.select_node("/ncx/navMap").node();
   for (const auto &may_be_volume : nav_map.children("navPoint")) {
@@ -412,7 +412,7 @@ void Epub::flush_font(const std::string &book_name) {
   }
   dbg(font_words_);
 
-  remove_file_or_dir(font_path.data());
+  remove_file_or_dir(std::data(font_path));
   generate_font();
 }
 
@@ -486,9 +486,7 @@ void Epub::generate_container() const {
 void Epub::generate_font() const {
   klib::info("Start generating woff2 font");
 
-  klib::write_file(Epub::temp_font_path, true, font_);
-  auto ttf_font = klib::ttf_subset(std::data(Epub::temp_font_path),
-                                   klib::utf8_to_utf32(font_words_));
+  auto ttf_font = klib::ttf_subset(font_, klib::utf8_to_utf32(font_words_));
   auto woff2_font = klib::ttf_to_woff2(ttf_font);
   klib::write_file(Epub::font_path, true, woff2_font);
 }
