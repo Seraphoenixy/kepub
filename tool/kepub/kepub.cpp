@@ -247,7 +247,9 @@ int main(int argc, const char *argv[]) try {
   if (book_done) {
     if (remove) {
       kepub::remove_file_or_dir(file_name);
-      kepub::remove_file_or_dir(cover_name);
+      if (!no_cover) {
+        kepub::remove_file_or_dir(cover_name);
+      }
       for (std::int32_t i = 1; i <= image_num; ++i) {
         auto jpg_name = kepub::num_to_str(i) + ".jpg";
         kepub::remove_file_or_dir(jpg_name);
