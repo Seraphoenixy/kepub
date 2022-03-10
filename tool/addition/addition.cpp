@@ -95,6 +95,7 @@ int main(int argc, const char *argv[]) try {
 
   kepub::Epub epub;
   epub.append_chapter(book_name, contents);
+  epub.flush_font(book_name);
 
   if (!no_compress) {
     klib::info("Start to compress and generate epub files");

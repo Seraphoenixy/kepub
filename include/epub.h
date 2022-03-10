@@ -75,9 +75,9 @@ class Epub {
   void generate_toc();
   void generate_mimetype() const;
 
-  std::string creator_ = "TODO";
-  std::string book_name_ = "TODO";
-  std::string author_ = "TODO";
+  std::string creator_;
+  std::string book_name_;
+  std::string author_;
   std::vector<std::string> introduction_ = {"TODO"};
   std::vector<std::string> postscript_ = {"TODO"};
 
