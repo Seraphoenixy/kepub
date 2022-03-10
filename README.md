@@ -24,7 +24,6 @@ Crawl novels from esjzone, ciweimao and sfacg. Generate epub from txt file
 - GSL ([MIT License](https://github.com/Microsoft/GSL/blob/master/LICENSE))
 - CLI11 ([License](https://github.com/CLIUtils/CLI11/blob/main/LICENSE))
 - fmt ([License](https://github.com/fmtlib/fmt/blob/master/LICENSE.rst))
-- spdlog ([MIT License](https://github.com/gabime/spdlog/blob/v1.x/LICENSE))
 - simdjson ([Apache License 2.0](https://github.com/simdjson/simdjson/blob/master/LICENSE))
 - pugixml ([MIT License](https://github.com/zeux/pugixml/blob/master/LICENSE.md))
 - OpenCC ([Apache License 2.0](https://github.com/BYVoid/OpenCC/blob/master/LICENSE))
