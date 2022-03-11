@@ -115,7 +115,6 @@ int main(int argc, const char *argv[]) try {
   epub.set_novel(novel);
   klib::info("Start to generate epub files");
   epub.append();
-  epub.flush_font(book_name);
 
   if (!testing) {
     kepub::remove_file_or_dir(book_name);

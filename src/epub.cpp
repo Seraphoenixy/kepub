@@ -272,6 +272,9 @@ void Epub::append() {
   deal_with_chapter(first_chapter_id);
 
   dir.reset();
+
+  flush_font(novel_.name_);
+
   klib::compress(novel_.name_, klib::Format::Zip, klib::Filter::Deflate,
                  novel_.name_ + ".epub", false);
 
