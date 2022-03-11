@@ -40,7 +40,7 @@ int main(int argc, const char *argv[]) try {
     epub.flush_font(dir_name);
   }
 
-  klib::info("Start to compress and generate epub files");
+  klib::info("Start to generate epub files");
   klib::compress(dir_name, klib::Format::Zip, klib::Filter::Deflate,
                  dir_name + ".epub", false);
 
