@@ -1,7 +1,5 @@
 #include <exception>
 #include <string>
-#include <tuple>
-#include <utility>
 #include <vector>
 
 #include <fmt/compile.h>
@@ -29,12 +27,12 @@ namespace {
 
 bool show_user_info() {
   auto response = http_get("https://api.sfacg.com/user");
-  UserInfo info(response.text());
+  auto info = json_to_user_info(response.text());
 
-  if (info.login_expired()) {
+  if (info.login_expired_) {
     return false;
   } else {
-    klib::info("Use existing cookies, nick name: {}", info.nick_name());
+    klib::info("Use existing cookies, nick name: {}", info.nick_name_);
     return true;
   }
 }
@@ -42,47 +40,43 @@ bool show_user_info() {
 void login(const std::string &login_name, const std::string &password) {
   auto response = http_post("https://api.sfacg.com/sessions",
                             serialize(login_name, password));
-  JsonBase json_base(response.text());
-  boost::ignore_unused(json_base);
+  json_base(response.text());
 
   response = http_get("https://api.sfacg.com/user");
-  LoginInfo info(response.text());
-  klib::info("Login successful, nick name: {}", info.nick_name());
+  auto info = json_to_login_info(response.text());
+  klib::info("Login successful, nick name: {}", info.user_info_.nick_name_);
 }
 
-std::tuple<std::string, std::string, std::vector<std::string>> get_book_info(
-    const std::string &book_id) {
+kepub::BookInfo get_book_info(const std::string &book_id) {
   auto response = http_get("https://api.sfacg.com/novels/" + book_id,
                            {{"expand", "intro"}});
-  BookInfo info(response.text());
+  auto info = json_to_book_info(response.text());
 
-  klib::info("Book name: {}", info.book_name());
-  klib::info("Author: {}", info.author());
-  klib::info("Point: {}", info.point());
-  klib::info("Cover url: {}", info.cover_url());
+  klib::info("Book name: {}", info.name_);
+  klib::info("Author: {}", info.author_);
+  klib::info("Point: {}", info.point_);
+  klib::info("Cover url: {}", info.cover_path_);
 
   std::string cover_name = "cover.jpg";
-  response = http_get_rss(info.cover_url());
+  response = http_get_rss(info.cover_path_);
   response.save_to_file(cover_name);
   klib::info("Cover downloaded successfully: {}", cover_name);
 
-  return {info.book_name(), info.author(), info.intro()};
+  return info;
 }
 
-std::vector<
-    std::pair<std::string,
-              std::vector<std::tuple<std::string, std::string, std::string>>>>
-get_volume_chapter(const std::string &book_id) {
+std::vector<kepub::Volume> get_volume_chapter(const std::string &book_id) {
   auto response = http_get(fmt::format(
       FMT_COMPILE("https://api.sfacg.com/novels/{}/dirs"), book_id));
-  return VolumeChapter(response.text()).get_volume_chapter();
+
+  return json_to_volumes(response.text());
 }
 
 std::vector<std::string> get_content(const std::string &chapter_id) {
   auto response = http_get("https://api.sfacg.com/Chaps/" + chapter_id,
                            {{"chapsId", chapter_id}, {"expand", "content"}});
 
-  auto content_str = Content(response.text()).content();
+  auto content_str = json_to_chapter_text(response.text());
 
   static std::int32_t image_count = 1;
   std::vector<std::string> content;
@@ -145,28 +139,28 @@ int main(int argc, const char *argv[]) try {
     klib::cleanse(password);
   }
 
-  auto [book_name, author, description] = get_book_info(book_id);
+  auto book_info = get_book_info(book_id);
 
   klib::info("Start getting chapter information");
-  auto volume_chapter = get_volume_chapter(book_id);
+  auto volumes = get_volume_chapter(book_id);
 
   std::int32_t chapter_count = 0;
-  for (const auto &[volume_name, chapters] : volume_chapter) {
-    chapter_count += std::size(chapters);
+  for (const auto &volume : volumes) {
+    chapter_count += std::size(volume.chapters_);
   }
 
   klib::info("Start downloading novel content");
-  kepub::ProgressBar bar(book_name, chapter_count);
-  for (auto &[volume_name, chapters] : volume_chapter) {
-    for (auto &[chapter_id, chapter_title, content] : chapters) {
-      bar.set_postfix_text(chapter_title);
-      content = boost::join(get_content(chapter_id), "\n");
+  kepub::ProgressBar bar(book_info.name_, chapter_count);
+  for (auto &volume : volumes) {
+    for (auto &chapter : volume.chapters_) {
+      bar.set_postfix_text(chapter.title_);
+      chapter.texts_ = get_content(chapter.id_);
       bar.tick();
     }
   }
 
-  kepub::generate_txt(book_name, author, description, volume_chapter);
-  klib::info("Novel '{}' download completed", book_name);
+  kepub::generate_txt(book_info, volumes);
+  klib::info("Novel '{}' download completed", book_info.name_);
 } catch (const klib::Exception &err) {
   klib::error(err.what());
 } catch (const std::exception &err) {

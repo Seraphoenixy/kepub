@@ -61,10 +61,10 @@ int main(int argc, const char *argv[]) try {
   klib::info("Book name: {}", book_name);
 
   kepub::Novel novel;
-  novel.name_ = book_name;
+  novel.book_info_.name_ = book_name;
   novel.illustration_num_ = illustration_num;
   if (std::filesystem::exists("cover.jpg")) {
-    novel.cover_path_ = "cover.jpg";
+    novel.book_info_.cover_path_ = "cover.jpg";
   }
   for (std::int32_t i = 1;; ++i) {
     auto name = kepub::num_to_str(i) + ".jpg";
@@ -111,8 +111,8 @@ int main(int argc, const char *argv[]) try {
     if (vec[i].starts_with(author_prefix)) {
       ++i;
 
-      novel.author_ = vec[i];
-      klib::info("Author: {}", novel.author_);
+      novel.book_info_.author_ = vec[i];
+      klib::info("Author: {}", novel.book_info_.author_);
     } else if (vec[i].starts_with(introduction_prefix)) {
       ++i;
 
@@ -121,7 +121,7 @@ int main(int argc, const char *argv[]) try {
         kepub::str_check(line);
 
         word_count += kepub::str_size(line);
-        kepub::push_back(novel.introduction_, line, connect);
+        kepub::push_back(novel.book_info_.introduction_, line, connect);
       }
       --i;
     } else if (vec[i].starts_with(postscript_prefix)) {
@@ -138,7 +138,7 @@ int main(int argc, const char *argv[]) try {
     } else if (vec[i].starts_with(volume_prefix)) {
       auto volume_name = vec[i].substr(volume_prefix_size);
       kepub::volume_name_check(volume_name);
-      novel.volumes_.push_back({volume_name, {}});
+      novel.volumes_.push_back({"", volume_name, {}});
     } else if (vec[i].starts_with(title_prefix)) {
       auto title = vec[i].substr(title_prefix_size);
       kepub::title_check(title);
@@ -155,9 +155,9 @@ int main(int argc, const char *argv[]) try {
       --i;
 
       if (std::empty(novel.volumes_)) {
-        novel.volumes_.push_back({"", {}});
+        novel.volumes_.push_back({"", "", {}});
       }
-      novel.volumes_.back().chapters_.push_back({title, content});
+      novel.volumes_.back().chapters_.push_back({"", title, content});
     }
   }
 
@@ -175,8 +175,8 @@ int main(int argc, const char *argv[]) try {
   if (remove) {
     kepub::remove_file_or_dir(file_name);
 
-    if (!std::empty(novel.cover_path_)) {
-      kepub::remove_file_or_dir(novel.cover_path_);
+    if (!std::empty(novel.book_info_.cover_path_)) {
+      kepub::remove_file_or_dir(novel.book_info_.cover_path_);
     }
 
     for (const auto &path : novel.image_paths_) {

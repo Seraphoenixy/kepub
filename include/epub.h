@@ -55,7 +55,7 @@ class Epub {
   constexpr static std::string_view mimetype_path = "mimetype";
 
  private:
-  void generate_container() const;
+  static void generate_container();
   void generate_style() const;
   void generate_image() const;
   void generate_volume() const;
@@ -66,7 +66,7 @@ class Epub {
   void generate_postscript() const;
   void generate_nav() const;
   void generate_package() const;
-  void generate_mimetype() const;
+  static void generate_mimetype();
   void generate_font();
 
   void do_deal_with_nav(pugi::xml_node &ol, std::int32_t first_volume_id,

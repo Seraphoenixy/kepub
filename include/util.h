@@ -42,25 +42,10 @@ std::string num_to_str(std::int32_t i);
 
 std::string make_book_name_legal(const std::string &file_name);
 
-void generate_txt(
-    const std::string &book_name, const std::string &author,
-    const std::vector<std::string> &description,
-    const std::vector<std::pair<std::string, std::string>> &chapters);
+void generate_txt(const BookInfo &book_info,
+                  const std::vector<Chapter> &chapters);
 
-void generate_txt(
-    const std::string &book_name, const std::string &author,
-    const std::vector<std::string> &description,
-    const std::vector<std::pair<
-        std::string,
-        std::vector<std::tuple<std::string, std::string, std::string>>>>
-        &volume_chapter);
-
-// void generate_txt(const std::string &book_name, const std::string &author,
-//                  const std::vector<std::string> &introduction,
-//                  const std::vector<Chapter> &chapters);
-//
-// void generate_txt(const std::string &book_name, const std::string &author,
-//                  const std::vector<std::string> &introduction,
-//                  const std::vector<Volume> &volumes);
+void generate_txt(const BookInfo &book_info,
+                  const std::vector<Volume> &volumes);
 
 }  // namespace kepub

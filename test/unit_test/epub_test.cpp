@@ -7,14 +7,14 @@
 
 #include "epub.h"
 
-TEST_CASE("base generate", "[epub]") {
+TEST_CASE("json_base generate", "[epub]") {
   kepub::Epub epub;
   epub.set_rights("Kaiser");
 
   kepub::Novel novel;
-  novel.name_ = "test book1";
-  novel.author_ = "test author";
-  novel.introduction_ = {"test", "introduction"};
+  novel.book_info_.name_ = "test book1";
+  novel.book_info_.author_ = "test author";
+  novel.book_info_.introduction_ = {"test", "introduction"};
 
   epub.set_novel(novel);
 
@@ -126,9 +126,9 @@ TEST_CASE("generate postscript", "[epub]") {
   epub.set_rights("Kaiser");
 
   kepub::Novel novel;
-  novel.name_ = "test book2";
-  novel.author_ = "test author";
-  novel.introduction_ = {"test", "introduction"};
+  novel.book_info_.name_ = "test book2";
+  novel.book_info_.author_ = "test author";
+  novel.book_info_.introduction_ = {"test", "introduction"};
   novel.postscript_ = {"postscript"};
 
   epub.set_novel(novel);
@@ -224,11 +224,11 @@ TEST_CASE("generate postscript and cover", "[epub]") {
   epub.set_rights("Kaiser");
 
   kepub::Novel novel;
-  novel.name_ = "test book3";
-  novel.author_ = "test author";
-  novel.introduction_ = {"test", "introduction"};
+  novel.book_info_.name_ = "test book3";
+  novel.book_info_.author_ = "test author";
+  novel.book_info_.introduction_ = {"test", "introduction"};
   novel.postscript_ = {"postscript"};
-  novel.cover_path_ = "cover.jpg";
+  novel.book_info_.cover_path_ = "cover.jpg";
 
   epub.set_novel(novel);
 
@@ -332,11 +332,11 @@ TEST_CASE("generate postscript, cover, illustration and image", "[epub]") {
   epub.set_rights("Kaiser");
 
   kepub::Novel novel;
-  novel.name_ = "test book4";
-  novel.author_ = "test author";
-  novel.introduction_ = {"test", "introduction"};
+  novel.book_info_.name_ = "test book4";
+  novel.book_info_.author_ = "test author";
+  novel.book_info_.introduction_ = {"test", "introduction"};
   novel.postscript_ = {"postscript"};
-  novel.cover_path_ = "cover.jpg";
+  novel.book_info_.cover_path_ = "cover.jpg";
   novel.illustration_num_ = 3;
   novel.image_paths_ = {"001.jpg", "002.jpg", "003.jpg", "004.jpg", "005.jpg"};
 
@@ -468,17 +468,18 @@ TEST_CASE("full generate", "[epub]") {
   epub.set_rights("Kaiser");
 
   kepub::Novel novel;
-  novel.name_ = "test book5";
-  novel.author_ = "test author";
-  novel.introduction_ = {"test", "introduction"};
+  novel.book_info_.name_ = "test book5";
+  novel.book_info_.author_ = "test author";
+  novel.book_info_.introduction_ = {"test", "introduction"};
   novel.postscript_ = {"postscript"};
-  novel.cover_path_ = "cover.jpg";
+  novel.book_info_.cover_path_ = "cover.jpg";
   novel.illustration_num_ = 3;
   novel.image_paths_ = {"001.jpg", "002.jpg", "003.jpg", "004.jpg", "005.jpg"};
 
-  std::vector<kepub::Chapter> chapters = {
-      {"title 1", {"abc 1"}}, {"title 2", {"abc 2"}}, {"title 3", {"abc 3"}}};
-  novel.volumes_ = {{"", chapters}};
+  std::vector<kepub::Chapter> chapters = {{"", "title 1", {"abc 1"}},
+                                          {"", "title 2", {"abc 2"}},
+                                          {"", "title 3", {"abc 3"}}};
+  novel.volumes_ = {{"", "", chapters}};
 
   epub.set_novel(novel);
 
@@ -624,17 +625,17 @@ TEST_CASE("sub-volume", "[epub]") {
   epub.set_rights("Kaiser");
 
   kepub::Novel novel;
-  novel.name_ = "test book6";
-  novel.author_ = "test author";
-  novel.introduction_ = {"test", "introduction"};
+  novel.book_info_.name_ = "test book6";
+  novel.book_info_.author_ = "test author";
+  novel.book_info_.introduction_ = {"test", "introduction"};
   novel.postscript_ = {"postscript"};
-  novel.cover_path_ = "cover.jpg";
+  novel.book_info_.cover_path_ = "cover.jpg";
   novel.illustration_num_ = 3;
   novel.image_paths_ = {"001.jpg", "002.jpg", "003.jpg", "004.jpg", "005.jpg"};
 
-  novel.volumes_ = {{"volume 1", {{"title 1", {"abc 1"}}}},
-                    {"volume 2", {{"title 2", {"abc 2"}}}},
-                    {"volume 3", {{"title 3", {"abc 3"}}}}};
+  novel.volumes_ = {{"", "volume 1", {{"", "title 1", {"abc 1"}}}},
+                    {"", "volume 2", {{"", "title 2", {"abc 2"}}}},
+                    {"", "volume 3", {{"", "title 3", {"abc 3"}}}}};
 
   epub.set_novel(novel);
 
@@ -800,17 +801,17 @@ TEST_CASE("append", "[epub]") {
   epub.set_rights("Kaiser");
 
   kepub::Novel novel;
-  novel.name_ = "test book7";
-  novel.author_ = "test author";
-  novel.introduction_ = {"test", "introduction"};
+  novel.book_info_.name_ = "test book7";
+  novel.book_info_.author_ = "test author";
+  novel.book_info_.introduction_ = {"test", "introduction"};
   novel.postscript_ = {"postscript"};
-  novel.cover_path_ = "cover.jpg";
+  novel.book_info_.cover_path_ = "cover.jpg";
   novel.illustration_num_ = 3;
   novel.image_paths_ = {"001.jpg", "002.jpg", "003.jpg", "004.jpg", "005.jpg"};
 
-  novel.volumes_ = {{"volume 1", {{"title 1", {"abc 1"}}}},
-                    {"volume 2", {{"title 2", {"abc 2"}}}},
-                    {"volume 3", {{"title 3", {"abc 3"}}}}};
+  novel.volumes_ = {{"", "volume 1", {{"", "title 1", {"abc 1"}}}},
+                    {"", "volume 2", {{"", "title 2", {"abc 2"}}}},
+                    {"", "volume 3", {{"", "title 3", {"abc 3"}}}}};
 
   epub.set_novel(novel);
 
@@ -820,7 +821,8 @@ TEST_CASE("append", "[epub]") {
   CHECK_NOTHROW(epub.generate());
   CHECK(std::filesystem::is_directory("test book7"));
 
-  novel.volumes_ = {{"", {{"title 4", {"abc 4"}}, {"title 5", {"abc 5"}}}}};
+  novel.volumes_ = {
+      {"", "", {{"", "title 4", {"abc 4"}}, {"", "title 5", {"abc 5"}}}}};
   epub.set_novel(novel);
   CHECK_NOTHROW(epub.append());
 
@@ -991,16 +993,16 @@ TEST_CASE("append sub-volume", "[epub]") {
   epub.set_rights("Kaiser");
 
   kepub::Novel novel;
-  novel.name_ = "test book8";
-  novel.author_ = "test author";
-  novel.introduction_ = {"test", "introduction"};
-  novel.cover_path_ = "cover.jpg";
+  novel.book_info_.name_ = "test book8";
+  novel.book_info_.author_ = "test author";
+  novel.book_info_.introduction_ = {"test", "introduction"};
+  novel.book_info_.cover_path_ = "cover.jpg";
   novel.illustration_num_ = 3;
   novel.image_paths_ = {"001.jpg", "002.jpg", "003.jpg", "004.jpg", "005.jpg"};
 
-  novel.volumes_ = {{"volume 1", {{"title 1", {"abc 1"}}}},
-                    {"volume 2", {{"title 2", {"abc 2"}}}},
-                    {"volume 3", {{"title 3", {"abc 3"}}}}};
+  novel.volumes_ = {{"", "volume 1", {{"", "title 1", {"abc 1"}}}},
+                    {"", "volume 2", {{"", "title 2", {"abc 2"}}}},
+                    {"", "volume 3", {{"", "title 3", {"abc 3"}}}}};
 
   epub.set_novel(novel);
 
@@ -1010,9 +1012,10 @@ TEST_CASE("append sub-volume", "[epub]") {
   CHECK_NOTHROW(epub.generate());
   CHECK(std::filesystem::is_directory("test book8"));
 
-  novel.volumes_ = {
-      {"", {{"title 4", {"abc 4"}}}},
-      {"volume 4", {{"title 5", {"abc 5"}}, {"title 6", {"abc 6"}}}}};
+  novel.volumes_ = {{"", "", {{"", "title 4", {"abc 4"}}}},
+                    {"",
+                     "volume 4",
+                     {{"", "title 5", {"abc 5"}}, {"", "title 6", {"abc 6"}}}}};
   epub.set_novel(novel);
   CHECK_NOTHROW(epub.append());
 

@@ -272,62 +272,63 @@ std::string make_book_name_legal(const std::string &file_name) {
   return new_file_name;
 }
 
-void generate_txt(
-    const std::string &book_name, const std::string &author,
-    const std::vector<std::string> &description,
-    const std::vector<std::pair<std::string, std::string>> &chapters) {
+void generate_txt(const BookInfo &book_info,
+                  const std::vector<Chapter> &chapters) {
   std::ostringstream oss;
 
   oss << "[AUTHOR]" << '\n';
-  oss << author << "\n\n";
+  oss << book_info.author_ << "\n\n";
 
   oss << "[INTRO]" << '\n';
-  for (const auto &line : description) {
+  for (const auto &line : book_info.introduction_) {
     oss << line << "\n";
   }
   oss << "\n";
 
-  for (const auto &[chapter_title, content] : chapters) {
-    oss << "[WEB] " << chapter_title << "\n\n";
-    oss << content << "\n\n";
+  for (const auto &chapter : chapters) {
+    oss << "[WEB] " << chapter.title_ << "\n\n";
+
+    for (const auto &line : chapter.texts_) {
+      oss << line << '\n';
+    }
+    oss << '\n';
   }
 
   std::string str = oss.str();
   // '\n'
   str.pop_back();
 
-  std::ofstream book_ofs(make_book_name_legal(book_name) + ".txt");
+  std::ofstream book_ofs(make_book_name_legal(book_info.name_) + ".txt");
   book_ofs << str << std::flush;
 }
 
-void generate_txt(
-    const std::string &book_name, const std::string &author,
-    const std::vector<std::string> &description,
-    const std::vector<std::pair<
-        std::string,
-        std::vector<std::tuple<std::string, std::string, std::string>>>>
-        &volume_chapter) {
+void generate_txt(const BookInfo &book_info,
+                  const std::vector<Volume> &volumes) {
   std::ostringstream oss;
 
   oss << "[AUTHOR]" << '\n';
-  oss << author << "\n\n";
+  oss << book_info.author_ << "\n\n";
 
   oss << "[INTRO]" << '\n';
-  for (const auto &line : description) {
+  for (const auto &line : book_info.introduction_) {
     oss << line << "\n";
   }
   oss << "\n";
 
-  for (const auto &[volume_name, chapters] : volume_chapter) {
-    if (std::empty(chapters)) {
+  for (const auto &volume : volumes) {
+    if (std::empty(volume.chapters_)) {
       continue;
     }
 
-    oss << "[VOLUME] " << volume_name << "\n\n";
+    oss << "[VOLUME] " << volume.title_ << "\n\n";
 
-    for (const auto &[chapter_id, chapter_title, content] : chapters) {
-      oss << "[WEB] " << chapter_title << "\n\n";
-      oss << content << "\n\n";
+    for (const auto &chapter : volume.chapters_) {
+      oss << "[WEB] " << chapter.title_ << "\n\n";
+
+      for (const auto &line : chapter.texts_) {
+        oss << line << '\n';
+      }
+      oss << '\n';
     }
   }
 
@@ -335,7 +336,7 @@ void generate_txt(
   // '\n'
   str.pop_back();
 
-  std::ofstream book_ofs(make_book_name_legal(book_name) + ".txt");
+  std::ofstream book_ofs(make_book_name_legal(book_info.name_) + ".txt");
   book_ofs << str << std::flush;
 }
 

@@ -1,7 +1,6 @@
 #include <exception>
 #include <string>
 #include <tuple>
-#include <utility>
 #include <vector>
 
 #include <klib/exception.h>
@@ -24,7 +23,7 @@ backward::SignalHandling sh;
 
 namespace {
 
-void get_node_content(pugi::xml_node node, std::string &str) {
+void get_node_content(const pugi::xml_node &node, std::string &str) {
   if (node.children().begin() == node.children().end()) {
     str += node.text().as_string();
   } else {
@@ -63,10 +62,11 @@ pugi::xml_document get_xml(const std::string &url, const std::string &proxy) {
   return doc;
 }
 
-std::tuple<std::string, std::string, std::vector<std::string>,
-           std::vector<std::pair<std::string, std::string>>>
+std::pair<kepub::BookInfo, std::vector<std::pair<std::string, std::string>>>
 get_info(const std::string &book_id, bool translation,
          const std::string &proxy) {
+  kepub::BookInfo book_info;
+
   auto doc =
       get_xml("https://www.esjzone.cc/detail/" + book_id + ".html", proxy);
 
@@ -75,7 +75,7 @@ get_info(const std::string &book_id, bool translation,
                      "div[@class='col-xl-9 col-lg-8 p-r-30']/div[@class='row "
                      "mb-3']/div[@class='col-md-9 book-detail']/h2")
                   .node();
-  auto book_name = kepub::trans_str(node.text().as_string(), translation);
+  book_info.name_ = kepub::trans_str(node.text().as_string(), translation);
 
   node = doc.select_node(
                 "/html/body/div[@class='offcanvas-wrapper']/section/div/"
@@ -83,11 +83,10 @@ get_info(const std::string &book_id, bool translation,
                 "mb-3']/div[@class='col-md-9 book-detail']/ul")
              .node();
 
-  std::string author;
   std::string prefix = "作者:";
   for (const auto &child : node.children()) {
     if (child.child("strong").text().as_string() == prefix) {
-      author =
+      book_info.author_ =
           kepub::trans_str(child.child("a").text().as_string(), translation);
     }
   }
@@ -99,9 +98,8 @@ get_info(const std::string &book_id, bool translation,
              "p-20 margin-top-1x']/div/div/div")
           .node();
 
-  std::vector<std::string> description;
   for (const auto &child : node.children()) {
-    kepub::push_back(description,
+    kepub::push_back(book_info.introduction_,
                      kepub::trans_str(child.text().as_string(), translation));
   }
 
@@ -131,18 +129,18 @@ get_info(const std::string &book_id, bool translation,
                 "mb-3']/div[@class='col-md-3']/div[@class='product-gallery "
                 "text-center mb-3']/a/img")
              .node();
-  std::string cover_url = node.attribute("src").as_string();
+  book_info.cover_path_ = node.attribute("src").as_string();
 
-  klib::info("Book name: {}", book_name);
-  klib::info("Author: {}", author);
-  klib::info("Cover url: {}", cover_url);
+  klib::info("Book name: {}", book_info.name_);
+  klib::info("Author: {}", book_info.author_);
+  klib::info("Cover url: {}", book_info.cover_path_);
 
   std::string cover_name = "cover.jpg";
-  auto response = http_get(cover_url, proxy);
+  auto response = http_get(book_info.cover_path_, proxy);
   response.save_to_file(cover_name);
   klib::info("Cover downloaded successfully: {}", cover_name);
 
-  return {book_name, author, description, titles_and_urls};
+  return {book_info, titles_and_urls};
 }
 
 std::vector<std::string> get_content(const std::string &url, bool translation,
@@ -189,21 +187,19 @@ int main(int argc, const char *argv[]) try {
     klib::info("Use proxy: {}", proxy);
   }
 
-  auto [book_name, author, description, titles_and_urls] =
-      get_info(book_id, translation, proxy);
+  auto [book_info, titles_and_urls] = get_info(book_id, translation, proxy);
 
   klib::info("Start downloading novel content");
-  kepub::ProgressBar bar(book_name, std::size(titles_and_urls));
-  std::vector<std::pair<std::string, std::string>> chapters;
+  kepub::ProgressBar bar(book_info.name_, std::size(titles_and_urls));
+  std::vector<kepub::Chapter> chapters;
   for (const auto &[title, urls] : titles_and_urls) {
     bar.set_postfix_text(title);
-    chapters.emplace_back(
-        title, boost::join(get_content(urls, translation, proxy), "\n"));
+    chapters.push_back({"", title, get_content(urls, translation, proxy)});
     bar.tick();
   }
 
-  kepub::generate_txt(book_name, author, description, chapters);
-  klib::info("Novel '{}' download completed", book_name);
+  kepub::generate_txt(book_info, chapters);
+  klib::info("Novel '{}' download completed", book_info.name_);
 } catch (const klib::Exception &err) {
   klib::error(err.what());
 } catch (const std::exception &err) {
