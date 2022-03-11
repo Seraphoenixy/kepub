@@ -364,6 +364,7 @@ void Epub::generate_font(bool flush_font_words) {
   }
 
   dbg(font_words_);
+  dbg(std::size(font_));
   auto ttf_font = klib::ttf_subset(font_, klib::utf8_to_utf32(font_words_));
   auto woff2_font = klib::ttf_to_woff2(ttf_font);
   klib::write_file(Epub::font_woff2_path, true, woff2_font);

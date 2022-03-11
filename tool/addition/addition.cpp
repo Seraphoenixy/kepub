@@ -58,9 +58,11 @@ int main(int argc, const char *argv[]) try {
   if (std::filesystem::exists(book_name)) {
     std::filesystem::remove_all(book_name);
   }
-  klib::decompress(epub_name, book_name);
-
-  if (!testing) {
+  if (testing) {
+    book_name.append("-test");
+    klib::decompress(epub_name, book_name);
+  } else {
+    klib::decompress(epub_name, book_name);
     std::filesystem::rename(epub_name, backup_epub_name);
   }
 
