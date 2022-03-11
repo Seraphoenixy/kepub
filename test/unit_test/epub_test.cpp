@@ -37,7 +37,7 @@ TEST_CASE("base generate", "[epub]") {
 )");
 
   CHECK(std::filesystem::exists(kepub::Epub::font_woff2_path));
-  CHECK(std::filesystem::file_size(kepub::Epub::font_woff2_path) == 4024);
+  CHECK(std::filesystem::file_size(kepub::Epub::font_woff2_path) == 2452);
 
   CHECK(std::filesystem::exists(kepub::Epub::style_css_path));
   CHECK(std::filesystem::file_size(kepub::Epub::style_css_path) == 729);

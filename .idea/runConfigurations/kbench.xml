@@ -1,7 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="kbench" type="CMakeRunConfiguration" factoryName="Application" nameIsGenerated="true" PROGRAM_PARAMS="--benchmark-no-analysis --benchmark-samples=1" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="kepub" TARGET_NAME="kbench" CONFIG_NAME="GCC Release" RUN_TARGET_PROJECT_NAME="kepub" RUN_TARGET_NAME="kbench">
-    <method v="2">
-      <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-    </method>
-  </configuration>
-</component>

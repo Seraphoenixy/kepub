@@ -2,9 +2,9 @@
 
 #include <cstdint>
 #include <string>
-#include <tuple>
-#include <utility>
 #include <vector>
+
+#include "novel.h"
 
 namespace kepub {
 
@@ -54,5 +54,13 @@ void generate_txt(
         std::string,
         std::vector<std::tuple<std::string, std::string, std::string>>>>
         &volume_chapter);
+
+// void generate_txt(const std::string &book_name, const std::string &author,
+//                  const std::vector<std::string> &introduction,
+//                  const std::vector<Chapter> &chapters);
+//
+// void generate_txt(const std::string &book_name, const std::string &author,
+//                  const std::vector<std::string> &introduction,
+//                  const std::vector<Volume> &volumes);
 
 }  // namespace kepub

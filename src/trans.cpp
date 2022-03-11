@@ -187,14 +187,6 @@ std::string do_trans_str(const std::u32string &str, bool translation) {
 
 }  // namespace
 
-std::string trans_str(const char *str, bool translation) {
-  return trans_str(std::string_view(str), translation);
-}
-
-std::string trans_str(std::string_view str, bool translation) {
-  return trans_str(std::string(std::data(str), std::size(str)), translation);
-}
-
 std::string trans_str(const std::string &str, bool translation) {
   std::string std_str(std::data(str), std::size(str));
   if (translation) {
@@ -203,6 +195,14 @@ std::string trans_str(const std::string &str, bool translation) {
   }
 
   return do_trans_str(klib::utf8_to_utf32(std_str), translation);
+}
+
+std::string trans_str(std::string_view str, bool translation) {
+  return trans_str(std::string(std::data(str), std::size(str)), translation);
+}
+
+std::string trans_str(const char *str, bool translation) {
+  return trans_str(std::string_view(str), translation);
 }
 
 }  // namespace kepub

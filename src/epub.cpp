@@ -63,10 +63,8 @@ std::string media_type(const std::string &file_name) {
     result = "font/woff2";
   } else if (file_name.ends_with(".xhtml")) {
     result = "application/xhtml+xml";
-  } else if (file_name.ends_with(".js")) {
-    result = "application/javascript";
   } else {
-    klib::error("Unknown media type: {}", result);
+    klib::error("Unknown media type: {}", file_name);
   }
 
   return result;
@@ -205,10 +203,6 @@ void Epub::set_novel(const Novel &novel) {
   novel_ = novel;
   ready_ = true;
 
-  if (std::empty(novel_.name_)) {
-    klib::error("book name is empty");
-  }
-
   novel_.name_ = make_book_name_legal(novel_.name_);
 
   if (!std::empty(novel_.cover_path_)) {
@@ -216,13 +210,6 @@ void Epub::set_novel(const Novel &novel) {
   }
   for (auto &path : novel_.image_paths_) {
     path = std::filesystem::current_path() / path;
-  }
-
-  std::size_t count = 0;
-  for (const auto &volume : novel_.volumes_) {
-    if (!std::empty(volume.title_)) {
-      ++count;
-    }
   }
 }
 
@@ -235,7 +222,6 @@ void Epub::flush_font(const std::string &book_dir) {
         "font cannot be refreshed");
     return;
   }
-  remove_file_or_dir(std::data(Epub::font_woff2_path));
 
   pugi::xml_document doc;
   doc.load_file(std::data(Epub::nav_xhtml_path),
@@ -256,12 +242,12 @@ void Epub::flush_font(const std::string &book_dir) {
     }
   }
 
-  generate_font(false);
+  generate_font();
 }
 
 void Epub::append() {
   if (!ready_) {
-    klib::error("call set_novel() first");
+    klib::error("Call set_novel() first");
   }
 
   auto dir = std::make_unique<klib::ChangeWorkingDir>(novel_.name_);
@@ -283,22 +269,22 @@ void Epub::append() {
 
 void Epub::generate() {
   if (!ready_) {
-    klib::error("call set_novel() first");
+    klib::error("Call set_novel() first");
   }
 
-  if (std::empty(rights_)) {
-    klib::error("rights is empty");
+  if (std::empty(novel_.name_)) {
+    klib::error("book name is empty");
   }
 
   if (std::empty(uuid_)) {
     uuid_ = boost::to_upper_copy(klib::uuid());
   }
-  if (std::empty(date_)) {
-    date_ = get_datetime();
+  if (std::empty(datetime_)) {
+    datetime_ = get_datetime();
   }
 
   if (std::filesystem::exists(novel_.name_)) {
-    std::filesystem::remove_all(novel_.name_);
+    remove_file_or_dir(novel_.name_);
   }
 
   std::filesystem::create_directory(novel_.name_);
@@ -315,7 +301,6 @@ void Epub::generate() {
 
   generate_container();
   generate_style();
-  generate_font();
   generate_image();
   generate_volume();
   generate_chapter();
@@ -326,6 +311,7 @@ void Epub::generate() {
   generate_nav();
   generate_package();
   generate_mimetype();
+  generate_font();
 
   dir.reset();
   klib::compress(novel_.name_, klib::Format::Zip, klib::Filter::Deflate,
@@ -354,25 +340,6 @@ void Epub::generate_style() const {
   klib::write_file(Epub::style_css_path, false, style_);
 }
 
-void Epub::generate_font(bool flush_font_words) {
-  Expects(!std::empty(font_));
-
-  if (flush_font_words) {
-    for (const auto &volume : novel_.volumes_) {
-      font_words_.append(volume.title_);
-      for (const auto &chapter : volume.chapters_) {
-        font_words_.append(chapter.title_);
-      }
-    }
-  }
-
-  dbg(font_words_);
-  dbg(std::size(font_));
-  auto ttf_font = klib::ttf_subset(font_, klib::utf8_to_utf32(font_words_));
-  auto woff2_font = klib::ttf_to_woff2(ttf_font);
-  klib::write_file(Epub::font_woff2_path, true, woff2_font);
-}
-
 void Epub::generate_image() const {
   const static std::filesystem::path image_path(Epub::image_dir);
 
@@ -383,6 +350,13 @@ void Epub::generate_image() const {
     const auto image_name = path.filename().string();
     std::filesystem::copy(path, image_path / image_name);
   }
+
+  if (!std::empty(novel_.cover_path_)) {
+    const std::filesystem::path path(novel_.cover_path_);
+    Expects(std::filesystem::exists(path));
+
+    std::filesystem::copy(path, image_path / "cover.jpg");
+  }
 }
 
 void Epub::generate_volume() const { deal_with_volume(1); }
@@ -391,14 +365,7 @@ void Epub::generate_chapter() const { deal_with_chapter(1); }
 
 void Epub::generate_cover() const {
   if (!std::empty(novel_.cover_path_)) {
-    const static std::filesystem::path image_path(Epub::image_dir);
-
-    const std::filesystem::path path(novel_.cover_path_);
-    Expects(std::filesystem::exists(path));
-
-    const auto image_name = path.filename().string();
-    Ensures(image_name == "cover.jpg");
-    std::filesystem::copy(path, image_path / image_name);
+    font_words_.append("封面");
 
     auto doc = generate_xhtml_template("封面", "cover", false);
 
@@ -419,8 +386,10 @@ void Epub::generate_cover() const {
 
 void Epub::generate_illustration() const {
   for (std::int32_t i = 1; i <= novel_.illustration_num_; ++i) {
-    auto doc =
-        generate_xhtml_template("彩页 " + std::to_string(i), "center", false);
+    auto title = "彩页 " + std::to_string(i);
+    font_words_.append(title);
+
+    auto doc = generate_xhtml_template(title, "center", false);
     auto file_name = num_to_illustration_name(i);
 
     auto div = doc.select_node("/html/body/div").node();
@@ -438,6 +407,8 @@ void Epub::generate_illustration() const {
 
 void Epub::generate_introduction() const {
   if (!std::empty(novel_.introduction_)) {
+    font_words_.append("简介");
+
     auto doc = generate_xhtml_template("简介", "", true);
 
     auto body = doc.select_node("/html/body").node();
@@ -451,6 +422,8 @@ void Epub::generate_introduction() const {
 
 void Epub::generate_postscript() const {
   if (!std::empty(novel_.postscript_)) {
+    font_words_.append("后记");
+
     auto doc = generate_xhtml_template("后记", "", true);
 
     auto body = doc.select_node("/html/body").node();
@@ -553,23 +526,29 @@ void Epub::generate_package() const {
   meta.append_attribute("property") = "file-as";
   meta.text() = novel_.name_.c_str();
 
-  auto dc_creator = metadata.append_child("dc:creator");
-  dc_creator.append_attribute("id") = "creator";
-  dc_creator.text() = novel_.author_.c_str();
+  if (!std::empty(novel_.author_)) {
+    auto dc_creator = metadata.append_child("dc:creator");
+    dc_creator.append_attribute("id") = "creator";
+    dc_creator.text() = novel_.author_.c_str();
 
-  meta = metadata.append_child("meta");
-  meta.append_attribute("refines") = "#creator";
-  meta.append_attribute("property") = "role";
-  meta.append_attribute("scheme") = "marc:relators";
-  meta.text() = "aut";
+    meta = metadata.append_child("meta");
+    meta.append_attribute("refines") = "#creator";
+    meta.append_attribute("property") = "role";
+    meta.append_attribute("scheme") = "marc:relators";
+    meta.text() = "aut";
 
-  meta = metadata.append_child("meta");
-  meta.append_attribute("refines") = "#creator";
-  meta.append_attribute("property") = "file-as";
-  meta.text() = novel_.author_.c_str();
+    meta = metadata.append_child("meta");
+    meta.append_attribute("refines") = "#creator";
+    meta.append_attribute("property") = "file-as";
+    meta.text() = novel_.author_.c_str();
+  }
 
   metadata.append_child("dc:language").text() = "zh-CN";
-  metadata.append_child("dc:rights").text() = rights_.c_str();
+
+  if (!std::empty(rights_)) {
+    metadata.append_child("dc:rights").text() = rights_.c_str();
+  }
+
   if (!std::empty(novel_.introduction_)) {
     metadata.append_child("dc:description").text() =
         boost::join(novel_.introduction_, "\n").c_str();
@@ -577,7 +556,7 @@ void Epub::generate_package() const {
 
   meta = metadata.append_child("meta");
   meta.append_attribute("property") = "dcterms:modified";
-  meta.text() = date_.c_str();
+  meta.text() = datetime_.c_str();
 
   if (!std::empty(novel_.cover_path_)) {
     meta = metadata.append_child("meta");
@@ -590,7 +569,8 @@ void Epub::generate_package() const {
   append_manifest_and_spine(manifest, "SourceHanSansSC-Bold.woff2",
                             "font/SourceHanSansSC-Bold.woff2");
 
-  for (std::size_t i = 1; i <= std::size(novel_.image_paths_); ++i) {
+  auto image_size = std::size(novel_.image_paths_);
+  for (std::size_t i = 1; i <= image_size; ++i) {
     append_manifest_and_spine(manifest, "x" + num_to_str(i) + ".jpg",
                               "image/" + num_to_str(i) + ".jpg");
   }
@@ -633,12 +613,23 @@ void Epub::generate_mimetype() const {
   klib::write_file(Epub::mimetype_path, false, text);
 }
 
+void Epub::generate_font() {
+  Expects(!std::empty(font_));
+
+  dbg(font_words_);
+  auto ttf_font = klib::ttf_subset(font_, klib::utf8_to_utf32(font_words_));
+  auto woff2_font = klib::ttf_to_woff2(ttf_font);
+  klib::write_file(Epub::font_woff2_path, true, woff2_font);
+}
+
 void Epub::do_deal_with_nav(pugi::xml_node &ol, std::int32_t first_volume_id,
                             std::int32_t first_chapter_id) const {
   for (const auto &volume : novel_.volumes_) {
     pugi::xml_node node;
 
     if (!std::empty(volume.title_)) {
+      font_words_.append(volume.title_);
+
       auto li = ol.append_child("li");
       auto a = li.append_child("a");
       a.append_attribute("href") =
@@ -655,6 +646,8 @@ void Epub::do_deal_with_nav(pugi::xml_node &ol, std::int32_t first_volume_id,
     }
 
     for (const auto &chapter : volume.chapters_) {
+      font_words_.append(chapter.title_);
+
       auto chapter_li = node.append_child("li");
       auto chapter_a = chapter_li.append_child("a");
       chapter_a.append_attribute("href") =
@@ -737,7 +730,7 @@ void Epub::deal_with_chapter(std::int32_t first_chapter_id) const {
   for (const auto &volume : novel_.volumes_) {
     for (const auto &chapter : volume.chapters_) {
       auto doc = generate_xhtml_template(chapter.title_, "", true);
-      append_texts(doc, chapter.text_);
+      append_texts(doc, chapter.texts_);
 
       auto path = text_path / num_to_chapter_name(first_chapter_id++);
       save_file(doc, path.c_str());

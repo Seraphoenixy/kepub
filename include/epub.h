@@ -3,37 +3,13 @@
 #include <cstdint>
 #include <string>
 #include <string_view>
-#include <tuple>
 #include <utility>
-#include <vector>
 
 #include <pugixml.hpp>
 
+#include "novel.h"
+
 namespace kepub {
-
-struct Chapter {
-  std::string title_;
-  std::vector<std::string> text_;
-};
-
-struct Volume {
-  std::string title_;
-  std::vector<Chapter> chapters_;
-};
-
-struct Novel {
-  std::string name_;
-  std::string author_;
-
-  std::vector<std::string> introduction_;
-  std::int32_t illustration_num_ = 0;
-  std::vector<std::string> postscript_;
-
-  std::string cover_path_;
-  std::vector<std::string> image_paths_;
-
-  std::vector<Volume> volumes_;
-};
 
 class Epub {
  public:
@@ -46,7 +22,7 @@ class Epub {
     debug_ = true;
   }
   void set_datetime(const std::string &date) {
-    date_ = date;
+    datetime_ = date;
     debug_ = true;
   }
 
@@ -81,7 +57,6 @@ class Epub {
  private:
   void generate_container() const;
   void generate_style() const;
-  void generate_font(bool flush_font_words = true);
   void generate_image() const;
   void generate_volume() const;
   void generate_chapter() const;
@@ -92,6 +67,7 @@ class Epub {
   void generate_nav() const;
   void generate_package() const;
   void generate_mimetype() const;
+  void generate_font();
 
   void do_deal_with_nav(pugi::xml_node &ol, std::int32_t first_volume_id,
                         std::int32_t first_chapter_id) const;
@@ -109,14 +85,14 @@ class Epub {
   std::string rights_;
 
   std::string uuid_;
-  std::string date_;
+  std::string datetime_;
 
   Novel novel_;
 
   std::string_view style_;
   std::string_view font_;
 
-  std::string font_words_ = "封面彩页简介后记0123456789";
+  mutable std::string font_words_;
   bool debug_ = false;
 };
 
