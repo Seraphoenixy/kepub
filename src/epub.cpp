@@ -235,6 +235,7 @@ void Epub::flush_font(const std::string &book_dir) {
         "font cannot be refreshed");
     return;
   }
+  remove_file_or_dir(std::data(Epub::font_woff2_path));
 
   pugi::xml_document doc;
   doc.load_file(std::data(Epub::nav_xhtml_path),
