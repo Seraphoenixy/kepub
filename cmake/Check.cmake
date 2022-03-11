@@ -73,11 +73,3 @@ elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
 else()
   message(FATAL_ERROR "The compiler does not support: ${CMAKE_CXX_COMPILER_ID}")
 endif()
-
-# ---------------------------------------------------------------------------------------
-# Option
-# ---------------------------------------------------------------------------------------
-if((${CMAKE_BUILD_TYPE} STREQUAL "Debug") AND KEPUB_BUILD_BENCH)
-  message(
-    FATAL_ERROR "The CMAKE_BUILD_TYPE cannot be Debug when building benchmark")
-endif()

@@ -3,8 +3,6 @@ option(KEPUB_BUILD_TEST "Build test" OFF)
 option(KEPUB_FORMAT "Format code using clang-format and cmake-format" OFF)
 option(KEPUB_SANITIZER "Build with AddressSanitizer and UndefinedSanitizer" OFF)
 
-option(KEPUB_BUILD_BENCH "Build benchmark" OFF)
-
 include(CMakeDependentOption)
 cmake_dependent_option(
   KEPUB_BUILD_COVERAGE "Build test with coverage information" OFF

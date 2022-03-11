@@ -41,7 +41,6 @@ set(CIWEIMAO_EXECUTABLE ciweimao)
 set(SFACG_EXECUTABLE sfacg)
 set(GEN_EPUB_EXECUTABLE gen-epub)
 set(KEPUB_TEST_EXECUTABLE ktest)
-set(KEPUB_BENCH_EXECUTABLE kbench)
 
 set(KEPUB_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(KEPUB_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
@@ -155,14 +154,6 @@ add_subdirectory(tool)
 if(BUILD_TESTING AND KEPUB_BUILD_TEST)
   message(STATUS "Build test")
   add_subdirectory(test)
-endif()
-
-# ---------------------------------------------------------------------------------------
-# Build benchmark
-# ---------------------------------------------------------------------------------------
-if(KEPUB_BUILD_BENCH)
-  message(STATUS "Build benchmark")
-  add_subdirectory(bench)
 endif()
 
 # ---------------------------------------------------------------------------------------
