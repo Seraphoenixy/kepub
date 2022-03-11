@@ -1,6 +1,7 @@
 #include "json.h"
 
 #include <klib/log.h>
+#include <klib/unicode.h>
 #include <klib/util.h>
 #include <simdjson.h>
 #include <boost/json.hpp>
@@ -68,7 +69,11 @@ kepub::BookInfo json_to_book_info(std::string json) {
   auto data = doc["data"];
 
   result.name_ = data["novelName"].get_string().value();
+  klib::trim(result.name_);
+
   result.author_ = data["authorName"].get_string().value();
+  klib::trim(result.author_);
+
   result.cover_path_ = data["novelCover"].get_string().value();
   result.point_ = data["point"].get_double().value();
 
@@ -86,13 +91,15 @@ std::vector<kepub::Volume> json_to_volumes(std::string json) {
   JSON_BASE(json)
 
   for (auto volume : doc["data"]["volumeList"].get_array()) {
-    std::string volume_id(volume["volumeId"].get_string().value());
+    auto volume_id = std::to_string(volume["volumeId"].get_int64());
     std::string volume_name(volume["title"].get_string().value());
+    klib::trim(volume_name);
 
     std::vector<kepub::Chapter> chapters;
     for (auto chapter : volume["chapterList"].get_array()) {
       auto chapter_id = std::to_string(chapter["chapId"].get_int64());
       std::string chapter_title(chapter["title"].get_string().value());
+      klib::trim(chapter_title);
 
       auto need_fire_money = chapter["needFireMoney"].get_int64().value();
       if (need_fire_money > 0) {

@@ -1,6 +1,7 @@
 #include "json.h"
 
 #include <klib/log.h>
+#include <klib/unicode.h>
 #include <klib/util.h>
 #include <simdjson.h>
 #include <boost/json.hpp>
@@ -84,7 +85,11 @@ kepub::BookInfo json_to_book_info(std::string json) {
   auto book_info = doc["data"]["book_info"];
 
   result.name_ = book_info["book_name"].get_string().value();
+  klib::trim(result.name_);
+
   result.author_ = book_info["author_name"].get_string().value();
+  klib::trim(result.author_);
+
   result.cover_path_ = book_info["cover"].get_string().value();
 
   std::string intro_str(book_info["description"].get_string().value());
@@ -103,6 +108,7 @@ std::vector<kepub::Volume> get_volume_info(std::string json) {
   for (auto volume : doc["data"]["division_list"].get_array()) {
     std::string volume_id(volume["division_id"].get_string().value());
     std::string volume_name(volume["division_name"].get_string().value());
+    klib::trim(volume_name);
 
     result.push_back({volume_id, volume_name, {}});
   }
@@ -117,6 +123,7 @@ std::vector<kepub::Chapter> get_chapter_info(std::string json) {
   for (auto chapter : doc["data"]["chapter_list"].get_array()) {
     std::string chapter_id(chapter["chapter_id"].get_string().value());
     std::string chapter_title(chapter["chapter_title"].get_string().value());
+    klib::trim(chapter_title);
 
     auto is_valid = chapter["is_valid"].get_int64().value();
     if (is_valid != 1) {

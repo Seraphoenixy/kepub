@@ -106,8 +106,8 @@ std::vector<std::string> get_content(const std::string &chapter_id) {
         continue;
       }
 
-      auto image_name = kepub::num_to_str(image_count++);
-      image.save_to_file(image_name + ".jpg");
+      auto image_name = kepub::num_to_str(image_count++) + ".jpg";
+      image.save_to_file(image_name);
 
       line = "[IMAGE] " + image_name;
     }
