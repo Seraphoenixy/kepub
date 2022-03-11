@@ -56,16 +56,6 @@ sfacg book-id
 kepub book-name.txt
 ```
 
-## Roadmap
-
-- Refactor the code
-- EPUB 3
-  - https://github.com/w3c/epub-specs
-- WebP
-  - https://github.com/webmproject/libwebp
-- Markdown format
-- Zsh completions
-
 ---
 
 Thanks to [JetBrains](https://www.jetbrains.com/) for donating product licenses to help develop this project <a href="https://www.jetbrains.com/"><img src="logo/jetbrains.svg" width="94" align="center" /></a>
