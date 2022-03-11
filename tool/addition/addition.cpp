@@ -38,8 +38,12 @@ int main(int argc, const char *argv[]) try {
                "When the generation is successful, delete the TXT file and "
                "backup epub file");
 
-  bool no_compress = false;
-  app.add_flag("--no-compress", no_compress, "Do not compress(for testing)");
+  std::string datetime;
+  app.add_option("-d,--datetime", datetime,
+                 "Specify the datetime(for testing)");
+
+  bool testing = false;
+  app.add_flag("--testing", testing, "Do not compress(for testing)");
 
   CLI11_PARSE(app, argc, argv)
 
@@ -51,14 +55,17 @@ int main(int argc, const char *argv[]) try {
   auto zip_name = book_name + ".zip";
   kepub::check_file_exist(epub_name);
 
+  if (std::filesystem::exists(book_name)) {
+    std::filesystem::remove_all(book_name);
+  }
   klib::decompress(epub_name, book_name);
 
-  if (!no_compress) {
+  if (!testing) {
     std::filesystem::rename(epub_name, backup_epub_name);
   }
 
-  std::vector<std::tuple<std::string, std::string, std::vector<std::string>>>
-      contents;
+  kepub::Novel novel;
+  novel.name_ = book_name;
 
   auto vec = kepub::read_file_to_vec(file_name, translation);
   auto size = std::size(vec);
@@ -74,6 +81,7 @@ int main(int argc, const char *argv[]) try {
     if (vec[i].starts_with(volume_prefix)) {
       volume_name = vec[i].substr(volume_prefix_size);
       kepub::volume_name_check(volume_name);
+      novel.volumes_.push_back({volume_name, {}});
     } else if (vec[i].starts_with(title_prefix)) {
       auto title = vec[i].substr(title_prefix_size);
       kepub::title_check(title);
@@ -89,18 +97,25 @@ int main(int argc, const char *argv[]) try {
       }
       --i;
 
-      contents.emplace_back(volume_name, title, content);
+      if (std::empty(novel.volumes_)) {
+        novel.volumes_.push_back({"", {}});
+      }
+      novel.volumes_.back().chapters_.push_back({title, content});
     }
   }
 
   kepub::Epub epub;
-  epub.append_chapter(book_name, contents);
+  // For testing
+  if (!std::empty(datetime)) {
+    epub.set_datetime(datetime);
+  }
+
+  epub.set_novel(novel);
+  klib::info("Start to generate epub files");
+  epub.append();
   epub.flush_font(book_name);
 
-  if (!no_compress) {
-    klib::info("Start to compress and generate epub files");
-    klib::compress(book_name, klib::Format::Zip, klib::Filter::Deflate,
-                   book_name + ".epub", false);
+  if (!testing) {
     kepub::remove_file_or_dir(book_name);
   }
 

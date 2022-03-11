@@ -40,6 +40,8 @@ std::string get_password();
 
 std::string num_to_str(std::int32_t i);
 
+std::string make_book_name_legal(const std::string &file_name);
+
 void generate_txt(
     const std::string &book_name, const std::string &author,
     const std::vector<std::string> &description,

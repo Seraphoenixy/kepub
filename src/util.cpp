@@ -39,18 +39,6 @@ bool end_with_punctuation(const std::string &str) {
   return klib::is_chinese_punctuation(klib::last_code_point(str));
 }
 
-std::string make_book_name_legal(const std::string &file_name) {
-  auto new_file_name = klib::make_file_name_legal(file_name);
-  if (new_file_name != file_name) {
-    klib::warn(
-        "The title of the book is illegal, and the title of the book has been "
-        "changed from '{}' to '{}'",
-        file_name, new_file_name);
-  }
-
-  return new_file_name;
-}
-
 }  // namespace
 
 void check_file_exist(const std::string &file_name) {
@@ -270,6 +258,18 @@ std::string num_to_str(std::int32_t i) {
   } else {
     return str;
   }
+}
+
+std::string make_book_name_legal(const std::string &file_name) {
+  auto new_file_name = klib::make_file_name_legal(file_name);
+  if (new_file_name != file_name) {
+    klib::warn(
+        "The title of the book is illegal, and the title of the book has been "
+        "changed from '{}' to '{}'",
+        file_name, new_file_name);
+  }
+
+  return new_file_name;
 }
 
 void generate_txt(

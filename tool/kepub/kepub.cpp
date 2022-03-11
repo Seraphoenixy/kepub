@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 
-#include <klib/archive.h>
 #include <klib/exception.h>
 #include <klib/log.h>
 #include <CLI/CLI.hpp>
@@ -28,7 +27,7 @@ int main(int argc, const char *argv[]) try {
   app.add_option("file", file_name, "TXT file to be processed")->required();
 
   bool only_check = false;
-  app.add_flag("--only-check", only_check,
+  app.add_flag("-o,--only-check", only_check,
                "Only check the content and title, do not generate epub");
 
   bool translation = false;
@@ -38,19 +37,9 @@ int main(int argc, const char *argv[]) try {
   bool connect = false;
   app.add_flag("-c,--connect", connect, "Remove extra line breaks");
 
-  bool no_cover = false;
-  app.add_flag("--no-cover", no_cover, "Do not generate cover");
-
   std::int32_t illustration_num = 0;
   app.add_option("-i,--illustration", illustration_num,
                  "Generate illustration");
-
-  std::int32_t image_num = 0;
-  app.add_option("--image", image_num,
-                 "Specify the number of generated images");
-
-  bool generate_postscript = false;
-  app.add_flag("-p,--postscript", generate_postscript, "Generate postscript");
 
   bool remove = false;
   app.add_flag(
@@ -58,13 +47,11 @@ int main(int argc, const char *argv[]) try {
       "When the generation is successful, delete the TXT file and picture");
 
   std::string uuid;
-  app.add_option("--uuid", uuid, "Specify the uuid(for testing)");
+  app.add_option("-u,--uuid", uuid, "Specify the uuid(for testing)");
 
-  std::string date;
-  app.add_option("--date", date, "Specify the date(for testing)");
-
-  bool no_compress = false;
-  app.add_flag("--no-compress", no_compress, "Do not compress(for testing)");
+  std::string datetime;
+  app.add_option("-d,--datetime", datetime,
+                 "Specify the datetime(for testing)");
 
   CLI11_PARSE(app, argc, argv)
 
@@ -73,19 +60,29 @@ int main(int argc, const char *argv[]) try {
       kepub::trans_str(std::filesystem::path(file_name).stem(), translation);
   klib::info("Book name: {}", book_name);
 
+  kepub::Novel novel;
+  novel.name_ = book_name;
+  novel.illustration_num_ = illustration_num;
+  if (std::filesystem::exists("cover.jpg")) {
+    novel.cover_path_ = "cover.jpg";
+  }
+  for (std::int32_t i = 1;; ++i) {
+    auto name = kepub::num_to_str(i) + ".jpg";
+    if (std::filesystem::exists(name)) {
+      novel.image_paths_.push_back(name);
+    } else {
+      break;
+    }
+  }
+
   kepub::Epub epub;
-  epub.set_creator("Kaiser");
-  epub.set_book_name(book_name);
-  epub.set_generate_cover(!no_cover);
-  epub.set_illustration_num(illustration_num);
-  epub.set_image_num(image_num);
-  epub.set_generate_postscript(generate_postscript);
+  epub.set_rights("Kaiser");
   // For testing
   if (!std::empty(uuid)) {
     epub.set_uuid(uuid);
   }
-  if (!std::empty(date)) {
-    epub.set_date(date);
+  if (!std::empty(datetime)) {
+    epub.set_datetime(datetime);
   }
 
   auto vec = kepub::read_file_to_vec(file_name, translation);
@@ -94,17 +91,11 @@ int main(int argc, const char *argv[]) try {
   std::string title_prefix = "[WEB] ";
   auto title_prefix_size = std::size(title_prefix);
 
-  std::string volume_name;
   std::string volume_prefix = "[VOLUME] ";
   auto volume_prefix_size = std::size(volume_prefix);
 
-  std::string author;
   std::string author_prefix = "[AUTHOR]";
-
-  std::vector<std::string> introduction;
   std::string introduction_prefix = "[INTRO]";
-
-  std::vector<std::string> postscript;
   std::string postscript_prefix = "[POST]";
 
   std::int32_t word_count = 0;
@@ -120,47 +111,34 @@ int main(int argc, const char *argv[]) try {
     if (vec[i].starts_with(author_prefix)) {
       ++i;
 
-      if (!std::empty(author)) {
-        klib::warn("Author has been defined");
-      }
-
-      author = vec[i];
-      klib::info("Author: {}", author);
+      novel.author_ = vec[i];
+      klib::info("Author: {}", novel.author_);
     } else if (vec[i].starts_with(introduction_prefix)) {
       ++i;
-
-      if (!std::empty(introduction)) {
-        klib::warn("Introduction has been defined");
-        introduction.clear();
-      }
 
       for (; i < size && !is_prefix(vec[i]); ++i) {
         auto line = vec[i];
         kepub::str_check(line);
 
         word_count += kepub::str_size(line);
-        kepub::push_back(introduction, line, connect);
+        kepub::push_back(novel.introduction_, line, connect);
       }
       --i;
     } else if (vec[i].starts_with(postscript_prefix)) {
       ++i;
 
-      if (!std::empty(postscript)) {
-        klib::warn("Postscript has been defined");
-        postscript.clear();
-      }
-
       for (; i < size && !is_prefix(vec[i]); ++i) {
         auto line = vec[i];
         kepub::str_check(line);
 
         word_count += kepub::str_size(line);
-        kepub::push_back(postscript, line, connect);
+        kepub::push_back(novel.postscript_, line, connect);
       }
       --i;
     } else if (vec[i].starts_with(volume_prefix)) {
-      volume_name = vec[i].substr(volume_prefix_size);
+      auto volume_name = vec[i].substr(volume_prefix_size);
       kepub::volume_name_check(volume_name);
+      novel.volumes_.push_back({volume_name, {}});
     } else if (vec[i].starts_with(title_prefix)) {
       auto title = vec[i].substr(title_prefix_size);
       kepub::title_check(title);
@@ -176,7 +154,10 @@ int main(int argc, const char *argv[]) try {
       }
       --i;
 
-      epub.add_content(volume_name, title, content);
+      if (std::empty(novel.volumes_)) {
+        novel.volumes_.push_back({"", {}});
+      }
+      novel.volumes_.back().chapters_.push_back({title, content});
     }
   }
 
@@ -187,86 +168,27 @@ int main(int argc, const char *argv[]) try {
     return EXIT_SUCCESS;
   }
 
-  if (!std::empty(author)) {
-    epub.set_author(author);
-  } else {
-    klib::warn("No author information");
-  }
-
-  if (!std::empty(introduction)) {
-    epub.set_introduction(introduction);
-  } else {
-    klib::warn("No introduction information");
-  }
-
-  if (generate_postscript) {
-    if (!std::empty(postscript)) {
-      epub.set_postscript(postscript);
-    } else {
-      klib::warn("No postscript information");
-    }
-  }
-
-  bool postscript_done =
-      !generate_postscript || (generate_postscript && !std::empty(postscript));
-
+  epub.set_novel(novel);
+  klib::info("Start to generate epub files");
   epub.generate();
 
-  bool cover_done = true;
-  std::string cover_name = "cover.jpg";
-  if (!no_cover) {
-    if (!std::filesystem::is_regular_file(cover_name)) {
-      klib::warn("Can't find cover image: {}", cover_name);
-      cover_done = false;
-    } else {
-      std::filesystem::copy(cover_name, std::filesystem::path(book_name) /
-                                            kepub::Epub::images_dir /
-                                            cover_name);
+  if (remove) {
+    kepub::remove_file_or_dir(file_name);
+
+    if (!std::empty(novel.cover_path_)) {
+      kepub::remove_file_or_dir(novel.cover_path_);
+    }
+
+    for (const auto &path : novel.image_paths_) {
+      kepub::remove_file_or_dir(path);
     }
   }
 
-  bool image_done = true;
-  if (image_num != 0) {
-    for (std::int32_t i = 1; i <= image_num; ++i) {
-      auto jpg_name = kepub::num_to_str(i) + ".jpg";
-
-      if (!std::filesystem::is_regular_file(jpg_name)) {
-        klib::warn("Can't find image: {}", jpg_name);
-        image_done = false;
-        break;
-      }
-
-      std::filesystem::copy(jpg_name, std::filesystem::path(book_name) /
-                                          kepub::Epub::images_dir / jpg_name);
-    }
+  if (std::empty(uuid) && std::empty(datetime)) {
+    kepub::remove_file_or_dir(book_name);
   }
 
-  bool book_done = !std::empty(author) && !std::empty(introduction) &&
-                   postscript_done && cover_done && image_done;
-
-  if (book_done) {
-    if (remove) {
-      kepub::remove_file_or_dir(file_name);
-      if (!no_cover) {
-        kepub::remove_file_or_dir(cover_name);
-      }
-      for (std::int32_t i = 1; i <= image_num; ++i) {
-        auto jpg_name = kepub::num_to_str(i) + ".jpg";
-        kepub::remove_file_or_dir(jpg_name);
-      }
-    }
-
-    if (!no_compress) {
-      klib::info("Start to compress and generate epub files");
-      klib::compress(book_name, klib::Format::Zip, klib::Filter::Deflate,
-                     book_name + ".epub", false);
-      kepub::remove_file_or_dir(book_name);
-      klib::info("The epub of novel '{}' was successfully generated",
-                 book_name);
-    }
-  } else {
-    klib::warn("Some kind of error occurred, epub generation failed");
-  }
+  klib::info("The epub of novel '{}' was successfully generated", book_name);
 } catch (const klib::Exception &err) {
   klib::error(err.what());
 } catch (const std::exception &err) {
