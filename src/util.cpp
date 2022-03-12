@@ -61,6 +61,14 @@ void check_is_txt_file(const std::string &file_name) {
   }
 }
 
+void check_is_epub_file(const std::string &file_name) {
+  check_file_exist(file_name);
+
+  if (std::filesystem::path(file_name).extension() != ".epub") {
+    klib::error("Need a epub file: {}", file_name);
+  }
+}
+
 void remove_file_or_dir(const std::string &path) {
   if (!std::filesystem::exists(path)) {
     klib::error("The item does not exist: {}", path);
@@ -153,7 +161,7 @@ void volume_name_check(const std::string &volume_name) {
 
 void title_check(const std::string &title) {
   static const std::wregex regex(
-      LR"(第([零一二三四五六七八九十百千]|[0-9]){1,7}[章] .+)",
+      LR"(第([零一二三四五六七八九十百千]|[0-9]){1,7}[章话] .+)",
       std::regex_constants::optimize);
 
   if (!std::regex_match(klib::utf8_to_utf32_w(title), regex)) {
@@ -276,10 +284,12 @@ void generate_txt(const BookInfo &book_info,
                   const std::vector<Chapter> &chapters) {
   std::ostringstream oss;
 
-  oss << "[AUTHOR]" << '\n';
+  oss << "[AUTHOR]"
+      << "\n\n";
   oss << book_info.author_ << "\n\n";
 
-  oss << "[INTRO]" << '\n';
+  oss << "[INTRO]"
+      << "\n\n";
   for (const auto &line : book_info.introduction_) {
     oss << line << "\n";
   }
@@ -306,10 +316,12 @@ void generate_txt(const BookInfo &book_info,
                   const std::vector<Volume> &volumes) {
   std::ostringstream oss;
 
-  oss << "[AUTHOR]" << '\n';
+  oss << "[AUTHOR]"
+      << "\n\n";
   oss << book_info.author_ << "\n\n";
 
-  oss << "[INTRO]" << '\n';
+  oss << "[INTRO]"
+      << "\n\n";
   for (const auto &line : book_info.introduction_) {
     oss << line << "\n";
   }

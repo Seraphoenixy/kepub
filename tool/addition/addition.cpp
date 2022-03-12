@@ -56,7 +56,7 @@ int main(int argc, const char *argv[]) try {
   kepub::check_file_exist(epub_name);
 
   if (std::filesystem::exists(book_name)) {
-    std::filesystem::remove_all(book_name);
+    kepub::remove_file_or_dir(book_name);
   }
   if (testing) {
     book_name.append("-test");

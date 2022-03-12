@@ -6,3 +6,5 @@ add_subdirectory(esjzone)
 
 add_subdirectory(addition)
 add_subdirectory(addition_volume)
+
+add_subdirectory(gen_txt)

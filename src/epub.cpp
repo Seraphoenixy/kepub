@@ -351,8 +351,7 @@ void Epub::generate_image() const {
     const std::filesystem::path path(item);
     Expects(std::filesystem::exists(path));
 
-    const auto image_name = path.filename().string();
-    std::filesystem::copy(path, image_path / image_name);
+    std::filesystem::copy(path, image_path);
   }
 
   if (!std::empty(novel_.book_info_.cover_path_)) {

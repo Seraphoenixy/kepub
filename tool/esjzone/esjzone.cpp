@@ -6,6 +6,7 @@
 #include <klib/exception.h>
 #include <klib/html.h>
 #include <klib/log.h>
+#include <klib/util.h>
 #include <CLI/CLI.hpp>
 #include <boost/algorithm/string.hpp>
 #include <pugixml.hpp>
@@ -23,7 +24,7 @@ backward::SignalHandling sh;
 
 namespace {
 
-void get_node_content(const pugi::xml_node &node, std::string &str) {
+void do_get_node_texts(const pugi::xml_node &node, std::string &str) {
   if (node.children().begin() == node.children().end()) {
     str += node.text().as_string();
   } else {
@@ -31,22 +32,18 @@ void get_node_content(const pugi::xml_node &node, std::string &str) {
       if (node.name() == std::string("p") || node.name() == std::string("br")) {
         str += "\n";
       }
-      get_node_content(child, str);
+      do_get_node_texts(child, str);
     }
   }
 }
 
-std::vector<std::string> get_children_content(const pugi::xml_node &node) {
+std::vector<std::string> get_node_texts(const pugi::xml_node &node) {
   std::vector<std::string> result;
 
   for (const auto &child : node.children()) {
     std::string str;
-    get_node_content(child, str);
+    do_get_node_texts(child, str);
     result.push_back(str);
-  }
-
-  if (std::empty(result)) {
-    klib::error("get_children_text no data");
   }
 
   return result;
@@ -154,8 +151,14 @@ std::vector<std::string> get_content(const std::string &url, bool translation,
                   .node();
 
   std::vector<std::string> result;
-  for (const auto &line : get_children_content(node)) {
-    kepub::push_back(result, kepub::trans_str(line, translation));
+  for (const auto &text : get_node_texts(node)) {
+    for (const auto &line : klib::split_str(text, "\n")) {
+      kepub::push_back(result, kepub::trans_str(line, translation));
+    }
+  }
+
+  if (std::empty(result)) {
+    klib::warn("No text: {}", url);
   }
 
   return result;
