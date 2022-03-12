@@ -113,8 +113,7 @@ introduction</dc:description>
 
   CHECK(std::filesystem::exists(kepub::Epub::mimetype_path));
   CHECK(klib::read_file(kepub::Epub::mimetype_path, false) ==
-        R"(application/epub+zip
-)");
+        R"(application/epub+zip)");
 
   ptr.reset();
 

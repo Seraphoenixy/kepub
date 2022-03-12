@@ -612,7 +612,7 @@ void Epub::generate_package() const {
 }
 
 void Epub::generate_mimetype() {
-  std::string_view text = "application/epub+zip\n";
+  std::string_view text = "application/epub+zip";
   klib::write_file(Epub::mimetype_path, false, text);
 }
 
