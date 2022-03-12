@@ -9,6 +9,7 @@
 #include <klib/archive.h>
 #include <klib/exception.h>
 #include <klib/log.h>
+#include <klib/unicode.h>
 #include <klib/util.h>
 #include <CLI/CLI.hpp>
 #include <pugixml.hpp>
@@ -50,7 +51,7 @@ std::string get_author(const std::string &root_file_path) {
     klib::warn("No author: {}", root_file_path);
   }
 
-  return node.text().as_string();
+  return klib::trim_copy(node.text().as_string());
 }
 
 std::vector<std::string> get_image_paths(const std::string &root_file_path) {
@@ -130,7 +131,7 @@ kepub::Chapter get_file_texts(const std::string &file_path) {
   const std::string div_name = "div";
   for (const auto &node : div.children()) {
     if (node.name() == h1_name) {
-      result.title_ = node.text().as_string();
+      result.title_ = klib::trim_copy(node.text().as_string());
     } else if (node.name() == p_name) {
       kepub::push_back(result.texts_, node.text().as_string());
     } else if (node.name() == div_name) {

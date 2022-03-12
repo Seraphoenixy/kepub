@@ -7,7 +7,7 @@
 
 #include "epub.h"
 
-TEST_CASE("json_base generate", "[epub]") {
+TEST_CASE("base generate", "[epub]") {
   kepub::Epub epub;
   epub.set_rights("Kaiser");
 
