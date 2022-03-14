@@ -10,6 +10,7 @@
 #include <fmt/format.h>
 #include <klib/archive.h>
 #include <klib/font.h>
+#include <klib/image.h>
 #include <klib/log.h>
 #include <klib/unicode.h>
 #include <klib/util.h>
@@ -192,6 +193,11 @@ std::int32_t last_num(const pugi::xml_node &node, const std::string &prefix,
   return std::empty(ids) ? 0 : ids.back();
 }
 
+void compress_image(const std::string &path) {
+  auto image_file = klib::read_file(path, true);
+  klib::write_file(path, true, klib::image_to_jpeg(image_file));
+}
+
 }  // namespace
 
 Epub::Epub() {
@@ -345,20 +351,31 @@ void Epub::generate_style() const {
 }
 
 void Epub::generate_image() const {
-  const static std::filesystem::path image_path(Epub::image_dir);
+  const static std::filesystem::path image_dir(Epub::image_dir);
 
   for (const auto &item : novel_.image_paths_) {
     const std::filesystem::path path(item);
     Expects(std::filesystem::exists(path));
 
+    auto file_name = path.filename();
+    auto image_path = image_dir / file_name;
     std::filesystem::copy(path, image_path);
+
+    if (compress_image_) {
+      compress_image(image_path);
+    }
   }
 
   if (!std::empty(novel_.book_info_.cover_path_)) {
     const std::filesystem::path path(novel_.book_info_.cover_path_);
     Expects(std::filesystem::exists(path));
 
-    std::filesystem::copy(path, image_path / "cover.jpg");
+    auto image_path = image_dir / "cover.jpg";
+    std::filesystem::copy(path, image_path);
+
+    if (compress_image_) {
+      compress_image(image_path);
+    }
   }
 }
 

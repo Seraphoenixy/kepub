@@ -17,6 +17,8 @@ class Epub {
 
   void set_rights(const std::string &rights) { rights_ = rights; }
 
+  void set_compress_images(bool flag) { compress_image_ = flag; }
+
   void set_uuid(const std::string &uuid) {
     uuid_ = uuid;
     debug_ = true;
@@ -91,6 +93,8 @@ class Epub {
 
   std::string_view style_;
   std::string_view font_;
+
+  bool compress_image_ = true;
 
   mutable std::string font_words_;
   bool debug_ = false;
