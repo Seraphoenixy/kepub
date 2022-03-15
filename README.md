@@ -12,10 +12,6 @@
 
 Crawl novels from esjzone, ciweimao and sfacg. Generate epub from txt file
 
-## Environment
-
-- [kenv](https://github.com/KaiserLancelot/kenv)
-
 ## Third party
 
 - klib ([MIT License](https://github.com/KaiserLancelot/klib/blob/main/LICENSE))
@@ -30,26 +26,16 @@ Crawl novels from esjzone, ciweimao and sfacg. Generate epub from txt file
 - indicators ([MIT License](https://github.com/p-ranav/indicators/blob/master/LICENSE))
 - Catch2 ([Boost License](https://github.com/catchorg/Catch2/blob/devel/LICENSE.txt))
 
-## Build
+## Build environment
 
-```bash
-cmake -S . -B build
-cmake --build build --config Release -j"$(nproc)"
-```
-
-## Install
-
-```bash
-sudo cmake --build build --config Release --target install
-```
-
-## Uninstall
-
-```bash
-sudo cmake --build build --config Release --target uninstall
-```
+- [kenv](https://github.com/KaiserLancelot/kenv)
 
 ## Usage
+
+- Make sure you are using a recent version of Debian/Ubuntu/WSL2 (other Linux systems have not been tested, but should work)
+- The program requires AVX2 instruction set, the CPU is at least Intel Haswell (2013), if you use a virtual machine, you need additional settings about the CPU
+- Install the DEB package (or use the compressed package) or compile it yourself
+- Then you can start using, for example:
 
 ```bash
 sfacg book-id
