@@ -4,21 +4,23 @@
 #include <string>
 #include <vector>
 
+#include "config.h"
+
 namespace kepub {
 
-struct Chapter {
+struct KEPUB_PUBLIC Chapter {
   std::string id_;
   std::string title_;
   std::vector<std::string> texts_;
 };
 
-struct Volume {
+struct KEPUB_PUBLIC Volume {
   std::string id_;
   std::string title_;
   std::vector<Chapter> chapters_;
 };
 
-struct BookInfo {
+struct KEPUB_PUBLIC BookInfo {
   std::string name_;
   std::string author_;
   std::vector<std::string> introduction_;
@@ -27,7 +29,7 @@ struct BookInfo {
   double point_;
 };
 
-struct Novel {
+struct KEPUB_PUBLIC Novel {
   BookInfo book_info_;
 
   std::int32_t illustration_num_ = 0;

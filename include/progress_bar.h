@@ -5,9 +5,11 @@
 
 #include <indicators/progress_bar.hpp>
 
+#include "config.h"
+
 namespace kepub {
 
-class ProgressBar {
+class KEPUB_PUBLIC ProgressBar {
  public:
   explicit ProgressBar(const std::string &postfix_text,
                        std::int32_t max_progress);

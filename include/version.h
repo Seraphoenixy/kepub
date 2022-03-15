@@ -2,11 +2,13 @@
 
 #include <string>
 
+#include "config.h"
+
 #define KEPUB_VER_MAJOR 2
 
 #define KEPUB_VER_MINOR 2
 
-#define KEPUB_VER_PATCH 1
+#define KEPUB_VER_PATCH 2
 
 #define KEPUB_STRINGIZE2(s) #s
 #define KEPUB_STRINGIZE(s) KEPUB_STRINGIZE2(s)
@@ -17,6 +19,6 @@
 
 namespace kepub {
 
-std::string version_str();
+std::string KEPUB_PUBLIC version_str();
 
 }  // namespace kepub

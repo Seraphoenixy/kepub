@@ -3,12 +3,14 @@
 #include <string>
 #include <string_view>
 
+#include "config.h"
+
 namespace kepub {
 
-std::string trans_str(const std::string &str, bool translation);
+std::string KEPUB_PUBLIC trans_str(const std::string &str, bool translation);
 
-std::string trans_str(std::string_view str, bool translation);
+std::string KEPUB_PUBLIC trans_str(std::string_view str, bool translation);
 
-std::string trans_str(const char *str, bool translation);
+std::string KEPUB_PUBLIC trans_str(const char *str, bool translation);
 
 }  // namespace kepub

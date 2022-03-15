@@ -7,11 +7,12 @@
 
 #include <pugixml.hpp>
 
+#include "config.h"
 #include "novel.h"
 
 namespace kepub {
 
-class Epub {
+class KEPUB_PUBLIC Epub {
  public:
   Epub();
 
