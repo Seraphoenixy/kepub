@@ -15,7 +15,7 @@ jobs:
     steps:
       # https://github.com/actions/checkout
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install dependencies
         run: bash script/build.sh
@@ -42,7 +42,7 @@ jobs:
       # https://github.com/actions/upload-artifact
       - name: Upload artifact
         if: ${{ matrix.compiler.cxx == 'g++' }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: coverage-lcov
           path: build/coverage
