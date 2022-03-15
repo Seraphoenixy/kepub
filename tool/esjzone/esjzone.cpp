@@ -4,13 +4,13 @@
 #include <vector>
 
 #include <klib/exception.h>
-#include <klib/html.h>
 #include <klib/log.h>
 #include <klib/util.h>
 #include <CLI/CLI.hpp>
 #include <boost/algorithm/string.hpp>
 #include <pugixml.hpp>
 
+#include "html.h"
 #include "http.h"
 #include "progress_bar.h"
 #include "trans.h"
@@ -26,39 +26,9 @@ using namespace kepub::esjzone;
 
 namespace {
 
-void do_get_node_texts(const pugi::xml_node &node, std::string &str) {
-  if (node.children().begin() == node.children().end()) {
-    str += node.text().as_string();
-  } else {
-    for (const auto &child : node.children()) {
-      if (node.name() == std::string("p") || node.name() == std::string("br")) {
-        str += "\n";
-      }
-      do_get_node_texts(child, str);
-    }
-  }
-}
-
-std::vector<std::string> get_node_texts(const pugi::xml_node &node) {
-  std::vector<std::string> result;
-
-  for (const auto &child : node.children()) {
-    std::string str;
-    do_get_node_texts(child, str);
-    result.push_back(str);
-  }
-
-  return result;
-}
-
 pugi::xml_document get_xml(const std::string &url, const std::string &proxy) {
   auto response = http_get(url, proxy);
-
-  auto xml = klib::html_tidy(response.text(), true);
-  pugi::xml_document doc;
-  doc.load_string(xml.c_str());
-
-  return doc;
+  return html_to_xml(response.text());
 }
 
 std::pair<kepub::BookInfo, std::vector<std::pair<std::string, std::string>>>
