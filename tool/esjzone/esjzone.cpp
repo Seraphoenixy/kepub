@@ -22,6 +22,8 @@
 backward::SignalHandling sh;
 #endif
 
+using namespace kepub::esjzone;
+
 namespace {
 
 void do_get_node_texts(const pugi::xml_node &node, std::string &str) {

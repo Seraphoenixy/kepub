@@ -1,6 +1,6 @@
 find_package(CLI11 REQUIRED)
 
-add_executable(${ESJZONE_EXECUTABLE} ${MIMALLOC_OBJECT} esjzone.cpp http.cpp)
+add_executable(${ESJZONE_EXECUTABLE} ${MIMALLOC_OBJECT} esjzone.cpp)
 target_link_libraries(
   ${ESJZONE_EXECUTABLE}
   PRIVATE ${KEPUB_LIBRARY}-shared klib::klib ${Boost_LIBRARIES}

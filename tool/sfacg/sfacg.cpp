@@ -23,6 +23,8 @@
 backward::SignalHandling sh;
 #endif
 
+using namespace kepub::sfacg;
+
 namespace {
 
 bool show_user_info() {

@@ -26,6 +26,8 @@
 backward::SignalHandling sh;
 #endif
 
+using namespace kepub::ciweimao;
+
 namespace {
 
 const std::string token_path = "/tmp/ciweimao";
