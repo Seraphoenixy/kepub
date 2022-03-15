@@ -55,10 +55,10 @@ namespace {
 
 const std::string app_version = "2.9.702";
 const std::string device_token = "iPhone-ADDACF06-A9DD-482B-ADF5-ADE5B97438EE";
-const std::string user_agent =
-    "HappyBook/2.9.7 (iPhone; iOS 15.3.1; Scale/3.00)";
+const std::string user_agent = "HappyBook/2.9.7 (iPhone; iOS 15.4; Scale/3.00)";
 const static std::string user_agent_rss =
-    request.url_encode("刺猬猫阅读") + "/2.9.702 CFNetwork/1329 Darwin/21.3.0";
+    request.url_encode("刺猬猫阅读") +
+    "/2.9.702 CFNetwork/1331.0.7 Darwin/21.4.0";
 
 }  // namespace
 
@@ -114,9 +114,9 @@ namespace {
 const std::string authorization = "Basic YXBpdXNlcjozcyMxLXl0NmUqQWN2QHFlcg==";
 const std::string device_token = "1F6EF324-A916-4995-971D-3AA71813072B";
 const std::string user_agent =
-    "boluobao/4.8.32(iOS;15.3.1)/appStore/" + device_token;
+    "boluobao/4.8.32(iOS;15.4)/appStore/" + device_token;
 const std::string user_agent_rss =
-    "SFReader/4.8.32 (iPhone; iOS 15.3.1; Scale/3.00)";
+    "SFReader/4.8.32 (iPhone; iOS 15.4; Scale/3.00)";
 
 std::string sf_security() {
   std::string uuid = klib::uuid();
