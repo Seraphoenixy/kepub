@@ -30,24 +30,36 @@ add_cxx_linker_flag("-static-libstdc++")
 # ---------------------------------------------------------------------------------------
 # Linker
 # ---------------------------------------------------------------------------------------
-if((${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-   OR (${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
-   OR (CMAKE_CXX_COMPILER_ID STREQUAL "Clang"))
+# FIXME
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
   execute_process(
-    COMMAND ld.lld --version
+    COMMAND ld.mold --version
     OUTPUT_VARIABLE LINKER_VERSION
     OUTPUT_STRIP_TRAILING_WHITESPACE)
   message(STATUS "Linker: ${LINKER_VERSION}")
 
-  add_cxx_linker_flag("-fuse-ld=lld")
+  add_cxx_linker_flag("-fuse-ld=mold")
 else()
-  execute_process(
-    COMMAND ld --version
-    OUTPUT_VARIABLE LINKER_VERSION
-    OUTPUT_STRIP_TRAILING_WHITESPACE)
-  string(REPLACE "\n" ";" LINKER_VERSION ${LINKER_VERSION})
-  list(GET LINKER_VERSION 0 LINKER_VERSION)
-  message(STATUS "Linker: ${LINKER_VERSION}")
+  if((${CMAKE_BUILD_TYPE} STREQUAL "Debug") OR (${CMAKE_BUILD_TYPE} STREQUAL
+                                                "RelWithDebInfo"))
+    execute_process(
+      COMMAND ld.lld --version
+      OUTPUT_VARIABLE LINKER_VERSION
+      OUTPUT_STRIP_TRAILING_WHITESPACE)
+    message(STATUS "Linker: ${LINKER_VERSION}")
+
+    add_cxx_linker_flag("-fuse-ld=lld")
+  else()
+    execute_process(
+      COMMAND ld.bfd --version
+      OUTPUT_VARIABLE LINKER_VERSION
+      OUTPUT_STRIP_TRAILING_WHITESPACE)
+    string(REPLACE "\n" ";" LINKER_VERSION ${LINKER_VERSION})
+    list(GET LINKER_VERSION 0 LINKER_VERSION)
+    message(STATUS "Linker: ${LINKER_VERSION}")
+
+    add_cxx_linker_flag("-fuse-ld=bfd")
+  endif()
 endif()
 
 # ---------------------------------------------------------------------------------------

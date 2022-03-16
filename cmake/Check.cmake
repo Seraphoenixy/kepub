@@ -46,7 +46,7 @@ if(${CMAKE_GENERATOR} STREQUAL "Ninja")
 
   message(STATUS "CMake Generator: Ninja ${GENERATOR_VERSION}")
 else()
-  message(WARNING "The generator recommends using Ninja: ${CMAKE_GENERATOR}")
+  message(FATAL_ERROR "The generator should use Ninja: ${CMAKE_GENERATOR}")
 endif()
 
 # ---------------------------------------------------------------------------------------
@@ -62,10 +62,10 @@ if(CMAKE_COMPILER_IS_GNUCXX)
   message(
     STATUS "Compiler: ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
 elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
-  if(${CMAKE_CXX_COMPILER_VERSION} VERSION_LESS 13.0.0)
+  if(${CMAKE_CXX_COMPILER_VERSION} VERSION_LESS 14.0.0)
     message(
       FATAL_ERROR
-        "Clang version must be at least 13.0.0, the current version is: ${CMAKE_CXX_COMPILER_VERSION}"
+        "Clang version must be at least 14.0.0, the current version is: ${CMAKE_CXX_COMPILER_VERSION}"
     )
   endif()
   message(
