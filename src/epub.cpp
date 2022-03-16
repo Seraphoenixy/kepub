@@ -47,7 +47,7 @@ std::string get_datetime() {
                      fmt::localtime(std::time(nullptr)));
 }
 
-// https://www.w3.org/publishing/epub3/epub-spec.html#sec-cmt-supported
+// https://www.w3.org/publishing/epub32/epub-spec.html#sec-cmt-supported
 std::string media_type(const std::string &file_name) {
   std::string result;
 
@@ -58,6 +58,7 @@ std::string media_type(const std::string &file_name) {
   } else if (file_name.ends_with(".png")) {
     result = "image/png";
   } else if (file_name.ends_with(".webp")) {
+    // https://www.w3.org/TR/epub-33/#sec-core-media-types
     result = "image/webp";
   } else if (file_name.ends_with(".css")) {
     result = "text/css";
@@ -196,6 +197,10 @@ std::int32_t last_num(const pugi::xml_node &node, const std::string &prefix,
 }
 
 void compress_image(const std::string &path) {
+  if (path.ends_with(".webp")) {
+    return;
+  }
+
   auto image_file = klib::read_file(path, true);
   remove_file_or_dir(path);
 

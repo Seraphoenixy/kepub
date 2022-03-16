@@ -68,9 +68,12 @@ int main(int argc, const char *argv[]) try {
   } else if (std::filesystem::exists("cover.webp")) {
     novel.book_info_.cover_path_ = "cover.webp";
   }
+
   for (std::int32_t i = 1;; ++i) {
-    auto jpg_name = kepub::num_to_str(i) + ".jpg";
-    auto webp_name = kepub::num_to_str(i) + ".webp";
+    auto num_str = kepub::num_to_str(i);
+    auto jpg_name = num_str + ".jpg";
+    auto webp_name = num_str + ".webp";
+
     if (std::filesystem::exists(jpg_name)) {
       novel.image_paths_.push_back(jpg_name);
     } else if (std::filesystem::exists(webp_name)) {
