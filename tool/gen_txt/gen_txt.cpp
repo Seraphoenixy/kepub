@@ -67,8 +67,10 @@ std::vector<std::string> get_image_paths(const std::string &root_file_path) {
 
   std::vector<std::string> result;
   const std::string jpeg_media_type = "image/jpeg";
+  const std::string webp_media_type = "image/webp";
   for (const auto &item : node.children("item")) {
-    if (item.attribute("media-type").as_string() == jpeg_media_type) {
+    if (item.attribute("media-type").as_string() == jpeg_media_type ||
+        item.attribute("media-type").as_string() == webp_media_type) {
       result.emplace_back(item.attribute("href").as_string());
     }
   }

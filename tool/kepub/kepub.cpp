@@ -65,11 +65,16 @@ int main(int argc, const char *argv[]) try {
   novel.illustration_num_ = illustration_num;
   if (std::filesystem::exists("cover.jpg")) {
     novel.book_info_.cover_path_ = "cover.jpg";
+  } else if (std::filesystem::exists("cover.webp")) {
+    novel.book_info_.cover_path_ = "cover.webp";
   }
   for (std::int32_t i = 1;; ++i) {
-    auto name = kepub::num_to_str(i) + ".jpg";
-    if (std::filesystem::exists(name)) {
-      novel.image_paths_.push_back(name);
+    auto jpg_name = kepub::num_to_str(i) + ".jpg";
+    auto webp_name = kepub::num_to_str(i) + ".webp";
+    if (std::filesystem::exists(jpg_name)) {
+      novel.image_paths_.push_back(jpg_name);
+    } else if (std::filesystem::exists(webp_name)) {
+      novel.image_paths_.push_back(webp_name);
     } else {
       break;
     }
