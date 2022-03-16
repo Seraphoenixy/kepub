@@ -37,10 +37,6 @@ int main(int argc, const char *argv[]) try {
   bool connect = false;
   app.add_flag("-c,--connect", connect, "Remove extra line breaks");
 
-  bool no_compress_images = false;
-  app.add_flag("--no-compress-images", no_compress_images,
-               "Do not compress images");
-
   std::int32_t illustration_num = 0;
   app.add_option("-i,--illustration", illustration_num,
                  "Generate illustration");
@@ -81,7 +77,6 @@ int main(int argc, const char *argv[]) try {
 
   kepub::Epub epub;
   epub.set_rights("Kaiser");
-  epub.set_compress_images(!no_compress_images);
   // For testing
   if (!std::empty(uuid)) {
     epub.set_uuid(uuid);

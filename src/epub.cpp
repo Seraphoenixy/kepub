@@ -1,7 +1,6 @@
 #include "epub.h"
 
 #include <ctime>
-#include <filesystem>
 #include <memory>
 
 #include <dbg.h>
@@ -58,6 +57,8 @@ std::string media_type(const std::string &file_name) {
     result = "image/jpeg";
   } else if (file_name.ends_with(".png")) {
     result = "image/png";
+  } else if (file_name.ends_with(".webp")) {
+    result = "image/webp";
   } else if (file_name.ends_with(".css")) {
     result = "text/css";
   } else if (file_name.ends_with(".woff2")) {
@@ -133,9 +134,10 @@ void append_texts(pugi::xml_document &doc,
       auto d = div.append_child("div");
       d.append_attribute("class") = "center";
       auto img = d.append_child("img");
-      img.append_attribute("alt") =
-          std::filesystem::path(image_name).stem().c_str();
-      img.append_attribute("src") = ("../image/" + image_name).c_str();
+
+      auto stem = std::filesystem::path(image_name).stem().string();
+      img.append_attribute("alt") = stem.c_str();
+      img.append_attribute("src") = ("../image/" + stem + ".webp").c_str();
     } else {
       auto p = div.append_child("p");
       p.text() = text.c_str();
@@ -195,7 +197,13 @@ std::int32_t last_num(const pugi::xml_node &node, const std::string &prefix,
 
 void compress_image(const std::string &path) {
   auto image_file = klib::read_file(path, true);
-  klib::write_file(path, true, klib::image_to_jpeg(image_file));
+  remove_file_or_dir(path);
+
+  auto image_dir = std::filesystem::path(path).parent_path();
+  auto new_file_name = std::filesystem::path(path).stem().string() + ".webp";
+
+  klib::write_file(image_dir / new_file_name, true,
+                   klib::image_to_webp(image_file));
 }
 
 }  // namespace
@@ -215,6 +223,10 @@ void Epub::set_novel(const Novel &novel) {
     novel_.book_info_.cover_path_ =
         std::filesystem::current_path() / novel_.book_info_.cover_path_;
   }
+  novel_.book_info_.cover_file_name_ =
+      std::filesystem::path(novel_.book_info_.cover_path_).stem().string() +
+      ".webp";
+
   for (auto &path : novel_.image_paths_) {
     path = std::filesystem::current_path() / path;
   }
@@ -351,31 +363,12 @@ void Epub::generate_style() const {
 }
 
 void Epub::generate_image() const {
-  const static std::filesystem::path image_dir(Epub::image_dir);
-
   for (const auto &item : novel_.image_paths_) {
-    const std::filesystem::path path(item);
-    Expects(std::filesystem::exists(path));
-
-    auto file_name = path.filename();
-    auto image_path = image_dir / file_name;
-    std::filesystem::copy(path, image_path);
-
-    if (compress_image_) {
-      compress_image(image_path);
-    }
+    do_generate_image(item);
   }
 
   if (!std::empty(novel_.book_info_.cover_path_)) {
-    const std::filesystem::path path(novel_.book_info_.cover_path_);
-    Expects(std::filesystem::exists(path));
-
-    auto image_path = image_dir / "cover.jpg";
-    std::filesystem::copy(path, image_path);
-
-    if (compress_image_) {
-      compress_image(image_path);
-    }
+    do_generate_image(novel_.book_info_.cover_path_);
   }
 }
 
@@ -398,7 +391,8 @@ void Epub::generate_cover() const {
 
     auto img = div.append_child("img");
     img.append_attribute("alt") = "";
-    img.append_attribute("src") = "../image/cover.jpg";
+    img.append_attribute("src") =
+        ("../image/" + novel_.book_info_.cover_file_name_).c_str();
 
     save_file(doc, Epub::cover_xhtml_path);
   }
@@ -418,7 +412,7 @@ void Epub::generate_illustration() const {
     auto img = div.append_child("img");
     auto num_str = num_to_str(i);
     img.append_attribute("alt") = num_str.c_str();
-    img.append_attribute("src") = ("../image/" + num_str + ".jpg").c_str();
+    img.append_attribute("src") = ("../image/" + num_str + ".webp").c_str();
 
     auto path = std::filesystem::path(Epub::text_dir) / file_name;
     save_file(doc, path.c_str());
@@ -581,7 +575,8 @@ void Epub::generate_package() const {
   if (!std::empty(novel_.book_info_.cover_path_)) {
     meta = metadata.append_child("meta");
     meta.append_attribute("name") = "cover";
-    meta.append_attribute("content") = "cover.jpg";
+    meta.append_attribute("content") =
+        novel_.book_info_.cover_file_name_.c_str();
   }
 
   auto manifest = package.append_child("manifest");
@@ -591,12 +586,13 @@ void Epub::generate_package() const {
 
   auto image_size = std::size(novel_.image_paths_);
   for (std::size_t i = 1; i <= image_size; ++i) {
-    append_manifest_and_spine(manifest, "x" + num_to_str(i) + ".jpg",
-                              "image/" + num_to_str(i) + ".jpg");
+    append_manifest_and_spine(manifest, "x" + num_to_str(i) + ".webp",
+                              "image/" + num_to_str(i) + ".webp");
   }
 
   if (!std::empty(novel_.book_info_.cover_path_)) {
-    append_manifest_and_spine(manifest, "cover.jpg", "image/cover.jpg",
+    append_manifest_and_spine(manifest, novel_.book_info_.cover_file_name_,
+                              "image/" + novel_.book_info_.cover_file_name_,
                               "cover-image");
     append_manifest_and_spine(manifest, "cover.xhtml", "text/cover.xhtml");
   }
@@ -640,6 +636,18 @@ void Epub::generate_font() {
   auto ttf_font = klib::ttf_subset(font_, klib::utf8_to_utf32(font_words_));
   auto woff2_font = klib::ttf_to_woff2(ttf_font);
   klib::write_file(Epub::font_woff2_path, true, woff2_font);
+}
+
+void Epub::do_generate_image(const std::filesystem::path &path) const {
+  const static std::filesystem::path image_dir(Epub::image_dir);
+
+  Expects(std::filesystem::exists(path));
+
+  auto file_name = path.filename();
+  auto image_path = image_dir / file_name;
+  std::filesystem::copy(path, image_path);
+
+  compress_image(image_path);
 }
 
 void Epub::do_deal_with_nav(pugi::xml_node &ol, std::int32_t first_volume_id,

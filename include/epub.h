@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <filesystem>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -17,8 +18,6 @@ class KEPUB_PUBLIC Epub {
   Epub();
 
   void set_rights(const std::string &rights) { rights_ = rights; }
-
-  void set_compress_images(bool flag) { compress_image_ = flag; }
 
   void set_uuid(const std::string &uuid) {
     uuid_ = uuid;
@@ -72,6 +71,7 @@ class KEPUB_PUBLIC Epub {
   static void generate_mimetype();
   void generate_font();
 
+  void do_generate_image(const std::filesystem::path &path) const;
   void do_deal_with_nav(pugi::xml_node &ol, std::int32_t first_volume_id,
                         std::int32_t first_chapter_id) const;
   void deal_with_nav(std::int32_t first_volume_id,
@@ -94,8 +94,6 @@ class KEPUB_PUBLIC Epub {
 
   std::string_view style_;
   std::string_view font_;
-
-  bool compress_image_ = true;
 
   mutable std::string font_words_;
   bool debug_ = false;

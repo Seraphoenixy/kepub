@@ -249,7 +249,7 @@ TEST_CASE("generate postscript and cover", "[epub]") {
   </head>
   <body epub:type="coverpage">
     <div class="cover">
-      <img alt="" src="../image/cover.jpg" />
+      <img alt="" src="../image/cover.webp" />
     </div>
   </body>
 </html>
@@ -273,12 +273,12 @@ TEST_CASE("generate postscript and cover", "[epub]") {
     <dc:description>test
 introduction</dc:description>
     <meta property="dcterms:modified">2021-08-01</meta>
-    <meta name="cover" content="cover.jpg" />
+    <meta name="cover" content="cover.webp" />
   </metadata>
   <manifest>
     <item id="style.css" href="css/style.css" media-type="text/css" />
     <item id="SourceHanSansSC-Bold.woff2" href="font/SourceHanSansSC-Bold.woff2" media-type="font/woff2" />
-    <item id="cover.jpg" href="image/cover.jpg" media-type="image/jpeg" properties="cover-image" />
+    <item id="cover.webp" href="image/cover.webp" media-type="image/webp" properties="cover-image" />
     <item id="cover.xhtml" href="text/cover.xhtml" media-type="application/xhtml+xml" />
     <item id="nav.xhtml" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav" />
     <item id="introduction.xhtml" href="text/introduction.xhtml" media-type="application/xhtml+xml" />
@@ -363,7 +363,7 @@ TEST_CASE("generate postscript, cover, illustration and image", "[epub]") {
   </head>
   <body>
     <div class="center">
-      <img alt="00{}" src="../image/00{}.jpg" />
+      <img alt="00{}" src="../image/00{}.webp" />
     </div>
   </body>
 </html>
@@ -389,17 +389,17 @@ TEST_CASE("generate postscript, cover, illustration and image", "[epub]") {
     <dc:description>test
 introduction</dc:description>
     <meta property="dcterms:modified">2021-08-01</meta>
-    <meta name="cover" content="cover.jpg" />
+    <meta name="cover" content="cover.webp" />
   </metadata>
   <manifest>
     <item id="style.css" href="css/style.css" media-type="text/css" />
     <item id="SourceHanSansSC-Bold.woff2" href="font/SourceHanSansSC-Bold.woff2" media-type="font/woff2" />
-    <item id="x001.jpg" href="image/001.jpg" media-type="image/jpeg" />
-    <item id="x002.jpg" href="image/002.jpg" media-type="image/jpeg" />
-    <item id="x003.jpg" href="image/003.jpg" media-type="image/jpeg" />
-    <item id="x004.jpg" href="image/004.jpg" media-type="image/jpeg" />
-    <item id="x005.jpg" href="image/005.jpg" media-type="image/jpeg" />
-    <item id="cover.jpg" href="image/cover.jpg" media-type="image/jpeg" properties="cover-image" />
+    <item id="x001.webp" href="image/001.webp" media-type="image/webp" />
+    <item id="x002.webp" href="image/002.webp" media-type="image/webp" />
+    <item id="x003.webp" href="image/003.webp" media-type="image/webp" />
+    <item id="x004.webp" href="image/004.webp" media-type="image/webp" />
+    <item id="x005.webp" href="image/005.webp" media-type="image/webp" />
+    <item id="cover.webp" href="image/cover.webp" media-type="image/webp" properties="cover-image" />
     <item id="cover.xhtml" href="text/cover.xhtml" media-type="application/xhtml+xml" />
     <item id="nav.xhtml" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav" />
     <item id="introduction.xhtml" href="text/introduction.xhtml" media-type="application/xhtml+xml" />
@@ -531,17 +531,17 @@ TEST_CASE("full generate", "[epub]") {
     <dc:description>test
 introduction</dc:description>
     <meta property="dcterms:modified">2021-08-01</meta>
-    <meta name="cover" content="cover.jpg" />
+    <meta name="cover" content="cover.webp" />
   </metadata>
   <manifest>
     <item id="style.css" href="css/style.css" media-type="text/css" />
     <item id="SourceHanSansSC-Bold.woff2" href="font/SourceHanSansSC-Bold.woff2" media-type="font/woff2" />
-    <item id="x001.jpg" href="image/001.jpg" media-type="image/jpeg" />
-    <item id="x002.jpg" href="image/002.jpg" media-type="image/jpeg" />
-    <item id="x003.jpg" href="image/003.jpg" media-type="image/jpeg" />
-    <item id="x004.jpg" href="image/004.jpg" media-type="image/jpeg" />
-    <item id="x005.jpg" href="image/005.jpg" media-type="image/jpeg" />
-    <item id="cover.jpg" href="image/cover.jpg" media-type="image/jpeg" properties="cover-image" />
+    <item id="x001.webp" href="image/001.webp" media-type="image/webp" />
+    <item id="x002.webp" href="image/002.webp" media-type="image/webp" />
+    <item id="x003.webp" href="image/003.webp" media-type="image/webp" />
+    <item id="x004.webp" href="image/004.webp" media-type="image/webp" />
+    <item id="x005.webp" href="image/005.webp" media-type="image/webp" />
+    <item id="cover.webp" href="image/cover.webp" media-type="image/webp" properties="cover-image" />
     <item id="cover.xhtml" href="text/cover.xhtml" media-type="application/xhtml+xml" />
     <item id="nav.xhtml" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav" />
     <item id="introduction.xhtml" href="text/introduction.xhtml" media-type="application/xhtml+xml" />
@@ -686,17 +686,17 @@ TEST_CASE("sub-volume", "[epub]") {
     <dc:description>test
 introduction</dc:description>
     <meta property="dcterms:modified">2021-08-01</meta>
-    <meta name="cover" content="cover.jpg" />
+    <meta name="cover" content="cover.webp" />
   </metadata>
   <manifest>
     <item id="style.css" href="css/style.css" media-type="text/css" />
     <item id="SourceHanSansSC-Bold.woff2" href="font/SourceHanSansSC-Bold.woff2" media-type="font/woff2" />
-    <item id="x001.jpg" href="image/001.jpg" media-type="image/jpeg" />
-    <item id="x002.jpg" href="image/002.jpg" media-type="image/jpeg" />
-    <item id="x003.jpg" href="image/003.jpg" media-type="image/jpeg" />
-    <item id="x004.jpg" href="image/004.jpg" media-type="image/jpeg" />
-    <item id="x005.jpg" href="image/005.jpg" media-type="image/jpeg" />
-    <item id="cover.jpg" href="image/cover.jpg" media-type="image/jpeg" properties="cover-image" />
+    <item id="x001.webp" href="image/001.webp" media-type="image/webp" />
+    <item id="x002.webp" href="image/002.webp" media-type="image/webp" />
+    <item id="x003.webp" href="image/003.webp" media-type="image/webp" />
+    <item id="x004.webp" href="image/004.webp" media-type="image/webp" />
+    <item id="x005.webp" href="image/005.webp" media-type="image/webp" />
+    <item id="cover.webp" href="image/cover.webp" media-type="image/webp" properties="cover-image" />
     <item id="cover.xhtml" href="text/cover.xhtml" media-type="application/xhtml+xml" />
     <item id="nav.xhtml" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav" />
     <item id="introduction.xhtml" href="text/introduction.xhtml" media-type="application/xhtml+xml" />
@@ -868,17 +868,17 @@ TEST_CASE("append", "[epub]") {
     <dc:description>test
 introduction</dc:description>
     <meta property="dcterms:modified">2021-08-01</meta>
-    <meta name="cover" content="cover.jpg" />
+    <meta name="cover" content="cover.webp" />
   </metadata>
   <manifest>
     <item id="style.css" href="css/style.css" media-type="text/css" />
     <item id="SourceHanSansSC-Bold.woff2" href="font/SourceHanSansSC-Bold.woff2" media-type="font/woff2" />
-    <item id="x001.jpg" href="image/001.jpg" media-type="image/jpeg" />
-    <item id="x002.jpg" href="image/002.jpg" media-type="image/jpeg" />
-    <item id="x003.jpg" href="image/003.jpg" media-type="image/jpeg" />
-    <item id="x004.jpg" href="image/004.jpg" media-type="image/jpeg" />
-    <item id="x005.jpg" href="image/005.jpg" media-type="image/jpeg" />
-    <item id="cover.jpg" href="image/cover.jpg" media-type="image/jpeg" properties="cover-image" />
+    <item id="x001.webp" href="image/001.webp" media-type="image/webp" />
+    <item id="x002.webp" href="image/002.webp" media-type="image/webp" />
+    <item id="x003.webp" href="image/003.webp" media-type="image/webp" />
+    <item id="x004.webp" href="image/004.webp" media-type="image/webp" />
+    <item id="x005.webp" href="image/005.webp" media-type="image/webp" />
+    <item id="cover.webp" href="image/cover.webp" media-type="image/webp" properties="cover-image" />
     <item id="cover.xhtml" href="text/cover.xhtml" media-type="application/xhtml+xml" />
     <item id="nav.xhtml" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav" />
     <item id="introduction.xhtml" href="text/introduction.xhtml" media-type="application/xhtml+xml" />
@@ -1083,17 +1083,17 @@ TEST_CASE("append sub-volume", "[epub]") {
     <dc:description>test
 introduction</dc:description>
     <meta property="dcterms:modified">2021-08-01</meta>
-    <meta name="cover" content="cover.jpg" />
+    <meta name="cover" content="cover.webp" />
   </metadata>
   <manifest>
     <item id="style.css" href="css/style.css" media-type="text/css" />
     <item id="SourceHanSansSC-Bold.woff2" href="font/SourceHanSansSC-Bold.woff2" media-type="font/woff2" />
-    <item id="x001.jpg" href="image/001.jpg" media-type="image/jpeg" />
-    <item id="x002.jpg" href="image/002.jpg" media-type="image/jpeg" />
-    <item id="x003.jpg" href="image/003.jpg" media-type="image/jpeg" />
-    <item id="x004.jpg" href="image/004.jpg" media-type="image/jpeg" />
-    <item id="x005.jpg" href="image/005.jpg" media-type="image/jpeg" />
-    <item id="cover.jpg" href="image/cover.jpg" media-type="image/jpeg" properties="cover-image" />
+    <item id="x001.webp" href="image/001.webp" media-type="image/webp" />
+    <item id="x002.webp" href="image/002.webp" media-type="image/webp" />
+    <item id="x003.webp" href="image/003.webp" media-type="image/webp" />
+    <item id="x004.webp" href="image/004.webp" media-type="image/webp" />
+    <item id="x005.webp" href="image/005.webp" media-type="image/webp" />
+    <item id="cover.webp" href="image/cover.webp" media-type="image/webp" properties="cover-image" />
     <item id="cover.xhtml" href="text/cover.xhtml" media-type="application/xhtml+xml" />
     <item id="nav.xhtml" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav" />
     <item id="introduction.xhtml" href="text/introduction.xhtml" media-type="application/xhtml+xml" />

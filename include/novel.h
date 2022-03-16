@@ -25,6 +25,7 @@ struct KEPUB_PUBLIC BookInfo {
   std::string author_;
   std::vector<std::string> introduction_;
   std::string cover_path_;
+  std::string cover_file_name_;
 
   double point_;
 };

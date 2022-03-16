@@ -18,17 +18,17 @@
 啊嘞，但是，这个，不是以中二病为原动力创作的梗角色吗！
 这是在异世界转生的彻作为娜哈特经历新生的物语。</dc:description>
     <meta property="dcterms:modified">2021-05-29</meta>
-    <meta name="cover" content="cover.jpg" />
+    <meta name="cover" content="cover.webp" />
   </metadata>
   <manifest>
     <item id="style.css" href="css/style.css" media-type="text/css" />
     <item id="SourceHanSansSC-Bold.woff2" href="font/SourceHanSansSC-Bold.woff2" media-type="font/woff2" />
-    <item id="x001.jpg" href="image/001.jpg" media-type="image/jpeg" />
-    <item id="x002.jpg" href="image/002.jpg" media-type="image/jpeg" />
-    <item id="x003.jpg" href="image/003.jpg" media-type="image/jpeg" />
-    <item id="x004.jpg" href="image/004.jpg" media-type="image/jpeg" />
-    <item id="x005.jpg" href="image/005.jpg" media-type="image/jpeg" />
-    <item id="cover.jpg" href="image/cover.jpg" media-type="image/jpeg" properties="cover-image" />
+    <item id="x001.webp" href="image/001.webp" media-type="image/webp" />
+    <item id="x002.webp" href="image/002.webp" media-type="image/webp" />
+    <item id="x003.webp" href="image/003.webp" media-type="image/webp" />
+    <item id="x004.webp" href="image/004.webp" media-type="image/webp" />
+    <item id="x005.webp" href="image/005.webp" media-type="image/webp" />
+    <item id="cover.webp" href="image/cover.webp" media-type="image/webp" properties="cover-image" />
     <item id="cover.xhtml" href="text/cover.xhtml" media-type="application/xhtml+xml" />
     <item id="nav.xhtml" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav" />
     <item id="introduction.xhtml" href="text/introduction.xhtml" media-type="application/xhtml+xml" />
