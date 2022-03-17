@@ -22,13 +22,13 @@ std::string decrypt(const std::string &str) {
 }
 
 std::string decrypt_no_iv(const std::string &str) {
-  return klib::aes_256_decrypt_no_iv(klib::fast_base64_decode(str),
-                                     default_key);
+  return klib::aes_256_cbc_decrypt_no_iv(klib::fast_base64_decode(str),
+                                         default_key);
 }
 
 std::string decrypt_no_iv(const std::string &str, const std::string &key) {
-  return klib::aes_256_decrypt_no_iv(klib::fast_base64_decode(str),
-                                     klib::sha256(key));
+  return klib::aes_256_cbc_decrypt_no_iv(klib::fast_base64_decode(str),
+                                         klib::sha256(key));
 }
 
 }  // namespace kepub::ciweimao

@@ -8,7 +8,7 @@
 
 #define KEPUB_VER_MINOR 3
 
-#define KEPUB_VER_PATCH 0
+#define KEPUB_VER_PATCH 1
 
 #define KEPUB_STRINGIZE2(s) #s
 #define KEPUB_STRINGIZE(s) KEPUB_STRINGIZE2(s)
@@ -19,6 +19,6 @@
 
 namespace kepub {
 
-std::string KEPUB_PUBLIC version_str();
+std::string KEPUB_EXPORT version_str();
 
 }  // namespace kepub

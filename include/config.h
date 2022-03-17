@@ -1,3 +1,3 @@
 #pragma once
 
-#define KEPUB_PUBLIC __attribute__((visibility("default")))
+#define KEPUB_EXPORT __attribute__((visibility("default")))

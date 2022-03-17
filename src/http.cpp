@@ -82,7 +82,7 @@ klib::Response http_get_rss(const std::string &url) {
 }
 
 klib::Response http_post(const std::string &url,
-                         std::unordered_map<std::string, std::string> data) {
+                         phmap::flat_hash_map<std::string, std::string> data) {
   request.set_no_proxy();
   request.set_user_agent(user_agent);
   request.set_accept_encoding("gzip, deflate, br");
@@ -133,7 +133,7 @@ std::string sf_security() {
 
 klib::Response http_get(
     const std::string &url,
-    const std::unordered_map<std::string, std::string> &params) {
+    const phmap::flat_hash_map<std::string, std::string> &params) {
   request.set_no_proxy();
   request.set_user_agent(user_agent);
   request.set_accept_encoding("gzip, deflate, br");

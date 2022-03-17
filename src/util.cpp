@@ -9,11 +9,11 @@
 #include <iostream>
 #include <regex>
 #include <sstream>
-#include <unordered_set>
 
 #include <klib/log.h>
 #include <klib/unicode.h>
 #include <klib/util.h>
+#include <parallel_hashmap/phmap.h>
 #include <boost/algorithm/string.hpp>
 #include <gsl/assert>
 
@@ -115,7 +115,7 @@ std::vector<std::string> read_file_to_vec(const std::string &file_name,
 }
 
 void str_check(const std::string &str) {
-  static std::unordered_set<char32_t> set;
+  static phmap::flat_hash_set<char32_t> set;
 
   auto copy = str;
   std::erase_if(copy, [](char c) { return std::isalnum(c) || c == ' '; });

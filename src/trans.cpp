@@ -1,10 +1,9 @@
 #include "trans.h"
 
-#include <unordered_map>
-
 #include <klib/unicode.h>
 #include <klib/util.h>
 #include <opencc.h>
+#include <parallel_hashmap/phmap.h>
 #include <boost/algorithm/string.hpp>
 
 extern char tw2s[];
@@ -123,7 +122,7 @@ std::u32string custom_trans(const std::u32string &str, bool translation) {
     } else if (code_point == U'~') {
       result.push_back(U'～');
     } else if (translation) {
-      static const std::unordered_map<char32_t, char32_t> map{
+      static const phmap::flat_hash_map<char32_t, char32_t> map{
           {U'妳', U'你'}, {U'壊', U'坏'}, {U'拚', U'拼'}, {U'噁', U'恶'},
           {U'歳', U'岁'}, {U'経', U'经'}, {U'験', U'验'}, {U'険', U'险'},
           {U'撃', U'击'}, {U'錬', U'炼'}, {U'隷', U'隶'}, {U'毎', U'每'},

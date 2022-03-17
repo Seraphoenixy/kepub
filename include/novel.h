@@ -8,19 +8,19 @@
 
 namespace kepub {
 
-struct KEPUB_PUBLIC Chapter {
+struct KEPUB_EXPORT Chapter {
   std::string id_;
   std::string title_;
   std::vector<std::string> texts_;
 };
 
-struct KEPUB_PUBLIC Volume {
+struct KEPUB_EXPORT Volume {
   std::string id_;
   std::string title_;
   std::vector<Chapter> chapters_;
 };
 
-struct KEPUB_PUBLIC BookInfo {
+struct KEPUB_EXPORT BookInfo {
   std::string name_;
   std::string author_;
   std::vector<std::string> introduction_;
@@ -30,7 +30,7 @@ struct KEPUB_PUBLIC BookInfo {
   double point_;
 };
 
-struct KEPUB_PUBLIC Novel {
+struct KEPUB_EXPORT Novel {
   BookInfo book_info_;
 
   std::int32_t illustration_num_ = 0;

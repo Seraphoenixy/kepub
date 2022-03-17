@@ -13,7 +13,7 @@
 
 namespace kepub {
 
-class KEPUB_PUBLIC Epub {
+class KEPUB_EXPORT Epub {
  public:
   Epub();
 

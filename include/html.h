@@ -9,9 +9,9 @@
 
 namespace kepub::esjzone {
 
-std::vector<std::string> KEPUB_PUBLIC
+std::vector<std::string> KEPUB_EXPORT
 get_node_texts(const pugi::xml_node &node);
 
-pugi::xml_document KEPUB_PUBLIC html_to_xml(const std::string &html);
+pugi::xml_document KEPUB_EXPORT html_to_xml(const std::string &html);
 
 }  // namespace kepub::esjzone

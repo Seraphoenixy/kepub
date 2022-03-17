@@ -9,7 +9,7 @@
 
 namespace kepub {
 
-class KEPUB_PUBLIC ProgressBar {
+class KEPUB_EXPORT ProgressBar {
  public:
   explicit ProgressBar(const std::string &postfix_text,
                        std::int32_t max_progress);
