@@ -13,6 +13,7 @@
 #include <klib/log.h>
 #include <klib/unicode.h>
 #include <klib/util.h>
+#include <oneapi/tbb.h>
 #include <boost/algorithm/string.hpp>
 #include <boost/sort/pdqsort/pdqsort.hpp>
 #include <gsl/assert>
@@ -368,13 +369,15 @@ void Epub::generate_style() const {
 }
 
 void Epub::generate_image() const {
-  for (const auto &item : novel_.image_paths_) {
-    do_generate_image(item);
-  }
+  klib::info("Start generating WebP images");
 
   if (!std::empty(novel_.book_info_.cover_path_)) {
     do_generate_image(novel_.book_info_.cover_path_);
   }
+
+  tbb::parallel_for_each(novel_.image_paths_, [&](const std::string &path) {
+    do_generate_image(path);
+  });
 }
 
 void Epub::generate_volume() const { deal_with_volume(1); }
@@ -636,6 +639,8 @@ void Epub::generate_mimetype() {
 
 void Epub::generate_font() {
   Expects(!std::empty(font_));
+
+  klib::info("Start generating WOFF2 font");
 
   dbg(font_words_);
   auto ttf_font = klib::ttf_subset(font_, klib::utf8_to_utf32(font_words_));

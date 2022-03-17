@@ -72,6 +72,8 @@ find_package(Boost CONFIG REQUIRED COMPONENTS json)
 find_package(klib REQUIRED)
 find_package(simdjson REQUIRED)
 find_package(Microsoft.GSL REQUIRED)
+find_package(Threads REQUIRED)
+find_package(TBB REQUIRED)
 
 add_definitions(-DDBG_MACRO_NO_WARNING)
 if(NOT (${CMAKE_BUILD_TYPE} STREQUAL "Debug"))
@@ -115,7 +117,8 @@ target_link_libraries(
           ${Boost_LIBRARIES}
           simdjson::simdjson
           PkgConfig::opencc
-          PkgConfig::marisa)
+          PkgConfig::marisa
+          TBB::tbb)
 set_target_properties(${KEPUB_LIBRARY} PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
 
 # ---------------------------------------------------------------------------------------
@@ -137,7 +140,8 @@ target_link_libraries(
           ${Boost_LIBRARIES}
           simdjson::simdjson
           PkgConfig::opencc
-          PkgConfig::marisa)
+          PkgConfig::marisa
+          TBB::tbb)
 set_target_properties(
   ${KEPUB_LIBRARY}-shared
   PROPERTIES OUTPUT_NAME ${PROJECT_NAME}

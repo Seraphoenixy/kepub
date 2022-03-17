@@ -13,6 +13,7 @@
 #include <klib/log.h>
 #include <klib/unicode.h>
 #include <klib/util.h>
+#include <oneapi/tbb.h>
 #include <parallel_hashmap/phmap.h>
 #include <boost/algorithm/string.hpp>
 #include <gsl/assert>
@@ -101,12 +102,12 @@ std::vector<std::string> read_file_to_vec(const std::string &file_name,
   std::vector<std::string> result;
   boost::split(result, str, boost::is_any_of("\n"), boost::token_compress_on);
 
-  for (auto &item : result) {
+  tbb::parallel_for_each(result, [&](std::string &item) {
     item = trans_str(item, translation);
     if (!klib::validate_utf8(item)) {
       klib::error("Invalid UTF-8: {}", item);
     }
-  }
+  });
 
   std::erase_if(result,
                 [](const std::string &line) { return std::empty(line); });
