@@ -303,7 +303,7 @@ void Epub::generate() {
   }
 
   if (std::empty(uuid_)) {
-    uuid_ = boost::to_upper_copy(klib::uuid());
+    uuid_ = klib::uuid();
   }
   if (std::empty(datetime_)) {
     datetime_ = get_datetime();
