@@ -4,6 +4,7 @@
 #include <fmt/format.h>
 #include <klib/version.h>
 #include <mimalloc.h>
+#include <oneapi/tbb/version.h>
 #include <parallel_hashmap/phmap_config.h>
 #include <simdjson.h>
 #include <CLI/Version.hpp>
@@ -26,6 +27,8 @@ std::string version_str() {
   result += fmt::format(FMT_COMPILE("parallel-hashmap/{}.{}.{} "),
                         PHMAP_VERSION_MAJOR, PHMAP_VERSION_MINOR,
                         PHMAP_VERSION_PATCH);
+  result += fmt::format(FMT_COMPILE("oneTBB/{}.{}.{} "), TBB_VERSION_MAJOR,
+                        TBB_VERSION_MINOR, TBB_VERSION_PATCH);
   result += fmt::format(FMT_COMPILE("Boost/{}.{}.{} "), BOOST_VERSION / 100000,
                         BOOST_VERSION / 100 % 1000, BOOST_VERSION % 100);
   // NOTE

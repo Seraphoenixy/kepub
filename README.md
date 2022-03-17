@@ -17,6 +17,7 @@ Crawl novels from esjzone, ciweimao and sfacg. Generate epub from txt file
 - klib ([MIT License](https://github.com/KaiserLancelot/klib/blob/main/LICENSE))
 - mimalloc ([MIT License](https://github.com/microsoft/mimalloc/blob/master/LICENSE))
 - parallel-hashmap ([Apache License 2.0](https://github.com/greg7mdp/parallel-hashmap/blob/master/LICENSE))
+- oneTBB ([Apache License 2.0](https://github.com/oneapi-src/oneTBB/blob/master/LICENSE.txt))
 - Boost ([Boost License](https://www.boost.org/users/license.html))
 - GSL ([MIT License](https://github.com/Microsoft/GSL/blob/master/LICENSE))
 - CLI11 ([License](https://github.com/CLIUtils/CLI11/blob/main/LICENSE))
