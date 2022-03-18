@@ -42,6 +42,8 @@ std::string KEPUB_EXPORT get_password();
 
 std::string KEPUB_EXPORT num_to_str(std::int32_t i);
 
+std::string KEPUB_EXPORT url_to_file_name(const std::string &str);
+
 std::string KEPUB_EXPORT make_book_name_legal(const std::string &file_name);
 
 void KEPUB_EXPORT generate_txt(const BookInfo &book_info,

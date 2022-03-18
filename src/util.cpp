@@ -12,6 +12,7 @@
 
 #include <klib/log.h>
 #include <klib/unicode.h>
+#include <klib/url_parse.h>
 #include <klib/util.h>
 #include <oneapi/tbb.h>
 #include <parallel_hashmap/phmap.h>
@@ -261,6 +262,11 @@ std::string num_to_str(std::int32_t i) {
   } else {
     return str;
   }
+}
+
+std::string url_to_file_name(const std::string &str) {
+  klib::URL url(str);
+  return std::filesystem::path(url.path()).filename().string();
 }
 
 std::string make_book_name_legal(const std::string &file_name) {

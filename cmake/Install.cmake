@@ -57,7 +57,7 @@ set(CPACK_INSTALL_CMAKE_PROJECTS ${KEPUB_BINARY_DIR} ${PROJECT_NAME} ALL .)
 # https://cmake.org/cmake/help/latest/cpack_gen/deb.html
 set(CPACK_PACKAGE_CONTACT "Kaiser <KaiserLancelot123@gmail.com>")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY
-    "Crawl novels from sfacg, ciweimao and esjzone; Generate, append and extract epub"
+    "Crawl novels from sfacg, ciweimao and esjzone; generate, append and extract epub"
 )
 set(CPACK_PACKAGE_VERSION
     ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH})

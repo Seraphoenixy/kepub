@@ -9,7 +9,6 @@
 #include <klib/exception.h>
 #include <klib/log.h>
 #include <klib/unicode.h>
-#include <klib/url_parse.h>
 #include <klib/util.h>
 #include <oneapi/tbb.h>
 #include <CLI/CLI.hpp>
@@ -150,8 +149,7 @@ std::vector<std::string> get_content(const Token &token,
       doc.load_string(line.c_str());
       std::string image_url = doc.child("img").attribute("src").as_string();
 
-      klib::URL url(image_url);
-      auto image_name = std::filesystem::path(url.path()).filename().string();
+      auto image_name = kepub::url_to_file_name(image_url);
 
       try {
         auto image = http_get_rss(image_url);
