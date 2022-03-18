@@ -12,7 +12,6 @@
 #include <klib/util.h>
 #include <oneapi/tbb.h>
 #include <CLI/CLI.hpp>
-#include <boost/algorithm/string.hpp>
 #include <pugixml.hpp>
 
 #include "aes.h"
@@ -89,9 +88,10 @@ kepub::BookInfo get_book_info(const Token &token, const std::string &book_id) {
   klib::info("Author: {}", info.author_);
   klib::info("Cover url: {}", info.cover_path_);
 
-  kepub::check_url_is_jpeg(info.cover_path_);
+  auto ext = kepub::check_is_supported_image(
+      kepub::url_to_file_name(info.cover_path_));
 
-  std::string cover_name = "cover.jpg";
+  std::string cover_name = "cover" + ext;
   response = http_get_rss(info.cover_path_);
   klib::write_file(cover_name, true, response);
   klib::info("Cover downloaded successfully: {}", cover_name);
@@ -150,7 +150,6 @@ std::vector<std::string> get_content(const Token &token,
       pugi::xml_document doc;
       doc.load_string(line.c_str());
       std::string image_url = doc.child("img").attribute("src").as_string();
-      kepub::check_url_is_jpeg(image_url);
 
       auto image_name = kepub::url_to_file_name(image_url);
 

@@ -11,8 +11,6 @@
 #include <klib/util.h>
 #include <oneapi/tbb.h>
 #include <CLI/CLI.hpp>
-#include <boost/algorithm/string.hpp>
-#include <boost/core/ignore_unused.hpp>
 
 #include "http.h"
 #include "json.h"
@@ -61,9 +59,10 @@ kepub::BookInfo get_book_info(const std::string &book_id) {
   klib::info("Point: {}", info.point_);
   klib::info("Cover url: {}", info.cover_path_);
 
-  kepub::check_url_is_jpeg(info.cover_path_);
+  auto ext = kepub::check_is_supported_image(
+      kepub::url_to_file_name(info.cover_path_));
 
-  std::string cover_name = "cover.jpg";
+  std::string cover_name = "cover" + ext;
   response = http_get_rss(info.cover_path_);
   klib::write_file(cover_name, true, response);
   klib::info("Cover downloaded successfully: {}", cover_name);
@@ -103,7 +102,6 @@ std::vector<std::string> get_content(std::uint64_t chapter_id) {
       }
 
       auto image_url = line.substr(begin, end - begin);
-      kepub::check_url_is_jpeg(image_url);
       auto image_name = kepub::url_to_file_name(image_url);
 
       try {

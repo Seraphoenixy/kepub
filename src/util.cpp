@@ -269,13 +269,17 @@ std::string url_to_file_name(const std::string &str) {
   return std::filesystem::path(url.path()).filename().string();
 }
 
-void KEPUB_EXPORT check_url_is_jpeg(const std::string &str) {
-  auto file_name = url_to_file_name(str);
+std::string KEPUB_EXPORT
+check_is_supported_image(const std::string &file_name) {
   if (file_name.ends_with(".jpg") || file_name.ends_with(".jpeg")) {
-    return;
+    return ".jpg";
+  } else if (file_name.ends_with(".png")) {
+    return ".png";
+  } else if (file_name.ends_with(".webp")) {
+    return ".webp";
+  } else {
+    klib::error("Image is not a supported format : {}", file_name);
   }
-
-  klib::warn("Image is not in JPEG format: {}", str);
 }
 
 std::string make_book_name_legal(const std::string &file_name) {
@@ -354,7 +358,8 @@ void generate_txt(const BookInfo &book_info,
 
         if (line.starts_with(image_prefix)) [[unlikely]] {
           auto image_name = line.substr(image_prefix_size);
-          auto new_image_name = num_to_str(image_count++) + ".jpg";
+          auto ext = check_is_supported_image(image_name);
+          auto new_image_name = num_to_str(image_count++) + ext;
 
           oss << image_prefix << new_image_name << '\n';
           std::filesystem::rename(image_name, new_image_name);

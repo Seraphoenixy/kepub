@@ -91,6 +91,10 @@ int main(int argc, const char *argv[]) try {
   novel.illustration_num_ = illustration_num;
   if (std::filesystem::exists("cover.jpg")) {
     novel.book_info_.cover_path_ = "cover.jpg";
+  } else if (std::filesystem::exists("cover.jpeg")) {
+    novel.book_info_.cover_path_ = "cover.jpeg";
+  } else if (std::filesystem::exists("cover.png")) {
+    novel.book_info_.cover_path_ = "cover.png";
   } else if (std::filesystem::exists("cover.webp")) {
     novel.book_info_.cover_path_ = "cover.webp";
   }
@@ -98,10 +102,16 @@ int main(int argc, const char *argv[]) try {
   for (std::int32_t i = 1;; ++i) {
     auto num_str = kepub::num_to_str(i);
     auto jpg_name = num_str + ".jpg";
+    auto jpeg_name = num_str + ".jpeg";
+    auto png_name = num_str + ".png";
     auto webp_name = num_str + ".webp";
 
     if (std::filesystem::exists(jpg_name)) {
       novel.image_paths_.push_back(jpg_name);
+    } else if (std::filesystem::exists(jpeg_name)) {
+      novel.image_paths_.push_back(jpeg_name);
+    } else if (std::filesystem::exists(png_name)) {
+      novel.image_paths_.push_back(png_name);
     } else if (std::filesystem::exists(webp_name)) {
       novel.image_paths_.push_back(webp_name);
     } else {
