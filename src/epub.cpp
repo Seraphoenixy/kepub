@@ -52,21 +52,15 @@ std::string get_datetime() {
 std::string media_type(const std::string &file_name) {
   std::string result;
 
-  if (file_name.ends_with(".gif")) {
-    result = "image/gif";
-  } else if (file_name.ends_with(".jpg") || file_name.ends_with(".jpeg")) {
-    result = "image/jpeg";
-  } else if (file_name.ends_with(".png")) {
-    result = "image/png";
+  if (file_name.ends_with(".xhtml")) [[likely]] {
+    result = "application/xhtml+xml";
   } else if (file_name.ends_with(".webp")) {
     // https://www.w3.org/TR/epub-33/#sec-core-media-types
     result = "image/webp";
-  } else if (file_name.ends_with(".css")) {
-    result = "text/css";
   } else if (file_name.ends_with(".woff2")) {
     result = "font/woff2";
-  } else if (file_name.ends_with(".xhtml")) {
-    result = "application/xhtml+xml";
+  } else if (file_name.ends_with(".css")) {
+    result = "text/css";
   } else {
     klib::error("Unknown media type: {}", file_name);
   }
@@ -341,6 +335,8 @@ void Epub::generate() {
   generate_font();
 
   dir.reset();
+
+  klib::info("Start compressing files");
   klib::compress(novel_.book_info_.name_, klib::Format::Zip,
                  klib::Filter::Deflate, novel_.book_info_.name_ + ".epub",
                  false);

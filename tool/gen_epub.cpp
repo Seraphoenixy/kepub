@@ -27,7 +27,7 @@ void compress_dir_to_epub(const std::string &dir_name, bool remove,
     epub.flush_font(dir_name);
   }
 
-  klib::info("Start to generate epub files");
+  klib::info("Start generating epub files");
   klib::compress(dir_name, klib::Format::Zip, klib::Filter::Deflate,
                  dir_name + ".epub", false);
 
@@ -67,6 +67,10 @@ int main(int argc, const char *argv[]) try {
   app.add_flag("-f,--flush-font", flush_font,
                "Regenerate fonts based on titles");
 
+  bool no_check = false;
+  app.add_flag("-n,--no-check", no_check,
+               "Do not check the content and title(for testing)");
+
   std::string uuid;
   app.add_option("-u,--uuid", uuid, "Specify the uuid(for testing)");
 
@@ -89,31 +93,43 @@ int main(int argc, const char *argv[]) try {
   kepub::Novel novel;
   novel.book_info_.name_ = book_name;
   novel.illustration_num_ = illustration_num;
+
+  std::string cover_name;
   if (std::filesystem::exists("cover.jpg")) {
-    novel.book_info_.cover_path_ = "cover.jpg";
+    cover_name = "cover.jpg";
   } else if (std::filesystem::exists("cover.jpeg")) {
-    novel.book_info_.cover_path_ = "cover.jpeg";
+    cover_name = "cover.jpeg";
   } else if (std::filesystem::exists("cover.png")) {
-    novel.book_info_.cover_path_ = "cover.png";
+    cover_name = "cover.png";
   } else if (std::filesystem::exists("cover.webp")) {
-    novel.book_info_.cover_path_ = "cover.webp";
+    cover_name = "cover.webp";
+  }
+  if (!std::empty(cover_name)) {
+    novel.book_info_.cover_path_ = cover_name;
+    klib::info("Cover name: {}", cover_name);
   }
 
   for (std::int32_t i = 1;; ++i) {
-    auto num_str = kepub::num_to_str(i);
-    auto jpg_name = num_str + ".jpg";
-    auto jpeg_name = num_str + ".jpeg";
-    auto png_name = num_str + ".png";
-    auto webp_name = num_str + ".webp";
+    const auto num_str = kepub::num_to_str(i);
+    const auto jpg_name = num_str + ".jpg";
+    const auto jpeg_name = num_str + ".jpeg";
+    const auto png_name = num_str + ".png";
+    const auto webp_name = num_str + ".webp";
 
+    std::string image_name;
     if (std::filesystem::exists(jpg_name)) {
-      novel.image_paths_.push_back(jpg_name);
+      image_name = jpg_name;
     } else if (std::filesystem::exists(jpeg_name)) {
-      novel.image_paths_.push_back(jpeg_name);
+      image_name = jpeg_name;
     } else if (std::filesystem::exists(png_name)) {
-      novel.image_paths_.push_back(png_name);
+      image_name = png_name;
     } else if (std::filesystem::exists(webp_name)) {
-      novel.image_paths_.push_back(webp_name);
+      image_name = webp_name;
+    }
+
+    if (!std::empty(image_name)) {
+      novel.image_paths_.push_back(image_name);
+      klib::info("Find image : {}", image_name);
     } else {
       break;
     }
@@ -162,7 +178,9 @@ int main(int argc, const char *argv[]) try {
 
       for (; i < size && !is_prefix(vec[i]); ++i) {
         auto line = vec[i];
-        kepub::str_check(line);
+        if (!no_check) {
+          kepub::str_check(line);
+        }
 
         word_count += kepub::str_size(line);
         kepub::push_back(novel.book_info_.introduction_, line, connect);
@@ -173,7 +191,9 @@ int main(int argc, const char *argv[]) try {
 
       for (; i < size && !is_prefix(vec[i]); ++i) {
         auto line = vec[i];
-        kepub::str_check(line);
+        if (!no_check) {
+          kepub::str_check(line);
+        }
 
         word_count += kepub::str_size(line);
         kepub::push_back(novel.postscript_, line, connect);
@@ -181,17 +201,25 @@ int main(int argc, const char *argv[]) try {
       --i;
     } else if (vec[i].starts_with(volume_prefix)) {
       auto volume_name = vec[i].substr(volume_prefix_size);
-      kepub::volume_name_check(volume_name);
+      if (!no_check) {
+        kepub::volume_name_check(volume_name);
+      }
+
       novel.volumes_.emplace_back(volume_name);
     } else if (vec[i].starts_with(title_prefix)) {
       auto title = vec[i].substr(title_prefix_size);
-      kepub::title_check(title);
+      if (!no_check) {
+        kepub::title_check(title);
+      }
+
       ++i;
 
       std::vector<std::string> content;
       for (; i < size && !is_prefix(vec[i]); ++i) {
         auto line = vec[i];
-        kepub::str_check(line);
+        if (!no_check) {
+          kepub::str_check(line);
+        }
 
         word_count += kepub::str_size(line);
         kepub::push_back(content, line, connect);
@@ -213,7 +241,7 @@ int main(int argc, const char *argv[]) try {
   }
 
   epub.set_novel(novel);
-  klib::info("Start to generate epub files");
+  klib::info("Start generating epub files");
   epub.generate();
 
   if (remove) {
