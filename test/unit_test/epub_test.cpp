@@ -475,10 +475,10 @@ TEST_CASE("full generate", "[epub]") {
   novel.illustration_num_ = 3;
   novel.image_paths_ = {"001.jpg", "002.jpg", "003.jpg", "004.jpg", "005.jpg"};
 
-  std::vector<kepub::Chapter> chapters = {{"", "title 1", {"abc 1"}},
-                                          {"", "title 2", {"abc 2"}},
-                                          {"", "title 3", {"abc 3"}}};
-  novel.volumes_ = {{"", "", chapters}};
+  novel.volumes_.emplace_back(std::vector<kepub::Chapter>{
+      kepub::Chapter("title 1", std::vector<std::string>{"abc 1"}),
+      kepub::Chapter("title 2", std::vector<std::string>{"abc 2"}),
+      kepub::Chapter("title 3", std::vector<std::string>{"abc 3"})});
 
   epub.set_novel(novel);
 
@@ -632,9 +632,15 @@ TEST_CASE("sub-volume", "[epub]") {
   novel.illustration_num_ = 3;
   novel.image_paths_ = {"001.jpg", "002.jpg", "003.jpg", "004.jpg", "005.jpg"};
 
-  novel.volumes_ = {{"", "volume 1", {{"", "title 1", {"abc 1"}}}},
-                    {"", "volume 2", {{"", "title 2", {"abc 2"}}}},
-                    {"", "volume 3", {{"", "title 3", {"abc 3"}}}}};
+  novel.volumes_.emplace_back(
+      "volume 1", std::vector<kepub::Chapter>{kepub::Chapter(
+                      "title 1", std::vector<std::string>{"abc 1"})});
+  novel.volumes_.emplace_back(
+      "volume 2", std::vector<kepub::Chapter>{kepub::Chapter(
+                      "title 2", std::vector<std::string>{"abc 2"})});
+  novel.volumes_.emplace_back(
+      "volume 3", std::vector<kepub::Chapter>{kepub::Chapter(
+                      "title 3", std::vector<std::string>{"abc 3"})});
 
   epub.set_novel(novel);
 
@@ -808,9 +814,15 @@ TEST_CASE("append", "[epub]") {
   novel.illustration_num_ = 3;
   novel.image_paths_ = {"001.jpg", "002.jpg", "003.jpg", "004.jpg", "005.jpg"};
 
-  novel.volumes_ = {{"", "volume 1", {{"", "title 1", {"abc 1"}}}},
-                    {"", "volume 2", {{"", "title 2", {"abc 2"}}}},
-                    {"", "volume 3", {{"", "title 3", {"abc 3"}}}}};
+  novel.volumes_.emplace_back(
+      "volume 1", std::vector<kepub::Chapter>{kepub::Chapter(
+                      "title 1", std::vector<std::string>{"abc 1"})});
+  novel.volumes_.emplace_back(
+      "volume 2", std::vector<kepub::Chapter>{kepub::Chapter(
+                      "title 2", std::vector<std::string>{"abc 2"})});
+  novel.volumes_.emplace_back(
+      "volume 3", std::vector<kepub::Chapter>{kepub::Chapter(
+                      "title 3", std::vector<std::string>{"abc 3"})});
 
   epub.set_novel(novel);
 
@@ -820,8 +832,11 @@ TEST_CASE("append", "[epub]") {
   CHECK_NOTHROW(epub.generate());
   CHECK(std::filesystem::is_directory("test book7"));
 
-  novel.volumes_ = {
-      {"", "", {{"", "title 4", {"abc 4"}}, {"", "title 5", {"abc 5"}}}}};
+  novel.volumes_.clear();
+  novel.volumes_.emplace_back(std::vector<kepub::Chapter>{
+      kepub::Chapter("title 4", std::vector<std::string>{"abc 4"}),
+      kepub::Chapter("title 5", std::vector<std::string>{"abc 5"})});
+
   epub.set_novel(novel);
   CHECK_NOTHROW(epub.append());
 
@@ -999,9 +1014,15 @@ TEST_CASE("append sub-volume", "[epub]") {
   novel.illustration_num_ = 3;
   novel.image_paths_ = {"001.jpg", "002.jpg", "003.jpg", "004.jpg", "005.jpg"};
 
-  novel.volumes_ = {{"", "volume 1", {{"", "title 1", {"abc 1"}}}},
-                    {"", "volume 2", {{"", "title 2", {"abc 2"}}}},
-                    {"", "volume 3", {{"", "title 3", {"abc 3"}}}}};
+  novel.volumes_.emplace_back(
+      "volume 1", std::vector<kepub::Chapter>{kepub::Chapter(
+                      "title 1", std::vector<std::string>{"abc 1"})});
+  novel.volumes_.emplace_back(
+      "volume 2", std::vector<kepub::Chapter>{kepub::Chapter(
+                      "title 2", std::vector<std::string>{"abc 2"})});
+  novel.volumes_.emplace_back(
+      "volume 3", std::vector<kepub::Chapter>{kepub::Chapter(
+                      "title 3", std::vector<std::string>{"abc 3"})});
 
   epub.set_novel(novel);
 
@@ -1011,10 +1032,15 @@ TEST_CASE("append sub-volume", "[epub]") {
   CHECK_NOTHROW(epub.generate());
   CHECK(std::filesystem::is_directory("test book8"));
 
-  novel.volumes_ = {{"", "", {{"", "title 4", {"abc 4"}}}},
-                    {"",
-                     "volume 4",
-                     {{"", "title 5", {"abc 5"}}, {"", "title 6", {"abc 6"}}}}};
+  novel.volumes_.clear();
+  novel.volumes_.emplace_back(std::vector<kepub::Chapter>{
+      kepub::Chapter("title 4", std::vector<std::string>{"abc 4"})});
+  novel.volumes_.emplace_back(
+      "volume 4",
+      std::vector<kepub::Chapter>{
+          kepub::Chapter("title 5", std::vector<std::string>{"abc 5"}),
+          kepub::Chapter("title 6", std::vector<std::string>{"abc 6"})});
+
   epub.set_novel(novel);
   CHECK_NOTHROW(epub.append());
 

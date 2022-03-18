@@ -4,7 +4,7 @@ add_executable(${ESJZONE_EXECUTABLE} ${MIMALLOC_OBJECT} esjzone.cpp)
 target_link_libraries(
   ${ESJZONE_EXECUTABLE}
   PRIVATE ${KEPUB_LIBRARY}-shared klib::klib ${Boost_LIBRARIES}
-          pugixml::pugixml CLI11::CLI11)
+          pugixml::pugixml CLI11::CLI11 TBB::tbb)
 
 if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
   find_package(Backward REQUIRED)

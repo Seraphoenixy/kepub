@@ -106,12 +106,12 @@ std::vector<kepub::Volume> get_book_volume(const Token &token,
 }
 
 std::vector<kepub::Chapter> get_chapters(const Token &token,
-                                         const std::string &volume_id) {
+                                         std::uint64_t volume_id) {
   auto response = http_post(
       "https://app.hbooker.com/chapter/get_updated_chapter_by_division_id",
       {{"account", token.account_},
        {"login_token", token.login_token_},
-       {"division_id", volume_id}});
+       {"division_id", std::to_string(volume_id)}});
 
   return get_chapter_info(decrypt_no_iv(response.text()));
 }
@@ -127,12 +127,13 @@ std::string get_chapter_command(const Token &token,
 }
 
 std::vector<std::string> get_content(const Token &token,
-                                     const std::string &chapter_id) {
-  auto chapter_command = get_chapter_command(token, chapter_id);
+                                     std::uint64_t chapter_id) {
+  const auto id = std::to_string(chapter_id);
+  auto chapter_command = get_chapter_command(token, id);
   auto response = http_post("https://app.hbooker.com/chapter/get_cpt_ifm",
                             {{"account", token.account_},
                              {"login_token", token.login_token_},
-                             {"chapter_id", chapter_id},
+                             {"chapter_id", id},
                              {"chapter_command", chapter_command}});
   auto encrypt_content_str =
       json_to_chapter_text(decrypt_no_iv(response.text()));
@@ -200,17 +201,17 @@ int main(int argc, const char *argv[]) try {
 
   std::int32_t chapter_count = 0;
   for (const auto &volume : get_book_volume(token, book_id)) {
-    auto chapters = get_chapters(token, volume.id_);
-    volumes.push_back({volume.id_, volume.title_, chapters});
+    auto chapters = get_chapters(token, volume.volume_id_);
+    volumes.emplace_back(volume.volume_id_, volume.title_, chapters);
     chapter_count += std::size(chapters);
   }
 
   klib::info("Start downloading novel content");
-  kepub::ProgressBar bar(book_info.name_, chapter_count);
+  kepub::ProgressBar bar(chapter_count, book_info.name_);
   for (auto &volume : volumes) {
     for (auto &chapter : volume.chapters_) {
       bar.set_postfix_text(chapter.title_);
-      chapter.texts_ = get_content(token, chapter.id_);
+      chapter.texts_ = get_content(token, chapter.chapter_id_);
       bar.tick();
     }
   }

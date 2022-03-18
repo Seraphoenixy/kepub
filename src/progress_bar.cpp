@@ -6,8 +6,8 @@ namespace kepub {
 
 using namespace indicators;
 
-ProgressBar::ProgressBar(const std::string &postfix_text,
-                         std::int32_t max_progress)
+ProgressBar::ProgressBar(std::int32_t max_progress,
+                         const std::string &postfix_text)
     : bar_(option::BarWidth(klib::terminal_size().first / 3),
            option::Start("["), option::Fill("="), option::Lead(">"),
            option::Remainder(" "), option::End("]"),
@@ -20,7 +20,11 @@ ProgressBar::ProgressBar(const std::string &postfix_text,
 void ProgressBar::set_postfix_text(const std::string &postfix_text) {
   static std::int32_t count = 1;
   auto str = std::to_string(count++) + "/" + max_progress_str_;
-  bar_.set_option(option::PostfixText(str + " " + postfix_text));
+
+  if (!std::empty(postfix_text)) {
+    str.append(" ").append(postfix_text);
+  }
+  bar_.set_option(option::PostfixText(str));
 }
 
 void ProgressBar::tick() { bar_.tick(); }

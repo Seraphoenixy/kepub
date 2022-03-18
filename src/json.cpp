@@ -1,5 +1,7 @@
 #include "json.h"
 
+#include <charconv>
+
 #include <klib/log.h>
 #include <klib/unicode.h>
 #include <klib/util.h>
@@ -114,7 +116,10 @@ std::vector<kepub::Volume> get_volume_info(std::string json) {
     std::string volume_name(volume["division_name"].get_string().value());
     klib::trim(volume_name);
 
-    result.push_back({volume_id, volume_name, {}});
+    std::uint64_t id;
+    auto ptr = std::data(volume_id);
+    std::from_chars(ptr, ptr + std::size(volume_id), id);
+    result.emplace_back(id, volume_name);
   }
 
   return result;
@@ -139,7 +144,10 @@ std::vector<kepub::Chapter> get_chapter_info(std::string json) {
     if (auth_access != 1) {
       klib::warn("No authorized access, title: {}", chapter_title);
     } else {
-      result.push_back({chapter_id, chapter_title, {}});
+      std::uint64_t id;
+      auto ptr = std::data(chapter_id);
+      std::from_chars(ptr, ptr + std::size(chapter_id), id);
+      result.emplace_back(id, chapter_title);
     }
   }
 
@@ -250,13 +258,13 @@ std::vector<kepub::Volume> json_to_volumes(std::string json) {
   JSON_BASE_SFACG(json)
 
   for (auto volume : doc["data"]["volumeList"].get_array()) {
-    auto volume_id = std::to_string(volume["volumeId"].get_int64());
+    std::uint64_t volume_id = volume["volumeId"].get_int64();
     std::string volume_name(volume["title"].get_string().value());
     klib::trim(volume_name);
 
     std::vector<kepub::Chapter> chapters;
     for (auto chapter : volume["chapterList"].get_array()) {
-      auto chapter_id = std::to_string(chapter["chapId"].get_int64());
+      std::uint64_t chapter_id = chapter["chapId"].get_int64();
       std::string chapter_title(chapter["title"].get_string().value());
       klib::trim(chapter_title);
 
@@ -264,10 +272,10 @@ std::vector<kepub::Volume> json_to_volumes(std::string json) {
       if (need_fire_money > 0) {
         klib::warn("No authorized access, title: {}", chapter_title);
       } else {
-        chapters.push_back({chapter_id, chapter_title, {}});
+        chapters.emplace_back(chapter_id, chapter_title);
       }
     }
-    result.push_back({volume_id, volume_name, chapters});
+    result.emplace_back(volume_id, volume_name, chapters);
   }
 
   return result;

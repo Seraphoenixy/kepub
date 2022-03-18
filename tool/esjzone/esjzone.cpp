@@ -1,13 +1,13 @@
 #include <exception>
 #include <string>
-#include <tuple>
+#include <thread>
 #include <vector>
 
 #include <klib/exception.h>
 #include <klib/log.h>
 #include <klib/util.h>
+#include <oneapi/tbb.h>
 #include <CLI/CLI.hpp>
-#include <boost/algorithm/string.hpp>
 #include <pugixml.hpp>
 
 #include "html.h"
@@ -31,9 +31,8 @@ pugi::xml_document get_xml(const std::string &url, const std::string &proxy) {
   return html_to_xml(response.text());
 }
 
-std::pair<kepub::BookInfo, std::vector<std::pair<std::string, std::string>>>
-get_info(const std::string &book_id, bool translation,
-         const std::string &proxy) {
+std::pair<kepub::BookInfo, std::vector<kepub::Chapter>> get_info(
+    const std::string &book_id, bool translation, const std::string &proxy) {
   kepub::BookInfo book_info;
 
   auto doc =
@@ -79,16 +78,16 @@ get_info(const std::string &book_id, bool translation,
                 "active show']/div[@id='chapterList']")
              .node();
 
-  std::vector<std::pair<std::string, std::string>> titles_and_urls;
+  std::vector<kepub::Chapter> chapters;
   for (const auto &child : node.children("a")) {
+    std::string may_be_url = child.attribute("href").as_string();
     auto title =
         kepub::trans_str(child.child("p").text().as_string(), translation);
 
-    std::string may_be_url = child.attribute("href").as_string();
     if (!may_be_url.starts_with("https://www.esjzone.cc/")) {
       klib::warn("url error: {}, title: {}", may_be_url, title);
     } else {
-      titles_and_urls.emplace_back(title, may_be_url);
+      chapters.emplace_back(may_be_url, title);
     }
   }
 
@@ -109,7 +108,7 @@ get_info(const std::string &book_id, bool translation,
   response.save_to_file(cover_name);
   klib::info("Cover downloaded successfully: {}", cover_name);
 
-  return {book_info, titles_and_urls};
+  return {book_info, chapters};
 }
 
 std::vector<std::string> get_content(const std::string &url, bool translation,
@@ -150,6 +149,12 @@ int main(int argc, const char *argv[]) try {
   app.add_flag("-t,--translation", translation,
                "Translate Traditional Chinese to Simplified Chinese");
 
+  std::uint32_t max_concurrency = 0;
+  app.add_option("-m,--multithreading", max_concurrency,
+                 "Maximum number of concurrency to use when downloading")
+      ->check(CLI::Range(1U, std::thread::hardware_concurrency()))
+      ->default_val(4);
+
   std::string proxy;
   app.add_flag("-p{http://127.0.0.1:1080},--proxy{http://127.0.0.1:1080}",
                proxy, "Use proxy")
@@ -161,17 +166,27 @@ int main(int argc, const char *argv[]) try {
   if (!std::empty(proxy)) {
     klib::info("Use proxy: {}", proxy);
   }
+  klib::info("Max concurrency: {}", max_concurrency);
 
-  auto [book_info, titles_and_urls] = get_info(book_id, translation, proxy);
+  kepub::BookInfo book_info;
+  std::vector<kepub::Chapter> chapters;
+  std::tie(book_info, chapters) = get_info(book_id, translation, proxy);
 
   klib::info("Start downloading novel content");
-  kepub::ProgressBar bar(book_info.name_, std::size(titles_and_urls));
-  std::vector<kepub::Chapter> chapters;
-  for (const auto &[title, urls] : titles_and_urls) {
-    bar.set_postfix_text(title);
-    chapters.push_back({"", title, get_content(urls, translation, proxy)});
-    bar.tick();
-  }
+  kepub::ProgressBar bar(std::size(chapters));
+
+  tbb::task_arena limited(max_concurrency);
+  tbb::task_group tg;
+  limited.execute([&] {
+    tg.run([&] {
+      tbb::parallel_for_each(chapters, [&](kepub::Chapter &chapter) {
+        bar.set_postfix_text();
+        chapter.texts_ = get_content(chapter.url_, translation, proxy);
+        bar.tick();
+      });
+    });
+  });
+  limited.execute([&] { tg.wait(); });
 
   kepub::generate_txt(book_info, chapters);
   klib::info("Novel '{}' download completed", book_info.name_);

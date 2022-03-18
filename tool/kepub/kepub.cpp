@@ -146,7 +146,7 @@ int main(int argc, const char *argv[]) try {
     } else if (vec[i].starts_with(volume_prefix)) {
       auto volume_name = vec[i].substr(volume_prefix_size);
       kepub::volume_name_check(volume_name);
-      novel.volumes_.push_back({"", volume_name, {}});
+      novel.volumes_.emplace_back(volume_name);
     } else if (vec[i].starts_with(title_prefix)) {
       auto title = vec[i].substr(title_prefix_size);
       kepub::title_check(title);
@@ -163,9 +163,9 @@ int main(int argc, const char *argv[]) try {
       --i;
 
       if (std::empty(novel.volumes_)) {
-        novel.volumes_.push_back({"", "", {}});
+        novel.volumes_.emplace_back();
       }
-      novel.volumes_.back().chapters_.push_back({"", title, content});
+      novel.volumes_.back().chapters_.emplace_back(title, content);
     }
   }
 

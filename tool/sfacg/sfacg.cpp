@@ -74,9 +74,10 @@ std::vector<kepub::Volume> get_volume_chapter(const std::string &book_id) {
   return json_to_volumes(response.text());
 }
 
-std::vector<std::string> get_content(const std::string &chapter_id) {
-  auto response = http_get("https://api.sfacg.com/Chaps/" + chapter_id,
-                           {{"chapsId", chapter_id}, {"expand", "content"}});
+std::vector<std::string> get_content(std::uint64_t chapter_id) {
+  auto id = std::to_string(chapter_id);
+  auto response = http_get("https://api.sfacg.com/Chaps/" + id,
+                           {{"chapsId", id}, {"expand", "content"}});
 
   auto content_str = json_to_chapter_text(response.text());
 
@@ -152,11 +153,11 @@ int main(int argc, const char *argv[]) try {
   }
 
   klib::info("Start downloading novel content");
-  kepub::ProgressBar bar(book_info.name_, chapter_count);
+  kepub::ProgressBar bar(chapter_count, book_info.name_);
   for (auto &volume : volumes) {
     for (auto &chapter : volume.chapters_) {
       bar.set_postfix_text(chapter.title_);
-      chapter.texts_ = get_content(chapter.id_);
+      chapter.texts_ = get_content(chapter.chapter_id_);
       bar.tick();
     }
   }

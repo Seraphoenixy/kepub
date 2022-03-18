@@ -14,7 +14,7 @@ namespace kepub {
 
 namespace {
 
-klib::Request request;
+thread_local klib::Request request;
 
 void report_http_error(klib::HttpStatus status, const std::string &url) {
   klib::error("HTTP GET failed, code: {}, reason: {}, url: {}",

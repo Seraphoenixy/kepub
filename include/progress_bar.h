@@ -11,10 +11,10 @@ namespace kepub {
 
 class KEPUB_EXPORT ProgressBar {
  public:
-  explicit ProgressBar(const std::string &postfix_text,
-                       std::int32_t max_progress);
+  explicit ProgressBar(std::int32_t max_progress,
+                       const std::string &postfix_text = "");
 
-  void set_postfix_text(const std::string &postfix_text);
+  void set_postfix_text(const std::string &postfix_text = "");
   void tick();
 
  private:

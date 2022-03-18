@@ -9,13 +9,31 @@
 namespace kepub {
 
 struct KEPUB_EXPORT Chapter {
-  std::string id_;
+  Chapter() = default;
+  Chapter(std::uint64_t chapter_id, const std::string &title)
+      : chapter_id_(chapter_id), title_(title) {}
+  Chapter(const std::string &url, const std::string &title)
+      : url_(url), title_(title) {}
+  Chapter(const std::string &title, const std::vector<std::string> &texts)
+      : title_(title), texts_(texts) {}
+
+  std::uint64_t chapter_id_ = 0;
+  std::string url_;
   std::string title_;
   std::vector<std::string> texts_;
 };
 
 struct KEPUB_EXPORT Volume {
-  std::string id_;
+  Volume() = default;
+  explicit Volume(const std::string &title) : title_(title) {}
+  explicit Volume(const std::vector<Chapter> &chapters) : chapters_(chapters) {}
+  Volume(const std::string &title, const std::vector<Chapter> &chapters)
+      : title_(title), chapters_(chapters) {}
+  Volume(std::uint64_t volume_id, const std::string &title,
+         const std::vector<Chapter> &chapters = {})
+      : volume_id_(volume_id), title_(title), chapters_(chapters) {}
+
+  std::uint64_t volume_id_ = 0;
   std::string title_;
   std::vector<Chapter> chapters_;
 };
