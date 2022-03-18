@@ -149,10 +149,12 @@ int main(int argc, const char *argv[]) try {
   app.add_flag("-t,--translation", translation,
                "Translate Traditional Chinese to Simplified Chinese");
 
+  auto hardware_concurrency = std::thread::hardware_concurrency();
   std::uint32_t max_concurrency = 0;
   app.add_option("-m,--multithreading", max_concurrency,
                  "Maximum number of concurrency to use when downloading")
-      ->check(CLI::Range(1U, std::thread::hardware_concurrency()))
+      ->check(
+          CLI::Range(1U, hardware_concurrency > 4 ? hardware_concurrency : 4))
       ->default_val(4);
 
   std::string proxy;
