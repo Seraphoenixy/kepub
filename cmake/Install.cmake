@@ -5,21 +5,6 @@ include(GNUInstallDirs)
 
 # https://stackoverflow.com/questions/30398238/cmake-rpath-not-working-could-not-find-shared-object-file
 set_target_properties(
-  ${GEN_EPUB_EXECUTABLE}
-  PROPERTIES INSTALL_RPATH "$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
-             INSTALL_RPATH_USE_LINK_PATH TRUE)
-
-set_target_properties(
-  ${APPEND_EPUB_EXECUTABLE}
-  PROPERTIES INSTALL_RPATH "$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
-             INSTALL_RPATH_USE_LINK_PATH TRUE)
-
-set_target_properties(
-  ${EXTRACT_EPUB_EXECUTABLE}
-  PROPERTIES INSTALL_RPATH "$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
-             INSTALL_RPATH_USE_LINK_PATH TRUE)
-
-set_target_properties(
   ${SFACG_EXECUTABLE}
   PROPERTIES INSTALL_RPATH "$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
              INSTALL_RPATH_USE_LINK_PATH TRUE)
@@ -34,14 +19,29 @@ set_target_properties(
   PROPERTIES INSTALL_RPATH "$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
              INSTALL_RPATH_USE_LINK_PATH TRUE)
 
+set_target_properties(
+  ${GEN_EPUB_EXECUTABLE}
+  PROPERTIES INSTALL_RPATH "$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
+             INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+set_target_properties(
+  ${APPEND_EPUB_EXECUTABLE}
+  PROPERTIES INSTALL_RPATH "$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
+             INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+set_target_properties(
+  ${EXTRACT_EPUB_EXECUTABLE}
+  PROPERTIES INSTALL_RPATH "$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
+             INSTALL_RPATH_USE_LINK_PATH TRUE)
+
 install(
   TARGETS ${KEPUB_LIBRARY}-shared
-          ${GEN_EPUB_EXECUTABLE}
-          ${APPEND_EPUB_EXECUTABLE}
-          ${EXTRACT_EPUB_EXECUTABLE}
           ${SFACG_EXECUTABLE}
           ${CIWEIMAO_EXECUTABLE}
           ${ESJZONE_EXECUTABLE}
+          ${GEN_EPUB_EXECUTABLE}
+          ${APPEND_EPUB_EXECUTABLE}
+          ${EXTRACT_EPUB_EXECUTABLE}
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
@@ -57,7 +57,7 @@ set(CPACK_INSTALL_CMAKE_PROJECTS ${KEPUB_BINARY_DIR} ${PROJECT_NAME} ALL .)
 # https://cmake.org/cmake/help/latest/cpack_gen/deb.html
 set(CPACK_PACKAGE_CONTACT "Kaiser <KaiserLancelot123@gmail.com>")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY
-    "Crawl novels from esjzone, ciweimao and sfacg. Generate epub from txt file"
+    "Crawl novels from sfacg, ciweimao and esjzone; Generate, append and extract epub"
 )
 set(CPACK_PACKAGE_VERSION
     ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH})

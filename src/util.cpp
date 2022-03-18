@@ -48,12 +48,6 @@ void check_file_exist(const std::string &file_name) {
   }
 }
 
-void check_dir_exist(const std::string &dir_name) {
-  if (!std::filesystem::is_directory(dir_name)) {
-    klib::error("The directory not exist: '{}'", dir_name);
-  }
-}
-
 void check_is_txt_file(const std::string &file_name) {
   check_file_exist(file_name);
 

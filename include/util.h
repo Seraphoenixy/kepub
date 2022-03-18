@@ -11,8 +11,6 @@ namespace kepub {
 
 void KEPUB_EXPORT check_file_exist(const std::string &file_name);
 
-void KEPUB_EXPORT check_dir_exist(const std::string &dir_name);
-
 void KEPUB_EXPORT check_is_txt_file(const std::string &file_name);
 
 void KEPUB_EXPORT check_is_epub_file(const std::string &file_name);
