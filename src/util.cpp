@@ -202,12 +202,11 @@ void push_back(std::vector<std::string> &texts, const std::string &str,
     if (!end_with_punctuation(texts.back())) {
       texts.back().append(str);
     } else {
-      if (!(str.starts_with("！") || str.starts_with("？"))) {
-        if (check) {
+      if (check) {
+        if (!(str.starts_with("！") || str.starts_with("？"))) {
           klib::warn("Punctuation may be wrong: {}", str);
         }
       }
-
       texts.push_back(str);
     }
   } else if (connect && std::isalpha(texts.back().back()) &&
