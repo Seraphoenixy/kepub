@@ -94,15 +94,20 @@ int main(int argc, const char *argv[]) try {
   novel.book_info_.name_ = book_name;
   novel.illustration_num_ = illustration_num;
 
+  const std::string webp_cover_name = "cover.webp";
+  const std::string jpg_cover_name = "cover.jpg";
+  const std::string jpeg_cover_name = "cover.jpeg";
+  const std::string png_cover_name = "cover.png";
+
   std::string cover_name;
-  if (std::filesystem::exists("cover.jpg")) {
-    cover_name = "cover.jpg";
-  } else if (std::filesystem::exists("cover.jpeg")) {
-    cover_name = "cover.jpeg";
-  } else if (std::filesystem::exists("cover.png")) {
-    cover_name = "cover.png";
-  } else if (std::filesystem::exists("cover.webp")) {
-    cover_name = "cover.webp";
+  if (std::filesystem::exists(webp_cover_name)) {
+    cover_name = webp_cover_name;
+  } else if (std::filesystem::exists(jpg_cover_name)) {
+    cover_name = jpg_cover_name;
+  } else if (std::filesystem::exists(jpeg_cover_name)) {
+    cover_name = jpeg_cover_name;
+  } else if (std::filesystem::exists(png_cover_name)) {
+    cover_name = png_cover_name;
   }
   if (!std::empty(cover_name)) {
     novel.book_info_.cover_path_ = cover_name;
@@ -111,20 +116,20 @@ int main(int argc, const char *argv[]) try {
 
   for (std::int32_t i = 1;; ++i) {
     const auto num_str = kepub::num_to_str(i);
+    const auto webp_name = num_str + ".webp";
     const auto jpg_name = num_str + ".jpg";
     const auto jpeg_name = num_str + ".jpeg";
     const auto png_name = num_str + ".png";
-    const auto webp_name = num_str + ".webp";
 
     std::string image_name;
-    if (std::filesystem::exists(jpg_name)) {
+    if (std::filesystem::exists(webp_name)) {
+      image_name = webp_name;
+    } else if (std::filesystem::exists(jpg_name)) {
       image_name = jpg_name;
     } else if (std::filesystem::exists(jpeg_name)) {
       image_name = jpeg_name;
     } else if (std::filesystem::exists(png_name)) {
       image_name = png_name;
-    } else if (std::filesystem::exists(webp_name)) {
-      image_name = webp_name;
     }
 
     if (!std::empty(image_name)) {
