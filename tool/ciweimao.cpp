@@ -185,8 +185,8 @@ int main(int argc, const char *argv[]) try {
   app.add_option("-m,--multithreading", max_concurrency,
                  "Maximum number of concurrency to use when downloading")
       ->check(
-          CLI::Range(1U, hardware_concurrency > 2 ? hardware_concurrency : 2))
-      ->default_val(2);
+          CLI::Range(1U, hardware_concurrency > 4 ? hardware_concurrency : 4))
+      ->default_val(1);
 
   CLI11_PARSE(app, argc, argv)
 
