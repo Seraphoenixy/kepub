@@ -14,6 +14,8 @@ namespace kepub {
 
 namespace {
 
+thread_local klib::Request request;
+
 void report_http_error(klib::HttpStatus status, const std::string &url) {
   klib::error("HTTP GET failed, code: {}, reason: {}, url: {}",
               static_cast<std::int32_t>(status), klib::http_status_str(status),
@@ -23,12 +25,6 @@ void report_http_error(klib::HttpStatus status, const std::string &url) {
 }  // namespace
 
 namespace esjzone {
-
-namespace {
-
-thread_local klib::Request request;
-
-}  // namespace
 
 klib::Response http_get(const std::string &url, const std::string &proxy) {
   request.set_browser_user_agent();
@@ -56,8 +52,6 @@ klib::Response http_get(const std::string &url, const std::string &proxy) {
 namespace ciweimao {
 
 namespace {
-
-klib::Request request;
 
 const std::string app_version = "2.9.702";
 const std::string device_token = "iPhone-ADDACF06-A9DD-482B-ADF5-ADE5B97438EE";
@@ -116,8 +110,6 @@ klib::Response http_post(const std::string &url,
 namespace sfacg {
 
 namespace {
-
-klib::Request request;
 
 const std::string authorization = "Basic YXBpdXNlcjozcyMxLXl0NmUqQWN2QHFlcg==";
 const std::string device_token = "1F6EF324-A916-4995-971D-3AA71813072B";

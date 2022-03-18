@@ -3,12 +3,15 @@
 #include <filesystem>
 #include <optional>
 #include <string>
+#include <thread>
 #include <vector>
 
 #include <klib/exception.h>
 #include <klib/log.h>
 #include <klib/unicode.h>
+#include <klib/url_parse.h>
 #include <klib/util.h>
+#include <oneapi/tbb.h>
 #include <CLI/CLI.hpp>
 #include <boost/algorithm/string.hpp>
 #include <pugixml.hpp>
@@ -139,7 +142,6 @@ std::vector<std::string> get_content(const Token &token,
       json_to_chapter_text(decrypt_no_iv(response.text()));
   auto content_str = decrypt_no_iv(encrypt_content_str, chapter_command);
 
-  static std::int32_t image_count = 1;
   std::vector<std::string> content;
   for (auto &line : klib::split_str(content_str, "\n")) {
     klib::trim(line);
@@ -149,16 +151,17 @@ std::vector<std::string> get_content(const Token &token,
       doc.load_string(line.c_str());
       std::string image_url = doc.child("img").attribute("src").as_string();
 
+      klib::URL url(image_url);
+      auto image_name = std::filesystem::path(url.path()).filename().string();
+
       klib::Response image;
       try {
         image = http_get_rss(image_url);
+        image.save_to_file(image_name);
       } catch (const klib::RuntimeError &err) {
         klib::warn("{}: {}", err.what(), line);
         continue;
       }
-
-      auto image_name = kepub::num_to_str(image_count++) + ".jpg";
-      image.save_to_file(image_name);
 
       line = "[IMAGE] " + image_name;
     }
@@ -179,9 +182,19 @@ int main(int argc, const char *argv[]) try {
   app.add_option("book-id", book_id, "The book id of the book to be downloaded")
       ->required();
 
+  auto hardware_concurrency = std::thread::hardware_concurrency();
+  std::uint32_t max_concurrency = 0;
+  app.add_option("-m,--multithreading", max_concurrency,
+                 "Maximum number of concurrency to use when downloading")
+      ->check(
+          CLI::Range(1U, hardware_concurrency > 2 ? hardware_concurrency : 2))
+      ->default_val(2);
+
   CLI11_PARSE(app, argc, argv)
 
   kepub::check_is_book_id(book_id);
+
+  klib::info("Max concurrency: {}", max_concurrency);
 
   Token token;
   if (auto may_token = try_read_token(); may_token.has_value()) {
@@ -197,23 +210,38 @@ int main(int argc, const char *argv[]) try {
   auto book_info = get_book_info(token, book_id);
 
   klib::info("Start getting chapter information");
-  std::vector<kepub::Volume> volumes;
+  auto volumes = get_book_volume(token, book_id);
+
+  tbb::task_arena limited(max_concurrency);
+  tbb::task_group tg;
 
   std::int32_t chapter_count = 0;
-  for (const auto &volume : get_book_volume(token, book_id)) {
-    auto chapters = get_chapters(token, volume.volume_id_);
-    volumes.emplace_back(volume.volume_id_, volume.title_, chapters);
-    chapter_count += std::size(chapters);
-  }
+
+  limited.execute([&] {
+    tg.run([&] {
+      tbb::parallel_for_each(volumes, [&](kepub::Volume &volume) {
+        auto chapters = get_chapters(token, volume.volume_id_);
+        chapter_count += std::size(chapters);
+        volume.chapters_ = std::move(chapters);
+      });
+    });
+  });
+  limited.execute([&] { tg.wait(); });
 
   klib::info("Start downloading novel content");
   kepub::ProgressBar bar(chapter_count, book_info.name_);
+
   for (auto &volume : volumes) {
-    for (auto &chapter : volume.chapters_) {
-      bar.set_postfix_text(chapter.title_);
-      chapter.texts_ = get_content(token, chapter.chapter_id_);
-      bar.tick();
-    }
+    limited.execute([&] {
+      tg.run([&] {
+        tbb::parallel_for_each(volume.chapters_, [&](kepub::Chapter &chapter) {
+          bar.set_postfix_text(chapter.title_);
+          chapter.texts_ = get_content(token, chapter.chapter_id_);
+          bar.tick();
+        });
+      });
+    });
+    limited.execute([&] { tg.wait(); });
   }
 
   kepub::generate_txt(book_info, volumes);

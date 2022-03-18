@@ -339,7 +339,19 @@ void generate_txt(const BookInfo &book_info,
       oss << "[WEB] " << chapter.title_ << "\n\n";
 
       for (const auto &line : chapter.texts_) {
-        oss << line << '\n';
+        static std::int32_t image_count = 1;
+        const static std::string image_prefix = "[IMAGE] ";
+        const static auto image_prefix_size = std::size(image_prefix);
+
+        if (line.starts_with(image_prefix)) [[unlikely]] {
+          auto image_name = line.substr(image_prefix_size);
+          auto new_image_name = num_to_str(image_count++) + ".jpg";
+
+          oss << image_prefix << new_image_name << '\n';
+          std::filesystem::rename(image_name, new_image_name);
+        } else [[likely]] {
+          oss << line << '\n';
+        }
       }
       oss << '\n';
     }

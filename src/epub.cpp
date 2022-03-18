@@ -128,7 +128,7 @@ void append_texts(pugi::xml_document &doc,
   Ensures(!div.empty());
 
   const static std::string image_prefix = "[IMAGE] ";
-  const auto image_prefix_size = std::size(image_prefix);
+  const static auto image_prefix_size = std::size(image_prefix);
   for (const auto &text : texts) {
     if (text.starts_with(image_prefix)) [[unlikely]] {
       auto image_name = text.substr(image_prefix_size);

@@ -1,5 +1,6 @@
 #include <exception>
 #include <string>
+#include <thread>
 #include <vector>
 
 #include <fmt/compile.h>
@@ -7,7 +8,9 @@
 #include <klib/exception.h>
 #include <klib/log.h>
 #include <klib/unicode.h>
+#include <klib/url_parse.h>
 #include <klib/util.h>
+#include <oneapi/tbb.h>
 #include <CLI/CLI.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/core/ignore_unused.hpp>
@@ -81,7 +84,6 @@ std::vector<std::string> get_content(std::uint64_t chapter_id) {
 
   auto content_str = json_to_chapter_text(response.text());
 
-  static std::int32_t image_count = 1;
   std::vector<std::string> content;
   for (auto &line : klib::split_str(content_str, "\n")) {
     klib::trim(line);
@@ -100,17 +102,17 @@ std::vector<std::string> get_content(std::uint64_t chapter_id) {
       }
 
       auto image_url = line.substr(begin, end - begin);
+      klib::URL url(image_url);
+      auto image_name = std::filesystem::path(url.path()).filename().string();
 
       klib::Response image;
       try {
         image = http_get_rss(image_url);
+        image.save_to_file(image_name);
       } catch (const klib::RuntimeError &err) {
         klib::warn("{}: {}", err.what(), line);
         continue;
       }
-
-      auto image_name = kepub::num_to_str(image_count++) + ".jpg";
-      image.save_to_file(image_name);
 
       line = "[IMAGE] " + image_name;
     }
@@ -131,9 +133,19 @@ int main(int argc, const char *argv[]) try {
   app.add_option("book-id", book_id, "The book id of the book to be downloaded")
       ->required();
 
+  auto hardware_concurrency = std::thread::hardware_concurrency();
+  std::uint32_t max_concurrency = 0;
+  app.add_option("-m,--multithreading", max_concurrency,
+                 "Maximum number of concurrency to use when downloading")
+      ->check(
+          CLI::Range(1U, hardware_concurrency > 1 ? hardware_concurrency : 1))
+      ->default_val(1);
+
   CLI11_PARSE(app, argc, argv)
 
   kepub::check_is_book_id(book_id);
+
+  klib::info("Max concurrency: {}", max_concurrency);
 
   if (!show_user_info()) {
     auto login_name = kepub::get_login_name();
@@ -154,12 +166,21 @@ int main(int argc, const char *argv[]) try {
 
   klib::info("Start downloading novel content");
   kepub::ProgressBar bar(chapter_count, book_info.name_);
+
+  tbb::task_arena limited(max_concurrency);
+  tbb::task_group tg;
+
   for (auto &volume : volumes) {
-    for (auto &chapter : volume.chapters_) {
-      bar.set_postfix_text(chapter.title_);
-      chapter.texts_ = get_content(chapter.chapter_id_);
-      bar.tick();
-    }
+    limited.execute([&] {
+      tg.run([&] {
+        tbb::parallel_for_each(volume.chapters_, [&](kepub::Chapter &chapter) {
+          bar.set_postfix_text(chapter.title_);
+          chapter.texts_ = get_content(chapter.chapter_id_);
+          bar.tick();
+        });
+      });
+    });
+    limited.execute([&] { tg.wait(); });
   }
 
   kepub::generate_txt(book_info, volumes);
