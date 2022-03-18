@@ -173,14 +173,14 @@ int main(int argc, const char *argv[]) try {
   std::tie(book_info, chapters) = get_info(book_id, translation, proxy);
 
   klib::info("Start downloading novel content");
-  kepub::ProgressBar bar(std::size(chapters));
+  kepub::ProgressBar bar(std::size(chapters), book_info.name_);
 
   tbb::task_arena limited(max_concurrency);
   tbb::task_group tg;
   limited.execute([&] {
     tg.run([&] {
       tbb::parallel_for_each(chapters, [&](kepub::Chapter &chapter) {
-        bar.set_postfix_text();
+        bar.set_postfix_text(chapter.title_);
         chapter.texts_ = get_content(chapter.url_, translation, proxy);
         bar.tick();
       });

@@ -20,11 +20,7 @@ ProgressBar::ProgressBar(std::int32_t max_progress,
 void ProgressBar::set_postfix_text(const std::string &postfix_text) {
   static std::int32_t count = 1;
   auto str = std::to_string(count++) + "/" + max_progress_str_;
-
-  if (!std::empty(postfix_text)) {
-    str.append(" ").append(postfix_text);
-  }
-  bar_.set_option(option::PostfixText(str));
+  bar_.set_option(option::PostfixText(str + " " + postfix_text));
 }
 
 void ProgressBar::tick() { bar_.tick(); }
