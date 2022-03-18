@@ -41,7 +41,7 @@ jobs:
 
       - name: Run executable
         if: ${{ matrix.build_type == 'Release' }}
-        run: kepub -v
+        run: gen-epub -v
 
       - name: Test
         run: ctest -C ${{ matrix.build_type }} -j1 --output-on-failure

@@ -34,13 +34,15 @@ message(STATUS "Build type: " ${CMAKE_BUILD_TYPE})
 # Set variables
 # ---------------------------------------------------------------------------------------
 set(KEPUB_LIBRARY lib${PROJECT_NAME})
-set(ESJZONE_EXECUTABLE esjzone)
-set(KEPUB_EXECUTABLE ${PROJECT_NAME})
-set(ADDITION_EXECUTABLE addition)
-set(CIWEIMAO_EXECUTABLE ciweimao)
-set(SFACG_EXECUTABLE sfacg)
+
 set(GEN_EPUB_EXECUTABLE gen-epub)
-set(GEN_TXT_EXECUTABLE gen-txt)
+set(APPEND_EPUB_EXECUTABLE append-epub)
+set(EXTRACT_EPUB_EXECUTABLE extract-epub)
+
+set(SFACG_EXECUTABLE sfacg)
+set(CIWEIMAO_EXECUTABLE ciweimao)
+set(ESJZONE_EXECUTABLE esjzone)
+
 set(KEPUB_TEST_EXECUTABLE ktest)
 
 set(KEPUB_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})

@@ -33,7 +33,7 @@ jobs:
         working-directory: build
 
       - name: Run executable
-        run: kepub -v
+        run: gen-epub -v
 
       # https://github.com/softprops/action-gh-release
       - name: Release

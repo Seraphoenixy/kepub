@@ -1,7 +1,7 @@
-add_subdirectory(addition)
+add_subdirectory(gen_epub)
+add_subdirectory(append_epub)
+add_subdirectory(extract_epub)
+
+add_subdirectory(sfacg)
 add_subdirectory(ciweimao)
 add_subdirectory(esjzone)
-add_subdirectory(gen_epub)
-add_subdirectory(gen_txt)
-add_subdirectory(kepub)
-add_subdirectory(sfacg)

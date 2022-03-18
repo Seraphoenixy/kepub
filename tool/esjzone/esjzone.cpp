@@ -28,7 +28,7 @@ namespace {
 
 pugi::xml_document get_xml(const std::string &url, const std::string &proxy) {
   auto response = http_get(url, proxy);
-  return html_to_xml(response.text());
+  return html_to_xml(response);
 }
 
 std::pair<kepub::BookInfo, std::vector<kepub::Chapter>> get_info(
@@ -105,7 +105,7 @@ std::pair<kepub::BookInfo, std::vector<kepub::Chapter>> get_info(
 
   std::string cover_name = "cover.jpg";
   auto response = http_get(book_info.cover_path_, proxy);
-  response.save_to_file(cover_name);
+  klib::write_file(response, true, cover_name);
   klib::info("Cover downloaded successfully: {}", cover_name);
 
   return {book_info, chapters};

@@ -6,6 +6,7 @@
 #include <fmt/compile.h>
 #include <fmt/format.h>
 #include <klib/hash.h>
+#include <klib/http.h>
 #include <klib/log.h>
 #include <klib/util.h>
 #include <boost/algorithm/string.hpp>
@@ -26,7 +27,7 @@ void report_http_error(klib::HttpStatus status, const std::string &url) {
 
 namespace esjzone {
 
-klib::Response http_get(const std::string &url, const std::string &proxy) {
+std::string http_get(const std::string &url, const std::string &proxy) {
   request.set_browser_user_agent();
   if (!std::empty(proxy)) {
     request.set_proxy(proxy);
@@ -44,7 +45,7 @@ klib::Response http_get(const std::string &url, const std::string &proxy) {
     report_http_error(status, url);
   }
 
-  return response;
+  return response.text();
 }
 
 }  // namespace esjzone
@@ -62,7 +63,7 @@ const static std::string user_agent_rss =
 
 }  // namespace
 
-klib::Response http_get_rss(const std::string &url) {
+std::string http_get_rss(const std::string &url) {
   request.set_no_proxy();
   request.set_user_agent(user_agent_rss);
   request.set_accept_encoding("gzip, deflate, br");
@@ -78,11 +79,11 @@ klib::Response http_get_rss(const std::string &url) {
     report_http_error(status, url);
   }
 
-  return response;
+  return response.text();
 }
 
-klib::Response http_post(const std::string &url,
-                         phmap::flat_hash_map<std::string, std::string> data) {
+std::string http_post(const std::string &url,
+                      phmap::flat_hash_map<std::string, std::string> data) {
   request.set_no_proxy();
   request.set_user_agent(user_agent);
   request.set_accept_encoding("gzip, deflate, br");
@@ -102,7 +103,7 @@ klib::Response http_post(const std::string &url,
     report_http_error(status, url);
   }
 
-  return response;
+  return response.text();
 }
 
 }  // namespace ciweimao
@@ -131,7 +132,7 @@ std::string sf_security() {
 
 }  // namespace
 
-klib::Response http_get(
+std::string http_get(
     const std::string &url,
     const phmap::flat_hash_map<std::string, std::string> &params) {
   request.set_no_proxy();
@@ -141,15 +142,17 @@ klib::Response http_get(
   request.verbose(true);
 #endif
 
-  return request.get(url, params,
-                     {{"Connection", "keep-alive"},
-                      {"Accept", "application/vnd.sfacg.api+json;version=1"},
-                      {"SFSecurity", sf_security()},
-                      {"Accept-Language", "zh-Hans-CN;q=1"},
-                      {"Authorization", authorization}});
+  return request
+      .get(url, params,
+           {{"Connection", "keep-alive"},
+            {"Accept", "application/vnd.sfacg.api+json;version=1"},
+            {"SFSecurity", sf_security()},
+            {"Accept-Language", "zh-Hans-CN;q=1"},
+            {"Authorization", authorization}})
+      .text();
 }
 
-klib::Response http_get_rss(const std::string &url) {
+std::string http_get_rss(const std::string &url) {
   request.set_no_proxy();
   request.set_user_agent(user_agent_rss);
   request.set_accept_encoding("gzip, deflate, br");
@@ -157,13 +160,15 @@ klib::Response http_get_rss(const std::string &url) {
   request.verbose(true);
 #endif
 
-  return request.get(url, {},
-                     {{"Connection", "keep-alive"},
-                      {"Accept", "image/*,*/*;q=0.8"},
-                      {"Accept-Language", "zh-CN,zh-Hans;q=0.9"}});
+  return request
+      .get(url, {},
+           {{"Connection", "keep-alive"},
+            {"Accept", "image/*,*/*;q=0.8"},
+            {"Accept-Language", "zh-CN,zh-Hans;q=0.9"}})
+      .text();
 }
 
-klib::Response http_post(const std::string &url, const std::string &json) {
+std::string http_post(const std::string &url, const std::string &json) {
   request.set_no_proxy();
   request.set_user_agent(user_agent);
   request.set_accept_encoding("gzip, deflate, br");
@@ -171,12 +176,14 @@ klib::Response http_post(const std::string &url, const std::string &json) {
   request.verbose(true);
 #endif
 
-  return request.post(url, json,
-                      {{"Connection", "keep-alive"},
-                       {"Accept", "application/vnd.sfacg.api+json;version=1"},
-                       {"SFSecurity", sf_security()},
-                       {"Accept-Language", "zh-Hans-CN;q=1"},
-                       {"Authorization", authorization}});
+  return request
+      .post(url, json,
+            {{"Connection", "keep-alive"},
+             {"Accept", "application/vnd.sfacg.api+json;version=1"},
+             {"SFSecurity", sf_security()},
+             {"Accept-Language", "zh-Hans-CN;q=1"},
+             {"Authorization", authorization}})
+      .text();
 }
 
 }  // namespace sfacg

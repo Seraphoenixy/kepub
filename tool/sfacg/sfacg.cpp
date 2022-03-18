@@ -32,7 +32,7 @@ namespace {
 
 bool show_user_info() {
   auto response = http_get("https://api.sfacg.com/user");
-  auto info = json_to_user_info(response.text());
+  auto info = json_to_user_info(response);
 
   if (info.login_expired_) {
     return false;
@@ -45,17 +45,17 @@ bool show_user_info() {
 void login(const std::string &login_name, const std::string &password) {
   auto response = http_post("https://api.sfacg.com/sessions",
                             serialize(login_name, password));
-  json_base(response.text());
+  json_base(response);
 
   response = http_get("https://api.sfacg.com/user");
-  auto info = json_to_login_info(response.text());
+  auto info = json_to_login_info(response);
   klib::info("Login successful, nick name: {}", info.user_info_.nick_name_);
 }
 
 kepub::BookInfo get_book_info(const std::string &book_id) {
   auto response = http_get("https://api.sfacg.com/novels/" + book_id,
                            {{"expand", "intro"}});
-  auto info = json_to_book_info(response.text());
+  auto info = json_to_book_info(response);
 
   klib::info("Book name: {}", info.name_);
   klib::info("Author: {}", info.author_);
@@ -64,7 +64,7 @@ kepub::BookInfo get_book_info(const std::string &book_id) {
 
   std::string cover_name = "cover.jpg";
   response = http_get_rss(info.cover_path_);
-  response.save_to_file(cover_name);
+  klib::write_file(cover_name, true, response);
   klib::info("Cover downloaded successfully: {}", cover_name);
 
   return info;
@@ -74,7 +74,7 @@ std::vector<kepub::Volume> get_volume_chapter(const std::string &book_id) {
   auto response = http_get(fmt::format(
       FMT_COMPILE("https://api.sfacg.com/novels/{}/dirs"), book_id));
 
-  return json_to_volumes(response.text());
+  return json_to_volumes(response);
 }
 
 std::vector<std::string> get_content(std::uint64_t chapter_id) {
@@ -82,7 +82,7 @@ std::vector<std::string> get_content(std::uint64_t chapter_id) {
   auto response = http_get("https://api.sfacg.com/Chaps/" + id,
                            {{"chapsId", id}, {"expand", "content"}});
 
-  auto content_str = json_to_chapter_text(response.text());
+  auto content_str = json_to_chapter_text(response);
 
   std::vector<std::string> content;
   for (auto &line : klib::split_str(content_str, "\n")) {
@@ -105,10 +105,9 @@ std::vector<std::string> get_content(std::uint64_t chapter_id) {
       klib::URL url(image_url);
       auto image_name = std::filesystem::path(url.path()).filename().string();
 
-      klib::Response image;
       try {
-        image = http_get_rss(image_url);
-        image.save_to_file(image_name);
+        auto image = http_get_rss(image_url);
+        klib::write_file(image_name, true, image);
       } catch (const klib::RuntimeError &err) {
         klib::warn("{}: {}", err.what(), line);
         continue;

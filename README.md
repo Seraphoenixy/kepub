@@ -41,7 +41,7 @@ Crawl novels from esjzone, ciweimao and sfacg. Generate epub from txt file
 
 ```bash
 sfacg book-id
-kepub book-name.txt
+gen-epub book-name.txt
 ```
 
 ---
