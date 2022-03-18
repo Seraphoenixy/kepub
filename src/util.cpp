@@ -269,6 +269,15 @@ std::string url_to_file_name(const std::string &str) {
   return std::filesystem::path(url.path()).filename().string();
 }
 
+void KEPUB_EXPORT check_url_is_jpeg(const std::string &str) {
+  auto file_name = url_to_file_name(str);
+  if (file_name.ends_with(".jpg") || file_name.ends_with(".jpeg")) {
+    return;
+  }
+
+  klib::warn("Image is not in JPEG format: {}", str);
+}
+
 std::string make_book_name_legal(const std::string &file_name) {
   auto new_file_name = klib::make_file_name_legal(file_name);
   if (new_file_name != file_name) {

@@ -369,6 +369,10 @@ void Epub::generate_style() const {
 }
 
 void Epub::generate_image() const {
+  if (std::empty(novel_.book_info_.cover_path_) &&
+      std::empty(novel_.image_paths_)) {
+    return;
+  }
   klib::info("Start generating WebP images");
 
   if (!std::empty(novel_.book_info_.cover_path_)) {

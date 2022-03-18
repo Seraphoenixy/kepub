@@ -83,11 +83,13 @@ kepub::BookInfo get_book_info(const Token &token, const std::string &book_id) {
                             {{"account", token.account_},
                              {"login_token", token.login_token_},
                              {"book_id", book_id}});
-  auto info = ::json_to_book_info(decrypt_no_iv(response));
+  auto info = json_to_book_info(decrypt_no_iv(response));
 
   klib::info("Book name: {}", info.name_);
   klib::info("Author: {}", info.author_);
   klib::info("Cover url: {}", info.cover_path_);
+
+  kepub::check_url_is_jpeg(info.cover_path_);
 
   std::string cover_name = "cover.jpg";
   response = http_get_rss(info.cover_path_);
@@ -148,6 +150,7 @@ std::vector<std::string> get_content(const Token &token,
       pugi::xml_document doc;
       doc.load_string(line.c_str());
       std::string image_url = doc.child("img").attribute("src").as_string();
+      kepub::check_url_is_jpeg(image_url);
 
       auto image_name = kepub::url_to_file_name(image_url);
 

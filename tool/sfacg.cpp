@@ -61,6 +61,8 @@ kepub::BookInfo get_book_info(const std::string &book_id) {
   klib::info("Point: {}", info.point_);
   klib::info("Cover url: {}", info.cover_path_);
 
+  kepub::check_url_is_jpeg(info.cover_path_);
+
   std::string cover_name = "cover.jpg";
   response = http_get_rss(info.cover_path_);
   klib::write_file(cover_name, true, response);
@@ -101,6 +103,7 @@ std::vector<std::string> get_content(std::uint64_t chapter_id) {
       }
 
       auto image_url = line.substr(begin, end - begin);
+      kepub::check_url_is_jpeg(image_url);
       auto image_name = kepub::url_to_file_name(image_url);
 
       try {
