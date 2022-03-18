@@ -31,7 +31,8 @@ void KEPUB_EXPORT volume_name_check(const std::string &volume_name);
 void KEPUB_EXPORT title_check(const std::string &title);
 
 void KEPUB_EXPORT push_back(std::vector<std::string> &texts,
-                            const std::string &str, bool connect);
+                            const std::string &str, bool connect,
+                            bool check = true);
 
 void KEPUB_EXPORT push_back(std::vector<std::string> &texts,
                             const std::string &str);

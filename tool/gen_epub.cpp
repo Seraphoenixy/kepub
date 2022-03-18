@@ -27,7 +27,6 @@ void compress_dir_to_epub(const std::string &dir_name, bool remove,
     epub.flush_font(dir_name);
   }
 
-  klib::info("Start generating epub files");
   klib::compress(dir_name, klib::Format::Zip, klib::Filter::Deflate,
                  dir_name + ".epub", false);
 
@@ -188,7 +187,8 @@ int main(int argc, const char *argv[]) try {
         }
 
         word_count += kepub::str_size(line);
-        kepub::push_back(novel.book_info_.introduction_, line, connect);
+        kepub::push_back(novel.book_info_.introduction_, line, connect,
+                         !no_check);
       }
       --i;
     } else if (vec[i].starts_with(postscript_prefix)) {
@@ -201,7 +201,7 @@ int main(int argc, const char *argv[]) try {
         }
 
         word_count += kepub::str_size(line);
-        kepub::push_back(novel.postscript_, line, connect);
+        kepub::push_back(novel.postscript_, line, connect, !no_check);
       }
       --i;
     } else if (vec[i].starts_with(volume_prefix)) {
@@ -227,7 +227,7 @@ int main(int argc, const char *argv[]) try {
         }
 
         word_count += kepub::str_size(line);
-        kepub::push_back(content, line, connect);
+        kepub::push_back(content, line, connect, !no_check);
       }
       --i;
 
@@ -246,7 +246,6 @@ int main(int argc, const char *argv[]) try {
   }
 
   epub.set_novel(novel);
-  klib::info("Start generating epub files");
   epub.generate();
 
   if (remove) {

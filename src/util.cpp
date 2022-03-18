@@ -169,7 +169,7 @@ void title_check(const std::string &title) {
 }
 
 void push_back(std::vector<std::string> &texts, const std::string &str,
-               bool connect) {
+               bool connect, bool check) {
   if (std::empty(str)) {
     return;
   }
@@ -187,8 +187,10 @@ void push_back(std::vector<std::string> &texts, const std::string &str,
          str.starts_with("【") || str.starts_with("（"))) {
       texts.back().append(str);
     } else {
-      klib::warn("Punctuation may be wrong: {}, previous row: {}", str,
-                 texts.back());
+      if (check) {
+        klib::warn("Punctuation may be wrong: {}, previous row: {}", str,
+                   texts.back());
+      }
       texts.push_back(str);
     }
   } else if (str.starts_with("！") || str.starts_with("？") ||
@@ -201,7 +203,9 @@ void push_back(std::vector<std::string> &texts, const std::string &str,
       texts.back().append(str);
     } else {
       if (!(str.starts_with("！") || str.starts_with("？"))) {
-        klib::warn("Punctuation may be wrong: {}", str);
+        if (check) {
+          klib::warn("Punctuation may be wrong: {}", str);
+        }
       }
 
       texts.push_back(str);

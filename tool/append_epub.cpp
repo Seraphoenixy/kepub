@@ -113,7 +113,6 @@ int main(int argc, const char *argv[]) try {
   }
 
   epub.set_novel(novel);
-  klib::info("Start generating epub files");
   epub.append();
 
   if (!testing) {
