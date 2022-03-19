@@ -345,6 +345,8 @@ void generate_txt(const BookInfo &book_info,
   }
   oss << "\n";
 
+  // old_name new_name
+  phmap::flat_hash_map<std::string, std::string> image_name_map;
   for (const auto &volume : volumes) {
     if (std::empty(volume.chapters_)) {
       continue;
@@ -363,17 +365,24 @@ void generate_txt(const BookInfo &book_info,
         if (line.starts_with(image_prefix)) [[unlikely]] {
           auto image_name = line.substr(image_prefix_size);
 
-          if (!std::filesystem::exists(image_name)) {
-            klib::warn("Image not exists: {}", image_name);
-            continue;
-          }
+          if (auto iter = image_name_map.find(image_name);
+              iter != std::end(image_name_map)) {
+            oss << image_prefix << iter->second << '\n';
+          } else {
+            if (!std::filesystem::exists(image_name)) {
+              klib::warn("Image not exists: {}", image_name);
+              continue;
+            }
 
-          auto ext = check_is_supported_image(image_name);
+            auto ext = check_is_supported_image(image_name);
 
-          if (ext) {
-            auto new_image_name = num_to_str(image_count++) + *ext;
-            oss << image_prefix << new_image_name << '\n';
-            std::filesystem::rename(image_name, new_image_name);
+            if (ext) {
+              auto new_image_name = num_to_str(image_count++) + *ext;
+              oss << image_prefix << new_image_name << '\n';
+              std::filesystem::rename(image_name, new_image_name);
+
+              image_name_map.emplace(image_name, new_image_name);
+            }
           }
         } else [[likely]] {
           oss << line << '\n';

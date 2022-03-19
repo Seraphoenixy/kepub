@@ -249,7 +249,7 @@ TEST_CASE("generate postscript and cover", "[epub]") {
   </head>
   <body epub:type="coverpage">
     <div class="cover">
-      <img alt="" src="../image/cover.webp" />
+      <img alt="cover" src="../image/cover.webp" />
     </div>
   </body>
 </html>

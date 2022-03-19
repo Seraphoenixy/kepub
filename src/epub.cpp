@@ -391,7 +391,7 @@ void Epub::generate_cover() const {
     Ensures(!div.empty());
 
     auto img = div.append_child("img");
-    img.append_attribute("alt") = "";
+    img.append_attribute("alt") = "cover";
     img.append_attribute("src") =
         ("../image/" + novel_.book_info_.cover_file_name_).c_str();
 
