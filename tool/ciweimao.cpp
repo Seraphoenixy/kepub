@@ -91,10 +91,12 @@ kepub::BookInfo get_book_info(const Token &token, const std::string &book_id) {
   auto ext = kepub::check_is_supported_image(
       kepub::url_to_file_name(info.cover_path_));
 
-  std::string cover_name = "cover" + ext;
-  response = http_get_rss(info.cover_path_);
-  klib::write_file(cover_name, true, response);
-  klib::info("Cover downloaded successfully: {}", cover_name);
+  if (ext) {
+    std::string cover_name = "cover" + *ext;
+    response = http_get_rss(info.cover_path_);
+    klib::write_file(cover_name, true, response);
+    klib::info("Cover downloaded successfully: {}", cover_name);
+  }
 
   return info;
 }
@@ -156,12 +158,11 @@ std::vector<std::string> get_content(const Token &token,
       try {
         auto image = http_get_rss(image_url);
         klib::write_file(image_name, true, image);
+        line = "[IMAGE] " + image_name;
       } catch (const klib::RuntimeError &err) {
         klib::warn("{}: {}", err.what(), line);
         continue;
       }
-
-      line = "[IMAGE] " + image_name;
     }
 
     kepub::push_back(content, line);

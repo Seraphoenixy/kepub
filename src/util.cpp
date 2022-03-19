@@ -272,7 +272,7 @@ std::string url_to_file_name(const std::string &str) {
   return std::filesystem::path(url.path()).filename().string();
 }
 
-std::string KEPUB_EXPORT
+std::optional<std::string> KEPUB_EXPORT
 check_is_supported_image(const std::string &file_name) {
   if (file_name.ends_with(".jpg") || file_name.ends_with(".jpeg")) {
     return ".jpg";
@@ -281,7 +281,8 @@ check_is_supported_image(const std::string &file_name) {
   } else if (file_name.ends_with(".webp")) {
     return ".webp";
   } else {
-    klib::error("Image is not a supported format : {}", file_name);
+    klib::warn("Image is not a supported format : {}", file_name);
+    return "";
   }
 }
 
@@ -361,11 +362,19 @@ void generate_txt(const BookInfo &book_info,
 
         if (line.starts_with(image_prefix)) [[unlikely]] {
           auto image_name = line.substr(image_prefix_size);
-          auto ext = check_is_supported_image(image_name);
-          auto new_image_name = num_to_str(image_count++) + ext;
 
-          oss << image_prefix << new_image_name << '\n';
-          std::filesystem::rename(image_name, new_image_name);
+          if (!std::filesystem::exists(image_name)) {
+            klib::warn("Image not exists: {}", image_name);
+            continue;
+          }
+
+          auto ext = check_is_supported_image(image_name);
+
+          if (ext) {
+            auto new_image_name = num_to_str(image_count++) + *ext;
+            oss << image_prefix << new_image_name << '\n';
+            std::filesystem::rename(image_name, new_image_name);
+          }
         } else [[likely]] {
           oss << line << '\n';
         }

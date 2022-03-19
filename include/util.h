@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -45,7 +46,8 @@ std::string KEPUB_EXPORT num_to_str(std::int32_t i);
 
 std::string KEPUB_EXPORT url_to_file_name(const std::string &str);
 
-std::string KEPUB_EXPORT check_is_supported_image(const std::string &file_name);
+std::optional<std::string> KEPUB_EXPORT
+check_is_supported_image(const std::string &file_name);
 
 std::string KEPUB_EXPORT make_book_name_legal(const std::string &file_name);
 

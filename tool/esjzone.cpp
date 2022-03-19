@@ -106,10 +106,12 @@ std::pair<kepub::BookInfo, std::vector<kepub::Chapter>> get_info(
   auto ext = kepub::check_is_supported_image(
       kepub::url_to_file_name(book_info.cover_path_));
 
-  std::string cover_name = "cover" + ext;
-  auto response = http_get(book_info.cover_path_, proxy);
-  klib::write_file(cover_name, true, response);
-  klib::info("Cover downloaded successfully: {}", cover_name);
+  if (ext) {
+    std::string cover_name = "cover" + *ext;
+    auto response = http_get(book_info.cover_path_, proxy);
+    klib::write_file(cover_name, true, response);
+    klib::info("Cover downloaded successfully: {}", cover_name);
+  }
 
   return {book_info, chapters};
 }
