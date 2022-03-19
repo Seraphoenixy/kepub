@@ -110,7 +110,7 @@ int main(int argc, const char *argv[]) try {
   }
   if (!std::empty(cover_name)) {
     novel.book_info_.cover_path_ = cover_name;
-    klib::info("Cover name: {}", cover_name);
+    klib::info("Find cover: {}", cover_name);
   }
 
   for (std::int32_t i = 1;; ++i) {

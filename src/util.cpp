@@ -282,7 +282,7 @@ check_is_supported_image(const std::string &file_name) {
     return ".webp";
   } else {
     klib::warn("Image is not a supported format : {}", file_name);
-    return "";
+    return {};
   }
 }
 
