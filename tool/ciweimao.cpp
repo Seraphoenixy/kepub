@@ -54,7 +54,14 @@ std::optional<Token> try_read_token() {
   }
 
   auto json = klib::read_file(token_path, false);
-  auto token = get_token(decrypt(json));
+
+  Token token;
+  try {
+    token = get_token(decrypt(json));
+  } catch (...) {
+    klib::warn("Failed to read local user information, please enter again");
+    return {};
+  }
 
   if (show_user_info(token)) {
     return token;
