@@ -196,14 +196,11 @@ void compress_image(const std::string &path) {
     return;
   }
 
-  auto image_file = klib::read_file(path, true);
-  remove_file_or_dir(path);
-
   auto image_dir = std::filesystem::path(path).parent_path();
   auto new_file_name = std::filesystem::path(path).stem().string() + ".webp";
 
-  klib::write_file(image_dir / new_file_name, true,
-                   klib::image_to_webp(image_file));
+  klib::image_to_webp(path, image_dir / new_file_name);
+  remove_file_or_dir(path);
 }
 
 }  // namespace
