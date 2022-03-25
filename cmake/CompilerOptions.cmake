@@ -66,30 +66,10 @@ endif()
 # General options
 # ---------------------------------------------------------------------------------------
 add_cxx_compiler_flag("-pipe")
-
 add_cxx_compiler_flag("-march=haswell")
-add_cxx_compiler_flag("-mtune=haswell")
-
-add_cxx_compiler_flag("-fno-plt")
-
-set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-
 add_cxx_compiler_flag("-fvisibility=hidden")
 
-# ---------------------------------------------------------------------------------------
-# Optimization
-# ---------------------------------------------------------------------------------------
-if((${CMAKE_BUILD_TYPE} STREQUAL "Release") OR (${CMAKE_BUILD_TYPE} STREQUAL
-                                                "MinSizeRel"))
-  add_cxx_compiler_flag("-fno-math-errno")
-  add_cxx_compiler_flag("-fno-trapping-math")
-  add_cxx_compiler_flag("-fno-semantic-interposition")
-
-  if(CMAKE_COMPILER_IS_GNUCXX)
-    add_cxx_compiler_flag("-fipa-pta")
-    add_cxx_compiler_flag("-fgraphite-identity")
-  endif()
-endif()
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # ---------------------------------------------------------------------------------------
 # Link time optimization
