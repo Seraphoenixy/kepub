@@ -16,7 +16,6 @@
 #include <klib/util.h>
 #include <oneapi/tbb.h>
 #include <parallel_hashmap/phmap.h>
-#include <boost/algorithm/string.hpp>
 #include <gsl/assert>
 
 #include "trans.h"
@@ -92,10 +91,18 @@ void check_is_book_id(const std::string &book_id) {
 
 std::vector<std::string> read_file_to_vec(const std::string &file_name,
                                           bool translation) {
-  auto str = klib::read_file(file_name, false);
+  std::ifstream ifs(file_name);
+  if (!ifs) {
+    klib::error("Failed to open file: '{}'", file_name);
+  }
 
   std::vector<std::string> result;
-  boost::split(result, str, boost::is_any_of("\n"), boost::token_compress_on);
+  result.reserve(16384);
+
+  std::string line;
+  while (std::getline(ifs, line)) {
+    result.push_back(line);
+  }
 
   tbb::parallel_for_each(result, [&](std::string &item) {
     item = trans_str(item, translation);
