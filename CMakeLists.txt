@@ -67,6 +67,9 @@ include(CompilerOptions)
 # ---------------------------------------------------------------------------------------
 # Find package
 # ---------------------------------------------------------------------------------------
+set(THREADS_PREFER_PTHREAD_FLAG TRUE)
+find_package(Threads REQUIRED)
+
 find_package(fmt REQUIRED)
 find_package(pugixml REQUIRED)
 find_package(indicators REQUIRED)
@@ -74,8 +77,8 @@ find_package(Boost CONFIG REQUIRED COMPONENTS json)
 find_package(klib REQUIRED)
 find_package(simdjson REQUIRED)
 find_package(Microsoft.GSL REQUIRED)
-find_package(Threads REQUIRED)
 find_package(TBB REQUIRED)
+find_package(re2 REQUIRED)
 
 add_definitions(-DDBG_MACRO_NO_WARNING)
 if(NOT (${CMAKE_BUILD_TYPE} STREQUAL "Debug"))
@@ -120,7 +123,8 @@ target_link_libraries(
           simdjson::simdjson
           PkgConfig::opencc
           PkgConfig::marisa
-          TBB::tbb)
+          TBB::tbb
+          re2::re2)
 set_target_properties(${KEPUB_LIBRARY} PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
 
 # ---------------------------------------------------------------------------------------
@@ -143,7 +147,8 @@ target_link_libraries(
           simdjson::simdjson
           PkgConfig::opencc
           PkgConfig::marisa
-          TBB::tbb)
+          TBB::tbb
+          re2::re2)
 set_target_properties(
   ${KEPUB_LIBRARY}-shared
   PROPERTIES OUTPUT_NAME ${PROJECT_NAME}

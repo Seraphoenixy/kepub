@@ -7,7 +7,6 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <regex>
 #include <sstream>
 
 #include <klib/log.h>
@@ -16,6 +15,7 @@
 #include <klib/util.h>
 #include <oneapi/tbb.h>
 #include <parallel_hashmap/phmap.h>
+#include <re2/re2.h>
 #include <gsl/assert>
 
 #include "trans.h"
@@ -104,10 +104,10 @@ std::vector<std::string> read_file_to_vec(const std::string &file_name,
     result.push_back(line);
   }
 
-  tbb::parallel_for_each(result, [&](std::string &item) {
-    item = trans_str(item, translation);
-    if (!klib::validate_utf8(item)) {
-      klib::error("Invalid UTF-8: {}", item);
+  tbb::parallel_for_each(result, [&](std::string &str) {
+    str = trans_str(str, translation);
+    if (!klib::validate_utf8(str)) {
+      klib::error("Invalid UTF-8: {}", str);
     }
   });
 
@@ -150,11 +150,9 @@ std::int32_t str_size(const std::string &str) {
 }
 
 void volume_name_check(const std::string &volume_name) {
-  static const std::wregex regex(
-      LR"(第([一二三四五六七八九十]|[0-9]){1,3}卷 .+)",
-      std::regex_constants::optimize);
+  static re2::RE2 regex = R"(第([一二三四五六七八九十]|[0-9]){1,3}卷 .+)";
 
-  if (!std::regex_match(klib::utf8_to_utf32_w(volume_name), regex)) {
+  if (!re2::RE2::FullMatch(volume_name, regex)) {
     klib::warn("Irregular volume name format: {}", volume_name);
     return;
   }
@@ -163,11 +161,10 @@ void volume_name_check(const std::string &volume_name) {
 }
 
 void title_check(const std::string &title) {
-  static const std::wregex regex(
-      LR"(第([零一二三四五六七八九十百千]|[0-9]){1,7}[章话] .+)",
-      std::regex_constants::optimize);
+  static re2::RE2 regex =
+      R"(第([零一二三四五六七八九十百千]|[0-9]){1,7}[章话] .+)";
 
-  if (!std::regex_match(klib::utf8_to_utf32_w(title), regex)) {
+  if (!re2::RE2::FullMatch(title, regex)) {
     klib::warn("Irregular title format: {}", title);
     return;
   }
