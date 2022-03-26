@@ -27,7 +27,6 @@ Crawl novels from sfacg, ciweimao and esjzone; generate, append and extract epub
 - pugixml ([MIT License](https://github.com/zeux/pugixml/blob/master/LICENSE.md))
 - OpenCC ([Apache License 2.0](https://github.com/BYVoid/OpenCC/blob/master/LICENSE))
 - indicators ([MIT License](https://github.com/p-ranav/indicators/blob/master/LICENSE))
-- Catch2 ([Boost License](https://github.com/catchorg/Catch2/blob/devel/LICENSE.txt))
 
 ## Build environment
 
