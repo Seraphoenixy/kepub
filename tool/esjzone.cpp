@@ -173,7 +173,7 @@ int main(int argc, const char *argv[]) try {
   if (!std::empty(proxy)) {
     klib::info("Use proxy: {}", proxy);
   }
-  klib::info("Max concurrency: {}", max_concurrency);
+  klib::info("Maximum concurrency: {}", max_concurrency);
 
   kepub::BookInfo book_info;
   std::vector<kepub::Chapter> chapters;
