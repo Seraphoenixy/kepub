@@ -144,7 +144,10 @@ int main(int argc, const char *argv[]) try {
 
   kepub::check_is_book_id(book_id);
 
-  klib::info("Max concurrency: {}", max_concurrency);
+  klib::info("Maximum concurrency: {}", max_concurrency);
+  if (max_concurrency > 1) {
+    klib::info("This maximum concurrency can be dangerous, please be careful");
+  }
 
   if (!show_user_info()) {
     auto login_name = kepub::get_login_name();

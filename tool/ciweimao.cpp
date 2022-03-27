@@ -200,7 +200,10 @@ int main(int argc, const char *argv[]) try {
 
   kepub::check_is_book_id(book_id);
 
-  klib::info("Max concurrency: {}", max_concurrency);
+  klib::info("Maximum concurrency: {}", max_concurrency);
+  if (max_concurrency > 2) {
+    klib::info("This maximum concurrency can be dangerous, please be careful");
+  }
 
   Token token;
   if (auto may_token = try_read_token(); may_token.has_value()) {
