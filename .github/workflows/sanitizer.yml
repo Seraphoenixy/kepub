@@ -36,6 +36,3 @@ jobs:
       - name: Test
         run: ctest -C ${{ matrix.build_type }} -j1 --output-on-failure
         working-directory: build
-        env:
-          # FIXME
-          ASAN_OPTIONS: detect_odr_violation=0
