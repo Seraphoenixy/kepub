@@ -94,6 +94,11 @@ if(NOT KEPUB_SANITIZER)
   set(MIMALLOC_OBJECT "/usr/local/lib/mimalloc.o")
 endif()
 
+# FIXME
+if(KEPUB_SANITIZER)
+  add_definitions(-DKEPUB_SANITIZER)
+endif()
+
 # ---------------------------------------------------------------------------------------
 # Build epub file
 # ---------------------------------------------------------------------------------------

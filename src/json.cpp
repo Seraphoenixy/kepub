@@ -1,7 +1,5 @@
 #include "json.h"
 
-#include <charconv>
-
 #include <klib/log.h>
 #include <klib/unicode.h>
 #include <klib/util.h>
@@ -9,6 +7,10 @@
 #include <boost/json.hpp>
 
 #include "util.h"
+
+#ifndef KEPUB_SANITIZER
+#include <charconv>
+#endif
 
 namespace kepub {
 
@@ -117,8 +119,13 @@ std::vector<kepub::Volume> get_volume_info(std::string json) {
     klib::trim(volume_name);
 
     std::uint64_t id;
+#ifndef KEPUB_SANITIZER
     auto ptr = std::data(volume_id);
     std::from_chars(ptr, ptr + std::size(volume_id), id);
+#else
+    id = std::stoull(volume_id);
+#endif
+
     result.emplace_back(id, volume_name);
   }
 
@@ -145,8 +152,13 @@ std::vector<kepub::Chapter> get_chapter_info(std::string json) {
       klib::warn("No authorized access, title: {}", chapter_title);
     } else {
       std::uint64_t id;
+#ifndef KEPUB_SANITIZER
       auto ptr = std::data(chapter_id);
       std::from_chars(ptr, ptr + std::size(chapter_id), id);
+#else
+      id = std::stoull(chapter_id);
+#endif
+
       result.emplace_back(id, chapter_title);
     }
   }
