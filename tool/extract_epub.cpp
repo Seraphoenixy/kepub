@@ -24,6 +24,13 @@
 backward::SignalHandling sh;
 #endif
 
+// FIXME
+#if __has_feature(address_sanitizer) || defined(__SANITIZE_ADDRESS__)
+extern "C" const char *__asan_default_options() {
+  return "detect_odr_violation=0";
+}
+#endif
+
 namespace {
 
 std::string get_root_file_path() {
