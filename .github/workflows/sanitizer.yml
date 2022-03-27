@@ -9,8 +9,7 @@ jobs:
     strategy:
       matrix:
         # https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html
-        # FIXME "MinSizeRel"
-        build_type: ["Debug", "Release", "RelWithDebInfo"]
+        build_type: ["Debug", "Release", "RelWithDebInfo", "MinSizeRel"]
         compiler:
           - { cc: "gcc", cxx: "g++" }
           - { cc: "clang", cxx: "clang++" }
