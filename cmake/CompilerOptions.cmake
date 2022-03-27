@@ -22,12 +22,6 @@ if(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
 endif()
 
 # ---------------------------------------------------------------------------------------
-# Static link
-# ---------------------------------------------------------------------------------------
-add_cxx_linker_flag("-static-libgcc")
-add_cxx_linker_flag("-static-libstdc++")
-
-# ---------------------------------------------------------------------------------------
 # Linker
 # ---------------------------------------------------------------------------------------
 # FIXME
@@ -68,6 +62,9 @@ endif()
 add_cxx_compiler_flag("-pipe")
 add_cxx_compiler_flag("-march=haswell")
 add_cxx_compiler_flag("-fvisibility=hidden")
+
+add_cxx_linker_flag("-static-libgcc")
+add_cxx_linker_flag("-static-libstdc++")
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
@@ -132,6 +129,8 @@ if(KEPUB_SANITIZER)
     add_cxx_linker_flag("-static-libasan")
     add_cxx_linker_flag("-static-liblsan")
     add_cxx_linker_flag("-static-libubsan")
+  else()
+    add_cxx_linker_flag("-static-libsan")
   endif()
 endif()
 
