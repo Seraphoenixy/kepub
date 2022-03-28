@@ -8,7 +8,7 @@
 
 #include <pugixml.hpp>
 
-#include "config.h"
+#include "kepub_export.h"
 #include "novel.h"
 
 namespace kepub {

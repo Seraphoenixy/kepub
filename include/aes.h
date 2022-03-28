@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "config.h"
+#include "kepub_export.h"
 
 namespace kepub::ciweimao {
 

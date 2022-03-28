@@ -3,7 +3,7 @@
 #include <string>
 #include <string_view>
 
-#include "config.h"
+#include "kepub_export.h"
 
 namespace kepub {
 

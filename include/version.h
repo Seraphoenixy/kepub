@@ -2,13 +2,13 @@
 
 #include <string>
 
-#include "config.h"
+#include "kepub_export.h"
 
 #define KEPUB_VER_MAJOR 2
 
 #define KEPUB_VER_MINOR 4
 
-#define KEPUB_VER_PATCH 6
+#define KEPUB_VER_PATCH 7
 
 #define KEPUB_STRINGIZE2(s) #s
 #define KEPUB_STRINGIZE(s) KEPUB_STRINGIZE2(s)

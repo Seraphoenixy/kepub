@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "config.h"
+#include "kepub_export.h"
 
 namespace kepub {
 

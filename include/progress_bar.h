@@ -5,7 +5,7 @@
 
 #include <indicators/progress_bar.hpp>
 
-#include "config.h"
+#include "kepub_export.h"
 
 namespace kepub {
 

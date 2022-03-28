@@ -58,6 +58,7 @@ file(GLOB_RECURSE KEPUB_LIBRARY_SRC CONFIGURE_DEPENDS
 # ---------------------------------------------------------------------------------------
 include(CTest)
 include(GNUInstallDirs)
+include(GenerateExportHeader)
 
 include(Options)
 include(Check)
@@ -93,6 +94,8 @@ if(NOT KEPUB_SANITIZER)
   message(STATUS "Use mimalloc")
   set(MIMALLOC_OBJECT "/usr/local/lib/mimalloc.o")
 endif()
+
+include_directories(${KEPUB_BINARY_DIR})
 
 # ---------------------------------------------------------------------------------------
 # Build epub file
@@ -132,6 +135,7 @@ set_target_properties(${KEPUB_LIBRARY} PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
 # ---------------------------------------------------------------------------------------
 add_library(${KEPUB_LIBRARY}-shared SHARED ${MIMALLOC_OBJECT}
                                            ${KEPUB_LIBRARY_SRC})
+generate_export_header(${KEPUB_LIBRARY}-shared BASE_NAME ${PROJECT_NAME})
 
 target_include_directories(${KEPUB_LIBRARY}-shared
                            PUBLIC "${KEPUB_SOURCE_DIR}/include")

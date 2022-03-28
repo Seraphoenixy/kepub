@@ -4,7 +4,7 @@
 
 #include <parallel_hashmap/phmap.h>
 
-#include "config.h"
+#include "kepub_export.h"
 
 namespace kepub {
 
