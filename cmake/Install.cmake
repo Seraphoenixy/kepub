@@ -68,4 +68,9 @@ set(CPACK_GENERATOR "TXZ;DEB")
 set(CPACK_DEBIAN_COMPRESSION_TYPE "xz")
 set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
 
+# https://cmake.org/cmake/help/latest/module/CPack.html#variable:CPACK_THREADS
+if(${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.20.0)
+  set(CPACK_THREADS 0)
+endif()
+
 include(CPack)
