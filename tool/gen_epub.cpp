@@ -27,8 +27,7 @@ void compress_dir_to_epub(const std::string &dir_name, bool remove,
     epub.flush_font(dir_name);
   }
 
-  klib::compress(dir_name, klib::Format::Zip, klib::Filter::Deflate,
-                 dir_name + ".epub", false);
+  klib::compress_zip(dir_name, dir_name + ".epub", false);
 
   if (remove) {
     kepub::remove_file_or_dir(dir_name);

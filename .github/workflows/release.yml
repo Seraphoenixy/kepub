@@ -40,5 +40,5 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            build/kepub*.tar.gz
+            build/kepub*.tar.xz
             build/kepub*.deb

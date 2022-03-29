@@ -270,9 +270,8 @@ void Epub::append() {
 
   flush_font(novel_.book_info_.name_);
 
-  klib::compress(novel_.book_info_.name_, klib::Format::Zip,
-                 klib::Filter::Deflate, novel_.book_info_.name_ + ".epub",
-                 false);
+  klib::compress_zip(novel_.book_info_.name_, novel_.book_info_.name_ + ".epub",
+                     false);
 
   ready_ = false;
 }
@@ -327,9 +326,8 @@ void Epub::generate() {
   dir.reset();
 
   klib::info("Start compressing files");
-  klib::compress(novel_.book_info_.name_, klib::Format::Zip,
-                 klib::Filter::Deflate, novel_.book_info_.name_ + ".epub",
-                 false);
+  klib::compress_zip(novel_.book_info_.name_, novel_.book_info_.name_ + ".epub",
+                     false);
 
   ready_ = false;
 }
