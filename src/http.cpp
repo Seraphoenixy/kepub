@@ -56,7 +56,8 @@ namespace {
 
 const std::string app_version = "2.9.803";
 const std::string device_token = "iPhone-ADDACF06-A9DD-482B-ADF5-ADE5B97438EE";
-const std::string user_agent = "HappyBook/2.9.8 (iPhone; iOS 15.4; Scale/3.00)";
+const std::string user_agent =
+    "HappyBook/2.9.8 (iPhone; iOS 15.4.1; Scale/3.00)";
 const static std::string user_agent_rss =
     request.url_encode("刺猬猫阅读") +
     "/2.9.803 CFNetwork/1331.0.7 Darwin/21.4.0";
@@ -71,8 +72,10 @@ std::string http_get_rss(const std::string &url) {
   request.verbose(true);
 #endif
 
-  auto response = request.get(
-      url, {}, {{"Connection", "keep-alive"}, {"Accept-Language", "zh-cn"}});
+  auto response = request.get(url, {},
+                              {{"Accept", "image/webp,image/*;q=0.8"},
+                               {"Accept-Language", "zh-CN,zh-Hans;q=0.9"},
+                               {"Connection", "keep-alive"}});
 
   auto status = response.status();
   if (status != klib::HttpStatus::HTTP_STATUS_OK) {
@@ -115,9 +118,9 @@ namespace {
 const std::string authorization = "Basic YXBpdXNlcjozcyMxLXl0NmUqQWN2QHFlcg==";
 const std::string device_token = "1F6EF324-A916-4995-971D-3AA71813072B";
 const std::string user_agent =
-    "boluobao/4.8.32(iOS;15.4)/appStore/" + device_token;
+    "boluobao/4.8.42(iOS;15.4.1)/appStore/" + device_token;
 const std::string user_agent_rss =
-    "SFReader/4.8.32 (iPhone; iOS 15.4; Scale/3.00)";
+    "SFReader/4.8.42 (iPhone; iOS 15.4.1; Scale/3.00)";
 
 std::string sf_security() {
   std::string uuid = klib::uuid();
@@ -162,9 +165,9 @@ std::string http_get_rss(const std::string &url) {
 
   return request
       .get(url, {},
-           {{"Connection", "keep-alive"},
-            {"Accept", "image/*,*/*;q=0.8"},
-            {"Accept-Language", "zh-CN,zh-Hans;q=0.9"}})
+           {{"Accept", "image/*,*/*;q=0.8"},
+            {"Accept-Language", "zh-CN,zh-Hans;q=0.9"},
+            {"Connection", "keep-alive"}})
       .text();
 }
 
