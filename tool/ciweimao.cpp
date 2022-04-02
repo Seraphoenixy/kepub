@@ -132,11 +132,10 @@ std::vector<kepub::Chapter> get_chapters(const Token &token,
 std::string get_chapter_command(const Token &token,
                                 const std::string &chapter_id) {
   // FIXME
-  auto response = http_post("https://app.hbooker.com/chapter/get_chapter_cmd_s",
+  auto response = http_post("https://app.hbooker.com/chapter/get_chapter_cmd",
                             {{"account", token.account_},
                              {"login_token", token.login_token_},
-                             {"chapter_id", chapter_id},
-                             {"token", "TODO"}});
+                             {"chapter_id", chapter_id}});
 
   return ::get_chapter_command(decrypt_no_iv(response));
 }

@@ -897,8 +897,8 @@
     <item id="volume014.xhtml" href="text/volume014.xhtml" media-type="application/xhtml+xml" />
     <item id="chapter859.xhtml" href="text/chapter859.xhtml" media-type="application/xhtml+xml" />
     <item id="chapter860.xhtml" href="text/chapter860.xhtml" media-type="application/xhtml+xml" />
-    <item id="volume015.xhtml" href="text/volume015.xhtml" media-type="application/xhtml+xml" />
     <item id="chapter861.xhtml" href="text/chapter861.xhtml" media-type="application/xhtml+xml" />
+    <item id="volume015.xhtml" href="text/volume015.xhtml" media-type="application/xhtml+xml" />
     <item id="chapter862.xhtml" href="text/chapter862.xhtml" media-type="application/xhtml+xml" />
     <item id="chapter863.xhtml" href="text/chapter863.xhtml" media-type="application/xhtml+xml" />
     <item id="chapter864.xhtml" href="text/chapter864.xhtml" media-type="application/xhtml+xml" />
@@ -919,6 +919,7 @@
     <item id="chapter879.xhtml" href="text/chapter879.xhtml" media-type="application/xhtml+xml" />
     <item id="chapter880.xhtml" href="text/chapter880.xhtml" media-type="application/xhtml+xml" />
     <item id="chapter881.xhtml" href="text/chapter881.xhtml" media-type="application/xhtml+xml" />
+    <item id="chapter882.xhtml" href="text/chapter882.xhtml" media-type="application/xhtml+xml" />
   </manifest>
   <spine>
     <itemref idref="introduction.xhtml" />
@@ -1796,8 +1797,8 @@
     <itemref idref="volume014.xhtml" />
     <itemref idref="chapter859.xhtml" />
     <itemref idref="chapter860.xhtml" />
-    <itemref idref="volume015.xhtml" />
     <itemref idref="chapter861.xhtml" />
+    <itemref idref="volume015.xhtml" />
     <itemref idref="chapter862.xhtml" />
     <itemref idref="chapter863.xhtml" />
     <itemref idref="chapter864.xhtml" />
@@ -1818,5 +1819,6 @@
     <itemref idref="chapter879.xhtml" />
     <itemref idref="chapter880.xhtml" />
     <itemref idref="chapter881.xhtml" />
+    <itemref idref="chapter882.xhtml" />
   </spine>
 </package>

@@ -16,15 +16,17 @@ namespace ciweimao {
 
 enum Code { Ok = 100000, LoginExpired = 200100 };
 
-#define JSON_BASE_CIWEIMAO(json)                                \
-  simdjson::ondemand::parser parser;                            \
-  (json).reserve(std::size(json) + simdjson::SIMDJSON_PADDING); \
-  auto doc = parser.iterate(json);                              \
-  auto code = doc["code"].get_int64().value();                  \
-  if (code == LoginExpired) {                                   \
-    klib::warn(doc["tip"].get_string().value());                \
-  } else if (code != Ok) {                                      \
-    klib::error(doc["tip"].get_string().value());               \
+// FIXME
+// auto code = doc["code"].get_int64().value();
+#define JSON_BASE_CIWEIMAO(json)                                        \
+  simdjson::ondemand::parser parser;                                    \
+  (json).reserve(std::size(json) + simdjson::SIMDJSON_PADDING);         \
+  auto doc = parser.iterate(json);                                      \
+  auto code = std::stoi(std::string(doc["code"].get_string().value())); \
+  if (code == LoginExpired) {                                           \
+    klib::warn(doc["tip"].get_string().value());                        \
+  } else if (code != Ok) {                                              \
+    klib::error(doc["tip"].get_string().value());                       \
   }
 
 std::string serialize(const std::string &account,
@@ -135,14 +137,18 @@ std::vector<kepub::Chapter> get_chapter_info(std::string json) {
     std::string chapter_title(chapter["chapter_title"].get_string().value());
     klib::trim(chapter_title);
 
-    auto is_valid = chapter["is_valid"].get_int64().value();
-    if (is_valid != 1) {
+    // FIXME
+    // auto is_valid = chapter["is_valid"].get_int64().value();
+    std::string is_valid(chapter["is_valid"].get_string().value());
+    if (is_valid != "1") {
       klib::warn("The chapter is not valid, title: {}", chapter_title);
       continue;
     }
 
-    auto auth_access = chapter["auth_access"].get_int64().value();
-    if (auth_access != 1) {
+    // FIXME
+    // auto auth_access = chapter["auth_access"].get_int64().value();
+    std::string auth_access(chapter["auth_access"].get_string().value());
+    if (auth_access != "1") {
       klib::warn("No authorized access, title: {}", chapter_title);
     } else {
       std::uint64_t id;

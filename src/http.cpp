@@ -54,13 +54,20 @@ namespace ciweimao {
 
 namespace {
 
-const std::string app_version = "2.9.803";
-const std::string device_token = "iPhone-ADDACF06-A9DD-482B-ADF5-ADE5B97438EE";
-const std::string user_agent =
-    "HappyBook/2.9.8 (iPhone; iOS 15.4.1; Scale/3.00)";
+// FIXME
+// const std::string app_version = "2.9.803";
+// const std::string device_token =
+// "iPhone-ADDACF06-A9DD-482B-ADF5-ADE5B97438EE"; const std::string user_agent =
+//     "HappyBook/2.9.8 (iPhone; iOS 15.4.1; Scale/3.00)";
+// const static std::string user_agent_rss =
+//     request.url_encode("刺猬猫阅读") +
+//     "/2.9.803 CFNetwork/1331.0.7 Darwin/21.4.0";
+
+const std::string app_version = "2.9.273";
+const std::string device_token = "ciweimao_client";
+const std::string user_agent = "Android com.kuangxiangciweimao.novel";
 const static std::string user_agent_rss =
-    request.url_encode("刺猬猫阅读") +
-    "/2.9.803 CFNetwork/1331.0.7 Darwin/21.4.0";
+    request.url_encode("刺猬猫阅读") + "/2.9.273";
 
 }  // namespace
 
