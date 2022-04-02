@@ -3,6 +3,7 @@
 #include <klib/base64.h>
 #include <klib/crypto.h>
 #include <klib/hash.h>
+#include <klib/log.h>
 
 namespace kepub::ciweimao {
 
@@ -22,13 +23,21 @@ std::string decrypt(const std::string &str) {
 }
 
 std::string decrypt_no_iv(const std::string &str) {
-  return klib::aes_256_cbc_decrypt_no_iv(klib::fast_base64_decode(str),
-                                         default_key);
+  try {
+    return klib::aes_256_cbc_decrypt_no_iv(klib::fast_base64_decode(str),
+                                           default_key);
+  } catch (...) {
+    klib::error("Decryption failed");
+  }
 }
 
 std::string decrypt_no_iv(const std::string &str, const std::string &key) {
-  return klib::aes_256_cbc_decrypt_no_iv(klib::fast_base64_decode(str),
-                                         klib::sha256(key));
+  try {
+    return klib::aes_256_cbc_decrypt_no_iv(klib::fast_base64_decode(str),
+                                           klib::sha256(key));
+  } catch (...) {
+    klib::error("Decryption failed");
+  }
 }
 
 }  // namespace kepub::ciweimao
