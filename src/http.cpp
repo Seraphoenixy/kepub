@@ -122,7 +122,8 @@ namespace sfacg {
 
 namespace {
 
-const std::string authorization = "Basic YXBpdXNlcjozcyMxLXl0NmUqQWN2QHFlcg==";
+const std::string user_name = "apiuser";
+const std::string password = "3s#1-yt6e*Acv@qer";
 const std::string device_token = "1F6EF324-A916-4995-971D-3AA71813072B";
 const std::string user_agent =
     "boluobao/4.8.42(iOS;15.4.1)/appStore/" + device_token;
@@ -148,6 +149,7 @@ std::string http_get(
   request.set_no_proxy();
   request.set_user_agent(user_agent);
   request.set_accept_encoding("gzip, deflate, br");
+  request.basic_auth(user_name, password);
 #ifndef NDEBUG
   request.verbose(true);
 #endif
@@ -157,8 +159,7 @@ std::string http_get(
            {{"Connection", "keep-alive"},
             {"Accept", "application/vnd.sfacg.api+json;version=1"},
             {"SFSecurity", sf_security()},
-            {"Accept-Language", "zh-Hans-CN;q=1"},
-            {"Authorization", authorization}})
+            {"Accept-Language", "zh-Hans-CN;q=1"}})
       .text();
 }
 
@@ -182,6 +183,7 @@ std::string http_post(const std::string &url, const std::string &json) {
   request.set_no_proxy();
   request.set_user_agent(user_agent);
   request.set_accept_encoding("gzip, deflate, br");
+  request.basic_auth(user_name, password);
 #ifndef NDEBUG
   request.verbose(true);
 #endif
@@ -191,8 +193,7 @@ std::string http_post(const std::string &url, const std::string &json) {
             {{"Connection", "keep-alive"},
              {"Accept", "application/vnd.sfacg.api+json;version=1"},
              {"SFSecurity", sf_security()},
-             {"Accept-Language", "zh-Hans-CN;q=1"},
-             {"Authorization", authorization}})
+             {"Accept-Language", "zh-Hans-CN;q=1"}})
       .text();
 }
 
