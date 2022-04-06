@@ -147,7 +147,7 @@ int main(int argc, const char *argv[]) try {
 
   klib::info("Maximum concurrency: {}", max_concurrency);
   if (max_concurrency > 1) {
-    klib::info("This maximum concurrency can be dangerous, please be careful");
+    klib::warn("This maximum concurrency can be dangerous, please be careful");
   }
 
   if (!show_user_info()) {
