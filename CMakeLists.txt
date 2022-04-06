@@ -100,9 +100,9 @@ include_directories(${KEPUB_BINARY_DIR})
 # ---------------------------------------------------------------------------------------
 # Build epub file
 # ---------------------------------------------------------------------------------------
-file(GLOB_RECURSE KEPUB_EPUB_FILE CONFIGURE_DEPENDS
-     "${KEPUB_SOURCE_DIR}/epub/*")
-file(COPY ${KEPUB_EPUB_FILE} DESTINATION ${KEPUB_BINARY_DIR})
+file(COPY "${KEPUB_SOURCE_DIR}/epub/SourceHanSansSC-Bold.ttf"
+     DESTINATION ${KEPUB_BINARY_DIR})
+file(COPY "${KEPUB_SOURCE_DIR}/epub/style.css" DESTINATION ${KEPUB_BINARY_DIR})
 
 add_library(epub STATIC "${KEPUB_SOURCE_DIR}/src/epub.s")
 target_compile_options(epub PRIVATE "-Wno-unused-command-line-argument")
