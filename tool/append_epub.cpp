@@ -21,6 +21,7 @@ backward::SignalHandling sh;
 
 int main(int argc, const char *argv[]) try {
   CLI::App app;
+  app.footer(kepub::footer_str());
   app.set_version_flag("-v,--version", kepub::version_str());
 
   std::string file_name;

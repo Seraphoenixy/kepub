@@ -10,6 +10,8 @@
 
 namespace kepub {
 
+std::string KEPUB_EXPORT footer_str();
+
 void KEPUB_EXPORT check_file_exist(const std::string &file_name);
 
 void KEPUB_EXPORT check_is_txt_file(const std::string &file_name);

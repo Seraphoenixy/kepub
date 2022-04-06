@@ -10,6 +10,7 @@
 #include <sstream>
 
 #include <klib/log.h>
+#include <klib/qr_code.h>
 #include <klib/unicode.h>
 #include <klib/url_parse.h>
 #include <klib/util.h>
@@ -41,6 +42,19 @@ bool end_with_punctuation(const std::string &str) {
 }
 
 }  // namespace
+
+std::string KEPUB_EXPORT footer_str() {
+  std::string result;
+
+  result.append(
+      "Report bugs to https://github.com/KaiserLancelot/kepub/issues\n\n");
+  result.append(
+      "You can use the link or QR code to contact me via Telegram\n\n");
+  result.append("https://t.me/kaiserlancelot\n\n");
+  result.append(klib::qr_code_to_utf8("https://t.me/kaiserlancelot", 2));
+
+  return result;
+}
 
 void check_file_exist(const std::string &file_name) {
   if (!std::filesystem::is_regular_file(file_name)) {
