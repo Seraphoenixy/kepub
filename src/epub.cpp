@@ -594,8 +594,11 @@ void Epub::generate_package() const {
   }
 
   append_manifest(manifest, "nav.xhtml", "nav.xhtml", "nav");
-  append_manifest_and_spine(manifest, "introduction.xhtml",
-                            "text/introduction.xhtml");
+
+  if (!std::empty(novel_.book_info_.introduction_)) {
+    append_manifest_and_spine(manifest, "introduction.xhtml",
+                              "text/introduction.xhtml");
+  }
 
   for (std::int32_t i = 1; i <= novel_.illustration_num_; ++i) {
     auto name = num_to_illustration_name(i);
