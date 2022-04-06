@@ -1,0 +1,13 @@
+#compdef esjzone
+
+local -a args
+
+args=(
+  '(-t --translation)'{-t,--translation}'[Translate Traditional Chinese to Simplified Chinese]'
+  '(-m --multithreading)'{-m,--multithreading}'[Maximum number of concurrency to use when downloading]'
+  '(-p --proxy)'{-p,--proxy}'[Use proxy]'
+  '(- : *)'{-h,--help}'[Print this help message and exit]'
+  '(- : *)'{-v,--version}'[Display program version information and exit]'
+)
+
+_arguments -s -S $args

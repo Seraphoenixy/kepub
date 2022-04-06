@@ -1,0 +1,14 @@
+#compdef append-epub
+
+local -a args
+
+args=(
+  '(-t --translation)'{-t,--translation}'[Translate Traditional Chinese to Simplified Chinese]'
+  '(-c --connect)'{-c,--connect}'[Remove extra line breaks]'
+  '(-r --remove)'{-r,--remove}'[When the generation is successful, delete the TXT file and picture]'
+  '(- : *)'{-h,--help}'[Print this help message and exit]'
+  '(- : *)'{-v,--version}'[Display program version information and exit]'
+  '*:file:_path_files -g "*.txt"'
+)
+
+_arguments -s -S $args

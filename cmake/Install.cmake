@@ -46,6 +46,15 @@ install(
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
+install(
+  FILES ${KEPUB_SOURCE_DIR}/script/_${SFACG_EXECUTABLE}
+        ${KEPUB_SOURCE_DIR}/script/_${CIWEIMAO_EXECUTABLE}
+        ${KEPUB_SOURCE_DIR}/script/_${ESJZONE_EXECUTABLE}
+        ${KEPUB_SOURCE_DIR}/script/_${GEN_EPUB_EXECUTABLE}
+        ${KEPUB_SOURCE_DIR}/script/_${APPEND_EPUB_EXECUTABLE}
+        ${KEPUB_SOURCE_DIR}/script/_${EXTRACT_EPUB_EXECUTABLE}
+  DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/zsh/vendor-completions)
+
 # ---------------------------------------------------------------------------------------
 # Support creation of installable packages
 # ---------------------------------------------------------------------------------------

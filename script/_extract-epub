@@ -1,0 +1,11 @@
+#compdef extract-epub
+
+local -a args
+
+args=(
+  '(- : *)'{-h,--help}'[Print this help message and exit]'
+  '(- : *)'{-v,--version}'[Display program version information and exit]'
+  '*:file:_path_files -g "*.epub"'
+)
+
+_arguments -s -S $args

@@ -44,10 +44,6 @@ sfacg book-id
 gen-epub book-name.txt
 ```
 
-## Roadmap
-
-- Zsh completion
-
 ---
 
 Thanks to [JetBrains](https://www.jetbrains.com/) for donating product licenses to help develop this project <a href="https://www.jetbrains.com/"><img src="logo/jetbrains.svg" width="94" align="center" /></a>
