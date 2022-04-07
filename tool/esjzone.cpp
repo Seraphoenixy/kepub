@@ -84,7 +84,8 @@ std::pair<kepub::BookInfo, std::vector<kepub::Chapter>> get_info(
     auto title =
         kepub::trans_str(child.child("p").text().as_string(), translation);
 
-    if (!may_be_url.starts_with("https://www.esjzone.cc/")) {
+    if (!(may_be_url.starts_with("https://www.esjzone.cc/") ||
+          may_be_url.starts_with("https://www.esjzone.net/"))) {
       klib::warn("url error: {}, title: {}", may_be_url, title);
     } else {
       chapters.emplace_back(may_be_url, title);
