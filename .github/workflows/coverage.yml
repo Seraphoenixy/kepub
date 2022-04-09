@@ -1,6 +1,12 @@
 name: Coverage
 
-on: [push, pull_request]
+on:
+  push:
+    paths-ignore:
+      - "**.md"
+  pull_request:
+    paths-ignore:
+      - "**.md"
 
 jobs:
   build:
@@ -31,13 +37,13 @@ jobs:
       - name: Build
         run: cmake --build build --config Debug -j"$(nproc)" --target coverage
 
-      # https://github.com/coverallsapp/github-action
-      - name: Coveralls
+      # https://github.com/codecov/codecov-action#usage
+      - name: Upload to codecov
         if: ${{ matrix.compiler.cxx == 'clang++' }}
-        uses: coverallsapp/github-action@master
+        uses: codecov/codecov-action@v3
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          path-to-lcov: build/lcov.info
+          files: build/lcov.info
+          fail_ci_if_error: true
 
       # https://github.com/actions/upload-artifact
       - name: Upload artifact
