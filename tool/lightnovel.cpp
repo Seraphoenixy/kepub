@@ -7,6 +7,7 @@
 #include <klib/util.h>
 #include <CLI/CLI.hpp>
 #include <boost/algorithm/string.hpp>
+#include <pugixml.hpp>
 
 #include "html.h"
 #include "http.h"
@@ -37,14 +38,15 @@ std::vector<std::string> get_content(const pugi::xml_document &doc,
                   .node();
 
   std::vector<std::string> result;
+
   static std::int32_t count = 0;
   const static std::string image_prefix = "[IMAGE] ";
   const static auto image_prefix_size = std::size(image_prefix);
 
   for (const auto &text : kepub::get_node_texts(node)) {
     for (const auto &line : klib::split_str(text, "\n")) {
-      if (line.starts_with("[IMAGE] ")) {
-        auto image_name = line.substr(image_prefix_size);
+      if (line.starts_with(image_prefix)) {
+        const auto image_name = line.substr(image_prefix_size);
 
         std::string new_image_name;
         if (count == 0) {
@@ -52,7 +54,7 @@ std::vector<std::string> get_content(const pugi::xml_document &doc,
           ++count;
         } else {
           new_image_name = kepub::num_to_str(count++) + ".webp";
-          kepub::push_back(result, "[IMAGE] " + new_image_name);
+          kepub::push_back(result, image_prefix + new_image_name);
         }
 
         klib::info("Start downloading image: {}", new_image_name);
