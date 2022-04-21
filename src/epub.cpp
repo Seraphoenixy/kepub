@@ -192,6 +192,10 @@ std::int32_t last_num(const pugi::xml_node &node, const std::string &prefix,
 }
 
 void compress_image(const std::string &path) {
+  if (path.ends_with(".webp")) {
+    return;
+  }
+
   auto image_dir = std::filesystem::path(path).parent_path();
   auto new_file_name = std::filesystem::path(path).stem().string() + ".webp";
 
