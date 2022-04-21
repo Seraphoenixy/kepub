@@ -10,7 +10,7 @@
 
 ---
 
-Crawl novels from sfacg, ciweimao and esjzone; generate, append and extract epub
+Crawl novels from sfacg, ciweimao, esjzone and lightnovel; generate, append and extract epub
 
 ## Third party
 

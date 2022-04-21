@@ -30,6 +30,11 @@ target_link_libraries(
   PRIVATE ${KEPUB_LIBRARY}-shared klib::klib ${Boost_LIBRARIES}
           pugixml::pugixml CLI11::CLI11 TBB::tbb)
 
+add_executable(${LIGHTNOVEL_EXECUTABLE} ${MIMALLOC_OBJECT} lightnovel.cpp)
+target_link_libraries(
+  ${LIGHTNOVEL_EXECUTABLE} PRIVATE ${KEPUB_LIBRARY}-shared klib::klib
+                                   ${Boost_LIBRARIES} CLI11::CLI11)
+
 if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
   find_package(Backward REQUIRED)
 
@@ -39,4 +44,5 @@ if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
   target_link_libraries(${SFACG_EXECUTABLE} PRIVATE Backward::Backward)
   target_link_libraries(${CIWEIMAO_EXECUTABLE} PRIVATE Backward::Backward)
   target_link_libraries(${ESJZONE_EXECUTABLE} PRIVATE Backward::Backward)
+  target_link_libraries(${LIGHTNOVEL_EXECUTABLE} PRIVATE Backward::Backward)
 endif()

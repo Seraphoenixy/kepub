@@ -28,7 +28,7 @@ namespace {
 
 pugi::xml_document get_xml(const std::string &url, const std::string &proxy) {
   auto response = http_get(url, proxy);
-  return html_to_xml(response);
+  return kepub::html_to_xml(response);
 }
 
 std::pair<kepub::BookInfo, std::vector<kepub::Chapter>> get_info(
@@ -128,7 +128,7 @@ std::vector<std::string> get_content(const std::string &url, bool translation,
                   .node();
 
   std::vector<std::string> result;
-  for (const auto &text : get_node_texts(node)) {
+  for (const auto &text : kepub::get_node_texts(node)) {
     for (const auto &line : klib::split_str(text, "\n")) {
       kepub::push_back(result, kepub::trans_str(line, translation));
     }

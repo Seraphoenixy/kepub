@@ -50,6 +50,45 @@ std::string http_get(const std::string &url, const std::string &proxy) {
 
 }  // namespace esjzone
 
+namespace lightnovel {
+
+std::string http_get(const std::string &url) {
+  request.set_browser_user_agent();
+  request.set_no_proxy();
+#ifndef NDEBUG
+  request.verbose(true);
+#endif
+
+  auto response = request.get(url);
+
+  auto status = response.status();
+  if (status != klib::HttpStatus::HTTP_STATUS_OK) {
+    report_http_error(status, url);
+  }
+
+  return response.text();
+}
+
+std::string http_get_rss(const std::string &url) {
+  request.set_browser_user_agent();
+  request.set_no_proxy();
+#ifndef NDEBUG
+  request.verbose(true);
+#endif
+
+  auto response =
+      request.get(url, {}, {{"referer", "https://www.lightnovel.us/"}});
+
+  auto status = response.status();
+  if (status != klib::HttpStatus::HTTP_STATUS_OK) {
+    report_http_error(status, url);
+  }
+
+  return response.text();
+}
+
+}  // namespace lightnovel
+
 namespace ciweimao {
 
 namespace {

@@ -15,6 +15,14 @@ std::string KEPUB_EXPORT http_get(const std::string &url,
 
 }  // namespace esjzone
 
+namespace lightnovel {
+
+std::string KEPUB_EXPORT http_get(const std::string &url);
+
+std::string KEPUB_EXPORT http_get_rss(const std::string &url);
+
+}  // namespace lightnovel
+
 namespace ciweimao {
 
 std::string KEPUB_EXPORT http_get_rss(const std::string &url);

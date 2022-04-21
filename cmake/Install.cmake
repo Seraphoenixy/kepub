@@ -20,6 +20,11 @@ set_target_properties(
              INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 set_target_properties(
+  ${LIGHTNOVEL_EXECUTABLE}
+  PROPERTIES INSTALL_RPATH "$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
+             INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+set_target_properties(
   ${GEN_EPUB_EXECUTABLE}
   PROPERTIES INSTALL_RPATH "$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
              INSTALL_RPATH_USE_LINK_PATH TRUE)
@@ -39,6 +44,7 @@ install(
           ${SFACG_EXECUTABLE}
           ${CIWEIMAO_EXECUTABLE}
           ${ESJZONE_EXECUTABLE}
+          ${LIGHTNOVEL_EXECUTABLE}
           ${GEN_EPUB_EXECUTABLE}
           ${APPEND_EPUB_EXECUTABLE}
           ${EXTRACT_EPUB_EXECUTABLE}
@@ -50,6 +56,7 @@ install(
   FILES ${KEPUB_SOURCE_DIR}/script/_${SFACG_EXECUTABLE}
         ${KEPUB_SOURCE_DIR}/script/_${CIWEIMAO_EXECUTABLE}
         ${KEPUB_SOURCE_DIR}/script/_${ESJZONE_EXECUTABLE}
+        ${KEPUB_SOURCE_DIR}/script/_${LIGHTNOVEL_EXECUTABLE}
         ${KEPUB_SOURCE_DIR}/script/_${GEN_EPUB_EXECUTABLE}
         ${KEPUB_SOURCE_DIR}/script/_${APPEND_EPUB_EXECUTABLE}
         ${KEPUB_SOURCE_DIR}/script/_${EXTRACT_EPUB_EXECUTABLE}
@@ -66,7 +73,7 @@ set(CPACK_INSTALL_CMAKE_PROJECTS ${KEPUB_BINARY_DIR} ${PROJECT_NAME} ALL .)
 # https://cmake.org/cmake/help/latest/cpack_gen/deb.html
 set(CPACK_PACKAGE_CONTACT "Kaiser <kaiserlancelot123@gmail.com>")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY
-    "Crawl novels from sfacg, ciweimao and esjzone; generate, append and extract epub"
+    "Crawl novels from sfacg, ciweimao and esjzone and lightnovel; generate, append and extract epub"
 )
 set(CPACK_PACKAGE_VERSION
     ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH})

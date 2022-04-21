@@ -273,7 +273,7 @@ std::string get_password() {
 }
 
 std::string num_to_str(std::int32_t i) {
-  Expects(i > 0);
+  Expects(i >= 0);
 
   auto str = std::to_string(i);
   if (i < 10) {
