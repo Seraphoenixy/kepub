@@ -1862,6 +1862,18 @@ PS2：前面那些PS很多都是以前留下的，看时间就知道
     <item id="chapter1801.xhtml" href="text/chapter1801.xhtml" media-type="application/xhtml+xml" />
     <item id="chapter1802.xhtml" href="text/chapter1802.xhtml" media-type="application/xhtml+xml" />
     <item id="chapter1803.xhtml" href="text/chapter1803.xhtml" media-type="application/xhtml+xml" />
+    <item id="chapter1804.xhtml" href="text/chapter1804.xhtml" media-type="application/xhtml+xml" />
+    <item id="chapter1805.xhtml" href="text/chapter1805.xhtml" media-type="application/xhtml+xml" />
+    <item id="chapter1806.xhtml" href="text/chapter1806.xhtml" media-type="application/xhtml+xml" />
+    <item id="chapter1807.xhtml" href="text/chapter1807.xhtml" media-type="application/xhtml+xml" />
+    <item id="chapter1808.xhtml" href="text/chapter1808.xhtml" media-type="application/xhtml+xml" />
+    <item id="chapter1809.xhtml" href="text/chapter1809.xhtml" media-type="application/xhtml+xml" />
+    <item id="chapter1810.xhtml" href="text/chapter1810.xhtml" media-type="application/xhtml+xml" />
+    <item id="chapter1811.xhtml" href="text/chapter1811.xhtml" media-type="application/xhtml+xml" />
+    <item id="chapter1812.xhtml" href="text/chapter1812.xhtml" media-type="application/xhtml+xml" />
+    <item id="chapter1813.xhtml" href="text/chapter1813.xhtml" media-type="application/xhtml+xml" />
+    <item id="chapter1814.xhtml" href="text/chapter1814.xhtml" media-type="application/xhtml+xml" />
+    <item id="chapter1815.xhtml" href="text/chapter1815.xhtml" media-type="application/xhtml+xml" />
   </manifest>
   <spine>
     <itemref idref="introduction.xhtml" />
@@ -3701,5 +3713,17 @@ PS2：前面那些PS很多都是以前留下的，看时间就知道
     <itemref idref="chapter1801.xhtml" />
     <itemref idref="chapter1802.xhtml" />
     <itemref idref="chapter1803.xhtml" />
+    <itemref idref="chapter1804.xhtml" />
+    <itemref idref="chapter1805.xhtml" />
+    <itemref idref="chapter1806.xhtml" />
+    <itemref idref="chapter1807.xhtml" />
+    <itemref idref="chapter1808.xhtml" />
+    <itemref idref="chapter1809.xhtml" />
+    <itemref idref="chapter1810.xhtml" />
+    <itemref idref="chapter1811.xhtml" />
+    <itemref idref="chapter1812.xhtml" />
+    <itemref idref="chapter1813.xhtml" />
+    <itemref idref="chapter1814.xhtml" />
+    <itemref idref="chapter1815.xhtml" />
   </spine>
 </package>
