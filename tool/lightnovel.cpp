@@ -98,9 +98,15 @@ int main(int argc, const char *argv[]) try {
   CLI11_PARSE(app, argc, argv)
 
   kepub::check_is_book_id(book_id);
+  if (!std::empty(proxy)) {
+    klib::info("Use proxy: {}", proxy);
+  }
+
+  const std::string url = "https://www.lightnovel.us/cn/detail/" + book_id;
+  klib::info("Download novel from {}", url);
 
   klib::info("Start downloading novel content");
-  auto doc = get_xml("https://www.lightnovel.us/cn/detail/" + book_id, proxy);
+  auto doc = get_xml(url, proxy);
 
   auto content = get_content(doc, translation, proxy);
   auto book_name = content.front();
