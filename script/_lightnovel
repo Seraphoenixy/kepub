@@ -4,6 +4,7 @@ local -a args
 
 args=(
   '(-t --translation)'{-t,--translation}'[Translate Traditional Chinese to Simplified Chinese]'
+  '(-p --proxy)'{-p,--proxy}'[Use proxy]'
   '(- : *)'{-h,--help}'[Print this help message and exit]'
   '(- : *)'{-v,--version}'[Display program version information and exit]'
 )

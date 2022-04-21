@@ -24,13 +24,14 @@ using namespace kepub::lightnovel;
 
 namespace {
 
-pugi::xml_document get_xml(const std::string &url) {
-  auto response = http_get(url);
+pugi::xml_document get_xml(const std::string &url, const std::string &proxy) {
+  auto response = http_get(url, proxy);
   return kepub::html_to_xml(response);
 }
 
 std::vector<std::string> get_content(const pugi::xml_document &doc,
-                                     bool translation) {
+                                     bool translation,
+                                     const std::string &proxy) {
   auto node = doc.select_node(
                      "/html/body/div/div/div/div[@class='layout-container']/"
                      "div/div/div[@class='left-contents']/article/"
@@ -58,7 +59,8 @@ std::vector<std::string> get_content(const pugi::xml_document &doc,
         }
 
         klib::info("Start downloading image: {}", new_image_name);
-        auto image = http_get_rss("https://i.noire.cc/image/" + image_name);
+        auto image =
+            http_get_rss("https://i.noire.cc/image/" + image_name, proxy);
         klib::write_file(new_image_name, true, image);
       } else {
         kepub::push_back(result, kepub::trans_str(line, translation));
@@ -88,14 +90,19 @@ int main(int argc, const char *argv[]) try {
   app.add_flag("-t,--translation", translation,
                "Translate Traditional Chinese to Simplified Chinese");
 
+  std::string proxy;
+  app.add_flag("-p{http://127.0.0.1:1080},--proxy{http://127.0.0.1:1080}",
+               proxy, "Use proxy")
+      ->expected(0, 1);
+
   CLI11_PARSE(app, argc, argv)
 
   kepub::check_is_book_id(book_id);
 
   klib::info("Start downloading novel content");
-  auto doc = get_xml("https://www.lightnovel.us/cn/detail/" + book_id);
+  auto doc = get_xml("https://www.lightnovel.us/cn/detail/" + book_id, proxy);
 
-  auto content = get_content(doc, translation);
+  auto content = get_content(doc, translation, proxy);
   auto book_name = content.front();
 
   klib::write_file(book_name + ".txt", false,

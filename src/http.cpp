@@ -52,9 +52,13 @@ std::string http_get(const std::string &url, const std::string &proxy) {
 
 namespace lightnovel {
 
-std::string http_get(const std::string &url) {
+std::string http_get(const std::string &url, const std::string &proxy) {
   request.set_browser_user_agent();
-  request.set_no_proxy();
+  if (!std::empty(proxy)) {
+    request.set_proxy(proxy);
+  } else {
+    request.set_no_proxy();
+  }
 #ifndef NDEBUG
   request.verbose(true);
 #endif
@@ -69,9 +73,13 @@ std::string http_get(const std::string &url) {
   return response.text();
 }
 
-std::string http_get_rss(const std::string &url) {
+std::string http_get_rss(const std::string &url, const std::string &proxy) {
   request.set_browser_user_agent();
-  request.set_no_proxy();
+  if (!std::empty(proxy)) {
+    request.set_proxy(proxy);
+  } else {
+    request.set_no_proxy();
+  }
 #ifndef NDEBUG
   request.verbose(true);
 #endif
