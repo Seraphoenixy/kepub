@@ -34,6 +34,7 @@ std::string http_get(const std::string &url, const std::string &proxy) {
   } else {
     request.set_no_proxy();
   }
+  request.set_doh_url("https://dns.google/dns-query");
 #ifndef NDEBUG
   request.verbose(true);
 #endif
@@ -59,6 +60,7 @@ std::string http_get(const std::string &url, const std::string &proxy) {
   } else {
     request.set_no_proxy();
   }
+  request.set_doh_url("https://dns.google/dns-query");
 #ifndef NDEBUG
   request.verbose(true);
 #endif
@@ -80,6 +82,7 @@ std::string http_get_rss(const std::string &url, const std::string &proxy) {
   } else {
     request.set_no_proxy();
   }
+  request.set_doh_url("https://dns.google/dns-query");
 #ifndef NDEBUG
   request.verbose(true);
 #endif
