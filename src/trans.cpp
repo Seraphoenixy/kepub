@@ -132,7 +132,7 @@ std::u32string custom_trans(const std::u32string &str, bool translation) {
         }
       }
 
-      static const phmap::flat_hash_map<char32_t, char32_t> map2{
+      static const phmap::flat_hash_map<char32_t, char32_t> map{
           {U'妳', U'你'},
           {U'壊', U'坏'},
           {U'拚', U'拼'},
@@ -274,6 +274,7 @@ std::u32string custom_trans(const std::u32string &str, bool translation) {
           {U'財', U'财'},
           {U'頂', U'顶'},
           {U'倆', U'俩'},
+          {U'祕', U'秘'},
           // https://zh.wikipedia.org/wiki/%E5%85%A8%E5%BD%A2%E5%92%8C%E5%8D%8A%E5%BD%A2
           {U'＂', U'"'},
           {U'＃', U'#'},
@@ -365,7 +366,7 @@ std::u32string custom_trans(const std::u32string &str, bool translation) {
           {U'•', U'·'},
           {U'─', U'—'},
       };
-      if (auto iter = map2.find(c); iter != std::end(map2)) {
+      if (auto iter = map.find(c); iter != std::end(map)) {
         c = iter->second;
       }
 
