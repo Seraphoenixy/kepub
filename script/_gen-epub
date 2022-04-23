@@ -11,7 +11,7 @@ args=(
   '(-f --flush-font)'{-f,--flush-font}'[Regenerate fonts based on titles]'
   '(- : *)'{-h,--help}'[Print this help message and exit]'
   '(- : *)'{-v,--version}'[Display program version information and exit]'
-  '*:file:_path_files -g "*.txt"'
+  '*:file or directory:_files -g "*.txt"'
 )
 
 _arguments -s -S $args
