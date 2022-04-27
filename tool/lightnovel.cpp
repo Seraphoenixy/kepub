@@ -48,20 +48,26 @@ std::vector<std::string> get_content(const pugi::xml_document &doc,
     for (const auto &line : klib::split_str(text, "\n")) {
       if (line.starts_with(image_prefix)) {
         const auto image_name = line.substr(image_prefix_size);
+        const auto stem = kepub::stem(image_name);
+
+        auto image =
+            http_get_rss("https://i.noire.cc/image/" + image_name, proxy);
+        auto ext = kepub::check_is_supported_format_from_image(image);
+        if (!ext) {
+          continue;
+        }
 
         std::string new_image_name;
         if (count == 0) {
-          new_image_name = "cover.webp";
+          new_image_name = "cover" + *ext;
           ++count;
         } else {
-          new_image_name = kepub::num_to_str(count++) + ".webp";
+          new_image_name = kepub::num_to_str(count++) + *ext;
           kepub::push_back(result, image_prefix + new_image_name);
         }
 
-        klib::info("Start downloading image: {}", new_image_name);
-        auto image =
-            http_get_rss("https://i.noire.cc/image/" + image_name, proxy);
         klib::write_file(new_image_name, true, image);
+        klib::info("Image download complete: {}", new_image_name);
       } else {
         kepub::push_back(result, kepub::trans_str(line, translation));
       }

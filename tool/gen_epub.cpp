@@ -85,8 +85,7 @@ int main(int argc, const char *argv[]) try {
   }
 
   kepub::check_is_txt_file(file_name);
-  auto book_name =
-      kepub::trans_str(std::filesystem::path(file_name).stem(), translation);
+  auto book_name = kepub::trans_str(kepub::stem(file_name), translation);
   klib::info("Book name: {}", book_name);
 
   kepub::Novel novel;

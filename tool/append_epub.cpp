@@ -50,7 +50,7 @@ int main(int argc, const char *argv[]) try {
 
   kepub::check_is_txt_file(file_name);
 
-  auto book_name = std::filesystem::path(file_name).stem().string();
+  auto book_name = kepub::stem(file_name);
   auto epub_name = book_name + ".epub";
   auto backup_epub_name = book_name + "-back-up.epub";
   auto zip_name = book_name + ".zip";

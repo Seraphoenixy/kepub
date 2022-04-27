@@ -104,7 +104,7 @@ std::pair<kepub::BookInfo, std::vector<kepub::Chapter>> get_info(
   klib::info("Author: {}", book_info.author_);
   klib::info("Cover url: {}", book_info.cover_path_);
 
-  auto ext = kepub::check_is_supported_image(
+  auto ext = kepub::check_is_supported_format(
       kepub::url_to_file_name(book_info.cover_path_));
 
   if (ext) {

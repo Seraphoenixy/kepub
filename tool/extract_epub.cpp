@@ -173,7 +173,7 @@ int main(int argc, const char *argv[]) try {
 
   kepub::check_is_epub_file(file_name);
 
-  auto book_name = std::filesystem::path(file_name).stem().string();
+  auto book_name = kepub::stem(file_name);
 
   if (std::filesystem::exists(book_name)) {
     kepub::remove_file_or_dir(book_name);

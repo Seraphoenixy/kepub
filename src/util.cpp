@@ -9,6 +9,7 @@
 #include <iostream>
 #include <sstream>
 
+#include <klib/image.h>
 #include <klib/log.h>
 #include <klib/qr_code.h>
 #include <klib/unicode.h>
@@ -43,7 +44,7 @@ bool end_with_punctuation(const std::string &str) {
 
 }  // namespace
 
-std::string KEPUB_EXPORT footer_str() {
+std::string footer_str() {
   std::string result;
 
   result.append(
@@ -290,8 +291,8 @@ std::string url_to_file_name(const std::string &str) {
   return std::filesystem::path(url.path()).filename().string();
 }
 
-std::optional<std::string> KEPUB_EXPORT
-check_is_supported_image(const std::string &file_name) {
+std::optional<std::string> check_is_supported_format(
+    const std::string &file_name) {
   if (file_name.ends_with(".jpg") || file_name.ends_with(".jpeg")) {
     return ".jpg";
   } else if (file_name.ends_with(".png")) {
@@ -302,6 +303,24 @@ check_is_supported_image(const std::string &file_name) {
     klib::warn("Image is not a supported format : {}", file_name);
     return {};
   }
+}
+
+std::optional<std::string> check_is_supported_format_from_image(
+    const std::string &image) {
+  if (klib::is_webp(image)) {
+    return ".webp";
+  } else if (klib::is_jpeg(image)) {
+    return ".jpg";
+  } else if (klib::is_png(image)) {
+    return ".png";
+  } else {
+    klib::warn("Image is not a supported format");
+    return {};
+  }
+}
+
+std::string stem(const std::string &path) {
+  return std::filesystem::path(path).stem().string();
 }
 
 std::string make_book_name_legal(const std::string &file_name) {
@@ -392,7 +411,7 @@ void generate_txt(const BookInfo &book_info,
               continue;
             }
 
-            auto ext = check_is_supported_image(image_name);
+            auto ext = check_is_supported_format(image_name);
 
             if (ext) {
               auto new_image_name = num_to_str(image_count++) + *ext;

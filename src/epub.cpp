@@ -131,7 +131,7 @@ void append_texts(pugi::xml_document &doc,
       d.append_attribute("class") = "center";
       auto img = d.append_child("img");
 
-      auto stem = std::filesystem::path(image_name).stem().string();
+      auto stem = kepub::stem(image_name);
       img.append_attribute("alt") = stem.c_str();
       img.append_attribute("src") = ("../image/" + stem + ".webp").c_str();
     } else {
@@ -197,7 +197,7 @@ void compress_image(const std::string &path) {
   }
 
   auto image_dir = std::filesystem::path(path).parent_path();
-  auto new_file_name = std::filesystem::path(path).stem().string() + ".webp";
+  auto new_file_name = kepub::stem(path) + ".webp";
 
   klib::image_to_webp(path, image_dir / new_file_name);
   remove_file_or_dir(path);
@@ -221,8 +221,7 @@ void Epub::set_novel(const Novel &novel) {
         std::filesystem::current_path() / novel_.book_info_.cover_path_;
   }
   novel_.book_info_.cover_file_name_ =
-      std::filesystem::path(novel_.book_info_.cover_path_).stem().string() +
-      ".webp";
+      kepub::stem(novel_.book_info_.cover_path_) + ".webp";
 
   for (auto &path : novel_.image_paths_) {
     path = std::filesystem::current_path() / path;

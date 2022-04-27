@@ -59,7 +59,7 @@ kepub::BookInfo get_book_info(const std::string &book_id) {
   klib::info("Point: {}", info.point_);
   klib::info("Cover url: {}", info.cover_path_);
 
-  auto ext = kepub::check_is_supported_image(
+  auto ext = kepub::check_is_supported_format(
       kepub::url_to_file_name(info.cover_path_));
 
   if (ext) {
