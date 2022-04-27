@@ -307,12 +307,12 @@ std::optional<std::string> check_is_supported_format(
 
 std::optional<std::string> check_is_supported_format_from_image(
     const std::string &image) {
-  if (klib::is_webp(image)) {
-    return ".webp";
-  } else if (klib::is_jpeg(image)) {
+  if (klib::is_jpeg(image)) {
     return ".jpg";
   } else if (klib::is_png(image)) {
     return ".png";
+  } else if (klib::is_webp(image)) {
+    return ".webp";
   } else {
     klib::warn("Image is not a supported format");
     return {};
