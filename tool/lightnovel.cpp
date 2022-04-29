@@ -76,10 +76,6 @@ std::vector<std::string> get_content(const pugi::xml_document &doc,
     }
   }
 
-  if (std::empty(result)) {
-    klib::error("No text");
-  }
-
   return result;
 }
 

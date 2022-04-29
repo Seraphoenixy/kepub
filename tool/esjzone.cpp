@@ -37,8 +37,9 @@ std::pair<kepub::BookInfo, std::vector<kepub::Chapter>> get_info(
     const std::string &book_id, bool translation, const std::string &proxy) {
   kepub::BookInfo book_info;
 
-  const auto doc =
-      get_xml("https://www.esjzone.cc/detail/" + book_id + ".html", proxy);
+  const std::string url = "https://www.esjzone.cc/detail/" + book_id + ".html";
+  klib::info("Download novel from {}", url);
+  const auto doc = get_xml(url, proxy);
 
   auto node = doc.select_node(
                      "/html/body/div[@class='offcanvas-wrapper']/section/div/"
@@ -151,12 +152,10 @@ std::vector<std::string> get_content(const std::string &url, bool translation,
           const auto image_stem =
               kepub::stem(std::string(klib::URL(image_url).path()));
 
-          std::string new_image_name;
-          new_image_name = image_stem + *image_extension;
+          auto new_image_name = image_stem + *image_extension;
           kepub::push_back(result, image_prefix + new_image_name);
 
           klib::write_file(new_image_name, true, image);
-          klib::info("Image download complete: {}", new_image_name);
         } catch (const klib::RuntimeError &err) {
           klib::warn("{}: {}", err.what(), line);
         }
@@ -164,10 +163,6 @@ std::vector<std::string> get_content(const std::string &url, bool translation,
         kepub::push_back(result, kepub::trans_str(line, translation));
       }
     }
-  }
-
-  if (std::empty(result)) {
-    klib::warn("No text: {}", url);
   }
 
   return result;
@@ -222,8 +217,8 @@ int main(int argc, const char *argv[]) try {
     task_group.run([&] {
       oneapi::tbb::parallel_for_each(chapters, [&](kepub::Chapter &chapter) {
         bar.set_postfix_text(chapter.title_);
-        chapter.texts_ = get_content(chapter.url_, translation, proxy);
         bar.tick();
+        chapter.texts_ = get_content(chapter.url_, translation, proxy);
       });
     });
   });

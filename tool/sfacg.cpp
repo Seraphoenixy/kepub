@@ -199,8 +199,8 @@ int main(int argc, const char *argv[]) try {
         oneapi::tbb::parallel_for_each(
             volume.chapters_, [&](kepub::Chapter &chapter) {
               bar.set_postfix_text(chapter.title_);
-              chapter.texts_ = get_content(chapter.chapter_id_);
               bar.tick();
+              chapter.texts_ = get_content(chapter.chapter_id_);
             });
       });
     });

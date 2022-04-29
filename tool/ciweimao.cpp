@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <optional>
 #include <string>
+#include <string_view>
 #include <thread>
 #include <vector>
 
@@ -32,7 +33,7 @@ using namespace kepub::ciweimao;
 
 namespace {
 
-const std::string token_path = "/tmp/ciweimao";
+constexpr std::string_view token_path = "/tmp/ciweimao";
 
 bool show_user_info(const Token &token) {
   auto response = http_post(
@@ -273,8 +274,8 @@ int main(int argc, const char *argv[]) try {
         oneapi::tbb::parallel_for_each(
             volume.chapters_, [&](kepub::Chapter &chapter) {
               bar.set_postfix_text(chapter.title_);
-              chapter.texts_ = get_content(token, chapter.chapter_id_);
               bar.tick();
+              chapter.texts_ = get_content(token, chapter.chapter_id_);
             });
       });
     });
