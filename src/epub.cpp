@@ -362,9 +362,9 @@ void Epub::generate_image() const {
     do_generate_image(novel_.book_info_.cover_path_);
   }
 
-  tbb::parallel_for_each(novel_.image_paths_, [&](const std::string &path) {
-    do_generate_image(path);
-  });
+  oneapi::tbb::parallel_for_each(
+      novel_.image_paths_,
+      [&](const std::string &path) { do_generate_image(path); });
 }
 
 void Epub::generate_volume() const { deal_with_volume(1); }

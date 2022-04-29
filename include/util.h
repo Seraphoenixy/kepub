@@ -52,7 +52,7 @@ std::optional<std::string> KEPUB_EXPORT
 check_is_supported_format(const std::string &file_name);
 
 std::optional<std::string> KEPUB_EXPORT
-check_is_supported_format_from_image(const std::string &image);
+image_to_extension(const std::string &image);
 
 std::string KEPUB_EXPORT stem(const std::string &path);
 

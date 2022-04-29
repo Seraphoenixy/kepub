@@ -119,7 +119,7 @@ std::vector<std::string> read_file_to_vec(const std::string &file_name,
     result.push_back(line);
   }
 
-  tbb::parallel_for_each(result, [&](std::string &str) {
+  oneapi::tbb::parallel_for_each(result, [&](std::string &str) {
     str = trans_str(str, translation);
     if (!klib::validate_utf8(str)) {
       klib::error("Invalid UTF-8: {}", str);
@@ -305,8 +305,7 @@ std::optional<std::string> check_is_supported_format(
   }
 }
 
-std::optional<std::string> check_is_supported_format_from_image(
-    const std::string &image) {
+std::optional<std::string> image_to_extension(const std::string &image) {
   if (klib::is_jpeg(image)) {
     return ".jpg";
   } else if (klib::is_png(image)) {

@@ -1,3 +1,4 @@
+#include <cstdint>
 #include <exception>
 #include <string>
 #include <thread>
@@ -35,7 +36,7 @@ std::pair<kepub::BookInfo, std::vector<kepub::Chapter>> get_info(
     const std::string &book_id, bool translation, const std::string &proxy) {
   kepub::BookInfo book_info;
 
-  auto doc =
+  const auto doc =
       get_xml("https://www.esjzone.cc/detail/" + book_id + ".html", proxy);
 
   auto node = doc.select_node(
@@ -80,13 +81,13 @@ std::pair<kepub::BookInfo, std::vector<kepub::Chapter>> get_info(
 
   std::vector<kepub::Chapter> chapters;
   for (const auto &child : node.children("a")) {
-    std::string may_be_url = child.attribute("href").as_string();
-    auto title =
+    const std::string may_be_url = child.attribute("href").as_string();
+    const auto title =
         kepub::trans_str(child.child("p").text().as_string(), translation);
 
     if (!(may_be_url.starts_with("https://www.esjzone.cc/") ||
           may_be_url.starts_with("https://www.esjzone.net/"))) {
-      klib::warn("url error: {}, title: {}", may_be_url, title);
+      klib::warn("URL error: {}, title: {}", may_be_url, title);
     } else {
       chapters.emplace_back(may_be_url, title);
     }
@@ -104,14 +105,17 @@ std::pair<kepub::BookInfo, std::vector<kepub::Chapter>> get_info(
   klib::info("Author: {}", book_info.author_);
   klib::info("Cover url: {}", book_info.cover_path_);
 
-  auto ext = kepub::check_is_supported_format(
-      kepub::url_to_file_name(book_info.cover_path_));
+  try {
+    const auto image = http_get(book_info.cover_path_, proxy);
+    const auto image_extension = kepub::image_to_extension(image);
 
-  if (ext) {
-    std::string cover_name = "cover" + *ext;
-    auto response = http_get(book_info.cover_path_, proxy);
-    klib::write_file(cover_name, true, response);
-    klib::info("Cover downloaded successfully: {}", cover_name);
+    if (image_extension) {
+      std::string cover_name = "cover" + *image_extension;
+      klib::write_file(cover_name, true, image);
+      klib::info("Cover downloaded successfully: {}", cover_name);
+    }
+  } catch (const klib::RuntimeError &err) {
+    klib::warn("{}: {}", err.what(), book_info.cover_path_);
   }
 
   return {book_info, chapters};
@@ -157,7 +161,7 @@ int main(int argc, const char *argv[]) try {
                "Translate Traditional Chinese to Simplified Chinese");
 
   auto hardware_concurrency = std::thread::hardware_concurrency();
-  std::uint32_t max_concurrency = 0;
+  std::int32_t max_concurrency = 0;
   app.add_option("-m,--multithreading", max_concurrency,
                  "Maximum number of concurrency to use when downloading")
       ->check(
@@ -184,18 +188,18 @@ int main(int argc, const char *argv[]) try {
   klib::info("Start downloading novel content");
   kepub::ProgressBar bar(std::size(chapters), book_info.name_);
 
-  tbb::task_arena limited(max_concurrency);
-  tbb::task_group tg;
+  oneapi::tbb::task_arena limited(max_concurrency);
+  oneapi::tbb::task_group task_group;
   limited.execute([&] {
-    tg.run([&] {
-      tbb::parallel_for_each(chapters, [&](kepub::Chapter &chapter) {
+    task_group.run([&] {
+      oneapi::tbb::parallel_for_each(chapters, [&](kepub::Chapter &chapter) {
         bar.set_postfix_text(chapter.title_);
         chapter.texts_ = get_content(chapter.url_, translation, proxy);
         bar.tick();
       });
     });
   });
-  limited.execute([&] { tg.wait(); });
+  limited.execute([&] { task_group.wait(); });
 
   kepub::generate_txt(book_info, chapters);
   klib::info("Novel '{}' download completed", book_info.name_);

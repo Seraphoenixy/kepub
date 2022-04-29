@@ -1,4 +1,7 @@
+#include <cstddef>
+#include <cstdint>
 #include <exception>
+#include <optional>
 #include <string>
 #include <thread>
 #include <vector>
@@ -29,7 +32,7 @@ namespace {
 
 bool show_user_info() {
   auto response = http_get("https://api.sfacg.com/user");
-  auto info = json_to_user_info(response);
+  const auto info = json_to_user_info(std::move(response));
 
   if (info.login_expired_) {
     return false;
@@ -42,72 +45,91 @@ bool show_user_info() {
 void login(const std::string &login_name, const std::string &password) {
   auto response = http_post("https://api.sfacg.com/sessions",
                             serialize(login_name, password));
-  json_base(response);
+  json_base(std::move(response));
 
   response = http_get("https://api.sfacg.com/user");
-  auto info = json_to_login_info(response);
+  const auto info = json_to_login_info(std::move(response));
   klib::info("Login successful, nick name: {}", info.user_info_.nick_name_);
 }
 
 kepub::BookInfo get_book_info(const std::string &book_id) {
   auto response = http_get("https://api.sfacg.com/novels/" + book_id,
                            {{"expand", "intro"}});
-  auto info = json_to_book_info(response);
+  auto info = json_to_book_info(std::move(response));
 
   klib::info("Book name: {}", info.name_);
   klib::info("Author: {}", info.author_);
   klib::info("Point: {}", info.point_);
   klib::info("Cover url: {}", info.cover_path_);
 
-  auto ext = kepub::check_is_supported_format(
-      kepub::url_to_file_name(info.cover_path_));
+  try {
+    const auto image = http_get_rss(info.cover_path_);
+    const auto image_extension = kepub::image_to_extension(image);
 
-  if (ext) {
-    std::string cover_name = "cover" + *ext;
-    response = http_get_rss(info.cover_path_);
-    klib::write_file(cover_name, true, response);
-    klib::info("Cover downloaded successfully: {}", cover_name);
+    if (image_extension) {
+      std::string cover_name = "cover" + *image_extension;
+      klib::write_file(cover_name, true, image);
+      klib::info("Cover downloaded successfully: {}", cover_name);
+    }
+  } catch (const klib::RuntimeError &err) {
+    klib::warn("{}: {}", err.what(), info.cover_path_);
   }
 
   return info;
 }
 
 std::vector<kepub::Volume> get_volume_chapter(const std::string &book_id) {
+  klib::info("Start getting chapter information");
+
   auto response = http_get(fmt::format(
       FMT_COMPILE("https://api.sfacg.com/novels/{}/dirs"), book_id));
 
-  return json_to_volumes(response);
+  return json_to_volumes(std::move(response));
+}
+
+std::optional<std::string> parse_image_url(const std::string &line) {
+  const auto begin = line.find("https");
+  if (begin == std::string::npos) {
+    klib::warn("Invalid image URL: {}", line);
+    return {};
+  }
+
+  const auto end = line.find("[/img]");
+  if (end == std::string::npos) {
+    klib::warn("Invalid image URL: {}", line);
+    return {};
+  }
+
+  return line.substr(begin, end - begin);
 }
 
 std::vector<std::string> get_content(std::uint64_t chapter_id) {
-  auto id = std::to_string(chapter_id);
+  const auto id = std::to_string(chapter_id);
   auto response = http_get("https://api.sfacg.com/Chaps/" + id,
                            {{"chapsId", id}, {"expand", "content"}});
 
-  auto content_str = json_to_chapter_text(response);
+  const auto content_str = json_to_chapter_text(std::move(response));
 
   std::vector<std::string> content;
   for (auto &line : klib::split_str(content_str, "\n")) {
     klib::trim(line);
 
     if (line.starts_with("[img")) {
-      auto begin = line.find("https");
-      if (begin == std::string::npos) {
-        klib::warn("Invalid image URL: {}", line);
+      const auto image_url = parse_image_url(line);
+      if (!image_url) {
         continue;
       }
-
-      auto end = line.find("[/img]");
-      if (end == std::string::npos) {
-        klib::warn("Invalid image URL: {}", line);
-        continue;
-      }
-
-      auto image_url = line.substr(begin, end - begin);
-      auto image_name = kepub::url_to_file_name(image_url);
 
       try {
-        auto image = http_get_rss(image_url);
+        const auto image_stem =
+            kepub::stem(kepub::url_to_file_name(*image_url));
+        const auto image = http_get_rss(*image_url);
+        const auto image_extension = kepub::image_to_extension(image);
+        if (!image_extension) {
+          continue;
+        }
+
+        const auto image_name = image_stem + *image_extension;
         klib::write_file(image_name, true, image);
         line = "[IMAGE] " + image_name;
       } catch (const klib::RuntimeError &err) {
@@ -134,7 +156,7 @@ int main(int argc, const char *argv[]) try {
       ->required();
 
   auto hardware_concurrency = std::thread::hardware_concurrency();
-  std::uint32_t max_concurrency = 0;
+  std::int32_t max_concurrency = 0;
   app.add_option("-m,--multithreading", max_concurrency,
                  "Maximum number of concurrency to use when downloading")
       ->check(
@@ -151,18 +173,16 @@ int main(int argc, const char *argv[]) try {
   }
 
   if (!show_user_info()) {
-    auto login_name = kepub::get_login_name();
+    const auto login_name = kepub::get_login_name();
     auto password = kepub::get_password();
     login(login_name, password);
     klib::cleanse(password);
   }
 
-  auto book_info = get_book_info(book_id);
-
-  klib::info("Start getting chapter information");
+  const auto book_info = get_book_info(book_id);
   auto volumes = get_volume_chapter(book_id);
 
-  std::int32_t chapter_count = 0;
+  std::size_t chapter_count = 0;
   for (const auto &volume : volumes) {
     chapter_count += std::size(volume.chapters_);
   }
@@ -170,20 +190,21 @@ int main(int argc, const char *argv[]) try {
   klib::info("Start downloading novel content");
   kepub::ProgressBar bar(chapter_count, book_info.name_);
 
-  tbb::task_arena limited(max_concurrency);
-  tbb::task_group tg;
+  oneapi::tbb::task_arena limited(max_concurrency);
+  oneapi::tbb::task_group task_group;
 
   for (auto &volume : volumes) {
     limited.execute([&] {
-      tg.run([&] {
-        tbb::parallel_for_each(volume.chapters_, [&](kepub::Chapter &chapter) {
-          bar.set_postfix_text(chapter.title_);
-          chapter.texts_ = get_content(chapter.chapter_id_);
-          bar.tick();
-        });
+      task_group.run([&] {
+        oneapi::tbb::parallel_for_each(
+            volume.chapters_, [&](kepub::Chapter &chapter) {
+              bar.set_postfix_text(chapter.title_);
+              chapter.texts_ = get_content(chapter.chapter_id_);
+              bar.tick();
+            });
       });
     });
-    limited.execute([&] { tg.wait(); });
+    limited.execute([&] { task_group.wait(); });
   }
 
   kepub::generate_txt(book_info, volumes);

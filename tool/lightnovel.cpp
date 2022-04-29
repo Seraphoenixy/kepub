@@ -1,3 +1,4 @@
+#include <cstdint>
 #include <exception>
 #include <string>
 #include <vector>
@@ -48,21 +49,19 @@ std::vector<std::string> get_content(const pugi::xml_document &doc,
     for (const auto &line : klib::split_str(text, "\n")) {
       if (line.starts_with(image_prefix)) {
         const auto image_name = line.substr(image_prefix_size);
-        const auto stem = kepub::stem(image_name);
-
-        auto image =
+        const auto image =
             http_get_rss("https://i.noire.cc/image/" + image_name, proxy);
-        auto ext = kepub::check_is_supported_format_from_image(image);
-        if (!ext) {
+        const auto image_extension = kepub::image_to_extension(image);
+        if (!image_extension) {
           continue;
         }
 
         std::string new_image_name;
         if (count == 0) {
-          new_image_name = "cover" + *ext;
+          new_image_name = "cover" + *image_extension;
           ++count;
         } else {
-          new_image_name = kepub::num_to_str(count++) + *ext;
+          new_image_name = kepub::num_to_str(count++) + *image_extension;
           kepub::push_back(result, image_prefix + new_image_name);
         }
 

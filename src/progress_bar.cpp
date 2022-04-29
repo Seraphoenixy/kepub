@@ -6,7 +6,7 @@ namespace kepub {
 
 using namespace indicators;
 
-ProgressBar::ProgressBar(std::int32_t max_progress,
+ProgressBar::ProgressBar(std::size_t max_progress,
                          const std::string &postfix_text)
     : bar_(option::BarWidth(klib::terminal_size().first / 3),
            option::Start("["), option::Fill("="), option::Lead(">"),
