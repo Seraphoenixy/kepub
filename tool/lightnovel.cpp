@@ -48,25 +48,28 @@ std::vector<std::string> get_content(const pugi::xml_document &doc,
   for (const auto &text : kepub::get_node_texts(node)) {
     for (const auto &line : klib::split_str(text, "\n")) {
       if (line.starts_with(image_prefix)) {
-        const auto image_name = line.substr(image_prefix_size);
-        const auto image =
-            http_get_rss("https://i.noire.cc/image/" + image_name, proxy);
-        const auto image_extension = kepub::image_to_extension(image);
-        if (!image_extension) {
-          continue;
-        }
+        try {
+          const auto image_url = line.substr(image_prefix_size);
+          const auto image = http_get_rss(image_url, proxy);
+          const auto image_extension = kepub::image_to_extension(image);
+          if (!image_extension) {
+            continue;
+          }
 
-        std::string new_image_name;
-        if (count == 0) {
-          new_image_name = "cover" + *image_extension;
-          ++count;
-        } else {
-          new_image_name = kepub::num_to_str(count++) + *image_extension;
-          kepub::push_back(result, image_prefix + new_image_name);
-        }
+          std::string new_image_name;
+          if (count == 0) {
+            new_image_name = "cover" + *image_extension;
+            ++count;
+          } else {
+            new_image_name = kepub::num_to_str(count++) + *image_extension;
+            kepub::push_back(result, image_prefix + new_image_name);
+          }
 
-        klib::write_file(new_image_name, true, image);
-        klib::info("Image download complete: {}", new_image_name);
+          klib::write_file(new_image_name, true, image);
+          klib::info("Image download complete: {}", new_image_name);
+        } catch (const klib::RuntimeError &err) {
+          klib::warn("{}: {}", err.what(), line);
+        }
       } else {
         kepub::push_back(result, kepub::trans_str(line, translation));
       }

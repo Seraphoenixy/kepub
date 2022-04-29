@@ -6,6 +6,7 @@
 
 #include <klib/exception.h>
 #include <klib/log.h>
+#include <klib/url_parse.h>
 #include <klib/util.h>
 #include <oneapi/tbb.h>
 #include <CLI/CLI.hpp>
@@ -132,9 +133,36 @@ std::vector<std::string> get_content(const std::string &url, bool translation,
                   .node();
 
   std::vector<std::string> result;
+
+  const static std::string image_prefix = "[IMAGE] ";
+  const static auto image_prefix_size = std::size(image_prefix);
+
   for (const auto &text : kepub::get_node_texts(node)) {
     for (const auto &line : klib::split_str(text, "\n")) {
-      kepub::push_back(result, kepub::trans_str(line, translation));
+      if (line.starts_with(image_prefix)) {
+        try {
+          const auto image_url = line.substr(image_prefix_size);
+          const auto image = http_get(image_url, proxy);
+          const auto image_extension = kepub::image_to_extension(image);
+          if (!image_extension) {
+            continue;
+          }
+
+          const auto image_stem =
+              kepub::stem(std::string(klib::URL(image_url).path()));
+
+          std::string new_image_name;
+          new_image_name = image_stem + *image_extension;
+          kepub::push_back(result, image_prefix + new_image_name);
+
+          klib::write_file(new_image_name, true, image);
+          klib::info("Image download complete: {}", new_image_name);
+        } catch (const klib::RuntimeError &err) {
+          klib::warn("{}: {}", err.what(), line);
+        }
+      } else {
+        kepub::push_back(result, kepub::trans_str(line, translation));
+      }
     }
   }
 

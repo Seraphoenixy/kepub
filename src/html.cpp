@@ -1,9 +1,6 @@
 #include "html.h"
 
-#include <filesystem>
-
 #include <klib/html.h>
-#include <klib/url_parse.h>
 
 namespace kepub {
 
@@ -14,9 +11,7 @@ void do_get_node_texts(const pugi::xml_node &node, std::string &str,
   if (node.children().begin() == node.children().end()) {
     if (node.name() == std::string("img")) {
       std::string image_url = node.attribute("src").as_string();
-      klib::URL url(image_url);
-      auto file_name = std::filesystem::path(url.path()).filename().string();
-      str += ("[IMAGE] " + file_name);
+      str += ("[IMAGE] " + image_url);
     } else {
       str += node.text().as_string();
     }
