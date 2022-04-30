@@ -147,6 +147,7 @@ std::string get_chapter_command(const Token &token,
   return ::get_chapter_command(decrypt_no_iv(response));
 }
 
+#if 0
 std::optional<std::string> parse_image_url(const std::string &line) {
   pugi::xml_document doc;
   doc.load_string(line.c_str());
@@ -159,6 +160,7 @@ std::optional<std::string> parse_image_url(const std::string &line) {
 
   return image_url;
 }
+#endif
 
 std::vector<std::string> get_content(const Token &token,
                                      std::uint64_t chapter_id) {
