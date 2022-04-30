@@ -204,6 +204,10 @@ int main(int argc, const char *argv[]) try {
   }
   klib::info("Maximum concurrency: {}", max_concurrency);
 
+  klib::warn(
+      "Volume division is not supported at the moment, please handle it "
+      "manually");
+
   kepub::BookInfo book_info;
   std::vector<kepub::Chapter> chapters;
   std::tie(book_info, chapters) = get_info(book_id, translation, proxy);
