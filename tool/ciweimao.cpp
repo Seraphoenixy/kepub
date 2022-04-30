@@ -176,7 +176,7 @@ std::vector<std::string> get_content(const Token &token,
   std::vector<std::string> content;
   for (auto &line : klib::split_str(content_str, "\n")) {
     klib::trim(line);
-
+#if 0
     if (line.starts_with("<img src")) {
       const auto image_url = parse_image_url(line);
       if (!image_url) {
@@ -200,7 +200,7 @@ std::vector<std::string> get_content(const Token &token,
         continue;
       }
     }
-
+#endif
     kepub::push_back(content, line);
   }
 
