@@ -1875,6 +1875,7 @@ PS2：前面那些PS很多都是以前留下的，看时间就知道
     <item id="chapter1814.xhtml" href="text/chapter1814.xhtml" media-type="application/xhtml+xml" />
     <item id="chapter1815.xhtml" href="text/chapter1815.xhtml" media-type="application/xhtml+xml" />
     <item id="chapter1816.xhtml" href="text/chapter1816.xhtml" media-type="application/xhtml+xml" />
+    <item id="chapter1817.xhtml" href="text/chapter1817.xhtml" media-type="application/xhtml+xml" />
   </manifest>
   <spine>
     <itemref idref="introduction.xhtml" />
@@ -3727,5 +3728,6 @@ PS2：前面那些PS很多都是以前留下的，看时间就知道
     <itemref idref="chapter1814.xhtml" />
     <itemref idref="chapter1815.xhtml" />
     <itemref idref="chapter1816.xhtml" />
+    <itemref idref="chapter1817.xhtml" />
   </spine>
 </package>
