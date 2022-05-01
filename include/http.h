@@ -33,6 +33,7 @@ std::string KEPUB_EXPORT http_get(const std::string &url,
 std::string KEPUB_EXPORT
 http_post(const std::string &url,
           const phmap::flat_hash_map<std::string, std::string> &data,
+          const phmap::flat_hash_map<std::string, std::string> &headers,
           const std::string &proxy);
 
 }  // namespace masiro

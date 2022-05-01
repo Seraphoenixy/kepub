@@ -54,6 +54,7 @@ std::vector<std::string> get_content(const pugi::xml_document &doc,
           const auto image = http_get_rss(image_url, proxy);
           const auto image_extension = kepub::image_to_extension(image);
           if (!image_extension) {
+            klib::warn("Image is not a supported format: {}", image_url);
             continue;
           }
 

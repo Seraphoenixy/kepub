@@ -19,6 +19,9 @@ struct KEPUB_EXPORT Chapter {
 
   std::uint64_t chapter_id_ = 0;
   std::string url_;
+
+  std::int32_t pay_ = 0;
+
   std::string title_;
   std::vector<std::string> texts_;
 };

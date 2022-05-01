@@ -48,6 +48,7 @@ std::string http_get(const std::string &url, const std::string &proxy) {
 std::string http_post(
     const std::string &url,
     const phmap::flat_hash_map<std::string, std::string> &data,
+    const phmap::flat_hash_map<std::string, std::string> &headers,
     const std::string &proxy) {
   request.set_browser_user_agent();
   if (!std::empty(proxy)) {
@@ -60,7 +61,7 @@ std::string http_post(
   request.verbose(true);
 #endif
 
-  auto response = request.post(url, data);
+  auto response = request.post(url, data, headers);
 
   auto status = response.status();
   if (status != klib::HttpStatus::HTTP_STATUS_OK) {
@@ -120,8 +121,9 @@ std::string http_get(const std::string &url, const std::string &proxy) {
 std::string http_post(
     const std::string &url,
     const phmap::flat_hash_map<std::string, std::string> &data,
+    const phmap::flat_hash_map<std::string, std::string> &headers,
     const std::string &proxy) {
-  return kepub::http_post(url, data, proxy);
+  return kepub::http_post(url, data, headers, proxy);
 }
 
 }  // namespace masiro

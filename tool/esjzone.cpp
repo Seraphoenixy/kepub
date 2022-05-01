@@ -125,6 +125,8 @@ std::pair<kepub::BookInfo, std::vector<kepub::Volume>> get_info(
       std::string cover_name = "cover" + *image_extension;
       klib::write_file(cover_name, true, image);
       klib::info("Cover downloaded successfully: {}", cover_name);
+    } else {
+      klib::warn("Image is not a supported format: {}", book_info.cover_path_);
     }
   } catch (const klib::RuntimeError &err) {
     klib::warn("{}: {}", err.what(), book_info.cover_path_);
@@ -157,6 +159,7 @@ std::vector<std::string> get_content(const std::string &url, bool translation,
           const auto image = http_get(image_url, proxy);
           const auto image_extension = kepub::image_to_extension(image);
           if (!image_extension) {
+            klib::warn("Image is not a supported format: {}", image_url);
             continue;
           }
 

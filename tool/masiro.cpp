@@ -4,6 +4,7 @@
 #include <optional>
 #include <string>
 #include <thread>
+#include <tuple>
 #include <vector>
 
 #include <klib/exception.h>
@@ -12,6 +13,7 @@
 #include <klib/util.h>
 #include <oneapi/tbb.h>
 #include <CLI/CLI.hpp>
+#include <gsl/assert>
 #include <pugixml.hpp>
 
 #include "html.h"
@@ -85,7 +87,7 @@ void login(const std::string &login_name, const std::string &password,
                              {"password", password},
                              {"remember", "1"},
                              {"_token", get_token(proxy)}},
-                            proxy);
+                            {}, proxy);
   json_base(std::move(response));
 
   auto nick_name = get_user_info(proxy);
@@ -96,7 +98,7 @@ void login(const std::string &login_name, const std::string &password,
   klib::info("Login successful, nick name: {}", *nick_name);
 }
 
-std::pair<kepub::BookInfo, std::vector<kepub::Volume>> get_info(
+std::tuple<std::string, kepub::BookInfo, std::vector<kepub::Volume>> get_info(
     const std::string &book_id, bool translation, const std::string &proxy) {
   kepub::BookInfo book_info;
 
@@ -105,11 +107,15 @@ std::pair<kepub::BookInfo, std::vector<kepub::Volume>> get_info(
   klib::info("Download novel from {}", url);
   const auto doc = get_xml(url, proxy);
 
-  auto node = doc.select_node(
-                     "/html/body/div/div[@id='pjax-container']/div/"
-                     "section[@class='content']/div[1]/div/div/"
-                     "div[@class='box-body z-i']/div[@class='novel-title']")
-                  .node();
+  auto node = doc.select_node("/html/head/meta[@name='csrf-token']").node();
+  CHECK_NODE(node);
+  std::string token = node.attribute("content").as_string();
+
+  node = doc.select_node(
+                "/html/body/div/div[@id='pjax-container']/div/"
+                "section[@class='content']/div[1]/div/div/"
+                "div[@class='box-body z-i']/div[@class='novel-title']")
+             .node();
   CHECK_NODE(node);
   book_info.name_ = kepub::trans_str(node.text().as_string(), translation);
 
@@ -162,6 +168,13 @@ std::pair<kepub::BookInfo, std::vector<kepub::Volume>> get_info(
           auto chapter_title = kepub::trans_str(
               chapter.child("span").text().as_string(), translation);
           volumes.back().chapters_.back().title_ = chapter_title;
+
+          std::string pay_str = kepub::trans_str(
+              chapter.child("small").text().as_string(), translation);
+          if (!std::empty(pay_str) && pay_str != "已购") {
+            Expects(pay_str.ends_with("G"));
+            volumes.back().chapters_.back().pay_ = std::stoi(pay_str);
+          }
         }
       }
     }
@@ -188,12 +201,30 @@ std::pair<kepub::BookInfo, std::vector<kepub::Volume>> get_info(
       std::string cover_name = "cover" + *image_extension;
       klib::write_file(cover_name, true, image);
       klib::info("Cover downloaded successfully: {}", cover_name);
+    } else {
+      klib::warn("Image is not a supported format: {}", book_info.cover_path_);
     }
   } catch (const klib::RuntimeError &err) {
     klib::warn("{}: {}", err.what(), book_info.cover_path_);
   }
 
-  return {book_info, volumes};
+  return {token, book_info, volumes};
+}
+
+std::string get_chapter_id(const std::string &chapter_url) {
+  auto map = klib::URL(chapter_url).query_map();
+  return map.at("cid");
+}
+
+void pay(const std::string &chapter_url, std::int32_t chapter_pay,
+         const std::string &token, const std::string &proxy) {
+  auto response = http_post(
+      "https://masiro.me/admin/pay",
+      {{"type", "2"},
+       {"object_id", get_chapter_id(chapter_url)},
+       {"cost", std::to_string(chapter_pay)}},
+      {{"X-Requested-With", "XMLHttpRequest"}, {"X-CSRF-Token", token}}, proxy);
+  json_base(std::move(response));
 }
 
 std::vector<std::string> get_content(const std::string &url, bool translation,
@@ -220,6 +251,7 @@ std::vector<std::string> get_content(const std::string &url, bool translation,
           const auto image = http_get(image_url, proxy);
           const auto image_extension = kepub::image_to_extension(image);
           if (!image_extension) {
+            klib::warn("Image is not a supported format: {}", image_url);
             continue;
           }
 
@@ -286,9 +318,10 @@ int main(int argc, const char *argv[]) try {
     klib::cleanse(password);
   }
 
+  std::string token;
   kepub::BookInfo book_info;
   std::vector<kepub::Volume> volumes;
-  std::tie(book_info, volumes) = get_info(book_id, translation, proxy);
+  std::tie(token, book_info, volumes) = get_info(book_id, translation, proxy);
 
   std::size_t chapter_count = 0;
   for (const auto &volume : volumes) {
@@ -308,6 +341,10 @@ int main(int argc, const char *argv[]) try {
             volume.chapters_, [&](kepub::Chapter &chapter) {
               bar.set_postfix_text(chapter.title_);
               bar.tick();
+
+              if (chapter.pay_ > 0) {
+                pay(chapter.url_, chapter.pay_, token, proxy);
+              }
               chapter.texts_ = get_content(chapter.url_, translation, proxy);
             });
       });

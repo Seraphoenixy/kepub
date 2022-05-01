@@ -313,7 +313,6 @@ std::optional<std::string> image_to_extension(const std::string &image) {
   } else if (klib::is_webp(image)) {
     return ".webp";
   } else {
-    klib::warn("Image is not a supported format");
     return {};
   }
 }
