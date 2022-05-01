@@ -38,6 +38,7 @@ std::vector<std::string> get_content(const pugi::xml_document &doc,
                      "div/div/div[@class='left-contents']/article/"
                      "div[@class='article-content']/article")
                   .node();
+  CHECK_NODE(node);
 
   std::vector<std::string> result;
 
@@ -45,7 +46,7 @@ std::vector<std::string> get_content(const pugi::xml_document &doc,
   const static std::string image_prefix = "[IMAGE] ";
   const static auto image_prefix_size = std::size(image_prefix);
 
-  for (const auto &text : kepub::get_node_texts(node)) {
+  for (const auto &text : kepub::get_node_texts(node, true)) {
     for (const auto &line : klib::split_str(text, "\n")) {
       if (line.starts_with(image_prefix)) {
         try {
@@ -53,6 +54,7 @@ std::vector<std::string> get_content(const pugi::xml_document &doc,
           const auto image = http_get_rss(image_url, proxy);
           const auto image_extension = kepub::image_to_extension(image);
           if (!image_extension) {
+            klib::warn("Image is not a supported format: {}", image_url);
             continue;
           }
 

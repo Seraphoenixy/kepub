@@ -50,8 +50,16 @@ std::u32string custom_trans(const std::u32string &str, bool translation) {
 
   constexpr auto space = U' ';
   for (const auto code_point : str) {
-    // https://en.wikipedia.org/wiki/Word_joiner
-    if (code_point == U'\uFEFF' || klib::is_control(code_point)) [[unlikely]] {
+    if (
+        // https://en.wikipedia.org/wiki/Zero-width_space
+        code_point == U'\u200B' ||
+        // https://en.wikipedia.org/wiki/Zero-width_non-joiner
+        code_point == U'\u200C' ||
+        // https://en.wikipedia.org/wiki/Zero-width_joiner
+        code_point == U'\u200D' ||
+        // https://en.wikipedia.org/wiki/Word_joiner
+        code_point == U'\u2060' || code_point == U'\uFEFF' ||
+        klib::is_control(code_point)) [[unlikely]] {
       continue;
     }
 

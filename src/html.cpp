@@ -1,17 +1,21 @@
 #include "html.h"
 
+#include <dbg.h>
 #include <klib/html.h>
 
 namespace kepub {
 
 namespace {
 
+// FIXME connect: lightnovel workaround
 void do_get_node_texts(const pugi::xml_node &node, std::string &str,
                        bool &connect) {
+  dbg(node.name());
+
   if (node.children().begin() == node.children().end()) {
     if (node.name() == std::string("img")) {
       std::string image_url = node.attribute("src").as_string();
-      str += ("[IMAGE] " + image_url);
+      str += ("\n[IMAGE] " + image_url + "\n");
     } else {
       str += node.text().as_string();
     }
@@ -21,7 +25,11 @@ void do_get_node_texts(const pugi::xml_node &node, std::string &str,
     }
 
     for (const auto &child : node.children()) {
-      if (node.name() == std::string("p") || node.name() == std::string("br")) {
+      dbg(child.name());
+
+      if (child.name() == std::string("p") ||
+          child.name() == std::string("br") ||
+          child.name() == std::string("div")) {
         str += "\n";
       }
       do_get_node_texts(child, str, connect);
@@ -31,7 +39,8 @@ void do_get_node_texts(const pugi::xml_node &node, std::string &str,
 
 }  // namespace
 
-std::vector<std::string> get_node_texts(const pugi::xml_node &node) {
+std::vector<std::string> get_node_texts(const pugi::xml_node &node,
+                                        bool is_lightnovel) {
   std::vector<std::string> result;
 
   std::int32_t count = 0;
@@ -40,12 +49,19 @@ std::vector<std::string> get_node_texts(const pugi::xml_node &node) {
     std::string str;
     bool connect = false;
     do_get_node_texts(child, str, connect);
+    if (!is_lightnovel) {
+      connect = false;
+    }
 
     if (connect) {
       count = 2;
     }
 
     if (count > 0) {
+      if (std::empty(result)) {
+        result.emplace_back();
+      }
+
       result.back().append(str);
       --count;
     } else {

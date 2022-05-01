@@ -6,7 +6,7 @@
 
 #define KEPUB_VER_MAJOR 2
 
-#define KEPUB_VER_MINOR 7
+#define KEPUB_VER_MINOR 8
 
 #define KEPUB_VER_PATCH 0
 

@@ -1,6 +1,7 @@
 #include "json.h"
 
 #include <charconv>
+#include <cstdint>
 
 #include <klib/log.h>
 #include <klib/unicode.h>
@@ -11,6 +12,23 @@
 #include "util.h"
 
 namespace kepub {
+
+namespace masiro {
+
+enum Code { Ok = 1, Error = -1 };
+
+void json_base(std::string json) {
+  simdjson::ondemand::parser parser;
+  json.reserve(std::size(json) + simdjson::SIMDJSON_PADDING);
+
+  auto doc = parser.iterate(json);
+  std::int32_t code = doc["code"].get_int64();
+  if (code == Error) {
+    klib::error(doc["msg"].get_string().value());
+  }
+}
+
+}  // namespace masiro
 
 namespace ciweimao {
 

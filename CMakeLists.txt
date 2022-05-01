@@ -39,6 +39,7 @@ set(SFACG_EXECUTABLE sfacg)
 set(CIWEIMAO_EXECUTABLE ciweimao)
 set(ESJZONE_EXECUTABLE esjzone)
 set(LIGHTNOVEL_EXECUTABLE lightnovel)
+set(MASIRO_EXECUTABLE masiro)
 
 set(GEN_EPUB_EXECUTABLE gen-epub)
 set(APPEND_EPUB_EXECUTABLE append-epub)

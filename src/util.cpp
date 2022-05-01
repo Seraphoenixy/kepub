@@ -313,7 +313,6 @@ std::optional<std::string> image_to_extension(const std::string &image) {
   } else if (klib::is_webp(image)) {
     return ".webp";
   } else {
-    klib::warn("Image is not a supported format");
     return {};
   }
 }
@@ -332,69 +331,6 @@ std::string make_book_name_legal(const std::string &file_name) {
   }
 
   return new_file_name;
-}
-
-void generate_txt(const BookInfo &book_info,
-                  const std::vector<Chapter> &chapters) {
-  std::ostringstream oss;
-
-  oss << "[AUTHOR]"
-      << "\n\n";
-  oss << book_info.author_ << "\n\n";
-
-  oss << "[INTRO]"
-      << "\n\n";
-  for (const auto &line : book_info.introduction_) {
-    oss << line << "\n";
-  }
-  oss << "\n";
-
-  // old_name new_name
-  phmap::flat_hash_map<std::string, std::string> image_name_map;
-
-  for (const auto &chapter : chapters) {
-    oss << "[WEB] " << chapter.title_ << "\n\n";
-
-    for (const auto &line : chapter.texts_) {
-      static std::int32_t image_count = 1;
-      const static std::string image_prefix = "[IMAGE] ";
-      const static auto image_prefix_size = std::size(image_prefix);
-
-      if (line.starts_with(image_prefix)) [[unlikely]] {
-        auto image_name = line.substr(image_prefix_size);
-
-        if (auto iter = image_name_map.find(image_name);
-            iter != std::end(image_name_map)) {
-          oss << image_prefix << iter->second << '\n';
-        } else {
-          if (!std::filesystem::exists(image_name)) {
-            klib::warn("Image not exists: {}", image_name);
-            continue;
-          }
-
-          auto ext = check_is_supported_format(image_name);
-
-          if (ext) {
-            auto new_image_name = num_to_str(image_count++) + *ext;
-            oss << image_prefix << new_image_name << '\n';
-            std::filesystem::rename(image_name, new_image_name);
-
-            image_name_map.emplace(image_name, new_image_name);
-          }
-        }
-      } else [[likely]] {
-        oss << line << '\n';
-      }
-    }
-    oss << '\n';
-  }
-
-  std::string str = oss.str();
-  // '\n'
-  str.pop_back();
-
-  std::ofstream book_ofs(make_book_name_legal(book_info.name_) + ".txt");
-  book_ofs << str << std::flush;
 }
 
 void generate_txt(const BookInfo &book_info,
@@ -418,7 +354,12 @@ void generate_txt(const BookInfo &book_info,
     }
 
     for (const auto &chapter : volume.chapters_) {
-      oss << volume.title_ << " : " << chapter.title_ << "\n\n";
+      if (!std::empty(volume.title_)) {
+        oss << volume.title_ << " : " << chapter.title_ << "\n\n";
+      }
+      else{
+        oss << chapter.title_ << "\n\n";
+      }
 
       for (const auto &line : chapter.texts_) { 
         if (book_info.source_ == "菠萝包"){

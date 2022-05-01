@@ -8,6 +8,12 @@
 
 namespace kepub {
 
+namespace masiro {
+
+void KEPUB_EXPORT json_base(std::string json);
+
+}  // namespace masiro
+
 namespace ciweimao {
 
 std::string KEPUB_EXPORT serialize(const std::string &account,

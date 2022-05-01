@@ -1,3 +1,4 @@
+#include <cstddef>
 #include <cstdint>
 #include <exception>
 #include <string>
@@ -33,7 +34,7 @@ pugi::xml_document get_xml(const std::string &url, const std::string &proxy) {
   return kepub::html_to_xml(response);
 }
 
-std::pair<kepub::BookInfo, std::vector<kepub::Chapter>> get_info(
+std::pair<kepub::BookInfo, std::vector<kepub::Volume>> get_info(
     const std::string &book_id, bool translation, const std::string &proxy) {
   kepub::BookInfo book_info;
 
@@ -46,6 +47,7 @@ std::pair<kepub::BookInfo, std::vector<kepub::Chapter>> get_info(
                      "div[@class='col-xl-9 col-lg-8 p-r-30']/div[@class='row "
                      "mb-3']/div[@class='col-md-9 book-detail']/h2")
                   .node();
+  CHECK_NODE(node);
   book_info.name_ = kepub::trans_str(node.text().as_string(), translation);
 
   node = doc.select_node(
@@ -53,6 +55,7 @@ std::pair<kepub::BookInfo, std::vector<kepub::Chapter>> get_info(
                 "div[@class='col-xl-9 col-lg-8 p-r-30']/div[@class='row "
                 "mb-3']/div[@class='col-md-9 book-detail']/ul")
              .node();
+  CHECK_NODE(node);
 
   std::string prefix = "作者:";
   for (const auto &child : node.children()) {
@@ -68,6 +71,7 @@ std::pair<kepub::BookInfo, std::vector<kepub::Chapter>> get_info(
              "div[@class='col-xl-9 col-lg-8 p-r-30']/div[@class='bg-secondary "
              "p-20 margin-top-1x']/div/div/div")
           .node();
+  CHECK_NODE(node);
 
   for (const auto &child : node.children()) {
     kepub::push_back(book_info.introduction_,
@@ -80,8 +84,9 @@ std::pair<kepub::BookInfo, std::vector<kepub::Chapter>> get_info(
                 "padding-top-1x mb-3']/div/div/div[@class='tab-pane fade "
                 "active show']/div[@id='chapterList']")
              .node();
+  CHECK_NODE(node);
 
-  std::vector<kepub::Chapter> chapters;
+  std::vector<kepub::Volume> volumes;
   for (const auto &child : node.children("a")) {
     const std::string may_be_url = child.attribute("href").as_string();
     const auto title =
@@ -91,7 +96,11 @@ std::pair<kepub::BookInfo, std::vector<kepub::Chapter>> get_info(
           may_be_url.starts_with("https://www.esjzone.net/"))) {
       klib::warn("URL error: {}, title: {}", may_be_url, title);
     } else {
-      chapters.emplace_back(may_be_url, title);
+      if (std::empty(volumes)) {
+        volumes.emplace_back();
+      }
+
+      volumes.back().chapters_.emplace_back(may_be_url, title);
     }
   }
 
@@ -101,6 +110,7 @@ std::pair<kepub::BookInfo, std::vector<kepub::Chapter>> get_info(
                 "mb-3']/div[@class='col-md-3']/div[@class='product-gallery "
                 "text-center mb-3']/a/img")
              .node();
+  CHECK_NODE(node);
   book_info.cover_path_ = node.attribute("src").as_string();
 
   klib::info("Book name: {}", book_info.name_);
@@ -115,12 +125,14 @@ std::pair<kepub::BookInfo, std::vector<kepub::Chapter>> get_info(
       std::string cover_name = "cover" + *image_extension;
       klib::write_file(cover_name, true, image);
       klib::info("Cover downloaded successfully: {}", cover_name);
+    } else {
+      klib::warn("Image is not a supported format: {}", book_info.cover_path_);
     }
   } catch (const klib::RuntimeError &err) {
     klib::warn("{}: {}", err.what(), book_info.cover_path_);
   }
 
-  return {book_info, chapters};
+  return {book_info, volumes};
 }
 
 std::vector<std::string> get_content(const std::string &url, bool translation,
@@ -132,6 +144,7 @@ std::vector<std::string> get_content(const std::string &url, bool translation,
                      "div[@class='col-xl-9 col-lg-8 "
                      "p-r-30']/div[@class='forum-content mt-3']")
                   .node();
+  CHECK_NODE(node);
 
   std::vector<std::string> result;
 
@@ -146,6 +159,7 @@ std::vector<std::string> get_content(const std::string &url, bool translation,
           const auto image = http_get(image_url, proxy);
           const auto image_extension = kepub::image_to_extension(image);
           if (!image_extension) {
+            klib::warn("Image is not a supported format: {}", image_url);
             continue;
           }
 
@@ -209,26 +223,35 @@ int main(int argc, const char *argv[]) try {
       "manually");
 
   kepub::BookInfo book_info;
-  std::vector<kepub::Chapter> chapters;
-  std::tie(book_info, chapters) = get_info(book_id, translation, proxy);
+  std::vector<kepub::Volume> volumes;
+  std::tie(book_info, volumes) = get_info(book_id, translation, proxy);
+
+  std::size_t chapter_count = 0;
+  for (const auto &volume : volumes) {
+    chapter_count += std::size(volume.chapters_);
+  }
 
   klib::info("Start downloading novel content");
-  kepub::ProgressBar bar(std::size(chapters), book_info.name_);
+  kepub::ProgressBar bar(chapter_count, book_info.name_);
 
   oneapi::tbb::task_arena limited(max_concurrency);
   oneapi::tbb::task_group task_group;
-  limited.execute([&] {
-    task_group.run([&] {
-      oneapi::tbb::parallel_for_each(chapters, [&](kepub::Chapter &chapter) {
-        bar.set_postfix_text(chapter.title_);
-        bar.tick();
-        chapter.texts_ = get_content(chapter.url_, translation, proxy);
+
+  for (auto &volume : volumes) {
+    limited.execute([&] {
+      task_group.run([&] {
+        oneapi::tbb::parallel_for_each(
+            volume.chapters_, [&](kepub::Chapter &chapter) {
+              bar.set_postfix_text(chapter.title_);
+              bar.tick();
+              chapter.texts_ = get_content(chapter.url_, translation, proxy);
+            });
       });
     });
-  });
-  limited.execute([&] { task_group.wait(); });
+    limited.execute([&] { task_group.wait(); });
+  }
 
-  kepub::generate_txt(book_info, chapters);
+  kepub::generate_txt(book_info, volumes);
   klib::info("Novel '{}' download completed", book_info.name_);
 } catch (const klib::Exception &err) {
   klib::error(err.what());
