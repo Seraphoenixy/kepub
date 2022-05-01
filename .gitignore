@@ -113,3 +113,5 @@ fabric.properties
 build
 *.profraw
 compile_commands.json
+
+.vscode

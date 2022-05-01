@@ -40,6 +40,7 @@ struct KEPUB_EXPORT Volume {
 
 struct KEPUB_EXPORT BookInfo {
   std::string name_;
+  std::string source_;
   std::string author_;
   std::vector<std::string> introduction_;
   std::string cover_path_;

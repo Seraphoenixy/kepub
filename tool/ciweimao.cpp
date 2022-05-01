@@ -177,8 +177,8 @@ std::vector<std::string> get_content(const Token &token,
 
   std::vector<std::string> content;
   for (auto &line : klib::split_str(content_str, "\n")) {
-    klib::trim(line);
 #if 0
+    klib::trim(line);
     if (line.starts_with("<img src")) {
       const auto image_url = parse_image_url(line);
       if (!image_url) {
@@ -283,6 +283,8 @@ int main(int argc, const char *argv[]) try {
     });
     limited.execute([&] { task_group.wait(); });
   }
+
+  book_info.source_ = "刺猬猫";
 
   kepub::generate_txt(book_info, volumes);
   klib::info("Novel '{}' download completed", book_info.name_);

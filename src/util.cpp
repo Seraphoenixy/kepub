@@ -246,7 +246,7 @@ void push_back(std::vector<std::string> &texts, const std::string &str,
 }
 
 void push_back(std::vector<std::string> &texts, const std::string &str) {
-  if (auto std_str = klib::trim_copy(str); !std::empty(std_str)) {
+  if (auto std_str = str; !std::empty(std_str)) {
     texts.push_back(std::move(std_str));
   }
 }
@@ -401,16 +401,14 @@ void generate_txt(const BookInfo &book_info,
                   const std::vector<Volume> &volumes) {
   std::ostringstream oss;
 
-  oss << "[AUTHOR]"
-      << "\n\n";
-  oss << book_info.author_ << "\n\n";
-
-  oss << "[INTRO]"
-      << "\n\n";
+  oss << book_info.name_ << "\n";
+  oss << "作者：" << book_info.author_ << "\n";
+  oss << "来源：" << book_info.source_ << "\n";
+  oss << "简介：" << "\n";
   for (const auto &line : book_info.introduction_) {
     oss << line << "\n";
   }
-  oss << "\n";
+  oss << "\n\n\n\n\n";
 
   // old_name new_name
   phmap::flat_hash_map<std::string, std::string> image_name_map;
@@ -419,12 +417,15 @@ void generate_txt(const BookInfo &book_info,
       continue;
     }
 
-    oss << "[VOLUME] " << volume.title_ << "\n\n";
-
     for (const auto &chapter : volume.chapters_) {
-      oss << "[WEB] " << chapter.title_ << "\n\n";
+      oss << volume.title_ << " : " << chapter.title_ << "\n\n";
 
-      for (const auto &line : chapter.texts_) {
+      for (const auto &line : chapter.texts_) { 
+        if (book_info.source_ == "菠萝包"){
+          oss << "　　";
+        }
+        oss << line << "\n";
+#if 0
         static std::int32_t image_count = 1;
         const static std::string image_prefix = "[IMAGE] ";
         const static auto image_prefix_size = std::size(image_prefix);
@@ -454,8 +455,9 @@ void generate_txt(const BookInfo &book_info,
         } else [[likely]] {
           oss << line << '\n';
         }
+#endif
       }
-      oss << '\n';
+      oss << "\n\n\n";
     }
   }
 

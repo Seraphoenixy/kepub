@@ -87,6 +87,7 @@ std::vector<kepub::Volume> get_volume_chapter(const std::string &book_id) {
   return json_to_volumes(std::move(response));
 }
 
+#if 0
 std::optional<std::string> parse_image_url(const std::string &line) {
   const auto begin = line.find("https");
   if (begin == std::string::npos) {
@@ -102,6 +103,7 @@ std::optional<std::string> parse_image_url(const std::string &line) {
 
   return line.substr(begin, end - begin);
 }
+#endif
 
 std::vector<std::string> get_content(std::uint64_t chapter_id) {
   const auto id = std::to_string(chapter_id);
@@ -113,7 +115,7 @@ std::vector<std::string> get_content(std::uint64_t chapter_id) {
   std::vector<std::string> content;
   for (auto &line : klib::split_str(content_str, "\n")) {
     klib::trim(line);
-
+#if 0
     if (line.starts_with("[img")) {
       const auto image_url = parse_image_url(line);
       if (!image_url) {
@@ -137,7 +139,7 @@ std::vector<std::string> get_content(std::uint64_t chapter_id) {
         continue;
       }
     }
-
+#endif
     kepub::push_back(content, line);
   }
 
@@ -179,7 +181,7 @@ int main(int argc, const char *argv[]) try {
     klib::cleanse(password);
   }
 
-  const auto book_info = get_book_info(book_id);
+  auto book_info = get_book_info(book_id);
   auto volumes = get_volume_chapter(book_id);
 
   std::size_t chapter_count = 0;
@@ -206,6 +208,8 @@ int main(int argc, const char *argv[]) try {
     });
     limited.execute([&] { task_group.wait(); });
   }
+
+  book_info.source_ = "菠萝包";
 
   kepub::generate_txt(book_info, volumes);
   klib::info("Novel '{}' download completed", book_info.name_);
