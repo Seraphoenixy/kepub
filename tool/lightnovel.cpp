@@ -45,7 +45,7 @@ std::vector<std::string> get_content(const pugi::xml_document &doc,
   const static std::string image_prefix = "[IMAGE] ";
   const static auto image_prefix_size = std::size(image_prefix);
 
-  for (const auto &text : kepub::get_node_texts(node)) {
+  for (const auto &text : kepub::get_node_texts(node, true)) {
     for (const auto &line : klib::split_str(text, "\n")) {
       if (line.starts_with(image_prefix)) {
         try {

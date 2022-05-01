@@ -10,7 +10,7 @@
 namespace kepub {
 
 std::vector<std::string> KEPUB_EXPORT
-get_node_texts(const pugi::xml_node &node);
+get_node_texts(const pugi::xml_node &node, bool is_lightnovel = false);
 
 pugi::xml_document KEPUB_EXPORT html_to_xml(const std::string &html);
 
