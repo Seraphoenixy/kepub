@@ -38,6 +38,7 @@ std::vector<std::string> get_content(const pugi::xml_document &doc,
                      "div/div/div[@class='left-contents']/article/"
                      "div[@class='article-content']/article")
                   .node();
+  CHECK_NODE(node);
 
   std::vector<std::string> result;
 

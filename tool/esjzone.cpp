@@ -46,6 +46,7 @@ std::pair<kepub::BookInfo, std::vector<kepub::Chapter>> get_info(
                      "div[@class='col-xl-9 col-lg-8 p-r-30']/div[@class='row "
                      "mb-3']/div[@class='col-md-9 book-detail']/h2")
                   .node();
+  CHECK_NODE(node);
   book_info.name_ = kepub::trans_str(node.text().as_string(), translation);
 
   node = doc.select_node(
@@ -53,6 +54,7 @@ std::pair<kepub::BookInfo, std::vector<kepub::Chapter>> get_info(
                 "div[@class='col-xl-9 col-lg-8 p-r-30']/div[@class='row "
                 "mb-3']/div[@class='col-md-9 book-detail']/ul")
              .node();
+  CHECK_NODE(node);
 
   std::string prefix = "作者:";
   for (const auto &child : node.children()) {
@@ -68,6 +70,7 @@ std::pair<kepub::BookInfo, std::vector<kepub::Chapter>> get_info(
              "div[@class='col-xl-9 col-lg-8 p-r-30']/div[@class='bg-secondary "
              "p-20 margin-top-1x']/div/div/div")
           .node();
+  CHECK_NODE(node);
 
   for (const auto &child : node.children()) {
     kepub::push_back(book_info.introduction_,
@@ -80,6 +83,7 @@ std::pair<kepub::BookInfo, std::vector<kepub::Chapter>> get_info(
                 "padding-top-1x mb-3']/div/div/div[@class='tab-pane fade "
                 "active show']/div[@id='chapterList']")
              .node();
+  CHECK_NODE(node);
 
   std::vector<kepub::Chapter> chapters;
   for (const auto &child : node.children("a")) {
@@ -101,6 +105,7 @@ std::pair<kepub::BookInfo, std::vector<kepub::Chapter>> get_info(
                 "mb-3']/div[@class='col-md-3']/div[@class='product-gallery "
                 "text-center mb-3']/a/img")
              .node();
+  CHECK_NODE(node);
   book_info.cover_path_ = node.attribute("src").as_string();
 
   klib::info("Book name: {}", book_info.name_);
@@ -132,6 +137,7 @@ std::vector<std::string> get_content(const std::string &url, bool translation,
                      "div[@class='col-xl-9 col-lg-8 "
                      "p-r-30']/div[@class='forum-content mt-3']")
                   .node();
+  CHECK_NODE(node);
 
   std::vector<std::string> result;
 

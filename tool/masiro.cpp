@@ -1,8 +1,10 @@
 #include <cstddef>
 #include <cstdint>
 #include <exception>
+#include <optional>
 #include <string>
 #include <thread>
+#include <vector>
 
 #include <klib/exception.h>
 #include <klib/log.h>
@@ -29,40 +31,42 @@ using namespace kepub::masiro;
 
 namespace {
 
-#define CHECK_NODE(node)                   \
-  do {                                     \
-    if ((node).empty()) [[unlikely]] {     \
-      klib::error("Failed to parse HTML"); \
-    }                                      \
-  } while (0)
-
 pugi::xml_document get_xml(const std::string &url, const std::string &proxy) {
   auto response = http_get(url, proxy);
   return kepub::html_to_xml(response);
 }
 
-bool show_user_info(const std::string &proxy) {
+std::optional<std::string> get_user_info(const std::string &proxy) {
   auto doc = get_xml("https://masiro.me/admin/userCenterShow", proxy);
   auto node = doc.select_node("/html/head/title").node();
+  CHECK_NODE(node);
   std::string title = node.text().as_string();
 
-  if (title.ends_with("登录")) {
+  if (title.find("登录") != std::string::npos) {
+    return {};
+  }
+
+  node = doc.select_node(
+                "/html/body/div/header/nav/div/ul/li[@class='dropdown user "
+                "user-menu']/ul/li[@class='user-header']/p")
+             .node();
+  CHECK_NODE(node);
+
+  return node.text().as_string();
+}
+
+bool show_user_info(const std::string &proxy) {
+  auto nick_name = get_user_info(proxy);
+
+  if (!nick_name) {
     return false;
   } else {
-    node = doc.select_node(
-                  "/html/body/div/header/nav/div/ul/li[@class='dropdown user "
-                  "user-menu']/ul/li[@class='user-header']/p")
-               .node();
-    CHECK_NODE(node);
-
-    klib::info("Use existing cookies, nick name: {}", node.text().as_string());
-
+    klib::info("Use existing cookies, nick name: {}", *nick_name);
     return true;
   }
 }
 
-void login(const std::string &login_name, const std::string &password,
-           const std::string &proxy) {
+std::string get_token(const std::string &proxy) {
   auto doc = get_xml("https://masiro.me/admin/auth/login", proxy);
   auto node = doc.select_node(
                      "/html/body/div/section/div/div/div[@id='login']/form/"
@@ -70,23 +74,26 @@ void login(const std::string &login_name, const std::string &password,
                      "button']/input[@name='_token']")
                   .node();
   CHECK_NODE(node);
-  std::string token = node.attribute("value").as_string();
 
+  return node.attribute("value").as_string();
+}
+
+void login(const std::string &login_name, const std::string &password,
+           const std::string &proxy) {
   auto response = http_post("https://masiro.me/admin/auth/login",
                             {{"username", login_name},
                              {"password", password},
                              {"remember", "1"},
-                             {"_token", token}},
+                             {"_token", get_token(proxy)}},
                             proxy);
   json_base(std::move(response));
 
-  doc = get_xml("https://masiro.me/admin/userCenterShow", proxy);
-  node = doc.select_node(
-                "/html/body/div/header/nav/div/ul/li[@class='dropdown user "
-                "user-menu']/ul/li[@class='user-header']/p")
-             .node();
-  CHECK_NODE(node);
-  klib::info("Login successful, nick name: {}", node.text().as_string());
+  auto nick_name = get_user_info(proxy);
+  if (!nick_name) {
+    klib::error("Login failed");
+  }
+
+  klib::info("Login successful, nick name: {}", *nick_name);
 }
 
 std::pair<kepub::BookInfo, std::vector<kepub::Volume>> get_info(
@@ -132,6 +139,7 @@ std::pair<kepub::BookInfo, std::vector<kepub::Volume>> get_info(
                 "div[@class='box-body']/div[@class='chapter-content']/ul")
              .node();
   CHECK_NODE(node);
+
   std::vector<kepub::Volume> volumes;
   for (const auto &child : node.children("li")) {
     if (child.attribute("class").value() == std::string("chapter-box")) {
@@ -144,7 +152,7 @@ std::pair<kepub::BookInfo, std::vector<kepub::Volume>> get_info(
       }
 
       auto chapters = child.child("ul");
-      for (const auto chapter : chapters.children()) {
+      for (const auto &chapter : chapters.children()) {
         if (chapter.name() == std::string("a")) {
           std::string chapter_url = std::string("https://masiro.me") +
                                     chapter.attribute("href").as_string();
@@ -197,6 +205,7 @@ std::vector<std::string> get_content(const std::string &url, bool translation,
                      "section[@class='content']/div[1]/div/div/"
                      "div[@class='box-body nvl-content']")
                   .node();
+  CHECK_NODE(node);
 
   std::vector<std::string> result;
 
@@ -264,7 +273,11 @@ int main(int argc, const char *argv[]) try {
   CLI11_PARSE(app, argc, argv)
 
   kepub::check_is_book_id(book_id);
+
   klib::info("Maximum concurrency: {}", max_concurrency);
+  if (max_concurrency > 4) {
+    klib::warn("This maximum concurrency can be dangerous, please be careful");
+  }
 
   if (!show_user_info(proxy)) {
     const auto login_name = kepub::get_login_name();
