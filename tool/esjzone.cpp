@@ -1,3 +1,4 @@
+#include <cstddef>
 #include <cstdint>
 #include <exception>
 #include <string>
@@ -33,7 +34,7 @@ pugi::xml_document get_xml(const std::string &url, const std::string &proxy) {
   return kepub::html_to_xml(response);
 }
 
-std::pair<kepub::BookInfo, std::vector<kepub::Chapter>> get_info(
+std::pair<kepub::BookInfo, std::vector<kepub::Volume>> get_info(
     const std::string &book_id, bool translation, const std::string &proxy) {
   kepub::BookInfo book_info;
 
@@ -85,7 +86,7 @@ std::pair<kepub::BookInfo, std::vector<kepub::Chapter>> get_info(
              .node();
   CHECK_NODE(node);
 
-  std::vector<kepub::Chapter> chapters;
+  std::vector<kepub::Volume> volumes;
   for (const auto &child : node.children("a")) {
     const std::string may_be_url = child.attribute("href").as_string();
     const auto title =
@@ -95,7 +96,11 @@ std::pair<kepub::BookInfo, std::vector<kepub::Chapter>> get_info(
           may_be_url.starts_with("https://www.esjzone.net/"))) {
       klib::warn("URL error: {}, title: {}", may_be_url, title);
     } else {
-      chapters.emplace_back(may_be_url, title);
+      if (std::empty(volumes)) {
+        volumes.emplace_back();
+      }
+
+      volumes.back().chapters_.emplace_back(may_be_url, title);
     }
   }
 
@@ -125,7 +130,7 @@ std::pair<kepub::BookInfo, std::vector<kepub::Chapter>> get_info(
     klib::warn("{}: {}", err.what(), book_info.cover_path_);
   }
 
-  return {book_info, chapters};
+  return {book_info, volumes};
 }
 
 std::vector<std::string> get_content(const std::string &url, bool translation,
@@ -215,26 +220,35 @@ int main(int argc, const char *argv[]) try {
       "manually");
 
   kepub::BookInfo book_info;
-  std::vector<kepub::Chapter> chapters;
-  std::tie(book_info, chapters) = get_info(book_id, translation, proxy);
+  std::vector<kepub::Volume> volumes;
+  std::tie(book_info, volumes) = get_info(book_id, translation, proxy);
+
+  std::size_t chapter_count = 0;
+  for (const auto &volume : volumes) {
+    chapter_count += std::size(volume.chapters_);
+  }
 
   klib::info("Start downloading novel content");
-  kepub::ProgressBar bar(std::size(chapters), book_info.name_);
+  kepub::ProgressBar bar(chapter_count, book_info.name_);
 
   oneapi::tbb::task_arena limited(max_concurrency);
   oneapi::tbb::task_group task_group;
-  limited.execute([&] {
-    task_group.run([&] {
-      oneapi::tbb::parallel_for_each(chapters, [&](kepub::Chapter &chapter) {
-        bar.set_postfix_text(chapter.title_);
-        bar.tick();
-        chapter.texts_ = get_content(chapter.url_, translation, proxy);
+
+  for (auto &volume : volumes) {
+    limited.execute([&] {
+      task_group.run([&] {
+        oneapi::tbb::parallel_for_each(
+            volume.chapters_, [&](kepub::Chapter &chapter) {
+              bar.set_postfix_text(chapter.title_);
+              bar.tick();
+              chapter.texts_ = get_content(chapter.url_, translation, proxy);
+            });
       });
     });
-  });
-  limited.execute([&] { task_group.wait(); });
+    limited.execute([&] { task_group.wait(); });
+  }
 
-  kepub::generate_txt(book_info, chapters);
+  kepub::generate_txt(book_info, volumes);
   klib::info("Novel '{}' download completed", book_info.name_);
 } catch (const klib::Exception &err) {
   klib::error(err.what());
