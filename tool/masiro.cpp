@@ -295,7 +295,7 @@ int main(int argc, const char *argv[]) try {
                  "Maximum number of concurrency to use when downloading")
       ->check(
           CLI::Range(1U, hardware_concurrency > 4 ? hardware_concurrency : 4))
-      ->default_val(4);
+      ->default_val(1);
 
   std::string proxy;
   app.add_flag("-p{http://127.0.0.1:1080},--proxy{http://127.0.0.1:1080}",
@@ -307,7 +307,7 @@ int main(int argc, const char *argv[]) try {
   kepub::check_is_book_id(book_id);
 
   klib::info("Maximum concurrency: {}", max_concurrency);
-  if (max_concurrency > 4) {
+  if (max_concurrency > 1) {
     klib::warn("This maximum concurrency can be dangerous, please be careful");
   }
 
