@@ -9,8 +9,8 @@
 #include <iostream>
 #include <sstream>
 
-#include <klib/image.h>
 #include <klib/log.h>
+#include <klib/mime.h>
 #include <klib/qr_code.h>
 #include <klib/unicode.h>
 #include <klib/url_parse.h>
