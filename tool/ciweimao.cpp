@@ -234,7 +234,7 @@ int main(int argc, const char *argv[]) try {
   kepub::check_is_book_id(book_id);
 
   klib::info("Maximum concurrency: {}", max_concurrency);
-  if (max_concurrency > 2) {
+  if (max_concurrency > 4) {
     klib::warn("This maximum concurrency can be dangerous, please be careful");
   }
 
