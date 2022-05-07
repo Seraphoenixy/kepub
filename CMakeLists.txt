@@ -100,14 +100,14 @@ endif()
 include_directories(${KEPUB_BINARY_DIR})
 
 # ---------------------------------------------------------------------------------------
-# Build epub file
+# Build blob file
 # ---------------------------------------------------------------------------------------
-file(COPY "${KEPUB_SOURCE_DIR}/epub/SourceHanSansSC-Bold.ttf"
+file(COPY "${KEPUB_SOURCE_DIR}/blob/SourceHanSansSC-Bold.ttf"
      DESTINATION ${KEPUB_BINARY_DIR})
-file(COPY "${KEPUB_SOURCE_DIR}/epub/style.css" DESTINATION ${KEPUB_BINARY_DIR})
+file(COPY "${KEPUB_SOURCE_DIR}/blob/style.css" DESTINATION ${KEPUB_BINARY_DIR})
 
-add_library(epub STATIC "${KEPUB_SOURCE_DIR}/src/epub.s")
-target_compile_options(epub PRIVATE "-Wno-unused-command-line-argument")
+add_library(blob STATIC "${KEPUB_SOURCE_DIR}/src/blob.s")
+target_compile_options(blob PRIVATE "-Wno-unused-command-line-argument")
 
 # ---------------------------------------------------------------------------------------
 # Build static library
@@ -118,7 +118,7 @@ target_include_directories(${KEPUB_LIBRARY}
                            PUBLIC "${KEPUB_SOURCE_DIR}/include")
 target_link_libraries(
   ${KEPUB_LIBRARY}
-  PRIVATE epub
+  PRIVATE blob
           fmt::fmt
           pugixml::pugixml
           indicators::indicators
@@ -143,7 +143,7 @@ target_include_directories(${KEPUB_LIBRARY}-shared
                            PUBLIC "${KEPUB_SOURCE_DIR}/include")
 target_link_libraries(
   ${KEPUB_LIBRARY}-shared
-  PRIVATE epub
+  PRIVATE blob
           fmt::fmt
           pugixml::pugixml
           indicators::indicators
